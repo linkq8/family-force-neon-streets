@@ -208,6 +208,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private static final float[] ZONE_TRIGGERS = {
             430f, 1080f, 1730f, 2380f, 2980f, 3560f, 4180f, 4820f, 5480f
     };
+    private static final float ENCOUNTER_GATE_OFFSET = 425f;
+    private static final float ENCOUNTER_GATE_MARGIN = 20f;
     private static final float[] STAGE_SIGN_X = {
             510f, 1015f, 1665f, 2150f, 2760f, 3300f, 3650f, 4260f, 4900f, 5560f
     };
@@ -2307,6 +2309,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             // Leash: P2 may never range far ahead of (or behind) P1.
             player2X = clamp(player2X, playerX - 250f, playerX + 250f);
         }
+        if (zoneActive && zone >= 0 && zone < ZONE_TRIGGERS.length) {
+            float encounterLimit = ZONE_TRIGGERS[zone]
+                    + ENCOUNTER_GATE_OFFSET - ENCOUNTER_GATE_MARGIN;
+            playerX = Math.min(playerX, encounterLimit);
+            if (twoPlayerMode) player2X = Math.min(player2X, encounterLimit);
+        }
         if (lastHitEnemyTicks > 0 && --lastHitEnemyTicks == 0) lastHitEnemy = null;
 
         if (health <= 0) {
@@ -2966,12 +2974,17 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             // avoids the first-encounter allocation/GPU-upload burst that can
             // kill low-memory Android TV processes before enemies appear.
             prepareEnemyAnimationsForZone(zone);
-            playerX = Math.min(playerX, ZONE_TRIGGERS[zone] + 405f);
+            float gateX = ZONE_TRIGGERS[zone] + ENCOUNTER_GATE_OFFSET;
+            float playerLimit = gateX - ENCOUNTER_GATE_MARGIN;
+            playerX = Math.min(playerX, playerLimit);
+            if (twoPlayerMode) player2X = Math.min(player2X, playerLimit);
             boolean any = false;
             for (Enemy enemy : enemies) {
                 if (enemy.alive && enemy.zone == zone) {
+                    // P2 used to cross the gate and lure an enemy beyond P1's
+                    // hard limit, permanently deadlocking the encounter.
+                    enemy.x = Math.min(enemy.x, playerLimit - 8f);
                     any = true;
-                    break;
                 }
             }
             if (!any) {
@@ -4084,11 +4097,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     10, Color.rgb(20, 20, 44), true, Paint.Align.CENTER);
         }
         if (zoneActive && zone < ZONE_TRIGGERS.length) {
-            float gate = ZONE_TRIGGERS[zone] + 425f - cameraX;
+            float gate = ZONE_TRIGGERS[zone] + ENCOUNTER_GATE_OFFSET - cameraX;
             if (gate > 0 && gate < W) {
                 paint.setColor(Color.argb(150, 217, 255, 85));
                 canvas.drawRect(gate, 210, gate + 4, 335, paint);
-                text(canvas, "CLEAR!", gate - 5, 226, 10, Color.rgb(217, 255, 85), true, Paint.Align.RIGHT);
+                text(canvas, "DEFEAT ENEMIES", gate - 5, 226, 8,
+                        Color.rgb(217, 255, 85), true, Paint.Align.RIGHT);
             }
         }
     }

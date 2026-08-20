@@ -28,6 +28,7 @@ python3 "$SCRIPT_DIR/test_enemy_attack_tokens_contract.py"
 python3 "$SCRIPT_DIR/test_move_specs_contract.py"
 python3 "$SCRIPT_DIR/test_checkpoint_contract.py"
 python3 "$SCRIPT_DIR/test_audio_lifecycle_contract.py"
+python3 "$SCRIPT_DIR/test_encounter_gate_contract.py"
 
 python3 "$SCRIPT_DIR/verify_customer_apk.py" --apk "$APK" --pack "$PACK" \
     --aapt "$ANDROID_HOME/build-tools/34.0.0/aapt" \
