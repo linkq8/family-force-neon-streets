@@ -1,0 +1,3 @@
+-keep class com.familyforce.neonstreets.MainActivity { *; }
+-keepclassmembers class * extends android.view.View { public <init>(android.content.Context); }
+-dontnote org.json.**

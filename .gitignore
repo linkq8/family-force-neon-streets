@@ -1,0 +1,52 @@
+.DS_Store
+
+# Private source photographs never belong in source control.
+photos/*
+!photos/README.md
+
+# AI-generation working files, provider job responses, and expiring URLs are
+# private production records. Runtime-approved assets live under android/app.
+assets/higgsfield/
+jobs/
+
+# Customer source photos and consent evidence are private operational records.
+# Keep metadata JSON and final derived game assets; never commit source material.
+customers/*/references/*
+!customers/*/references/README.md
+customers/*/consent/evidence/*
+customers/*/raw/*
+
+# Signing credentials and local environment files must never be published.
+*.jks
+*.keystore
+*.pem
+*.key
+.env
+.env.*
+.gradle/
+.idea/
+local.properties
+
+# PVSnesLib generated intermediates.
+*.asm
+!data.asm
+*.obj
+*.ps
+*.pic
+*.pal
+*.map
+*.inc
+*_data.as
+*.sym
+*.symfull
+*.log
+hdr.asm
+linkfile
+soundbank.*
+
+# Reproducible build outputs and local emulator state.
+dist/
+build/
+*.srm
+*.sav
+customers/*/.generated/

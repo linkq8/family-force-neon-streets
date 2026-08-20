@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="دليل إنتاج وطلب وبيع نسخ Family Force المخصصة">
+  <title>Family Force — دليل الإنتاج والطلبات</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<!--
+THESIS: A working arcade service binder that turns every customer request into exact production inputs and verified APK outputs; it refuses a generic marketing-card dashboard.
+OWN-WORLD: Midnight service-manual sheets, cyan registration marks, safety-gold actions, magenta status stamps, tabbed dividers, dense specification tables, and crisp technical diagrams.
+STORY: The producer sees order readiness, collects the right material, estimates scope, follows production, and releases only after consent and QA gates pass.
+FIRST VIEWPORT: A broad masthead and status strip sit above a physical tab rail; the active overview opens into one decisive start-order action and a compact production route.
+FORM: Arcade operator service binder, grounded candidate 3, seed fcae7a4b.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->
+  <a class="skip-link" href="#content">تجاوز إلى المحتوى</a>
+  <header class="masthead">
+    <div class="brand-lockup">
+      <img src="assets/logo.png" alt="شعار Family Force" width="156" height="72">
+      <div>
+        <p>نظام الإنتاج التجاري — إصدار محلي</p>
+        <h1>دليل الطلب والإنتاج والتسليم</h1>
+      </div>
+    </div>
+    <div class="status-rail" aria-label="مراحل الطلب">
+      <span><b>1</b> طلب</span><span><b>2</b> موافقة</span><span><b>3</b> صور</span>
+      <span><b>4</b> أصول</span><span><b>5</b> APK</span><span><b>6</b> تسليم</span>
+    </div>
+  </header>
+
+  <nav class="tabs" aria-label="أقسام الدليل" role="tablist">
+    <button role="tab" aria-selected="true" aria-controls="overview" id="tab-overview" data-tab="overview">البداية</button>
+    <button role="tab" aria-selected="false" aria-controls="customer" id="tab-customer" data-tab="customer">مطلوب العميل</button>
+    <button role="tab" aria-selected="false" aria-controls="characters" id="tab-characters" data-tab="characters">الشخصيات</button>
+    <button role="tab" aria-selected="false" aria-controls="world" id="tab-world" data-tab="world">العالم والإضافات</button>
+    <button role="tab" aria-selected="false" aria-controls="production" id="tab-production" data-tab="production">الإنتاج</button>
+    <button role="tab" aria-selected="false" aria-controls="sales" id="tab-sales" data-tab="sales">الطلب والبيع</button>
+    <button role="tab" aria-selected="false" aria-controls="qa" id="tab-qa" data-tab="qa">الفحص والتسليم</button>
+  </nav>
+
+  <main id="content">
+    <section class="tab-panel active" id="overview" role="tabpanel" aria-labelledby="tab-overview">
+      <div class="lead-grid">
+        <div class="lead-copy">
+          <h2>من صور العائلة إلى لعبة جاهزة للحفل</h2>
+          <p>هذا الدليل هو مرجع التشغيل الواحد. يبدأ بما نطلبه من العميل، يحدد مخرجات كل شخصية وسلاح ومرحلة، ثم يمنع بناء نسخة التسليم قبل اكتمال الموافقات والفحص.</p>
+          <div class="actions">
+            <button class="primary" data-goto="customer">ابدأ قائمة طلب جديد</button>
+            <button class="secondary" data-print>طباعة الدليل الحالي</button>
+          </div>
+        </div>
+        <div class="scope-stamp">
+          <strong>نطاق المنتج الحالي</strong>
+          <dl><div><dt>الشخصيات القابلة للعب</dt><dd>4</dd></div><div><dt>حركات كل شخصية</dt><dd>11 × 8</dd></div><div><dt>أنواع الأعداء</dt><dd>4</dd></div><div><dt>طريقة التسليم</dt><dd>APK مباشر</dd></div></dl>
+        </div>
+      </div>
+      <h3>مسار العمل الموصى به</h3>
+      <ol class="process-line">
+        <li><b>استلام</b><span>بيانات المناسبة، الصور، الموافقات والخيارات.</span></li>
+        <li><b>اعتماد الشكل</b><span>Portrait ثم Identity Master ثم Model Sheet.</span></li>
+        <li><b>إنتاج الحركات</b><span>صور ثابتة فقط، 11 Action Sheets، دون فيديو.</span></li>
+        <li><b>تركيب اللعبة</b><span>Atlas، الهوية، الأيقونة، الاسم والرسائل.</span></li>
+        <li><b>فحص وتسليم</b><span>Android، TV، التوقيع، SHA-256 ثم APK.</span></li>
+      </ol>
+      <aside class="notice"><b>قاعدة تجارية:</b> اعرض على العميل Portrait وModel Sheet للموافقة قبل إنتاج 88 إطار حركة. هذا يقلل إعادة العمل والتكلفة.</aside>
+    </section>
+
+    <section class="tab-panel" id="customer" role="tabpanel" aria-labelledby="tab-customer" hidden>
+      <div class="section-heading"><div><h2>ماذا نطلب من العميل؟</h2><p>قائمة قصيرة للعميل، وتفاصيل داخلية دقيقة لفريق الإنتاج.</p></div><button class="reset" data-reset="customer">مسح العلامات</button></div>
+      <div class="check-columns" data-check-group="customer">
+        <fieldset><legend>بيانات المناسبة</legend>
+          <label><input type="checkbox"> اسم صاحب المناسبة والاسم الذي سيظهر داخل اللعبة</label>
+          <label><input type="checkbox"> نوع المناسبة وتاريخها وموعد التسليم</label>
+          <label><input type="checkbox"> اللغة المطلوبة: عربي، إنجليزي أو كلاهما</label>
+          <label><input type="checkbox"> الأجهزة: هاتف، Fold، Android TV</label>
+          <label><input type="checkbox"> لاعب واحد أو لاعبان ووجود DualSense</label>
+        </fieldset>
+        <fieldset><legend>لكل شخص</legend>
+          <label><input type="checkbox"> الاسم، العمر والطول الحقيقي بالسنتيمتر</label>
+          <label><input type="checkbox"> 3 صور واضحة كحد أدنى، والأفضل 4</label>
+          <label><input type="checkbox"> اختيار اللون، القوة، الملابس والإكسسوار</label>
+          <label><input type="checkbox"> تحديد من هو البطل الأساسي ومن هو Companion</label>
+          <label><input type="checkbox"> موافقة البالغ أو ولي أمر الطفل</label>
+        </fieldset>
+        <fieldset><legend>مواصفات الصور</legend>
+          <label><input type="checkbox"> صورة أمامية للوجه بإضاءة طبيعية</label>
+          <label><input type="checkbox"> صورة بزاوية ثلاثة أرباع</label>
+          <label><input type="checkbox"> صورة كاملة من الرأس إلى القدمين</label>
+          <label><input type="checkbox"> صورة ابتسامة أو تعبير طبيعي، اختيارية ومفيدة</label>
+          <label><input type="checkbox"> لا نظارات شمسية، لا فلاتر، ولا قص للرأس أو القدمين</label>
+        </fieldset>
+        <fieldset><legend>الهوية والخصوصية</legend>
+          <label><input type="checkbox"> إذن إنشاء شخصية مشتقة بالذكاء الاصطناعي</label>
+          <label><input type="checkbox"> إذن تضمين الأصول المشتقة فقط داخل APK</label>
+          <label><input type="checkbox"> منع إدخال الصور الأصلية داخل APK</label>
+          <label><input type="checkbox"> تاريخ حذف الصور الخام بعد التسليم</label>
+          <label><input type="checkbox"> موافقة مستقلة لكل طفل ظاهر</label>
+        </fieldset>
+      </div>
+      <div class="photo-spec">
+        <h3>مقبول / غير مقبول</h3>
+        <div><b class="pass">مقبول</b><span>وجه كبير وواضح، ضوء متوازن، صورة فردية، دقة أصلية، زوايا متناسقة وحديثة.</span></div>
+        <div><b class="fail">مرفوض</b><span>لقطة جماعية بعيدة، صورة واتساب مضغوطة، فلتر تجميل، إضاءة خلفية قوية، وجه محجوب، عمر مختلف بوضوح.</span></div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="characters" role="tabpanel" aria-labelledby="tab-characters" hidden>
+      <div class="section-heading"><div><h2>عقد إنتاج الشخصية</h2><p>هذه المتطلبات تتكرر لكل شخصية قابلة للعب.</p></div><span class="spec-tag">IMAGE ONLY · NO VIDEO</span></div>
+      <div class="spec-table-wrap"><table class="spec-table">
+        <thead><tr><th>المدخل أو المخرج</th><th>العدد</th><th>المواصفة</th><th>بوابة الاعتماد</th></tr></thead>
+        <tbody>
+          <tr><td>صور العميل</td><td>3 إلزامية، 4 مفضلة</td><td>أمامي، 3/4، جسم كامل، تعبير اختياري</td><td>هوية وعمر واضحان دون قص</td></tr>
+          <tr><td>Portrait</td><td>1</td><td>مصدر 2K مربع؛ نهائي 256×256 RGBA</td><td>الشبه، الشعر، العمر والملابس</td></tr>
+          <tr><td>Identity Master</td><td>1</td><td>جسم كامل، وقفة 3/4 نحو اليمين، خلفية مفتاح موحدة</td><td>الرأس والقدمان داخل الإطار</td></tr>
+          <tr><td>Character Model Sheet</td><td>1</td><td>أمامي + 3/4 + جانبي + خلفي، مع لوحة ألوان وتفاصيل الوجه</td><td>نفس النسب والزي في كل الجهات</td></tr>
+          <tr><td>Action Sheets</td><td>11</td><td>4×2؛ ثمانية إطارات مرتبة زمنيًا لكل حركة</td><td>لا تكرار، لا اختلاط خلايا، لا تبدل اتجاه</td></tr>
+          <tr><td>Runtime Atlas</td><td>1</td><td>1536×2112 RGBA؛ 8 أعمدة × 11 صفًا؛ خلية 192×192</td><td>فحص الحركة والشفافية والارتكاز</td></tr>
+          <tr><td>Contact Sheet + QA</td><td>2</td><td>PNG للمراجعة + JSON آلي</td><td>موافقة الإنتاج قبل دمج APK</td></tr>
+        </tbody>
+      </table></div>
+      <h3>صفوف الحركة المطلوبة</h3>
+      <div class="move-ledger">
+        <article><b>Idle</b><span>8</span><p>تنفس وتحويل وزن هادئ، بداية ونهاية متوافقتان.</p></article>
+        <article><b>Walk</b><span>8</span><p>دورة كاملة: قدم يمنى ويسرى، contact وpassing واضحان.</p></article>
+        <article><b>Punch</b><span>8</span><p>استعداد، سحب، ضربة واحدة، متابعة ثم حراسة.</p></article>
+        <article><b>Kick</b><span>8</span><p>رفع، امتداد، اصطدام، رجوع واتزان.</p></article>
+        <article><b>Heavy Punch</b><span>8</span><p>تحضير أكبر وضربة واحدة قوية دون خروج من الخلية.</p></article>
+        <article><b>Heavy Kick</b><span>8</span><p>قوة واضحة وزمن استعادة أطول.</p></article>
+        <article><b>Jump</b><span>8</span><p>انخفاض، إقلاع، صعود، قمة، هبوط.</p></article>
+        <article><b>Special</b><span>8</span><p>شحن وإطلاق وعودة؛ المؤثر لا يتجاوز حدود الخلية.</p></article>
+        <article><b>Link</b><span>8</span><p>دخول/نداء وضربة مساعدة واضحة للشخصية المصاحبة.</p></article>
+        <article><b>Hurt</b><span>8</span><p>ارتداد إصابة واحد مع بقاء الهوية والسلاح.</p></article>
+        <article><b>Knockdown</b><span>8</span><p>سقوط كامل واستقرار على الأرض، لا ينتهي في الهواء.</p></article>
+      </div>
+      <aside class="notice warning"><b>إجمالي كل شخصية:</b> 88 إطار لعب نهائي، Portrait واحد، Master واحد، Model Sheet واحد، و11 Action Sheets. لا ننتج كل الحركات قبل اعتماد الوجه والـModel Sheet.</aside>
+      <h3>الشخصيات الأخرى</h3>
+      <div class="split-spec">
+        <div><h4>العدو العادي</h4><p><b>2–3 صور مرجعية أو Concept Sheet واحد.</b> Master، Model Sheet أمامي/جانبي/خلفي، وست حركات × 6 إطارات: Idle، Walk، Attack A، Attack B، Hurt، Knockdown. Atlas نهائي 960×1152 بخلايا 160×192.</p></div>
+        <div><h4>الزعيم</h4><p><b>من العميل: 3–5 مراجع بصرية ووصف القوة والسلاح.</b> Model Sheet إلزامي بأربع جهات: أمامي، 3/4، جانبي وخلفي، مع لوحة سلاح. المخرج الأدنى: 6 حركات × 6 إطارات = 36 إطارًا وAtlas 960×1152. بوابة الاعتماد: شكل الزعيم والسلاح ثم Contact Sheet للحركات. Special/Phase 2/Victory تحتاج صفوفًا إضافية وتوسعة محرك متفقًا عليها.</p></div>
+        <div><h4>Companion Hero</h4><p>إن كان من الشخصيات الأربع يستخدم Atlas الكامل ولا يحتاج أصولًا إضافية. للمساعد الجديد فقط: <b>2–4 صور شخص واضحة + موافقة</b>، Portrait، Master، وModel Sheet أمامي/3⁄4/جانبي؛ الخلفي غير مطلوب إن لم يستدر. المخرج: Link sheet من 8 إطارات لدخول وضربة وخروج. بوابة الاعتماد: Portrait وModel Sheet قبل Link.</p></div>
+      </div>
+    </section>
+
+    <section class="tab-panel" id="world" role="tabpanel" aria-labelledby="tab-world" hidden>
+      <h2>الأسلحة والمراحل والإضافات</h2>
+      <div class="asset-catalog">
+        <article><header><h3>سلاح جديد</h3><span>4 صور Runtime</span></header><ul><li>وصف واستخدام وحجم حقيقي تقريبي</li><li>1–3 مراجع أو Concept Sheet بثلاث زوايا</li><li>Ground، Held، Thrown، Broken</li><li>نقطة يد، زاوية إمساك، ضرر، متانة ووزن</li><li>صورة 128×128 RGBA لكل حالة + Trail/Impact اختياري</li></ul></article>
+        <article><header><h3>أداة أو Pickup</h3><span>1–3 صور</span></header><ul><li>صورة أرضية واضحة 128×128</li><li>Held أو Used إذا تظهر في اليد</li><li>Broken/Empty إن كانت قابلة للاستهلاك</li><li>اسم HUD وأثر HP/SP/Link أو النقاط</li></ul></article>
+        <article><header><h3>مرحلة جديدة</h3><span>حزمة كاملة</span></header><ul><li>Brief واحد + 3–6 مراجع للمكان</li><li>Background رئيسي 2048×1152 أو أوسع</li><li>مخطط طريق وCollision/Lane map</li><li>6–12 Prop، منها 2–4 قابلة للكسر</li><li>3–6 Encounter layouts ونقطة Boss</li><li>لوحة ألوان، إضاءة، لافتات واسم المنطقة</li></ul></article>
+        <article><header><h3>زعيم مرحلة</h3><span>شخصية + قتال</span></header><ul><li>Model Sheet ولوحة السلاح</li><li>Idle، Walk، هجومان، Hurt، Knockdown</li><li>هجمة Special ومرحلة ثانية عند طلبها</li><li>Hitboxes، telegraph، drop، intro وdefeat</li></ul></article>
+        <article><header><h3>موسيقى مرحلة</h3><span>1 Loop</span></header><ul><li>وصف المزاج والسرعة و3 مراجع صوتية قانونية</li><li>Loop مقترح 60–120 ثانية</li><li>OGG stereo مع نقطة Loop نظيفة</li><li>لا نسخ لحن محمي أو موسيقى بطل معروف</li></ul></article>
+        <article><header><h3>مؤثرات صوتية</h3><span>عقد عددي</span></header><ul><li>من العميل: وصف الإحساس + 1–3 مراجع صوتية قانونية لكل مجموعة؛ Model Sheet غير مطلوب</li><li>سلاح: 4 ملفات — pickup، swing، hit، break</li><li>شخصية: 5 ملفات اختيارية — select، attack، special، hurt، victory</li><li>مرحلة: 1 ambience + ملف لكل نوع breakable + 2 boss cues</li><li>المخرجات: WAV master + Runtime OGG/WAV؛ البوابة: مستوى صوت متوازن، لا clipping وحقوق المصدر واضحة</li></ul></article>
+        <article><header><h3>هوية مناسبة</h3><span>5 مخرجات</span></header><ul><li>اسم اللعبة والمناسبة</li><li>شعار PNG/WebP بخلفية شفافة</li><li>أيقونة مربعة 1024×1024</li><li>ألوان Primary/Accent/Background/Text</li><li>رسالة مقدمة ونهاية، 160 حرفًا كحد أقصى</li></ul></article>
+        <article><header><h3>Comic Intro</h3><span>3–6 لوحات</span></header><ul><li>نص مختصر مع أسماء الشخصيات</li><li>Storyboard قبل الرسم النهائي</li><li>لوحات 16:9 آمنة للهاتف والتلفاز</li><li>ترجمة منفصلة، لا كتابة مولدة داخل الصورة</li></ul></article>
+      </div>
+      <aside class="ip-note"><b>تنبيه الملكية الفكرية:</b> للبيع التجاري استخدم أبطالًا أصليين وقوى عامة. لا تستخدم أسماء أو شعارات أو أزياء Iron Man أو Hulk أو Superman أو Frozen دون ترخيص.</aside>
+    </section>
+
+    <section class="tab-panel" id="production" role="tabpanel" aria-labelledby="tab-production" hidden>
+      <h2>دليل الإنتاج خطوة بخطوة</h2>
+      <ol class="runbook">
+        <li><div><b>فتح الطلب</b><p>انسخ قالب V2، ضع orderId فريدًا، تاريخ المناسبة، اللغة، الأجهزة وخيارات اللعب.</p><code>customers/&lt;order-id&gt;/customer.json</code></div><span>بوابة: Draft صالح</span></li>
+        <li><div><b>تسجيل الموافقة</b><p>سجل كل بالغ وطفل والصلاحيات الثلاث وموعد حذف الصور. لا تضع صورًا خامًا داخل assets.</p></div><span>بوابة: Consent موثق</span></li>
+        <li><div><b>اعتماد هوية الشخصية</b><p>Portrait ثم Master ثم Model Sheet. أرسل Contact Sheet للعميل واعتمد نسخة واحدة.</p></div><span>بوابة: شكل معتمد</span></li>
+        <li><div><b>إنتاج الصور الثابتة</b><p>11 Action Sheets، ثمانية إطارات لكل حركة. حد أقصى داخلي ثلاث محاولات للحركة.</p></div><span>بوابة: البطل الكامل 88/88؛ العدو 36/36</span></li>
+        <li><div><b>بناء Atlas</b><p>استخدم مصنع الشخصيات لتنظيف الحواف والارتكاز وإنشاء Atlas وContact وQA.</p><code>android/tools/customer_assets/character_asset_factory.py</code></div><span>بوابة: JSON PASS</span></li>
+        <li><div><b>تركيب الهوية</b><p>الاسم والشعار والأيقونة والألوان والمقدمة والنهاية، ثم تحقق من ظهورها داخل القوائم.</p></div><span>بوابة: Preview معتمد</span></li>
+        <li><div><b>بناء APK</b><p>المسودة للاختبار؛ استخدم --delivery فقط بعد اكتمال الموافقة الفعلية.</p><code>./android/tools/build_customer_apk.sh customers/&lt;order-id&gt; --delivery</code></div><span>بوابة: Release موقّع</span></li>
+        <li><div><b>اختبار وتسليم</b><p>هاتف، Fold، TV، P1/P2، DualSense، 30 دقيقة لعب، SHA-256، ثم رابط APK وتعليمات التثبيت.</p></div><span>بوابة: تقرير تسليم</span></li>
+      </ol>
+      <div class="command-box"><h3>هيكل طلب صحيح</h3><pre>customers/order-1042/
+├── customer.json
+├── consent/consent-record.json
+├── references/        ← صور خام، لا تدخل APK
+├── assets/heroes/     ← PNG النهائية فقط
+├── branding/icon.png
+└── reports/           ← الموافقات وContact Sheets</pre></div>
+    </section>
+
+    <section class="tab-panel" id="sales" role="tabpanel" aria-labelledby="tab-sales" hidden>
+      <div class="section-heading"><div><h2>دليل الطلب والبيع</h2><p>حوّل النطاق إلى عرض سعر واضح دون وعد مفتوح بالتعديلات.</p></div><button class="secondary" data-print>طباعة عرض العمل</button></div>
+      <div class="sales-grid">
+        <form class="order-sheet" id="order-form">
+          <label>رقم الطلب<input name="order" placeholder="order-1042"></label>
+          <label>اسم المناسبة<input name="event" placeholder="عيد ميلاد ..."></label>
+          <label>تاريخ التسليم<input name="due" type="date"></label>
+          <label>عدد الشخصيات<input name="heroes" type="number" min="1" max="4" value="4"></label>
+          <label>عدد الأسلحة الجديدة<input name="weapons" type="number" min="0" max="12" value="0"></label>
+          <label>عدد المراحل الجديدة<input name="stages" type="number" min="0" max="8" value="0"></label>
+          <label>عدد الأعداء الجدد<input name="enemies" type="number" min="0" max="12" value="0"></label>
+          <label>سعر الساعة — اختياري<input name="rate" type="number" min="0" step="0.5" placeholder="لا توجد قيمة افتراضية"></label>
+        </form>
+        <div class="estimate" aria-live="polite"><h3>تقدير نطاق العمل</h3><dl id="estimate-output"></dl><p>هذه ساعات تخطيط وإنتاج تقريبية وليست سعرًا أو وعدًا نهائيًا. اعتمد السعر بعد مراجعة جودة الصور والنطاق.</p></div>
+      </div>
+      <h3>باقات مقترحة دون أسعار مفروضة</h3>
+      <div class="package-lines">
+        <article><h4>Birthday Solo</h4><p>شخصية مخصصة واحدة، هوية مناسبة، اللعبة الأساسية، APK مستقل.</p><span>أقل نطاق وأسرع اعتماد</span></article>
+        <article><h4>Family Duo</h4><p>شخصيتان قابلتان للعب، P1/P2، Link، هوية مناسبة وAPK.</p><span>مناسب للعب التعاوني</span></article>
+        <article><h4>Family Force</h4><p>أربع شخصيات كاملة مع اختيار وCompanions، هوية وأيقونة مخصصة.</p><span>الحزمة الحالية الكاملة</span></article>
+        <article><h4>Event Premium</h4><p>Family Force مع مرحلة أو عدو أو سلاح أو Comic Intro مخصص.</p><span>يُسعّر حسب الإضافات</span></article>
+      </div>
+      <div class="terms"><h3>شروط يجب أن تظهر في عرض البيع</h3><ul><li>دفعة بدء بعد استلام الصور والموافقة.</li><li>جولة اعتماد للـPortrait وModel Sheet قبل الحركات.</li><li>عدد واضح لجولات التعديل؛ المقترح جولتان لكل بوابة.</li><li>أي تغيير بعد اعتماد Model Sheet يُسعّر كتغيير نطاق.</li><li>موعد التسليم يبدأ بعد اكتمال الصور والموافقات، لا من تاريخ الاستفسار.</li><li>التسليم APK مباشر للاستخدام المتفق عليه، ولا يشمل متجرًا أو Source Code.</li><li>الشخصيات مستوحاة من العميل بتصميم أصلي، دون ملكيات أبطال تجارية.</li></ul></div>
+    </section>
+
+    <section class="tab-panel" id="qa" role="tabpanel" aria-labelledby="tab-qa" hidden>
+      <div class="section-heading"><div><h2>بوابات الفحص والتسليم</h2><p>لا يكفي أن يُبنى APK؛ يجب أن ينجح المسار الفعلي للاعب.</p></div><button class="reset" data-reset="qa">مسح العلامات</button></div>
+      <div class="qa-board" data-check-group="qa">
+        <fieldset><legend>الأصول</legend><label><input type="checkbox"> كل Portrait واضح ومطابق</label><label><input type="checkbox"> كل Atlas بالمقاس الصحيح</label><label><input type="checkbox"> كل صف حركة متغير فعلًا</label><label><input type="checkbox"> لا قص أو هالات أو خلفيات خام</label><label><input type="checkbox"> الأطوال داخل اللعبة صحيحة</label></fieldset>
+        <fieldset><legend>اللعبة</legend><label><input type="checkbox"> P1 يختار ويبدأ</label><label><input type="checkbox"> P2 اختياري ويختار مستقلًا</label><label><input type="checkbox"> P2 متحرك في كل الحالات</label><label><input type="checkbox"> Link يظهر Companion ويصيب</label><label><input type="checkbox"> الأسلحة مصورة وتُرمى وتتكسر</label></fieldset>
+        <fieldset><legend>Android وTV</legend><label><input type="checkbox"> هاتف 16:9</label><label><input type="checkbox"> Fold مفتوح ومغلق</label><label><input type="checkbox"> Android TV 1080p</label><label><input type="checkbox"> DualSense Bluetooth وUSB</label><label><input type="checkbox"> كل القوائم تعمل بـDPAD</label></fieldset>
+        <fieldset><legend>Release</legend><label><input type="checkbox"> Consent --delivery ناجح</label><label><input type="checkbox"> R8 وLint ناجحان</label><label><input type="checkbox"> APK موقّع بمفتاح Release</label><label><input type="checkbox"> تثبيت وتحديث فوق النسخة ناجحان</label><label><input type="checkbox"> لا Crash/ANR/OOM في 30 دقيقة</label></fieldset>
+        <fieldset><legend>حزمة العميل</legend><label><input type="checkbox"> الاسم والأيقونة والرسائل صحيحة</label><label><input type="checkbox"> لا صور خام داخل APK</label><label><input type="checkbox"> SHA-256 مسجل</label><label><input type="checkbox"> رابط APK وتعليمات التثبيت</label><label><input type="checkbox"> تاريخ حذف الصور مسجل</label></fieldset>
+      </div>
+      <div class="release-gate"><div><span id="qa-progress">0%</span><p>اكتمال قائمة التسليم</p></div><strong id="qa-verdict">غير جاهز للتسليم</strong></div>
+      <h3>ملفات التسليم</h3>
+      <div class="delivery-files"><code>family-force-&lt;order-id&gt;.apk</code><code>SHA256SUMS.txt</code><code>signature-report.txt</code><code>apk-verification.json</code><code>تعليمات التثبيت.pdf أو .html</code></div>
+    </section>
+  </main>
+
+  <footer><p>Family Force Production Manual · يعمل محليًا ويحفظ العلامات في هذا المتصفح فقط.</p><button data-reset="all" class="reset">إعادة ضبط الدليل بالكامل</button></footer>
+  <script src="app.js"></script>
+</body>
+</html>

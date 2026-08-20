@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "atlas": {"width": 1536, "height": 2112, "cell": 192, "columns": 8},
+  "rows": ["idle", "walk", "punch", "kick", "heavy_punch", "heavy_kick", "jump", "special", "link", "hurt", "knockdown"],
+  "frames_per_action": 8,
+  "format": "PNG RGBA",
+  "alpha": "binary 0/255",
+  "ground_margin_px": 6,
+  "generation": {"media": "still images only", "maximum_generation_attempts_per_action": 3}
+}

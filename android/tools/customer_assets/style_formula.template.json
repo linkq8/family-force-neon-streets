@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "formula_id": "family-force-fine-retro-v1",
+  "locked": true,
+  "prompt_prefix": "Full-body 2D beat-em-up game sprite, modern hand-painted retro pixel art, fine pixels, crisp readable face, consistent identity and costume, three-quarter side view facing right, transparent background, entire body and feet visible, no text, no props unless specified.",
+  "negative_constraints": [
+    "large blocky pixels", "blurred face", "cropped body", "extra limbs",
+    "changed costume", "changed age", "photorealism", "background", "shadow"
+  ],
+  "identity_rule": "Use the approved portrait and model sheet as immutable references for every action.",
+  "camera_rule": "Same camera, scale, lighting, palette, costume, proportions and facing direction in all 88 frames.",
+  "retry_policy": {
+    "maximum_attempts_per_action": 3,
+    "attempt_1": "Generate against locked references and formula.",
+    "attempt_2": "Retry only failed action with the QA defect named explicitly.",
+    "attempt_3": "Final retry; reject the action and request manual art correction if it still fails.",
+    "never_retry": "Approved portrait/model sheet or already approved actions must not be regenerated."
+  }
+}

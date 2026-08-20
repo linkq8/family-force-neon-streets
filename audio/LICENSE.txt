@@ -1,0 +1,13 @@
+ORIGINAL AUDIO ASSET NOTICE
+
+The waveform synthesis, tracker note sequence, and generated audio assets in
+this directory were created specifically for this project. They contain no
+third-party recordings, sampled instruments, copyrighted melodies, or
+Higgsfield/model-generated audio.
+
+To the extent the contributor has copyright or related rights in these audio
+assets and their generator, they are dedicated to the public domain under
+CC0 1.0 Universal: https://creativecommons.org/publicdomain/zero/1.0/
+
+PVSnesLib and its conversion tools are separate software distributed under
+their own licenses; no PVSnesLib binary or example audio is copied here.

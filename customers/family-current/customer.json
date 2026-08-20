@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 2,
+  "orderId": "family-current",
+  "eventName": "Family Force: Neon Streets",
+  "event": {
+    "displayName": "Family Force: Neon Streets",
+    "date": "2026-08-20",
+    "locale": "ar-KW"
+  },
+  "customer": {
+    "internalReference": "FAMILY-CURRENT-INTERNAL"
+  },
+  "privacy": {
+    "consentStatus": "pending",
+    "consentRecord": "consent/consent-record.json",
+    "aiUseDisclosed": false,
+    "retentionUntil": "2026-11-20",
+    "rawPhotosInApk": false
+  },
+  "branding": {
+    "appDisplayName": "Family Force: Neon Streets",
+    "eventTitle": "FAMILY FORCE",
+    "introMessage": "THE FAMILY ADVENTURE BEGINS",
+    "outroMessage": "FAMILY FORCE FOREVER!",
+    "logoAsset": "ui/logo.png",
+    "appIconRef": "default",
+    "theme": {
+      "primary": "#15D8FF",
+      "accent": "#FF3DAE",
+      "background": "#090B22",
+      "text": "#FFFFFF"
+    }
+  },
+  "heroes": [
+    {"displayName": "ESSA", "assetStem": "parent", "subjectType": "adult", "consentSubjectId": "essa"},
+    {"displayName": "ADAM", "assetStem": "adam", "subjectType": "minor", "consentSubjectId": "adam"},
+    {"displayName": "SHAIKHA", "assetStem": "shaikha", "subjectType": "minor", "consentSubjectId": "shaikha"},
+    {"displayName": "SULAIMAN", "assetStem": "sulaiman", "subjectType": "minor", "consentSubjectId": "sulaiman"}
+  ]
+}

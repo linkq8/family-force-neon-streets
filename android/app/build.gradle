@@ -1,0 +1,114 @@
+plugins {
+    id "com.android.application"
+}
+
+import groovy.json.JsonSlurper
+
+def customerPackDir = file(project.findProperty("customerPack") ?: "../../customers/family-current")
+def customerConfigFile = new File(customerPackDir, "customer.json")
+def customerConfig = customerConfigFile.isFile() ? new JsonSlurper().parse(customerConfigFile) : [:]
+def customerBranding = customerConfig.branding instanceof Map ? customerConfig.branding : [:]
+def customerAppLabel = customerBranding.appDisplayName ?: "Family Force: Neon Streets"
+def releaseKeystorePropertiesFile = file(System.getProperty("user.home") + "/.family-force-release/keystore.properties")
+def releaseKeystoreProperties = new Properties()
+if (releaseKeystorePropertiesFile.exists()) {
+    releaseKeystorePropertiesFile.withInputStream { releaseKeystoreProperties.load(it) }
+}
+def releaseStoreFile = releaseKeystoreProperties["storeFile"] ?: System.getenv("FF_RELEASE_KEYSTORE")
+def releaseStorePassword = releaseKeystoreProperties["storePassword"] ?: System.getenv("FF_RELEASE_STORE_PASSWORD")
+def releaseKeyAlias = releaseKeystoreProperties["keyAlias"] ?: System.getenv("FF_RELEASE_KEY_ALIAS")
+def releaseKeyPassword = releaseKeystoreProperties["keyPassword"] ?: System.getenv("FF_RELEASE_KEY_PASSWORD")
+def hasReleaseSigning = releaseStoreFile && releaseStorePassword && releaseKeyAlias && releaseKeyPassword
+
+def customerId = project.findProperty("customerId") ?: "family-current"
+def customerApplicationId = project.findProperty("customerApplicationId") ?: "com.familyforce.neonstreets.familycurrent"
+def expectedCertificateSha256 = project.findProperty("expectedCertificateSha256") ?: ""
+
+android {
+    namespace "com.familyforce.neonstreets"
+    compileSdk 34
+
+    defaultConfig {
+        applicationId customerApplicationId
+        minSdk 26
+        targetSdk 34
+        versionCode 18
+        versionName "0.18.0-alpha"
+        buildConfigField "String", "CUSTOMER_ID", "\"${customerId}\""
+        buildConfigField "String", "EXPECTED_CERT_SHA256", "\"${expectedCertificateSha256}\""
+        manifestPlaceholders = [appLabel: customerAppLabel]
+    }
+
+    signingConfigs {
+        release {
+            if (hasReleaseSigning) {
+                storeFile file(releaseStoreFile)
+                storePassword releaseStorePassword
+                keyAlias releaseKeyAlias
+                keyPassword releaseKeyPassword
+            }
+        }
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            if (hasReleaseSigning) signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    packaging {
+        resources {
+            excludes += ["META-INF/LICENSE*", "META-INF/NOTICE*"]
+        }
+    }
+
+
+    sourceSets {
+        main.assets.srcDir(layout.buildDirectory.dir("generated/customerAssets"))
+        release.res.srcDir(new File(customerPackDir, ".generated/res"))
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+}
+
+tasks.register("prepareCustomerPack") {
+    inputs.file(customerConfigFile)
+    if (new File(customerPackDir, "assets").isDirectory()) {
+        inputs.dir(new File(customerPackDir, "assets"))
+    }
+    outputs.dir(layout.buildDirectory.dir("generated/customerAssets"))
+    doLast {
+        if (!customerConfigFile.isFile()) {
+            throw new GradleException("Missing customer pack: ${customerConfigFile}")
+        }
+        def outputDir = layout.buildDirectory.dir("generated/customerAssets").get().asFile
+        delete(outputDir)
+        outputDir.mkdirs()
+        new File(outputDir, "customer.json").bytes = customerConfigFile.bytes
+        def overrides = new File(customerPackDir, "assets")
+        if (overrides.isDirectory()) {
+            copy {
+                from overrides
+                into outputDir
+            }
+        }
+    }
+}
+
+tasks.configureEach { task ->
+    if (task.name == "preBuild") task.dependsOn("prepareCustomerPack")
+}

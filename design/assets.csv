@@ -1,0 +1,33 @@
+id,role,type,description,size/ratio,style line ref,source
+hero_parent_concept,Photo-faithful parent design and palette reference,static sprite concept,full-body family hero parent in ready stance,1:1 source at 1024 then 32x64 indexed sprite,STYLE_FORMULA_v1,reference_media[0]
+hero_kid1_concept,Photo-faithful first child design and palette reference,static sprite concept,full-body family hero first child in ready stance,1:1 source at 1024 then 32x64 indexed sprite,STYLE_FORMULA_v1,reference_media[1]
+hero_kid2_concept,Photo-faithful second child design and palette reference,static sprite concept,full-body family hero second child in ready stance,1:1 source at 1024 then 32x64 indexed sprite,STYLE_FORMULA_v1,reference_media[2]
+hero_kid3_concept,Photo-faithful third child design and palette reference,static sprite concept,full-body family hero third child in ready stance,1:1 source at 1024 then 32x64 indexed sprite,STYLE_FORMULA_v1,reference_media[3]
+hero_parent_walk,Parent idle and walk-cycle frames,animated sprite sheet,parent hero walking in place facing right,8 frames at 32x64,STYLE_FORMULA_v1,reference_media[0]
+hero_kid1_walk,First child idle and walk-cycle frames,animated sprite sheet,first child hero walking in place facing right,8 frames at 32x64,STYLE_FORMULA_v1,reference_media[1]
+hero_kid2_walk,Second child idle and walk-cycle frames,animated sprite sheet,second child hero walking in place facing right,8 frames at 32x64,STYLE_FORMULA_v1,reference_media[2]
+hero_kid3_walk,Third child idle and walk-cycle frames,animated sprite sheet,third child hero walking in place facing right,8 frames at 32x64,STYLE_FORMULA_v1,reference_media[3]
+hero_parent_actions,Parent light combo heavy attack jump hurt and cheer poses,animated sprite sheet,parent hero family-friendly martial arts action set,16 frames at 32x64,STYLE_FORMULA_v1,reference_media[0]
+hero_kid1_actions,First child light combo heavy attack jump hurt and cheer poses,animated sprite sheet,first child hero family-friendly martial arts action set,16 frames at 32x64,STYLE_FORMULA_v1,reference_media[1]
+hero_kid2_actions,Second child light combo heavy attack jump hurt and cheer poses,animated sprite sheet,second child hero family-friendly martial arts action set,16 frames at 32x64,STYLE_FORMULA_v1,reference_media[2]
+hero_kid3_actions,Third child light combo heavy attack jump hurt and cheer poses,animated sprite sheet,third child hero family-friendly martial arts action set,16 frames at 32x64,STYLE_FORMULA_v1,reference_media[3]
+hero_portraits,Character-select and HUD face portraits,portrait sprite sheet,four smiling family hero head portraits,4 cells at 64x64 in 128x128 indexed sheet,STYLE_FORMULA_v1,reference_media[0..3]
+runtime_actor_atlas,Gameplay hero and enemy states,packed sprite atlas,eight actors with idle walk attack and hurt states,128x512 indexed P with 64 sequential 32x32 blocks,STYLE_FORMULA_v1,procedural placeholders plus Higgsfield-derived enemies
+enemy_wave0,Wave 0 preloaded enemy poses,packed sprite atlas,grunt idle walk attack hurt plus two duplicates and two blanks,128x128 indexed P equals 8 KiB SNES 4bpp,STYLE_FORMULA_v1,derive runtime_actor_atlas
+enemy_wave1,Wave 1 preloaded enemy poses,packed sprite atlas,skater three poses grunt two poses brute three poses,128x128 indexed P equals 8 KiB SNES 4bpp,STYLE_FORMULA_v1,derive runtime_actor_atlas
+enemy_wave2,Wave 2 preloaded enemy poses,packed sprite atlas,grunt two poses boss four poses skater two poses,128x128 indexed P equals 8 KiB SNES 4bpp,STYLE_FORMULA_v1,derive runtime_actor_atlas
+enemy_grunt,Common enemy idle walk attack and hurt frames,animated sprite sheet,masked recycling-bin robot street thug,4 frames at 32x64,STYLE_FORMULA_v1,generate
+enemy_skater,Fast enemy idle walk attack and hurt frames,animated sprite sheet,compact traffic-cone robot on roller skates,4 frames at 32x64,STYLE_FORMULA_v1,generate
+enemy_brute,Heavy enemy idle walk attack and hurt frames,animated sprite sheet,large friendly-scary construction robot bruiser,4 frames at 32x64,STYLE_FORMULA_v1,generate
+boss_junk_king,Boss idle walk attack and hurt frames,animated sprite sheet,junkyard king robot with magnet crown,4 frames at 32x64,STYLE_FORMULA_v1,generate
+pickup_sheet,Health score and special-energy pickups,object sprite sheet,fruit juice game cartridge star and heart pickups,8 cells at 16x16,STYLE_FORMULA_v1,generate
+combat_fx,Impact dust warning and special effects,animated effects sheet,punch stars dust puffs danger flash and family burst,16 cells at 16x16,STYLE_FORMULA_v1,generate
+street_tiles,Stage ground walls doors rails and decoration,background tile set,nighttime neighborhood street and small market tiles,256x256 source then 8x8 SNES tiles,STYLE_FORMULA_v1,generate
+skyline_background,Parallax sky and distant buildings,background,peaceful nighttime neighborhood skyline with crescent moon,16:9 source then 256x224 indexed layer,STYLE_FORMULA_v1,generate
+stage_props,Breakable and decorative stage props,object sprite sheet,cardboard box traffic cone bench sign and arcade cabinet,8 cells at 32x32,STYLE_FORMULA_v1,generate
+title_logo,Title-screen logo,UI sprite,Family Force Street Rescue arcade logo,1:1 source then 192x64 indexed graphic,STYLE_FORMULA_v1,generate
+ui_panels,Character select HUD pause win and game-over panels,UI tile set,compact navy gold and teal arcade interface frames,256x128 indexed tile set,STYLE_FORMULA_v1,generate
+select_background,Static character selection background,BG0 tile map,four portrait cards hero names stat labels and shared controls with no fixed player cursors,256x224 indexed P with 230 unique 8x8 tiles,STYLE_FORMULA_v1,derive runtime portraits
+stage_music,Looping stage theme,audio,original energetic family-friendly 16-bit action groove,90 second loop converted to tracker module,STYLE_FORMULA_v1,generate
+boss_music,Looping boss theme,audio,original urgent playful 16-bit boss groove,60 second loop converted to tracker module,STYLE_FORMULA_v1,generate
+combat_sfx,Combat movement pickup and UI sound set,audio,original punch jump damage pickup confirm and victory sounds,6 mono samples under 1 second,STYLE_FORMULA_v1,generate

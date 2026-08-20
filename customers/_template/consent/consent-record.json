@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "status": "pending",
+  "recordId": "REPLACE-CONSENT-RECORD-ID",
+  "grantedAt": null,
+  "guardian": {
+    "confirmationMethod": "REPLACE-signed-form-or-recorded-approval",
+    "evidenceReference": "REPLACE-PRIVATE-RECORD-REFERENCE"
+  },
+  "permissions": {
+    "createAiCharacterAssets": false,
+    "includeDerivedAssetsInApk": false,
+    "deliverApkToCustomer": false
+  },
+  "subjects": [
+    {"id": "subject-1", "type": "adult", "authorized": false},
+    {"id": "subject-2", "type": "minor", "authorized": false},
+    {"id": "subject-3", "type": "minor", "authorized": false},
+    {"id": "subject-4", "type": "minor", "authorized": false}
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://familyforce.local/schema/customer-order-v2.schema.json",
+  "title": "Family Force customer order",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "orderId", "event", "customer", "privacy", "heroes"],
+  "properties": {
+    "schemaVersion": {"const": 2},
+    "orderId": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{2,39}$"},
+    "event": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["displayName", "date", "locale"],
+      "properties": {
+        "displayName": {"type": "string", "minLength": 1, "maxLength": 80},
+        "date": {"type": "string", "format": "date"},
+        "locale": {"type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$"}
+      }
+    },
+    "customer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["internalReference"],
+      "properties": {
+        "internalReference": {"type": "string", "minLength": 1, "maxLength": 80}
+      }
+    },
+    "privacy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["consentStatus", "consentRecord", "aiUseDisclosed", "retentionUntil", "rawPhotosInApk"],
+      "properties": {
+        "consentStatus": {"enum": ["pending", "granted", "withdrawn"]},
+        "consentRecord": {"type": "string", "pattern": "^consent/[A-Za-z0-9._-]+\\.json$"},
+        "aiUseDisclosed": {"type": "boolean"},
+        "retentionUntil": {"type": "string", "format": "date"},
+        "rawPhotosInApk": {"const": false}
+      }
+    },
+    "heroes": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["displayName", "assetStem", "subjectType", "consentSubjectId"],
+        "properties": {
+          "displayName": {"type": "string", "minLength": 1, "maxLength": 40},
+          "assetStem": {"type": "string", "pattern": "^[a-z0-9_-]+$"},
+          "subjectType": {"enum": ["adult", "minor"]},
+          "consentSubjectId": {"type": "string", "pattern": "^[A-Za-z0-9_-]{3,64}$"}
+        }
+      }
+    }
+  }
+}

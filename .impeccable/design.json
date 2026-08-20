@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-20T00:00:00+03:00",
+  "title": "Design System: Family Force Commercial Guide",
+  "extensions": {
+    "colorMeta": {
+      "service-ink": {"role":"neutral","displayName":"Service Ink","canonical":"#f5f7ef","tonalRamp":["#20221e","#3d4038","#5d6156","#7f8475","#a2a896","#c6cdb8","#e5eadb","#f5f7ef"]},
+      "muted-steel": {"role":"neutral","displayName":"Muted Steel","canonical":"#b8c7d2","tonalRamp":["#182027","#2d3b45","#445865","#5e7687","#7995a9","#96b5ca","#b8c7d2","#e8f1f7"]},
+      "midnight-floor": {"role":"neutral","displayName":"Midnight Floor","canonical":"#07101f","tonalRamp":["#07101f","#0d1c32","#182b48","#293d5d","#425575","#63738f","#929fb1","#e6ebf0"]},
+      "binder-panel": {"role":"neutral","displayName":"Binder Panel","canonical":"#0d1b30","tonalRamp":["#08101d","#0d1b30","#172c49","#29405f","#435879","#657592","#95a2b4","#e6ebf1"]},
+      "raised-panel": {"role":"neutral","displayName":"Raised Panel","canonical":"#122541","tonalRamp":["#09111e","#122541","#203957","#334e6e","#4c6686","#6c819e","#9aa9bc","#e8edf2"]},
+      "registration-cyan": {"role":"secondary","displayName":"Registration Cyan","canonical":"#37d9e8","tonalRamp":["#063337","#095159","#0d717a","#12929d","#19b5c1","#37d9e8","#8aebf2","#dffbfc"]},
+      "status-magenta": {"role":"tertiary","displayName":"Status Magenta","canonical":"#ff4f9f","tonalRamp":["#3a0a21","#64113a","#901954","#bc266f","#e63a8a","#ff65aa","#ffa6cc","#ffe4f1"]},
+      "safety-gold": {"role":"primary","displayName":"Safety Gold","canonical":"#f6c94d","tonalRamp":["#352907","#5a470b","#80670f","#a88917","#cfaa29","#f6c94d","#fbe08e","#fff5d5"]},
+      "danger-coral": {"role":"tertiary","displayName":"Danger Coral","canonical":"#ff6978","tonalRamp":["#3a1015","#641b24","#902934","#ba3945","#e64f5e","#ff6978","#ffa8af","#ffe5e7"]},
+      "rule-blue": {"role":"neutral","displayName":"Rule Blue","canonical":"#2d4963","tonalRamp":["#0b1721","#172a3b","#2d4963","#476881","#66889f","#8cabbf","#b8cfdd","#edf4f7"]}
+    },
+    "typographyMeta": {
+      "display": {"displayName":"Masthead Display","purpose":"Brand and guide naming in the masthead."},
+      "headline": {"displayName":"Panel Headline","purpose":"The leading title for each operational panel."},
+      "title": {"displayName":"Section Title","purpose":"Major groups within a panel."},
+      "body": {"displayName":"Manual Body","purpose":"Arabic instructions, explanations, and table content."},
+      "label": {"displayName":"Control Label","purpose":"Tabs, buttons, badges, metadata, and status."}
+    },
+    "shadows": [
+      {"name":"binder-lift","value":"0 18px 44px rgba(0,0,0,.34)","purpose":"Prominent scope stamps, asset cards, and estimate panels."},
+      {"name":"sticky-rail","value":"0 8px 20px rgba(0,0,0,.22)","purpose":"Separates the pinned tab rail from scrolling content."},
+      {"name":"logo-drop","value":"drop-shadow(0 8px 16px rgba(0,0,0,.35))","purpose":"Localized depth for the Family Force logo."}
+    ],
+    "motion": [
+      {"name":"panel-entry","value":"280ms ease-out","purpose":"A short opacity and 8px vertical settling motion when a tab panel opens; removed under reduced motion."}
+    ],
+    "breakpoints": [
+      {"name":"compact-desktop","value":"900px"},
+      {"name":"mobile","value":"620px"}
+    ]
+  },
+  "components": [
+    {"name":"Primary Button","kind":"button","refersTo":"button-primary","description":"The decisive gold action for starting or approving work.","html":"<button class=\"ds-btn-primary\">ابدأ قائمة طلب جديد</button>","css":".ds-btn-primary{font-family:'DIN Next Arabic','Noto Sans Arabic',Tahoma,Arial,sans-serif;background:var(--gold,#f6c94d);color:var(--night,#07101f);border:0;border-radius:12px;padding:12px 18px;font-weight:900;cursor:pointer}.ds-btn-primary:hover{filter:brightness(1.05)}.ds-btn-primary:focus-visible{outline:3px solid var(--gold,#f6c94d);outline-offset:2px}.ds-btn-primary:active{filter:brightness(.94)}"},
+    {"name":"Secondary Button","kind":"button","refersTo":"button-secondary","description":"The cyan technical action for secondary commands.","html":"<button class=\"ds-btn-secondary\">طباعة الدليل الحالي</button>","css":".ds-btn-secondary{font-family:'DIN Next Arabic','Noto Sans Arabic',Tahoma,Arial,sans-serif;background:var(--cyan,#37d9e8);color:var(--night,#07101f);border:0;border-radius:12px;padding:12px 18px;font-weight:900;cursor:pointer}.ds-btn-secondary:hover{filter:brightness(1.05)}.ds-btn-secondary:focus-visible{outline:3px solid var(--gold,#f6c94d);outline-offset:2px}.ds-btn-secondary:active{filter:brightness(.94)}"},
+    {"name":"Reset Button","kind":"button","refersTo":"button-reset","description":"A quiet bordered control for reversible clearing actions.","html":"<button class=\"ds-btn-reset\">مسح العلامات</button>","css":".ds-btn-reset{font-family:'DIN Next Arabic','Noto Sans Arabic',Tahoma,Arial,sans-serif;background:transparent;color:var(--muted,#b8c7d2);border:1px solid var(--line,#2d4963);border-radius:12px;padding:12px 18px;font-weight:900;cursor:pointer}.ds-btn-reset:hover{color:var(--ink,#f5f7ef);border-color:var(--muted,#b8c7d2)}.ds-btn-reset:focus-visible{outline:3px solid var(--gold,#f6c94d);outline-offset:2px}"},
+    {"name":"Order Field","kind":"input","refersTo":"input","description":"A dark compact field for order quantities and commercial inputs.","html":"<label class=\"ds-field\">عدد الشخصيات<input value=\"4\" inputmode=\"numeric\"></label>","css":".ds-field{display:block;color:var(--muted,#b8c7d2);font:700 .86rem/1.7 'DIN Next Arabic','Noto Sans Arabic',Tahoma,Arial,sans-serif;direction:rtl}.ds-field input{display:block;width:100%;margin-top:6px;padding:12px 13px;border:1px solid var(--line,#2d4963);border-radius:10px;background:var(--panel,#0d1b30);color:var(--ink,#f5f7ef);font:inherit}.ds-field input:hover{border-color:var(--muted,#b8c7d2)}.ds-field input:focus-visible{outline:3px solid var(--gold,#f6c94d);outline-offset:2px}"},
+    {"name":"Active Binder Tab","kind":"nav","refersTo":"tab-active","description":"The selected physical-divider tab with a cyan registration edge.","html":"<nav class=\"ds-tabs\" dir=\"rtl\"><button>مطلوب العميل</button><button aria-selected=\"true\">الإنتاج</button><button>الفحص والتسليم</button></nav>","css":".ds-tabs{display:flex;gap:2px;overflow:auto;background:#081528;border-bottom:1px solid var(--line,#2d4963);font-family:'DIN Next Arabic','Noto Sans Arabic',Tahoma,Arial,sans-serif}.ds-tabs button{border:0;box-shadow:inset 0 -3px transparent;background:transparent;color:var(--muted,#b8c7d2);padding:17px 20px;white-space:nowrap;font:inherit;font-weight:800;cursor:pointer}.ds-tabs button:hover{color:var(--ink,#f5f7ef)}.ds-tabs button[aria-selected=true]{color:var(--ink,#f5f7ef);box-shadow:inset 0 -3px var(--cyan,#37d9e8);background:var(--panel2,#122541)}.ds-tabs button:focus-visible{outline:3px solid var(--gold,#f6c94d);outline-offset:-4px}"},
+    {"name":"Specification Tag","kind":"chip","description":"A cyan technical identifier for exact dimensions or contract codes.","html":"<span class=\"ds-spec-tag\">1024 × 1024 PNG</span>","css":".ds-spec-tag{display:inline-block;direction:ltr;color:var(--night,#07101f);background:var(--cyan,#37d9e8);font:900 .82rem/1.4 'DIN Next Arabic','Noto Sans Arabic',Tahoma,Arial,sans-serif;padding:8px 12px;border-radius:8px}.ds-spec-tag:hover{filter:brightness(1.05)}.ds-spec-tag:focus-visible{outline:3px solid var(--gold,#f6c94d);outline-offset:2px}"},
+    {"name":"Binder Card","kind":"card","refersTo":"card","description":"The standard dark operational container with rule-blue edges.","html":"<article class=\"ds-card\" dir=\"rtl\"><h3>بوابة الاعتماد</h3><p>لا يبدأ الإنتاج قبل اكتمال المدخلات والموافقة.</p></article>","css":".ds-card{font-family:'DIN Next Arabic','Noto Sans Arabic',Tahoma,Arial,sans-serif;background:var(--panel,#0d1b30);color:var(--ink,#f5f7ef);border:1px solid var(--line,#2d4963);border-radius:14px;padding:18px 22px}.ds-card h3{margin:0 0 8px;font-size:1.35rem}.ds-card p{margin:0;color:var(--muted,#b8c7d2);line-height:1.7}.ds-card:hover{box-shadow:0 18px 44px rgba(0,0,0,.34)}.ds-card:focus-within{outline:3px solid var(--gold,#f6c94d);outline-offset:2px}"},
+    {"name":"Release Gate","kind":"custom","description":"The QA summary pairing completion percentage with an explicit delivery verdict.","html":"<section class=\"ds-release\" dir=\"rtl\"><div><span>80%</span><p>اكتمال قائمة التسليم</p></div><strong>غير جاهز للتسليم</strong></section>","css":".ds-release{font-family:'DIN Next Arabic','Noto Sans Arabic',Tahoma,Arial,sans-serif;background:var(--panel,#0d1b30);color:var(--ink,#f5f7ef);padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:20px;border-radius:14px;border:1px solid var(--line,#2d4963)}.ds-release span{font-size:2.3rem;color:var(--gold,#f6c94d);font-weight:900}.ds-release p{margin:0;color:var(--muted,#b8c7d2)}.ds-release strong{color:var(--danger,#ff6978)}.ds-release:hover{border-color:var(--muted,#b8c7d2)}.ds-release:focus-within{outline:3px solid var(--gold,#f6c94d);outline-offset:2px}"}
+  ],
+  "narrative": {
+    "northStar": "The Arcade Operator Service Binder",
+    "overview": "This design system applies specifically to the commercial-guide web surface. It does not redefine the Android game's rendering, gameplay UI, or asset truth. The guide feels like a midnight service-manual opened beside an arcade cabinet: operational, exact, compact, and energized by high-visibility registration and safety colors. The surface favors strong information hierarchy, tabbed dividers, specification tables, checklists, and status stamps over promotional cards. Dark tonal layers keep dense Arabic content readable; cyan marks technical structure, gold marks decisions and action, and magenta is reserved for identity or conspicuous status.",
+    "keyCharacteristics": ["Arabic-first RTL composition with direct, practical copy.","Midnight sheets separated by blue rules and restrained ambient lift.","Cyan registration marks, safety-gold actions, and rare magenta stamps.","Dense operational components that remain keyboard accessible, responsive, offline, and printable."],
+    "rules": [
+      {"name":"The Signal Discipline Rule","body":"Gold means act or approve; cyan means technical structure or active position; magenta remains rare enough to read as a stamp.","section":"colors"},
+      {"name":"The Midnight Sheet Rule","body":"Build density with tonal panels and blue rules, never with a collage of unrelated card colors.","section":"colors"},
+      {"name":"The One-Family Manual Rule","body":"Keep the interface in the established Arabic sans-serif stack; create hierarchy through weight and scale rather than introducing display faces.","section":"typography"},
+      {"name":"The Tonal-First Rule","body":"Separate ordinary content with panel tone and rule lines; reserve shadows for hierarchy that must visibly lift.","section":"elevation"}
+    ],
+    "dos": ["Do keep new commercial-guide surfaces Arabic-first, RTL, keyboard navigable, responsive, and printable.","Do use safety gold for decisive action and approval, registration cyan for technical position, and coral for failure.","Do favor tables, ledgers, checklists, process rails, and exact labels when expressing operational truth.","Do preserve the 1440px frame, fluid gutters, and predictable 900px and 620px responsive reductions.","Do honor reduced-motion preference by removing panel entrance animation."],
+    "donts": ["Don't apply this document to the Android game's gameplay visuals or asset contracts; its scope is the commercial-guide web surface.","Don't turn the guide into a generic marketing-card dashboard or add ornamental gradients and shadows without an operational role.","Don't use magenta as a routine action color or let gold, cyan, and coral exchange semantic jobs.","Don't hide required production detail to create artificial whitespace.","Don't ship a dark-only print view; printed panels must flatten to white with dark text and visible rules."]
+  }
+}

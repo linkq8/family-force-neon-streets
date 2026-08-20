@@ -1,0 +1,48 @@
+id,role,type,description,size/ratio,style line ref,source,status
+logo,brand,ui,original Family Force Neon Streets logo,1:1,frozen formula,original procedural,available
+launcher_icon,brand,ui,original four-color family-force fist and energy emblem,adaptive + legacy Android icon set,frozen formula,Higgsfield Recraft V4.1,available
+title_bg,menu,background,quiet nighttime neighborhood skyline,16:9,frozen formula,existing Higgsfield concept,available
+stage_neighborhood,stage,background,scrolling fine-pixel night market fighting lane,16:9,frozen formula,Higgsfield Soul Location,available
+hero_1_master,player,sprite,Essa original open-face red-gold armored titan,256x384 transparent,frozen formula,Higgsfield + authorized Essa photos,provisional:direct reference
+hero_2_master,player,sprite,Adam recognizable organic muscular green Hulk-style powerhouse with purple shorts and no robotic armor,256x384 transparent,frozen formula,Higgsfield + authorized Adam photo,available:Higgsfield generated+validated
+hero_3_master,player,sprite,Shaikha original pink ice princess,256x384 transparent,frozen formula,Higgsfield + authorized Shaikha photo,provisional:direct reference
+hero_4_master,player,sprite,Sulaiman recognizable blue-red caped Superman-style hero with a large S chest emblem,256x384 transparent,frozen formula,Higgsfield + authorized Sulaiman photo,available:Higgsfield generated+validated
+hero_1_portrait,select,portrait,Essa recognizable armored selection portrait,256x256,frozen formula,Higgsfield + authorized Essa photos,available:direct reference
+hero_2_portrait,select,portrait,Adam recognizable green-power selection portrait,256x256,frozen formula,Higgsfield + authorized Adam photo,available:direct reference
+hero_3_portrait,select,portrait,Shaikha recognizable pink-ice selection portrait,256x256,frozen formula,Higgsfield + authorized Shaikha photo,available:direct reference
+hero_4_portrait,select,portrait,Sulaiman recognizable sky-hero selection portrait,256x256,frozen formula,Higgsfield + authorized Sulaiman photo,available:direct reference
+hero_1_actions,player,animation,Essa idle walk punch kick heavy punch heavy kick jump special link hurt and knockdown frame atlas,8x11 cells at 192x192,frozen formula,Higgsfield FLUX key poses + Seedance video-to-sprite,available:generated+validated
+hero_2_actions,player,animation,Adam idle walk punch kick heavy punch heavy kick jump special link hurt and knockdown frame atlas,8x11 cells at 192x192,frozen formula,Higgsfield FLUX key poses + Seedance video-to-sprite,available:generated+validated
+hero_3_actions,player,animation,Shaikha idle walk punch kick heavy punch heavy kick jump special link hurt and knockdown frame atlas,8x11 cells at 192x192,frozen formula,Higgsfield FLUX key poses + Seedance video-to-sprite,available:generated+validated
+hero_4_actions,player,animation,Sulaiman idle walk punch kick heavy punch heavy kick jump special link hurt and knockdown frame atlas,8x11 cells at 192x192,frozen formula,Higgsfield FLUX key poses + Seedance video-to-sprite,available:generated+validated
+enemy_grunt,enemy,sprite,hooded neighborhood troublemaker,1:1,frozen formula,existing Higgsfield concept,available
+enemy_skater,enemy,sprite,fast helmeted skater troublemaker,1:1,frozen formula,existing Higgsfield concept,available
+enemy_brute,enemy,sprite,large armored recycling-yard brute,1:1,frozen formula,existing Higgsfield concept,available
+boss_junk_king,boss,sprite,playful armored Junk King boss,1:1,frozen formula,existing Higgsfield concept,available
+enemy_grunt_actions,enemy,animation,trash-can robot idle walk attacks hurt and knockdown atlas,6x6 cells at 160x192,frozen formula,Higgsfield FLUX key poses + Seedance video-to-sprite,available:generated+validated
+enemy_skater_actions,enemy,animation,traffic-cone skater robot idle roll attacks hurt and knockdown atlas,6x6 cells at 160x192,frozen formula,Higgsfield FLUX key poses + Seedance video-to-sprite,available:generated+validated
+enemy_brute_actions,enemy,animation,heavy recycling robot idle walk attacks hurt and knockdown atlas,6x6 cells at 160x192,frozen formula,Higgsfield FLUX key poses + Seedance video-to-sprite,available:generated+validated
+boss_junk_king_actions,boss,animation,Junk King idle walk attacks special hurt and knockdown atlas,6x6 cells at 160x192,frozen formula,Higgsfield FLUX key poses + Seedance video-to-sprite,available:generated+validated
+pickup_food,item,ui,wrapped street snack health pickup,1:1,frozen formula,original procedural,available
+pickup_energy,item,ui,glowing family battery special pickup,1:1,frozen formula,original procedural,available
+pickup_token,item,ui,lime family token score pickup,1:1,frozen formula,original procedural,available
+pickup_bat,item,ui,colorful foam street bat weapon pickup,1:1,frozen formula,original procedural,available
+weapon_bat,weapon,sprite,colorful baseball bat,128x128 transparent,frozen formula,Higgsfield Nano Banana 2,available:Higgsfield generated
+weapon_pipe,weapon,sprite,shiny street pipe,128x128 transparent,frozen formula,Higgsfield Nano Banana 2,available:Higgsfield generated
+weapon_mallet,weapon,sprite,oversized joyful arcade mallet,128x128 transparent,frozen formula,Higgsfield Nano Banana 2,available:Higgsfield generated
+weapon_sign,weapon,sprite,loose neon street sign,128x128 transparent,frozen formula,Higgsfield Nano Banana 2,available:Higgsfield generated
+prop_crate,stage_prop,sprite,breakable colorful supply crate,192x192 transparent,frozen formula,Higgsfield Nano Banana 2,available:Higgsfield generated
+prop_trashcan,stage_prop,sprite,breakable wobbling metal trash can,192x192 transparent,frozen formula,Higgsfield Nano Banana 2,available:Higgsfield generated
+prop_cone,stage_prop,sprite,throwable traffic cone,128x128 transparent,frozen formula,Higgsfield Nano Banana 2,available:Higgsfield generated
+combat_action_icons,controls,ui,punch kick heavy punch heavy kick jump special link and throw picture icons,4x2 cells at 128x128,frozen formula,Higgsfield GPT Image 2,available:Higgsfield generated
+hit_fx,combat,animation,ink burst and pixel spark hit effects,512 square sheet,frozen formula,original procedural,available
+weapon_trail_fx,combat,animation,colorful crescent weapon trails and impact stars,512 square sheet,frozen formula,Higgsfield GPT Image 2,available:Higgsfield generated
+break_fx,combat,animation,crate splinters metal sparks and joyful debris,512 square sheet,frozen formula,Higgsfield GPT Image 2,available:Higgsfield generated
+title_theme,audio,music,retro-modern synth funk title loop,30 seconds,audio formula,Higgsfield Sonilo,available
+stage_theme,audio,music,energetic arcade electro-funk stage loop,45 seconds,audio formula,Higgsfield Sonilo,available
+sfx_punch,audio,sfx,layered arcade punch impact,under 1 second,audio formula,Higgsfield or existing original WAV,available
+sfx_damage,audio,sfx,short player damage hit,under 1 second,audio formula,Higgsfield or existing original WAV,available
+sfx_pickup,audio,sfx,bright collectible pickup,under 1 second,audio formula,Higgsfield or existing original WAV,available
+sfx_special,audio,sfx,charged family special burst,under 2 seconds,audio formula,original procedural WAV,available
+sfx_confirm,audio,sfx,menu confirm blip,under 1 second,audio formula,Higgsfield or existing original WAV,available
+sfx_victory,audio,sfx,short victory flourish,2-4 seconds,audio formula,Higgsfield or existing original WAV,available

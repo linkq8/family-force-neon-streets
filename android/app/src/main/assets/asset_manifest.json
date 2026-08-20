@@ -1,0 +1,625 @@
+{
+  "files": [
+    {
+      "path": "audio/LICENSE.txt",
+      "bytes": 656,
+      "sha256": "d7f44a1bc0cda7186f871f85aa461cf68ae5d9dda2e1056004ed2c1d4315d34e"
+    },
+    {
+      "path": "audio/confirm.wav",
+      "bytes": 17014,
+      "sha256": "f6fba0e6c609f2ab2351b45eed0692a8c0d34417f23832143895c355d490e52c"
+    },
+    {
+      "path": "audio/damage.wav",
+      "bytes": 33948,
+      "sha256": "c5decc266b1f1e59c3f4ff56222c700428f19a9543b7f939c0f12a1e1cfe0ee7"
+    },
+    {
+      "path": "audio/jump.wav",
+      "bytes": 25480,
+      "sha256": "c1fd5d84ccaa4ef80be32507db6df7f8ad014fd7efab3e515cd1b801c4059120"
+    },
+    {
+      "path": "audio/menu.ogg",
+      "bytes": 594960,
+      "sha256": "ccb31e57e91b2f203da7c6745537f9e9769743b33ec5b9667f6fd314919dd278"
+    },
+    {
+      "path": "audio/pickup.wav",
+      "bytes": 22658,
+      "sha256": "dbb36f03bdfd57f647fee1e4cb11194f59d16052793e00fdfd27189f391f4d05"
+    },
+    {
+      "path": "audio/punch.wav",
+      "bytes": 14190,
+      "sha256": "234e94e0a95842ca2364fda26cecc55b262c82e931d24892ab83e7c4aafe5d1c"
+    },
+    {
+      "path": "audio/special.wav",
+      "bytes": 101472,
+      "sha256": "fc8e37b1ac70d5b5895eaba0dbf9cff242851b44d23dbf209e4963f0d7a09e48"
+    },
+    {
+      "path": "audio/stage.ogg",
+      "bytes": 935543,
+      "sha256": "facd4c96c9fc68d05dd88d16be273ee07c6daffaeb99c5d8aeca0c9f916404d3"
+    },
+    {
+      "path": "audio/victory.wav",
+      "bytes": 67816,
+      "sha256": "7730934f39fe1f0c68caad57879e4c33156774a215ab5bba1a63dac58db06273"
+    },
+    {
+      "path": "backgrounds/street.png",
+      "bytes": 1111519,
+      "sha256": "58f055c80a9572fa5c20de15c3448780811639d7ae0e19216f7d7c7ea2086087",
+      "width": 1376,
+      "height": 768,
+      "mode": "RGB"
+    },
+    {
+      "path": "backgrounds/street_hd.png",
+      "bytes": 2099299,
+      "sha256": "1bfdf2098d6137e2540bc8f3b9e372809a46bcf99d10980d168208bf49651d51",
+      "width": 2048,
+      "height": 1152,
+      "mode": "RGB"
+    },
+    {
+      "path": "backgrounds/street_retro.png",
+      "bytes": 727748,
+      "sha256": "923d1a18e0e8fd46239243b9f82cedc673208f7bd8977f9c1c4c0731913290cb",
+      "width": 1280,
+      "height": 720,
+      "mode": "RGB"
+    },
+    {
+      "path": "backgrounds/title.png",
+      "bytes": 773219,
+      "sha256": "c7232424432a1b45537495048eeaadfd5a38ad7329360686f145dcd3b73eb9dd",
+      "width": 1376,
+      "height": 768,
+      "mode": "RGB"
+    },
+    {
+      "path": "enemies/boss.png",
+      "bytes": 202647,
+      "sha256": "f8a0d793afad2bc32325a40dfdf3a0ced8ae9b8b21a43d4c4c108ffdf0644749",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/boss_anim.png",
+      "bytes": 1116544,
+      "sha256": "7abff0ee0fe019cf66e598974025322bc5a6254a6344573a3a56c97630f8f140",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/brute.png",
+      "bytes": 209388,
+      "sha256": "06fac65365dbd108581aae44573e47937d49adad6c3a139539064fad8ccb9d20",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/brute_anim.png",
+      "bytes": 1210099,
+      "sha256": "0cc5c1679afbda6c8f79d8e67f7dce3fb60f41d31257408420d5551de1fff15b",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/grunt.png",
+      "bytes": 233067,
+      "sha256": "9de613f158d55ad575ba75a85272e3bb29d2b4ad23f87c45e8bb20681db31cb2",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/grunt_anim.png",
+      "bytes": 1216845,
+      "sha256": "86d916dd62aca67a705ad5444ead161d99ef290cf5a0fa4b434dbb2b9a02d7e5",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/skater.png",
+      "bytes": 159195,
+      "sha256": "5f2814736037ff343534135c624cebd8b42d29aa1145583b96ecb3d24c4029a9",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/skater_anim.png",
+      "bytes": 977753,
+      "sha256": "4cae126924615d05d12e70cade40c2e3f270e4717d2efab5f479c4e0949a1c44",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "fx/break_fx.png",
+      "bytes": 46957,
+      "sha256": "c5705c4ef0bd1718310f7275fa75c319b73ca5f93749c99f6d39b5b2e937c72a",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "fx/hit_fx.png",
+      "bytes": 12402,
+      "sha256": "25fb88b034c233a8b6b90d468d05ab73b7329e13e83befe4ec55c2e815106a55",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "fx/shadow.png",
+      "bytes": 277,
+      "sha256": "47479a2bb4b10160519e477e8846ec40f28681cfd3e92d3ba12d1a7d6a7c0a52",
+      "width": 128,
+      "height": 64,
+      "mode": "RGBA"
+    },
+    {
+      "path": "fx/special_fx.png",
+      "bytes": 6334,
+      "sha256": "00fdd81f0943b8ca8fd4700d42e9bf3bf6a9ac6c5f08bd2914831d6ccaab601b",
+      "width": 512,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "fx/weapon_trail_fx.png",
+      "bytes": 57223,
+      "sha256": "814934e950951ac6d0717a2b99b4629cdf73e625c69cb3b6d7dcb9ebe7c2d26e",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/adam.png",
+      "bytes": 32454,
+      "sha256": "8e07ce2a17881436c06843e1649c899efbf0de94c95bf0e78603dad38b8358dd",
+      "width": 256,
+      "height": 384,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/adam_anim.png",
+      "bytes": 2699597,
+      "sha256": "ddc48d4e0381f73cf63e3aebcab54ae17d28c4cc5a729d53c0d118459a7d6548",
+      "width": 1536,
+      "height": 2112,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/adam_portrait.png",
+      "bytes": 22200,
+      "sha256": "bf1c4a69c9dd44c960e574cfdfcdea3d10a166f8e03dfe48aadf02edce937da4",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/hero_1.png",
+      "bytes": 1843,
+      "sha256": "1049cb204bf77655eae0e45a2e5ac218af5359ef6ed919b165c4ef24d91539e1",
+      "width": 256,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/hero_1_actions.png",
+      "bytes": 2435,
+      "sha256": "76db9ed3d902e92bc8dde26d1d5abd935c3ebd1159093abf35030f49a8f07430",
+      "width": 512,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/hero_1_portrait.png",
+      "bytes": 1103,
+      "sha256": "1bd07f25cf822f7ba5b458d643c226f95fc2a023e4161f6878d0b0e9279f320a",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/hero_2.png",
+      "bytes": 1812,
+      "sha256": "a6a32decc7951f2ffbf1d18f3494bf07bcfb5280233d02931bfa0b13e167f2c0",
+      "width": 256,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/hero_2_actions.png",
+      "bytes": 2411,
+      "sha256": "61859e8649ae669b6011e932d830013bfd27ad6c99acdfe0251747608f610381",
+      "width": 512,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/hero_2_portrait.png",
+      "bytes": 1013,
+      "sha256": "6213fbe5ccbac543b8bb46ae36792c0d071b209eb2d07b552c93c53531029fc0",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/hero_3.png",
+      "bytes": 1770,
+      "sha256": "22edc665b115a3e3206033241c393b32848996031f722f9c1813e73ccd8a3624",
+      "width": 256,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/hero_3_actions.png",
+      "bytes": 2402,
+      "sha256": "0a1e06ef94788d7e6b9894de39d3e8da9262be15e62cda7e31829cc463306ef6",
+      "width": 512,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/hero_3_portrait.png",
+      "bytes": 1046,
+      "sha256": "84396b25a1b5e9ca2a6aeb8cbec63c9e95b4fe9831d52b798de91713b6177ba7",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/hero_4.png",
+      "bytes": 1894,
+      "sha256": "6718ace0df40f0bdc5f19ef7527b63db91ad03585c1c33d65bbe28b7c7a7d4b2",
+      "width": 256,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/hero_4_actions.png",
+      "bytes": 2473,
+      "sha256": "9947aceb3f0ee635d9cbbf4d704d66f45d275b1fa0fcf95c0218f4f28cdd8af4",
+      "width": 512,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/hero_4_portrait.png",
+      "bytes": 1069,
+      "sha256": "7519d3abcf361dd5495be22bbb5137bfb2c30d346ed9b1081d591cfcd6e41495",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/parent.png",
+      "bytes": 28058,
+      "sha256": "ebb667460fd255fcbb13688608c6419c0dc9dfca0ca52b41a787c79568d8fabf",
+      "width": 256,
+      "height": 384,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/parent_anim.png",
+      "bytes": 2218306,
+      "sha256": "cbcfa7c2d10ec80e72226cc5f30acfdf673c2bbf0c7bd7598d658497d0d160f2",
+      "width": 1536,
+      "height": 2112,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/parent_hd.png",
+      "bytes": 3443697,
+      "sha256": "662dcdd67f9f1b08e4dcf57f515b6628ede9386609b722b3d32293826f48b1ac",
+      "width": 1373,
+      "height": 2048,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/parent_portrait.png",
+      "bytes": 26574,
+      "sha256": "f6518371e49f9cf41094ed0c03a03cca896d6b9fb9b913ef395987918e5fc4d1",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/shaikha.png",
+      "bytes": 22595,
+      "sha256": "dcc7321cad077da3a64df75060ec32eb4c4ebf34bb6e56904ef61eb171831cdd",
+      "width": 256,
+      "height": 384,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/shaikha_anim.png",
+      "bytes": 2278217,
+      "sha256": "f3770490158ed43009abcfc8a0b7a79ad375a9c5b390f45f3268d74e3c5ec1a2",
+      "width": 1536,
+      "height": 2112,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/shaikha_portrait.png",
+      "bytes": 23288,
+      "sha256": "cf2f9d1b6a6a840fc71a91f01e1829a009b06db133c861e1235a31f14d49047d",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/sulaiman.png",
+      "bytes": 25297,
+      "sha256": "888d9a747a12cd1675549457ebcdd6cb43859c24cd19e248a63443e3fb3be9c0",
+      "width": 256,
+      "height": 384,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/sulaiman_anim.png",
+      "bytes": 2421164,
+      "sha256": "86f92ed5b9f297594d53fd2caf185836daf4f75e63c9ff8199deb13ce8fb8cb3",
+      "width": 1536,
+      "height": 2112,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/sulaiman_portrait.png",
+      "bytes": 19094,
+      "sha256": "f3994451b1dfc3076d3f846f2c35e4e85ccb7a2a968bd369bcdd0a9652ed6ad0",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "items/bat.png",
+      "bytes": 1189,
+      "sha256": "1d777eba39b7f36cc8ac419adb6a6ae372572e0b16002beb20351fe78447f336",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA"
+    },
+    {
+      "path": "items/energy.png",
+      "bytes": 880,
+      "sha256": "cb686eb964d38c8549b018fa256cfbc92c42fedfdcf7630a6c8061bef0cfbc8c",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA"
+    },
+    {
+      "path": "items/food.png",
+      "bytes": 1083,
+      "sha256": "fbbdb29327b4eb09b7107563852d9cf4d7ec520600960f270cef4ce6a3d4f962",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA"
+    },
+    {
+      "path": "items/token.png",
+      "bytes": 1541,
+      "sha256": "c0b9363ca668e7b08c897f74aef0b5b328ee960ca40c9bdb12b42e75105c746e",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA"
+    },
+    {
+      "path": "props/cone.png",
+      "bytes": 5056,
+      "sha256": "39431342d29288ee56af02998870ea1ea8771c680c258605e8cf142736b735ab",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA"
+    },
+    {
+      "path": "props/crate.png",
+      "bytes": 13912,
+      "sha256": "0efc283a6fea9377368e28dcce3c6f0f455eb5e2380e2fc81fc267ceae2d622a",
+      "width": 192,
+      "height": 192,
+      "mode": "RGBA"
+    },
+    {
+      "path": "props/trashcan.png",
+      "bytes": 10696,
+      "sha256": "d1de668353d1461be5837b2232db180d2229801bf2035654b001bfacd31d1760",
+      "width": 192,
+      "height": 192,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/backgrounds/street.png",
+      "bytes": 577127,
+      "sha256": "0c23b15eef3004242ed95d7f92c832d3740be6b738d7f7a47ede5fc6e242101e",
+      "width": 960,
+      "height": 536,
+      "mode": "RGB"
+    },
+    {
+      "path": "tv/backgrounds/street_retro.png",
+      "bytes": 446061,
+      "sha256": "d11c9b007d789512d943837b6923ece818f1e427c9a67151d6b638fc6b69e7f6",
+      "width": 960,
+      "height": 540,
+      "mode": "RGB"
+    },
+    {
+      "path": "tv/enemies/boss_anim.png",
+      "bytes": 827205,
+      "sha256": "b16cdd141a2b739e6d229c869820f8a968dca9f74ba5009141e45261fa97a01f",
+      "width": 720,
+      "height": 864,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/brute_anim.png",
+      "bytes": 885736,
+      "sha256": "e96e6fbf99b3a3bda92919ff52bd891d5ceb4a14a9dc3a013ff17c8d62508215",
+      "width": 720,
+      "height": 864,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/grunt_anim.png",
+      "bytes": 871046,
+      "sha256": "ded9b650a8b32bcf061b179a1e0c1e59d09dc7537f7ed860ed430f768c6dd9d7",
+      "width": 720,
+      "height": 864,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/skater_anim.png",
+      "bytes": 736336,
+      "sha256": "ff1bca0707f8dd64e29f5b5736cf729ad6ad3d9b0c294f34770c1be350338963",
+      "width": 720,
+      "height": 864,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/heroes/adam_anim.png",
+      "bytes": 1897787,
+      "sha256": "5baee8768074f04e8b77cfe9f63c2ba037eac0d3ea1d56b1b60f5dbd7825f7fd",
+      "width": 1152,
+      "height": 1584,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/heroes/parent_anim.png",
+      "bytes": 1639385,
+      "sha256": "8b2389d894d6287ff90379405494135a65bc238930ad91f04ff64caf28d9e96a",
+      "width": 1152,
+      "height": 1584,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/heroes/parent_hd.png",
+      "bytes": 203675,
+      "sha256": "a4472534fa905413919f6d9227ce705f940c45d426b008f0249b4c618475041c",
+      "width": 384,
+      "height": 576,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/heroes/shaikha_anim.png",
+      "bytes": 1671507,
+      "sha256": "c8c96e11a8c4ab7182f68f90ecb5fce666ce26648f3f85a124059bda5558204a",
+      "width": 1152,
+      "height": 1584,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/heroes/sulaiman_anim.png",
+      "bytes": 1732473,
+      "sha256": "898399b58a5366db62ff8b97b06a75e6a8cf740d773ee143a017ef23a03e8006",
+      "width": 1152,
+      "height": 1584,
+      "mode": "RGBA"
+    },
+    {
+      "path": "ui/actors.png",
+      "bytes": 15539,
+      "sha256": "d55497bbfdf8a388068b89206f53b39c9e5111797e2bf06aabe14c5106d25e71",
+      "width": 128,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "ui/combat_action_icons.png",
+      "bytes": 51778,
+      "sha256": "57ee38365ca95df79f9865e15aa2ea57ba45d1d9538d77b6a7ebad5fb6ba7d9f",
+      "width": 512,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "ui/item_icons.png",
+      "bytes": 4062,
+      "sha256": "1c54481bc5f00774746c72c22b804adbb366082c0452db6c0b124d66a0188247",
+      "width": 512,
+      "height": 128,
+      "mode": "RGBA"
+    },
+    {
+      "path": "ui/logo.png",
+      "bytes": 8154,
+      "sha256": "bdbd081830b2d2edda779f54f8c16178793e6bab407de16cc588cccb30a64433",
+      "width": 1024,
+      "height": 384,
+      "mode": "RGBA"
+    },
+    {
+      "path": "ui/panel_9slice.png",
+      "bytes": 436,
+      "sha256": "a1b1c2b51d2575b5fdeb62652a056ffa3400a6e0c6020822636a3fff1e4b370f",
+      "width": 96,
+      "height": 96,
+      "mode": "RGBA"
+    },
+    {
+      "path": "ui/portraits.png",
+      "bytes": 1386,
+      "sha256": "41a2d60c46a065bc4d5f2d687a6c7e657cf8a2e9c0b3f9cb382a4be06c160469",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA"
+    },
+    {
+      "path": "ui/touch_buttons.png",
+      "bytes": 3771,
+      "sha256": "c33271e577fb94385b2cd818ec20dc0776954fe67ced75815187938110fb9056",
+      "width": 512,
+      "height": 128,
+      "mode": "RGBA"
+    },
+    {
+      "path": "weapons/bat.png",
+      "bytes": 3020,
+      "sha256": "e317265cc82f5f73f21e349929781533ab1470cb0bddebe1ef01d3a3d2e15576",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA"
+    },
+    {
+      "path": "weapons/mallet.png",
+      "bytes": 5259,
+      "sha256": "8a83bd0bec494478db6d5f062f966b511f2c370152bd71c4eef42a2d8944671d",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA"
+    },
+    {
+      "path": "weapons/pipe.png",
+      "bytes": 3124,
+      "sha256": "7ed359d8afa7d79ce9a28f6bd43c93dd388a382094e00f7caabcb2b7199a566c",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA"
+    },
+    {
+      "path": "weapons/sign.png",
+      "bytes": 5069,
+      "sha256": "e3a5ce22cefdb328019fad37bbf9ba513879b547077f836cfae2f9c4c2ff7b82",
+      "width": 128,
+      "height": 128,
+      "mode": "RGBA"
+    }
+  ],
+  "project": "Family Force: Neon Streets",
+  "status": "direct-reference family character pack; likeness quality is provisional until five or more photos per person enable Soul training",
+  "visual_formula": "High-detail retro arcade pixel art rendered at a modern 360p-to-720p game resolution, with fine 2\u20134 pixel clusters, crisp edges, selective dithering, and no oversized block pixels. Athletic readable silhouettes use dark navy outlines, expressive recognizable faces, dynamic foreshortening, and slightly exaggerated 1990s beat-\u2019em-up proportions. Night streets use indigo, teal, and warm amber; heroes use distinct red-gold, green-purple, pink-ice, and blue-red palettes. Energetic family-friendly lighting and strong foreground contrast maintain a consistent three-quarter side-view belt-brawler perspective."
+}

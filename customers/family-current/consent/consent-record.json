@@ -1,0 +1,15 @@
+{
+  "status": "pending",
+  "grantedAt": null,
+  "permissions": {
+    "createAiCharacterAssets": false,
+    "includeDerivedAssetsInApk": false,
+    "deliverApkToCustomer": false
+  },
+  "subjects": [
+    {"id": "essa", "type": "adult", "authorized": false},
+    {"id": "adam", "type": "minor", "authorized": false},
+    {"id": "shaikha", "type": "minor", "authorized": false},
+    {"id": "sulaiman", "type": "minor", "authorized": false}
+  ]
+}

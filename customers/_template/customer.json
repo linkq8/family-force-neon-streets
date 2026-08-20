@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 2,
+  "orderId": "replace-order-id",
+  "event": {
+    "displayName": "Replace with event name",
+    "date": "2099-01-01",
+    "locale": "ar-KW"
+  },
+  "customer": {
+    "internalReference": "REPLACE-INTERNAL-REFERENCE"
+  },
+  "privacy": {
+    "consentStatus": "pending",
+    "consentRecord": "consent/consent-record.json",
+    "aiUseDisclosed": false,
+    "retentionUntil": "2099-04-01",
+    "rawPhotosInApk": false
+  },
+  "heroes": [
+    {"displayName": "HERO 1", "assetStem": "hero1", "subjectType": "adult", "consentSubjectId": "subject-1"},
+    {"displayName": "HERO 2", "assetStem": "hero2", "subjectType": "minor", "consentSubjectId": "subject-2"},
+    {"displayName": "HERO 3", "assetStem": "hero3", "subjectType": "minor", "consentSubjectId": "subject-3"},
+    {"displayName": "HERO 4", "assetStem": "hero4", "subjectType": "minor", "consentSubjectId": "subject-4"}
+  ]
+}
