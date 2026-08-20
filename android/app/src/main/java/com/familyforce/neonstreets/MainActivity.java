@@ -23,6 +23,8 @@ public final class MainActivity extends Activity {
             return;
         }
         gameView = new GameView(this);
+        gameView.setAutomatedFullStageTest(BuildConfig.DEBUG
+                && getIntent().getBooleanExtra("familyforce.fullStageTest", false));
         setContentView(gameView);
         gameView.setFocusable(true);
         gameView.setFocusableInTouchMode(true);
@@ -99,7 +101,10 @@ public final class MainActivity extends Activity {
             if (gameView != null && gameView.onKeyDown(keyCode, event)) return true;
             return super.onKeyDown(keyCode, event);
         } catch (Throwable runtimeError) {
-            if (gameView != null) gameView.enterStateSafe();
+            if (gameView != null) {
+                gameView.recordInputFailure(runtimeError);
+                gameView.enterStateSafe();
+            }
             return true;
         }
     }
@@ -116,7 +121,10 @@ public final class MainActivity extends Activity {
             }
             return super.dispatchKeyEvent(event);
         } catch (Throwable runtimeError) {
-            if (gameView != null) gameView.enterStateSafe();
+            if (gameView != null) {
+                gameView.recordInputFailure(runtimeError);
+                gameView.enterStateSafe();
+            }
             return true;
         }
     }
@@ -127,7 +135,10 @@ public final class MainActivity extends Activity {
             if (gameView != null && gameView.onKeyUp(keyCode, event)) return true;
             return super.onKeyUp(keyCode, event);
         } catch (Throwable runtimeError) {
-            if (gameView != null) gameView.enterStateSafe();
+            if (gameView != null) {
+                gameView.recordInputFailure(runtimeError);
+                gameView.enterStateSafe();
+            }
             return true;
         }
     }
@@ -138,7 +149,10 @@ public final class MainActivity extends Activity {
             if (gameView != null && gameView.onGenericMotionEvent(event)) return true;
             return super.dispatchGenericMotionEvent(event);
         } catch (Throwable runtimeError) {
-            if (gameView != null) gameView.enterStateSafe();
+            if (gameView != null) {
+                gameView.recordInputFailure(runtimeError);
+                gameView.enterStateSafe();
+            }
             return true;
         }
     }

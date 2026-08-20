@@ -259,6 +259,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             Color.rgb(19, 14, 61), Color.rgb(4, 28, 42), Shader.TileMode.CLAMP);
     private final AudioController audio;
     private final SharedPreferences prefs;
+    private final RuntimeDiagnostics diagnostics;
     private final CustomerProfile customerProfile;
     private final Random random = new Random(0xF4A11L);
 
@@ -432,6 +433,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private boolean zoneActive;
     private int zoneBanner;
     private int stageFrames;
+    // Debug-only route used by the emulator stage soak test. Release builds
+    // ignore the intent that enables it, so customer gameplay is unchanged.
+    private boolean automatedFullStageTest;
+    private int automatedStageTicks;
     private int hitStop;
     private int shakeFrames;
     private int totalHits;
@@ -487,6 +492,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         customerProfile = CustomerProfile.load(context);
         System.arraycopy(customerProfile.heroNames, 0, HERO_NAMES, 0, HERO_NAMES.length);
         prefs = context.getSharedPreferences("family_force_settings", Context.MODE_PRIVATE);
+        diagnostics = new RuntimeDiagnostics(context);
         musicEnabled = prefs.getBoolean("music", true);
         sfxEnabled = prefs.getBoolean("sfx", true);
         hapticsEnabled = prefs.getBoolean("haptics", true);
@@ -513,6 +519,15 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         for (int i = 0; i < worldObjects.length; i++) worldObjects[i] = new WorldObject();
         for (int i = 0; i < spriteEffects.length; i++) spriteEffects[i] = new SpriteEffect();
         pixelPaint.setStrokeWidth(2f);
+        if (diagnostics.previousSessionInterrupted()) {
+            diagnostics.event("PREVIOUS_SESSION_INTERRUPTED");
+        }
+    }
+
+    void setAutomatedFullStageTest(boolean enabled) {
+        automatedFullStageTest = BuildConfig.DEBUG && enabled;
+        automatedStageTicks = 0;
+        if (automatedFullStageTest) diagnostics.event("DEBUG_FULL_STAGE_TEST_ON");
     }
 
     private int sanitizeHeroIndex(int hero) {
@@ -608,6 +623,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         resetStaleCompanionController();
         try {
             state = nextState;
+            diagnostics.event("STATE " + stateName(previousState) + ">" + stateName(nextState));
             syncHeroSlotsForSafety();
             if (nextState == MENU) {
                 selectionTransitionInProgress = false;
@@ -641,6 +657,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             }
         } catch (Throwable runtimeError) {
             Log.e(TAG, "enterState failed " + previousState + " -> " + nextState, runtimeError);
+            diagnostics.failure("enterState", runtimeError);
             clearInputs();
             state = MENU;
             try {
@@ -662,6 +679,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         } catch (Throwable runtimeError) {
             Log.e(TAG, "EnterStateSafe failed", runtimeError);
         }
+    }
+
+    void recordInputFailure(Throwable runtimeError) {
+        diagnostics.failure("input", runtimeError);
+        diagnostics.snapshot(stateName(state), zone, zoneActive, health, p2Health,
+                activeEnemyCount(), heldWeaponType, attackKind, stageFrames);
     }
 
     private void clampHeroIndexesForPlay() {
@@ -1776,6 +1799,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         appActive = false;
         stopLoop();
         savePersistentState();
+        diagnostics.snapshot(stateName(state), zone, zoneActive, health, p2Health,
+                activeEnemyCount(), heldWeaponType, attackKind, stageFrames);
+        diagnostics.closeCleanly();
         audio.release();
         releaseBitmaps();
     }
@@ -2028,6 +2054,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     }
                 } catch (Throwable runtimeError) {
                     Log.e(TAG, "Update crash, returning to menu", runtimeError);
+                    diagnostics.failure("update", runtimeError);
+                    diagnostics.snapshot(stateName(state), zone, zoneActive, health, p2Health,
+                            activeEnemyCount(), heldWeaponType, attackKind, stageFrames);
                     clearInputs();
                     enterState(MENU);
                     accumulator = 0;
@@ -2042,6 +2071,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     }
                 } catch (Throwable runtimeError) {
                     Log.e(TAG, "Render crash, returning to menu", runtimeError);
+                    diagnostics.failure("render", runtimeError);
+                    diagnostics.snapshot(stateName(state), zone, zoneActive, health, p2Health,
+                            activeEnemyCount(), heldWeaponType, attackKind, stageFrames);
                     clearInputs();
                     enterState(MENU);
                 // Keep loop alive to avoid closing the app when TV drivers
@@ -2135,6 +2167,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         zoneActive = false;
         zoneBanner = 150;
         stageFrames = 0;
+        automatedStageTicks = 0;
+        diagnostics.event("STAGE_RESET");
         hitStop = 0;
         shakeFrames = 0;
         totalHits = 0;
@@ -2323,6 +2357,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 enterState(GAME_OVER);
                 clearInputs();
             }
+        }
+        if ((stageFrames % 120) == 0) {
+            diagnostics.snapshot(stateName(state), zone, zoneActive, health, p2Health,
+                    activeEnemyCount(), heldWeaponType, attackKind, stageFrames);
         }
     }
 
@@ -2954,6 +2992,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private void defeatEnemy(Enemy enemy) {
         enemy.active = false;
         enemy.alive = false;
+        diagnostics.event("ENEMY_DOWN z=" + enemy.zone + " t=" + enemy.type);
         score += enemy.type == 3 ? 3000 : enemy.type == 2 ? 650 : 350;
         spawnDust(enemy.x, enemy.y - 24, Color.rgb(217, 255, 85), enemy.type == 3 ? 20 : 10);
         spawnBreakEffect(enemy.x, enemy.y - 54f, 0f,
@@ -2961,8 +3000,17 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     private void updateEncounter() {
+        if (automatedFullStageTest && !zoneActive && zone < ZONE_TRIGGERS.length) {
+            // This exists only in a debuggable APK launched with an explicit
+            // instrumentation extra. It validates every zone's assets, gate,
+            // rewards, checkpoint transition, boss, and results screen.
+            playerX = Math.max(playerX, ZONE_TRIGGERS[zone]);
+            if (twoPlayerMode) player2X = Math.max(player2X, playerX - 50f);
+        }
         if (!zoneActive && zone < ZONE_TRIGGERS.length && playerX >= ZONE_TRIGGERS[zone]) {
             zoneActive = true;
+            automatedStageTicks = 0;
+            diagnostics.event("ZONE_START " + zone);
             zoneBanner = 100;
             prepareEnemyAnimationsForZone(zone);
             for (Enemy enemy : enemies) {
@@ -2987,8 +3035,16 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     any = true;
                 }
             }
+            if (automatedFullStageTest && ++automatedStageTicks >= 90) {
+                for (Enemy enemy : enemies) {
+                    if (enemy.alive && enemy.zone == zone) defeatEnemy(enemy);
+                }
+                any = false;
+                diagnostics.event("DEBUG_ZONE_CLEAR " + zone);
+            }
             if (!any) {
                 dropZoneRewards(zone);
+                diagnostics.event("ZONE_CLEAR " + zone);
                 zone++;
                 zoneActive = false;
                 zoneBanner = 110;
@@ -3060,6 +3116,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             heldWeaponType = WEAPON_BAT;
             weaponDurability = weaponDurabilityFor(heldWeaponType);
         }
+        diagnostics.event("ITEM " + item.type);
         audio.play(AudioController.PICKUP);
         spawnRing(item.x, item.y - 15, Color.rgb(217, 255, 85));
     }
@@ -3166,6 +3223,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         heldWeaponType = object.type;
         weaponDurability = Math.max(1, object.durability);
         object.active = false;
+        diagnostics.event("WEAPON_PICKUP " + heldWeaponType);
         audio.play(AudioController.PICKUP);
         spawnRing(playerX, playerY - 28f, Color.rgb(255, 202, 75));
         return true;
@@ -3540,6 +3598,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     private void finishStage() {
+        diagnostics.event("STAGE_COMPLETE");
+        diagnostics.snapshot("RESULTS", zone, false, health, p2Health,
+                activeEnemyCount(), heldWeaponType, attackKind, stageFrames);
         score += Math.max(0, 5000 - stageFrames / 3);
         if (health > maxHealth * 0.65f) score += 1200;
         bestScore = Math.max(bestScore, score);
@@ -3548,6 +3609,30 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         audio.play(AudioController.VICTORY);
         enterState(RESULTS);
         clearInputs();
+    }
+
+    private int activeEnemyCount() {
+        int count = 0;
+        for (Enemy enemy : enemies) {
+            if (enemy.alive && enemy.active) count++;
+        }
+        return count;
+    }
+
+    private static String stateName(int value) {
+        switch (value) {
+            case TITLE: return "TITLE";
+            case MENU: return "MENU";
+            case SELECT: return "SELECT";
+            case INTRO: return "INTRO";
+            case PLAY: return "PLAY";
+            case PAUSE: return "PAUSE";
+            case SETTINGS: return "SETTINGS";
+            case RESULTS: return "RESULTS";
+            case GAME_OVER: return "GAME_OVER";
+            case GALLERY: return "GALLERY";
+            default: return "UNKNOWN";
+        }
     }
 
     private void clearInputs() {
