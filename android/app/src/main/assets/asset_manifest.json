@@ -172,8 +172,8 @@
     },
     {
       "path": "enemies/striker_anim.png",
-      "bytes": 352306,
-      "sha256": "c0d06d2e5adc3ca19b96031e1ba85ccef082c3389ef2eb9ff4601826e4f93b82",
+      "bytes": 328045,
+      "sha256": "f273b7c2419e70f97ef14eff7c0072695ccec47fe78476fa7ded6ae2eca6ca35",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -548,8 +548,8 @@
     },
     {
       "path": "tv/enemies/striker_anim.png",
-      "bytes": 720544,
-      "sha256": "8c0e62f14f84ae291f4eae0242c0de40fccd97ae20fbbb413d9984fc0062c731",
+      "bytes": 688498,
+      "sha256": "d674811fcd108d256b75d569d218c2d373aa01331a1b715c5e1e2fcb2a41c812",
       "width": 720,
       "height": 864,
       "mode": "RGBA"

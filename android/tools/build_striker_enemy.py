@@ -27,11 +27,12 @@ SHEETS = (
 # authored poses to form coherent held timing rather than shipping a severed
 # glove/effect from the neighboring panel.
 SAFE_FRAME_REMAP = {
-    1: (3, 3, 4, 4, 5, 5),       # walk: three clean gait keys with 2px bob timing
-    2: (0, 1, 2, 3, 2, 5),       # light attack: anticipation, hit, retract
+    1: (2, 2, 4, 4, 5, 5),       # walk: three complete-glove gait keys
+    2: (0, 1, 1, 1, 1, 5),       # light attack: clean guard/coil keys plus lunge
 }
 
 WALK_BOB_Y = (0, -2, 0, -2, 0, -2)
+ATTACK_LUNGE_X = (0, 0, 4, 10, 4, 0)
 
 
 def remove_light_checker(image: Image.Image) -> Image.Image:
@@ -227,6 +228,9 @@ def main() -> None:
     assert rows[1] is not None
     rows[1] = [translate_cell(frame, 0, WALK_BOB_Y[index])
                for index, frame in enumerate(rows[1])]
+    assert rows[2] is not None
+    rows[2] = [translate_cell(frame, ATTACK_LUNGE_X[index], 0)
+               for index, frame in enumerate(rows[2])]
 
     atlas = Image.new("RGBA", ATLAS_SIZE, (0, 0, 0, 0))
     for row, frames in enumerate(rows):

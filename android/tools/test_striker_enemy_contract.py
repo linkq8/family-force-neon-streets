@@ -77,6 +77,10 @@ walk_cells = [atlas.crop((column * 160, 192, (column + 1) * 160, 384)).tobytes()
 assert len(set(walk_cells)) == 6, "walk bob timing must keep six visible frames"
 attack_cells = [atlas.crop((column * 160, 384, (column + 1) * 160, 576)).tobytes()
                 for column in range(6)]
-assert attack_cells[2] == attack_cells[4], "attack retract must reuse clean authored key"
+assert attack_cells[2] == attack_cells[4], "attack retract must reuse clean lunge key"
+for column in range(6):
+    cell = atlas.crop((column * 160, 192, (column + 1) * 160, 384))
+    bbox = cell.getchannel("A").getbbox()
+    assert bbox is not None and bbox[2] <= 150, ("walk glove clipped at right edge", column, bbox)
 
 print("Striker enemy contract: PASS (36 clean connected frames, TV variant, 2px clusters)")
