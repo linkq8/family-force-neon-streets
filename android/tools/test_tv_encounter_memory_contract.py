@@ -26,7 +26,7 @@ def main() -> None:
     assert "prepareEnemyAnimationsForZone(zone);" in text
     assert "void trimMemory(int level)" in text
 
-    for name in ("grunt", "skater", "brute", "boss"):
+    for name in ("grunt", "skater", "brute", "boss", "striker"):
         path = ASSETS / f"tv/enemies/{name}_anim.png"
         assert path.is_file(), path
         with Image.open(path) as image:

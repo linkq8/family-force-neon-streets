@@ -177,6 +177,64 @@
 
 ## سجل الطلبات والتعديلات المشترك
 
+### 2026-08-21-18 — تنفيذ أول عدو جديد: Striker
+
+- المنفذ: Codex
+- طلب المستخدم: البدء الآن بتنفيذ عدو واحد من الخطة الجديدة.
+- الحالة: مكتمل برمجيًا ومختبر؛ قيد رفع الإصدار.
+- نقطة البداية: `v0.28.0-alpha` / commit `b6617f8`.
+- ما تم:
+  - اختيار Striker كأول عدو لأنه يضيف هجوم combo سريعًا مع أقل مخاطرة على
+    البنية مقارنة بالمقذوفات أو الطيران.
+  - اعتماد ImageGen المدمج للصور فقط، دون فيديو ودون Higgsfield credits.
+  - إنتاج Model Sheet وألواح Idle/Walk وAttack1/Attack2 وHurt/Knockdown، ثم
+    بناء Atlas حقيقي 6×6 / 36 إطارًا بخلايا 160×192 و2-pixel clusters.
+  - إضافة نسخة static 512×512 ونسخة TV 720×864 تحتفظ بكل الإطارات وتخفض
+    decoded memory بنسبة 43.75% عن Atlas التأليف.
+  - توسيع Runtime إلى خمسة أنواع وإضافة Striker إلى أربع مواجهات؛ HP 76، سرعة
+    1.48، هجومان jab-cross/rising-hook، cooldown وضرر ونقاط مستقلة.
+  - تصحيح منطق heavy launch حتى لا يُعامل النوع رقم 4 تلقائيًا كـBrute لمجرد
+    أن رقمه أكبر من 2.
+  - تحديث عقود الأصول والـTV والذاكرة ورفع النسخة إلى `0.29.0-alpha`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `android/app/build.gradle`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/app/src/main/assets/enemies/striker.png`
+  - `android/app/src/main/assets/enemies/striker_anim.png`
+  - `android/app/src/main/assets/tv/enemies/striker_anim.png`
+  - `android/app/src/main/assets/asset_manifest.json`
+  - `assets/imagegen/android/enemies/striker/*`
+  - `android/tools/build_striker_enemy.py`
+  - `android/tools/test_striker_enemy_contract.py`
+  - `android/tools/generate_tv_optimized_assets.py`
+  - `android/tools/validate_assets.py`
+  - `android/tools/validate_animation_atlases.py`
+  - `android/tools/test_runtime_smoothness_contract.py`
+  - `android/tools/test_tv_encounter_memory_contract.py`
+  - `android/design/assets.csv`
+- الاختبارات:
+  - `python3 android/tools/build_striker_enemy.py` — PASS؛ 36 إطارًا وhard alpha
+    و2-pixel clusters.
+  - `python3 android/tools/validate_assets.py` — PASS؛ 54 PNG أساسيًا، 9 Atlases،
+    و89 ملفًا مطابقًا للـmanifest.
+  - `validate_animation_atlases.py --allow-nonclustered` — PASS 9/9؛ استُخدم
+    الاستثناء للأبطال legacy، بينما اختبار Striker المستقل يفرض 2px فعلًا.
+  - `python3 android/tools/test_striker_enemy_contract.py` — PASS.
+  - اختبارات TV memory/smoothness/attack tokens/encounter gate — PASS؛ ميزانية
+    الرسومات المتحركة TV أصبحت 30.09 MiB.
+  - `./gradlew :app:assembleDebug :app:lintDebug` — PASS.
+  - `android/tools/test_full_stage_runtime.sh` — PASS؛ المراحل/الموجات التسع.
+  - Runtime Emulator لمواجهة Stage 1 — PASS؛ ظهر Striker وتحرك/هاجم، دون
+    FATAL/ANR/OOM.
+  - `android/tools/test_customer_release.sh` — PASS؛ Release/Lint والهاتف وFold
+    وAndroid TV والريموت واللاعبان والعقود الكاملة.
+- Release: APK جاهز؛ SHA-256
+  `8b3de3e44b4ad702eba62484921243177f15d0c2560c4c957453ba155f8f939d`.
+- ملاحظات/مخاطر: لن يدمج Atlas قبل فحص وضوح الإطارات وثبات الاتجاه والقدم،
+  ولن تُحمّل أصول إضافية على TV خارج Stage pack المطلوب.
+- التالي: commit ورفع `v0.29.0-alpha` إلى GitHub Releases وتسجيل الرابط والـcommit.
+
 ### 2026-08-21-17 — اعتماد ImageGen كمسار أعداء أقل تكلفة
 
 - المنفذ: Codex

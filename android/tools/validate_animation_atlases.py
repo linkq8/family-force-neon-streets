@@ -65,7 +65,7 @@ ENEMY_PEAK_MOTION = (0.0005, 0.0060, 0.0050, 0.0050, 0.0030, 0.0075)
 
 def contracts() -> tuple[AtlasContract, ...]:
     hero_paths = ("parent", "adam", "shaikha", "sulaiman")
-    enemy_paths = ("grunt", "skater", "brute", "boss")
+    enemy_paths = ("grunt", "skater", "brute", "boss", "striker")
     heroes = tuple(
         AtlasContract(
             relative=f"heroes/{name}_anim.png",

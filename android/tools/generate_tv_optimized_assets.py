@@ -37,6 +37,7 @@ VARIANTS = (
     ("enemies/skater_anim.png", "tv/enemies/skater_anim.png", (720, 864), "RGBA"),
     ("enemies/brute_anim.png", "tv/enemies/brute_anim.png", (720, 864), "RGBA"),
     ("enemies/boss_anim.png", "tv/enemies/boss_anim.png", (720, 864), "RGBA"),
+    ("enemies/striker_anim.png", "tv/enemies/striker_anim.png", (720, 864), "RGBA"),
 )
 
 

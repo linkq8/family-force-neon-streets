@@ -163,6 +163,22 @@
       "mode": "RGBA"
     },
     {
+      "path": "enemies/striker.png",
+      "bytes": 15932,
+      "sha256": "b4ebd0cb53eab1c0906293187f4829f4aec62386fdff867378bcd68624d6a1c8",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/striker_anim.png",
+      "bytes": 365394,
+      "sha256": "cf476f5689278e6dd4bced1a6dd48f8072703ca2a72ce6a667e040719226944e",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
       "path": "fx/break_fx.png",
       "bytes": 46957,
       "sha256": "c5705c4ef0bd1718310f7275fa75c319b73ca5f93749c99f6d39b5b2e937c72a",
@@ -526,6 +542,14 @@
       "path": "tv/enemies/skater_anim.png",
       "bytes": 736336,
       "sha256": "ff1bca0707f8dd64e29f5b5736cf729ad6ad3d9b0c294f34770c1be350338963",
+      "width": 720,
+      "height": 864,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/striker_anim.png",
+      "bytes": 696539,
+      "sha256": "1c17a76dda99ab058785b0ba64de328c20a66dac510d1c0365167553bf4ad9b9",
       "width": 720,
       "height": 864,
       "mode": "RGBA"

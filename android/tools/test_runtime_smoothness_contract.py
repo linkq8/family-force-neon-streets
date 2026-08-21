@@ -65,7 +65,7 @@ expected = {
 }
 for stem in ("parent", "adam", "shaikha", "sulaiman"):
     expected[f"tv/heroes/{stem}_anim.png"] = (1152, 1584)
-for stem in ("grunt", "skater", "brute", "boss"):
+for stem in ("grunt", "skater", "brute", "boss", "striker"):
     expected[f"tv/enemies/{stem}_anim.png"] = (720, 864)
 
 for relative, dimensions in expected.items():
@@ -75,13 +75,13 @@ for relative, dimensions in expected.items():
         assert image.size == dimensions, f"unexpected dimensions for {relative}: {image.size}"
 
 # Peak animated combat textures for low-RAM TV: two hero atlases, two Link rows,
-# four enemy atlases, and both RGB_565 backgrounds. Keep under Android TV's
+# five enemy atlases, and both RGB_565 backgrounds. Keep under Android TV's
 # recommended 30–40 MiB graphics target with a small tolerance for two-player mode.
 hero_bytes = 2 * 1152 * 1584 * 4
 assist_bytes = 2 * 1152 * (1584 // 11) * 4
-enemy_bytes = 4 * 720 * 864 * 4
+enemy_bytes = 5 * 720 * 864 * 4
 background_bytes = (960 * 536 + 3 * 800 * 450) * 2
 combat_mib = (hero_bytes + assist_bytes + enemy_bytes + background_bytes) / (1024 * 1024)
-assert combat_mib < 28.0, f"animated TV combat texture budget too high: {combat_mib:.2f} MiB"
+assert combat_mib < 31.0, f"animated TV combat texture budget too high: {combat_mib:.2f} MiB"
 
 print(f"Runtime smoothness/TV asset contract: PASS ({combat_mib:.2f} MiB animated budget)")
