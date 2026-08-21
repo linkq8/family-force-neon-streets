@@ -1,5 +1,8 @@
 # Family Force: Street Rescue
 
+> **Codex / Claude Code:** read the shared project memory and current handoff in
+> [`PROJECT_HISTORY_AR.md`](PROJECT_HISTORY_AR.md) before modifying the project.
+
 > **Current direction:** the project has moved to a native Android successor,
 > `Family Force: Neon Streets`, with modern menus, items, touch/gamepad input,
 > higher-resolution artwork, and Higgsfield music. See
