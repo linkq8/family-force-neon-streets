@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.27.0-alpha`، `versionCode 27`.
+- النسخة المنشورة: `v0.28.0-alpha`، `versionCode 28`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `4d85d0464b3fb3b6c6a3e4c0029eefc16f86b1a7`.
+- آخر commit وظيفي: `975c9043c6c94f39d5ea8df3ce923a37705c6fb0`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.27.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.27.0-alpha/family-force-family-current.apk
-- SHA-256: `2446baa91e2b0608934f085c82a5d3175424468f6566eadff0d9c879fb08966c`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.28.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.28.0-alpha/family-force-family-current.apk
+- SHA-256: `ef27f8b8c0fe7d735a90dae7eabca2dd739f3466b315cbf4e8bc109dd5bda9ab`.
 - حالة QA: بناء Release وLint وفحوص الهاتف/Fold/Android TV ومسار لاعبين ناجحة.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
   استدعاء الشخصيات الإضافية ونظافة الرسومات والحركة.
@@ -28,8 +28,8 @@
 - إصلاح قيد تحقق المستخدم: توسيع توافق DualSense على Xiaomi ليشمل Firmware الذي
   لا يعلن نطاق trigger المكسور أو يرسل الأزرار كمصدر Keyboard.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: اختبار انتقالات `STAGE CLEAR` والألوان الأربعة على
-  Xiaomi Stick بلاعبين؛ ثم إعطاء كل مرحلة توزيع Props/أسلحة وأعداء خاصًا بها.
+- العمل التالي الموصى به: تثبيت `v0.28.0-alpha` يدويًا هذه المرة، ثم استخدام
+  `SETTINGS > GAME UPDATE` عند صدور `v0.29`؛ وبعدها تنويع Props والأسلحة لكل Stage.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -182,7 +182,7 @@
 - المنفذ: Codex
 - طلب المستخدم: تنفيذ ميزة فحص وتنزيل آخر نسخة من GitHub من داخل اللعبة وإصدار
   نسخة جديدة بها.
-- الحالة: مكتمل برمجيًا ومختبر؛ قيد الرفع إلى GitHub Releases.
+- الحالة: مكتمل ومختبر ومنشور.
 - نقطة البداية: `v0.27.0-alpha` / commit `839a488`.
 - ما تم:
   - التحقق أن الميزة السابقة كانت خطة فقط وليست موجودة في الكود.
@@ -213,11 +213,15 @@
     الهاتف وultrawide وFold وAndroid TV ومسار لاعبين والعقود الكاملة.
   - اختبار Emulator بريموت TV من Title إلى Settings ثم `GAME UPDATE` — PASS؛
     ظهرت `UP TO DATE` وبقيت العملية حية دون FATAL/ANR/OOM.
-- Release: APK جاهز للرفع؛ SHA-256
-  `ef27f8b8c0fe7d735a90dae7eabca2dd739f3466b315cbf4e8bc109dd5bda9ab`.
+- Release: `v0.28.0-alpha`، commit
+  `975c9043c6c94f39d5ea8df3ce923a37705c6fb0`:
+  - https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.28.0-alpha
+  - https://github.com/linkq8/family-force-neon-streets/releases/download/v0.28.0-alpha/family-force-family-current.apk
+  - SHA-256: `ef27f8b8c0fe7d735a90dae7eabca2dd739f3466b315cbf4e8bc109dd5bda9ab`.
 - ملاحظات/مخاطر: Android لا يسمح بتحديث صامت؛ يجب أن يؤكد المستخدم التثبيت،
   وقد يفعّل السماح لهذا التطبيق بتثبيت APK مرة واحدة.
-- التالي: commit ثم رفع `v0.28.0-alpha` وتسجيل رابط APK المباشر والـcommit.
+- التالي: تثبيت النسخة الحالية يدويًا؛ زر التحديث سيستقبل النسخ التالية بدءًا
+  من `v0.29` لأن `v0.27` لا يحتوي الزر أصلًا.
 
 ### 2026-08-21-13 — تحويل الفصول إلى أربع مراحل مستقلة
 
@@ -670,15 +674,16 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.27.0-alpha` منشور؛ اللعبة تعرض أربع مراحل فعلية مع موجات مستقلة
-  وشاشات STAGE CLEAR وألوان أعداء مختلفة.
-- آخر عمل: استبدال Areas بأربع Stages وإضافة Hue للأعداء من دون أطالس جديدة.
-- آخر قرار: إبقاء ألوان أبطال العائلة الأصلية، وتلوين الأعداء فقط لحماية الهوية؛
-  لا صور أو فيديو جديد في هذا الإصدار.
+- الحالة: `v0.28.0-alpha` منشور؛ اللعبة مستقرة وتحتوي محدثًا داخليًا آمنًا.
+- آخر عمل: إضافة `SETTINGS > GAME UPDATE` لفحص GitHub وتنزيل APK العميل الصحيح
+  والتحقق من SHA-256 والحزمة والإصدار والشهادة قبل فتح مثبت Android الرسمي.
+- آخر قرار: لا تثبيت صامت ولا اعتماديات إضافية؛ ContentProvider داخلي محدود
+  القراءة، واللعبة تبقى قابلة للعب إذا فشل الإنترنت أو فحص التحديث.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
-  3. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
-  4. `android/tools/test_customer_release.sh`
-- الإجراء التالي المقترح: تثبيت `v0.27.0-alpha` على Xiaomi Stick وتجربة انتقالات
-  المراحل الأربع بلاعبين؛ بعدها تنويع Props والأسلحة وتشكيلات الأعداء لكل Stage.
+  3. `android/app/src/main/java/com/familyforce/neonstreets/UpdateManager.java`
+  4. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  5. `android/tools/test_in_app_update_contract.py`
+- الإجراء التالي المقترح: تثبيت `v0.28.0-alpha` يدويًا، وتجربة الزر عند نشر
+  `v0.29` على Xiaomi Stick؛ بعدها تنويع Props والأسلحة وتشكيلات الأعداء لكل Stage.
