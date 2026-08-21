@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.29.2-alpha`، `versionCode 31`.
+- النسخة المنشورة: `v0.29.3-alpha`، `versionCode 32`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `bdf30f6312e5aad2d88268cc17a0a2743d5b5b9f`.
+- آخر commit وظيفي: `ea1b71c1830dca5b683fb016d93b080fe46688bd`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.29.2-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.29.2-alpha/family-force-family-current.apk
-- SHA-256: `954ce0dabc5abc2db877a6102901a648b2ea25496d0a2b8c0dda7b472711531d`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.29.3-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.29.3-alpha/family-force-family-current.apk
+- SHA-256: `1f08dadcb60235ab93cba453e35d5cc89be3751ed989944a53dc3775dd61d6a7`.
 - حالة QA: بناء Release وLint وفحوص الهاتف/Fold/Android TV ومسار لاعبين ناجحة.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
   استدعاء الشخصيات الإضافية ونظافة الرسومات والحركة.
@@ -182,17 +182,40 @@
 - المنفذ: Codex
 - طلب المستخدم: التفاف أجزاء Striker اختفى، لكن مقدمة القفاز أصبحت مقصوصة أو
   مضغوطة في الحركة.
-- الحالة: قيد التنفيذ.
+- الحالة: مكتمل — أُعيد اختيار مفاتيح الحركة ونُشر التصحيح.
 - نقطة البداية: `v0.29.2-alpha` / commit `bdf30f6`.
-- ما سيتم: مراجعة المفاتيح النظيفة من الصور الأصلية وإعادة بناء القفاز الأمامي
-  كاملًا في صفوف المشي/الهجوم، مع بوابة مرئية تمنع الحواف المستقيمة المقطوعة.
-- الملفات المعدلة حتى الآن:
+- ما تم:
+  - إنشاء معاينة للمفاتيح الأصلية قبل remap؛ أكدت أن مفتاح المشي المستخدم في
+    v0.29.2 كان قفازه الأمامي مقطوعًا داخل صورة المصدر نفسها.
+  - استبعاد كل مفاتيح المشي واللكمة ذات القفاز المقطوع بدل تركيب أو رسم قفاز مصطنع.
+  - بناء المشي من ثلاثة gait keys ذات قفازين كاملين مع bob بمقدار 2px، وبناء
+    اللكمة من guard/coil كاملين مع lunge للأمام وعودة؛ لا صور أو فيديو جديد.
+  - إضافة فحص يمنع اقتراب silhouette المشي من الحد الأيمن للخلية.
+  - إعادة أطلس الهاتف وTV ورفع النسخة إلى `versionCode 32` / `0.29.3-alpha`.
+- الملفات المعدلة:
   - `PROJECT_HISTORY_AR.md`
-- الاختبارات: قيد التنفيذ.
-- Release: لا يوجد بعد.
-- ملاحظات/مخاطر: إزالة الشظايا نجحت، لكن بعض مفاتيح المصدر نفسها قُصت عند panel؛
-  لا يكفي اختبار المكوّن المتصل وحده للكشف عن silhouette مفلطح.
-- التالي: اختيار/تركيب مفاتيح قفاز كاملة من المصادر الحالية ثم QA وإصدار إصلاح.
+  - `android/app/build.gradle`
+  - `android/app/src/main/assets/asset_manifest.json`
+  - `android/app/src/main/assets/enemies/striker_anim.png`
+  - `android/app/src/main/assets/tv/enemies/striker_anim.png`
+  - `android/tools/build_striker_enemy.py`
+  - `android/tools/test_striker_enemy_contract.py`
+- الاختبارات:
+  - `test_striker_enemy_contract.py` — PASS؛ قفاز المشي ضمن الهامش، 36 خلية.
+  - `validate_animation_atlases.py` ضمن Release — PASS؛ 9/9.
+  - `validate_assets.py` — PASS؛ 89 ملفًا.
+  - TV memory/smoothness وبقية العقود — PASS؛ 30.09 MiB.
+  - Release build + Lint — PASS.
+  - Runtime emulator — SKIPPED؛ لا يوجد emulator/device متصل في هذه الجولة.
+- Release:
+  - tag: `v0.29.3-alpha`
+  - commit: `ea1b71c1830dca5b683fb016d93b080fe46688bd`
+  - https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.29.3-alpha
+  - https://github.com/linkq8/family-force-neon-streets/releases/download/v0.29.3-alpha/family-force-family-current.apk
+  - SHA-256: `1f08dadcb60235ab93cba453e35d5cc89be3751ed989944a53dc3775dd61d6a7`
+- ملاحظات/مخاطر: تم QA بصريًا للأطلس وعقديًا، لكن تجربة الحركة الفعلية على جهاز
+  المستخدم هي بوابة القبول لأن المحاكي غير متصل الآن.
+- التالي: تثبيت v0.29.3 وتجربة قفاز Striker في المشي واللكمة.
 
 ### 2026-08-21-21 — التفاف أجزاء Striker بين خلايا التحريك
 
@@ -961,9 +984,9 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.29.2-alpha` منشور؛ أطلس Striker خالٍ من التفاف أجزاء الخلايا.
-- آخر عمل: إعادة بناء 36 إطارًا من الصور الحالية مع إزالة panel overflow وإضافة
-  اختبار مكوّن متصل لكل خلية، وتجديد نسخة TV دون إنتاج صور أو فيديو جديد.
+- الحالة: `v0.29.3-alpha` منشور؛ قفاز Striker كامل في مفاتيح المشي واللكمة.
+- آخر عمل: استبعاد المفاتيح المقصوصة من المصدر وإعادة توقيت المشي/اللكمة من
+  مفاتيح كاملة مع بوابة هامش silhouette، دون إنتاج صور أو فيديو جديد.
 - آخر قرار: استخدام ImageGen المدمج للأعداء الجدد، وإنتاج عدو واحد في كل بوابة
   قبول أولية قبل توسيع الدفعة، مع إبقاء ميزانية TV تحت 31 MiB.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
