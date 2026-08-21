@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة الجاري تجهيزها للنشر: `v0.23.0-alpha`، `versionCode 23`.
+- النسخة المنشورة: `v0.23.0-alpha`، `versionCode 23`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `13783bff59d9bdac55d51a77e9fdab837660af8a`.
+- آخر commit وظيفي: `812dddfc893835ade902d0c0dd46d92fe64c9f90`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.22.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.22.0-alpha/family-force-family-current.apk
-- SHA-256: `31805a102da8bd7e2c5c56b8fd0f74bbcab4fdf49ae2a87409583198e584cac1`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.23.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.23.0-alpha/family-force-family-current.apk
+- SHA-256: `6dc3ca197716d9e7d2be26faa21be3825fe47c82d642d61e47f1fe912d9d3933`.
 - حالة QA: بناء Release وLint وفحوص الهاتف/Fold/Android TV ومسار لاعبين ناجحة.
 - اختبار المناطق: مسار تطويري آلي مرّ بالمناطق 1–9 حتى شاشة النتائج بنجاح.
 - التشخيص: يوجد Flight Recorder محلي خفيف يحفظ آخر منطقة، P1/P2، العدو،
@@ -203,7 +203,11 @@
   - `tools/test_customer_release.sh ../customers/family-current` — PASS مع محاكي
     Android متصل؛ البناء والتوقيع والأصول والذاكرة وأول مواجهة والسلاح والصوت
     والـcheckpoint وRuntime QA كلها ناجحة.
-- Release: `v0.23.0-alpha` قيد الرفع؛ سيضاف الرابط وSHA بعد النشر.
+- Release: `v0.23.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.23.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.23.0-alpha/family-force-family-current.apk
+- SHA-256: `6dc3ca197716d9e7d2be26faa21be3825fe47c82d642d61e47f1fe912d9d3933`.
+- commit: `812dddfc893835ade902d0c0dd46d92fe64c9f90`.
 - ملاحظات/مخاطر: يجب موازنة ذاكرة صفين صغيرين للاعبين مع ضغط الذاكرة؛ عند trim
   ستستخدم اللعبة fallback جاهزًا بدل إعادة التحميل داخل القتال.
 - التالي: نشر APK ثم قياس الاستدعاء على Xiaomi Stick الحقيقي.
@@ -420,8 +424,8 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: إصلاح تعليق Link مكتمل ومختبر آليًا، وجارٍ نشر v0.23؛ يبقى قياسه على
-  Xiaomi Stick الحقيقي.
+- الحالة: إصلاح تعليق Link منشور في v0.23 ومختبر آليًا؛ يبقى قياسه على Xiaomi
+  Stick الحقيقي.
 - آخر عمل: إنشاء نظام السجل المشترك وتعليمات Codex/Claude Code.
 - آخر قرار: `v0.21.0-alpha` لم يحل مشكلة Xiaomi؛ يجري توسيع الاكتشاف ليشمل
   مضيف Xiaomi وأحداث Keyboard مع فصل تصحيح الأزرار عن تصحيح المحاور.
