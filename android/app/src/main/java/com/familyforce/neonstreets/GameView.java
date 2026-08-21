@@ -756,6 +756,14 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 || (source & InputDevice.SOURCE_KEYBOARD) != 0;
     }
 
+    private static int effectiveControllerSource(InputDevice device, int eventSource) {
+        if (device == null) return eventSource;
+        int deviceSources = device.getSources();
+        if ((deviceSources & (InputDevice.SOURCE_GAMEPAD | InputDevice.SOURCE_JOYSTICK
+                | InputDevice.SOURCE_DPAD)) == 0) return eventSource;
+        return eventSource | deviceSources;
+    }
+
     private static boolean isControllerDirectionalKey(int keyCode) {
         return keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
                 || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN;
@@ -785,14 +793,15 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     private static boolean isPlayStationDevice(InputDevice device) {
-        return device != null
-                && ControllerCompat.family(device.getName()) == ControllerCompat.Family.PLAYSTATION;
+        return device != null && ControllerCompat.isPlayStation(
+                device.getName(), device.getVendorId());
     }
 
     private int normalizeControllerKey(InputDevice device, int keyCode, int scanCode) {
         String name = device == null ? "" : device.getName();
         return ControllerCompat.normalizeGamepadKey(
-                name, keyCode, scanCode, useLegacyDualSenseKeys(device));
+                name, device == null ? 0 : device.getVendorId(), keyCode, scanCode,
+                useLegacyDualSenseKeys(device));
     }
 
     private float controllerTriggerValue(MotionEvent event, boolean left) {
@@ -5811,7 +5820,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             if (isGamepadSource(event.getSource()) || isPlayStationDevice(inputDevice)) {
                 keyCode = normalizeControllerKey(inputDevice, keyCode, event.getScanCode());
             }
-            int source = event.getSource();
+            int source = effectiveControllerSource(inputDevice, event.getSource());
             long now = SystemClock.uptimeMillis();
             int controllerSlot = resolveControllerSlot(event.getDeviceId(), source);
             if (isGamepadSource(source) || isNavigationSource(source)) {
@@ -5980,7 +5989,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             if (isGamepadSource(event.getSource()) || isPlayStationDevice(inputDevice)) {
                 keyCode = normalizeControllerKey(inputDevice, keyCode, event.getScanCode());
             }
-            int source = event.getSource();
+            int source = effectiveControllerSource(inputDevice, event.getSource());
             int controllerSlot = resolveControllerSlot(event.getDeviceId(), source);
             if (isGamepadSource(source) || isNavigationSource(source)) {
                 updateControllerIds(event.getDeviceId(), source, controllerSlot);
@@ -6333,7 +6342,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 || event.getAction() != MotionEvent.ACTION_MOVE) {
             return super.onGenericMotionEvent(event);
         }
-        int source = event.getSource();
+        int source = effectiveControllerSource(event.getDevice(), event.getSource());
         long now = SystemClock.uptimeMillis();
         int controllerSlot = resolveControllerSlot(event.getDeviceId(), source);
         updateControllerIds(event.getDeviceId(), source, controllerSlot);

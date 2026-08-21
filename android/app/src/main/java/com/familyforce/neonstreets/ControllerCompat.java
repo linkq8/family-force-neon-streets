@@ -6,6 +6,7 @@ import java.util.Locale;
 
 /** Small compatibility layer over Android's standard game-controller mapping. */
 final class ControllerCompat {
+    static final int SONY_VENDOR_ID = 0x054c;
     enum Family { NINTENDO_JOYCON, NINTENDO, XBOX, PLAYSTATION, GENERIC }
 
     private ControllerCompat() {}
@@ -33,6 +34,10 @@ final class ControllerCompat {
         return name.contains("(l)") || name.contains("(r)") || name.contains("left")
                 || name.contains("right") || name.contains("joy-con 2")
                 || name.contains("joycon 2") || name.contains("joy con 2");
+    }
+
+    static boolean isPlayStation(String deviceName, int vendorId) {
+        return vendorId == SONY_VENDOR_ID || family(deviceName) == Family.PLAYSTATION;
     }
 
     /** Narrow fallback for Xiaomi Android TV builds missing AOSP's DualSense key layout. */
@@ -68,9 +73,18 @@ final class ControllerCompat {
 
     static int normalizeGamepadKey(String deviceName, int keyCode, int scanCode,
                                    boolean legacyDualSenseLayout) {
+        return normalizeGamepadKey(deviceName, 0, keyCode, scanCode, legacyDualSenseLayout);
+    }
+
+    static int normalizeGamepadKey(String deviceName, int vendorId, int keyCode, int scanCode,
+                                   boolean legacyDualSenseLayout) {
         if (isSingleJoyCon(deviceName)) return normalizeSingleJoyConKey(keyCode);
-        if (family(deviceName) != Family.PLAYSTATION) return keyCode;
-        if (legacyDualSenseLayout) {
+        if (!isPlayStation(deviceName, vendorId)) return keyCode;
+        // Linux gamepad scan codes are stable even when an OEM reports the
+        // KeyEvent as SOURCE_KEYBOARD or assigns the wrong Android key code.
+        // Mapping a known Sony scan code is therefore safe on both Shield's
+        // standard layout and older TV fallback layouts.
+        if (legacyDualSenseLayout || scanCode >= 304 && scanCode <= 317) {
             switch (scanCode) {
                 case 304: return KeyEvent.KEYCODE_BUTTON_X;      // Square
                 case 305: return KeyEvent.KEYCODE_BUTTON_A;      // Cross

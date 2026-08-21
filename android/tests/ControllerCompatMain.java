@@ -16,6 +16,8 @@ public final class ControllerCompatMain {
                 "Xbox detection");
         require(ControllerCompat.family("DualSense Wireless Controller") == ControllerCompat.Family.PLAYSTATION,
                 "DualSense detection");
+        require(ControllerCompat.isPlayStation("Sony Interactive Entertainment", 0x054c),
+                "Shield must recognize Sony vendor id even with an OEM device name");
         require(ControllerCompat.normalizeKey("Joy-Con (R)", KeyEvent.KEYCODE_BUTTON_4)
                         == KeyEvent.KEYCODE_BUTTON_A, "single Joy-Con confirm/jump");
         require(ControllerCompat.normalizeKey("Joy-Con 2 (L)", KeyEvent.KEYCODE_BUTTON_5)
@@ -43,8 +45,14 @@ public final class ControllerCompatMain {
                         KeyEvent.KEYCODE_BUTTON_A, 304, true) == KeyEvent.KEYCODE_BUTTON_A,
                 "legacy PlayStation fallback must never alter Xbox");
         require(ControllerCompat.normalizeGamepadKey("DualSense Wireless Controller",
-                        KeyEvent.KEYCODE_BUTTON_A, 304, false) == KeyEvent.KEYCODE_BUTTON_A,
-                "standard DualSense mapping must pass through");
+                        KeyEvent.KEYCODE_BUTTON_A, 304, false) == KeyEvent.KEYCODE_BUTTON_X,
+                "standard DualSense square scan must remain square");
+        require(ControllerCompat.normalizeGamepadKey("DualSense Wireless Controller", 0x054c,
+                        KeyEvent.KEYCODE_UNKNOWN, 305, false) == KeyEvent.KEYCODE_BUTTON_A,
+                "Shield keyboard-source DualSense cross must normalize by scan code");
+        require(ControllerCompat.normalizeGamepadKey("Sony Interactive Entertainment", 0x054c,
+                        KeyEvent.KEYCODE_UNKNOWN, 313, false) == KeyEvent.KEYCODE_BUTTON_START,
+                "Sony vendor id must normalize Options even with an OEM name");
         require(ControllerCompat.needsXiaomiDualSenseKeyFallback(
                         "Xiaomi", "Xiaomi", "TV Stick 4K"),
                 "Xiaomi TV Stick host fallback");
