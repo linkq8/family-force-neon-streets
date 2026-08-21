@@ -329,6 +329,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private int menuChoice;
     private int pauseOption;
     private int settingsOption;
+    private volatile String updateStatus = "CHECK NOW";
+    private volatile boolean updateBusy;
     private int resultsOption;
     private int gameOverOption;
     private int menuHatX;
@@ -623,7 +625,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (pauseOption < 0) pauseOption = 0;
         else if (pauseOption > 3) pauseOption = 3;
         if (settingsOption < 0) settingsOption = 0;
-        else if (settingsOption > 5) settingsOption = 5;
+        else if (settingsOption > 6) settingsOption = 6;
         if (resultsOption < 0) resultsOption = 0;
         if (resultsOption > 1) resultsOption = 1;
         if (gameOverOption < 0) gameOverOption = 0;
@@ -711,6 +713,21 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         diagnostics.failure("input", runtimeError);
         diagnostics.snapshot(stateName(state), zone, zoneActive, health, p2Health,
                 activeEnemyCount(), heldWeaponType, attackKind, stageFrames);
+    }
+
+    void setUpdateStatus(String status, boolean busy) {
+        updateStatus = status == null || status.trim().isEmpty() ? "CHECK NOW" : status;
+        updateBusy = busy;
+    }
+
+    private void requestUpdateCheck() {
+        if (updateBusy) return;
+        Context context = getContext();
+        if (context instanceof MainActivity) {
+            ((MainActivity) context).requestUpdateCheck();
+        } else {
+            setUpdateStatus("UPDATE UNAVAILABLE", false);
+        }
     }
 
     private void clampHeroIndexesForPlay() {
@@ -5201,15 +5218,16 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         drawBackdrop(canvas, 250f);
         drawTopBrand(canvas, "SETTINGS & ACCESSIBILITY");
         paint.setColor(Color.argb(235, 13, 14, 43));
-        roundRect(canvas, 76, 78, 564, 316, 18, paint);
-        settingRow(canvas, 104, 111, "MUSIC", musicEnabled ? "ON" : "OFF", musicEnabled, settingsOption == 0);
-        settingRow(canvas, 104, 151, "SOUND EFFECTS", sfxEnabled ? "ON" : "OFF", sfxEnabled, settingsOption == 1);
-        settingRow(canvas, 104, 191, "HAPTICS", hapticsEnabled ? "ON" : "OFF", hapticsEnabled, settingsOption == 2);
-        settingRow(canvas, 104, 231, "SCREEN SHAKE", shakeEnabled ? "ON" : "OFF", shakeEnabled, settingsOption == 3);
+        roundRect(canvas, 76, 70, 564, 318, 18, paint);
+        settingRow(canvas, 104, 88, "MUSIC", musicEnabled ? "ON" : "OFF", musicEnabled, settingsOption == 0);
+        settingRow(canvas, 104, 122, "SOUND EFFECTS", sfxEnabled ? "ON" : "OFF", sfxEnabled, settingsOption == 1);
+        settingRow(canvas, 104, 156, "HAPTICS", hapticsEnabled ? "ON" : "OFF", hapticsEnabled, settingsOption == 2);
+        settingRow(canvas, 104, 190, "SCREEN SHAKE", shakeEnabled ? "ON" : "OFF", shakeEnabled, settingsOption == 3);
         String diff = difficulty == 0 ? "EASY" : difficulty == 2 ? "HARD" : "NORMAL";
-        settingRow(canvas, 104, 271, "DIFFICULTY", diff, true, settingsOption == 4);
-        button(canvas, 445, 321, 555, 349, "BACK", Color.rgb(217, 255, 85), Color.rgb(15, 24, 35),
-                settingsOption == 5);
+        settingRow(canvas, 104, 224, "DIFFICULTY", diff, true, settingsOption == 4);
+        settingRow(canvas, 104, 258, "GAME UPDATE", updateStatus, !updateBusy, settingsOption == 5);
+        button(canvas, 445, 317, 555, 347, "BACK", Color.rgb(217, 255, 85), Color.rgb(15, 24, 35),
+                settingsOption == 6);
     }
 
     private void drawResults(Canvas canvas) {
@@ -5657,16 +5675,17 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             return;
         }
         if (state == SETTINGS) {
-            if (inside(x, y, 90, 101, 545, 143)) {
+            if (inside(x, y, 90, 76, 545, 110)) {
                 musicEnabled = !musicEnabled;
                 audio.setMusicEnabled(musicEnabled);
-            } else if (inside(x, y, 90, 143, 545, 183)) {
+            } else if (inside(x, y, 90, 110, 545, 144)) {
                 sfxEnabled = !sfxEnabled;
                 audio.setSfxEnabled(sfxEnabled);
-            } else if (inside(x, y, 90, 183, 545, 223)) hapticsEnabled = !hapticsEnabled;
-            else if (inside(x, y, 90, 223, 545, 263)) shakeEnabled = !shakeEnabled;
-            else if (inside(x, y, 90, 263, 545, 305)) difficulty = (difficulty + 1) % 3;
-            else if (inside(x, y, 430, 305, 575, 360)) {
+            } else if (inside(x, y, 90, 144, 545, 178)) hapticsEnabled = !hapticsEnabled;
+            else if (inside(x, y, 90, 178, 545, 212)) shakeEnabled = !shakeEnabled;
+            else if (inside(x, y, 90, 212, 545, 246)) difficulty = (difficulty + 1) % 3;
+            else if (inside(x, y, 90, 246, 545, 286)) requestUpdateCheck();
+            else if (inside(x, y, 430, 304, 575, 360)) {
                 saveSettings();
                 enterState(settingsReturn);
             }
@@ -6203,6 +6222,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     break;
                 }
                 if (settingsOption == 5) {
+                    requestUpdateCheck();
+                    break;
+                }
+                if (settingsOption == 6) {
                     saveSettings();
                     enterState(settingsReturn);
                 }
@@ -6266,7 +6289,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (state == SETTINGS) {
             if (vertical != 0 || horizontal != 0) {
                 settingsOption += vertical != 0 ? (vertical > 0 ? 1 : -1) : 0;
-                settingsOption = clampInt(settingsOption, 0, 5);
+                settingsOption = clampInt(settingsOption, 0, 6);
             }
         }
         if (state == RESULTS) {

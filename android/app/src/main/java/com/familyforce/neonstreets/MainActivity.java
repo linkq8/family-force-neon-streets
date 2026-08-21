@@ -12,6 +12,7 @@ import android.graphics.Color;
 
 public final class MainActivity extends Activity {
     private GameView gameView;
+    private UpdateManager updateManager;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -23,6 +24,12 @@ public final class MainActivity extends Activity {
             return;
         }
         gameView = new GameView(this);
+        updateManager = new UpdateManager(this, new UpdateManager.Listener() {
+            @Override
+            public void onStatus(String status, boolean busy) {
+                if (gameView != null) gameView.setUpdateStatus(status, busy);
+            }
+        });
         gameView.setAutomatedFullStageTest(BuildConfig.DEBUG
                 && getIntent().getBooleanExtra("familyforce.fullStageTest", false));
         setContentView(gameView);
@@ -61,6 +68,7 @@ public final class MainActivity extends Activity {
             gameView.requestFocus();
             gameView.resumeGame();
         }
+        if (updateManager != null) updateManager.onResume();
     }
 
     @Override
@@ -77,8 +85,13 @@ public final class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        if (updateManager != null) updateManager.shutdown();
         if (gameView != null) gameView.shutdown();
         super.onDestroy();
+    }
+
+    void requestUpdateCheck() {
+        if (updateManager != null) updateManager.checkForUpdate();
     }
 
     @Override

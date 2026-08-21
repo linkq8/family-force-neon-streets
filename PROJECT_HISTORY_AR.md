@@ -177,6 +177,48 @@
 
 ## سجل الطلبات والتعديلات المشترك
 
+### 2026-08-21-14 — التحديث الآمن من داخل التطبيق
+
+- المنفذ: Codex
+- طلب المستخدم: تنفيذ ميزة فحص وتنزيل آخر نسخة من GitHub من داخل اللعبة وإصدار
+  نسخة جديدة بها.
+- الحالة: مكتمل برمجيًا ومختبر؛ قيد الرفع إلى GitHub Releases.
+- نقطة البداية: `v0.27.0-alpha` / commit `839a488`.
+- ما تم:
+  - التحقق أن الميزة السابقة كانت خطة فقط وليست موجودة في الكود.
+  - إضافة خيار `GAME UPDATE` قابل للتحديد بالريموت/يد التحكم واللمس داخل Settings،
+    مع حالات واضحة للفحص والتنزيل والتحقق وعدم وجود تحديث.
+  - إضافة فحص GitHub Latest Release واختيار أصل APK المطابق لـ`customerId` فقط.
+  - تنزيل الملف إلى Cache خاص، ورفضه ما لم يتطابق الحجم وSHA-256 واسم الحزمة
+    وversionCode الأعلى ومجموعة شهادات التوقيع وcertificate pin عند توفره.
+  - إضافة ContentProvider خاص محدود القراءة لملف APK المتحقق منه فقط، من دون
+    AndroidX أو زيادة اعتماديات Runtime.
+  - فتح إعداد السماح بالتثبيت عند الحاجة ثم مثبت Android الرسمي؛ لا تثبيت صامت.
+  - رفع النسخة إلى `versionCode 28` / `0.28.0-alpha`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `android/app/build.gradle`
+  - `android/app/src/main/AndroidManifest.xml`
+  - `android/app/src/main/java/com/familyforce/neonstreets/MainActivity.java`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/app/src/main/java/com/familyforce/neonstreets/UpdateManager.java`
+  - `android/app/src/main/java/com/familyforce/neonstreets/UpdateFileProvider.java`
+  - `android/tools/test_in_app_update_contract.py`
+- الاختبارات:
+  - `python3 android/tools/test_in_app_update_contract.py` — PASS (18/18).
+  - `./gradlew :app:assembleDebug :app:lintDebug` — PASS؛ Android Lint بلا أخطاء.
+  - `python3 android/tools/validate_assets.py` — PASS (86 ملفًا في Manifest).
+  - `bash android/tools/test_controller_compat.sh` — PASS.
+  - `bash android/tools/test_customer_release.sh` — PASS؛ Release build/Lint،
+    الهاتف وultrawide وFold وAndroid TV ومسار لاعبين والعقود الكاملة.
+  - اختبار Emulator بريموت TV من Title إلى Settings ثم `GAME UPDATE` — PASS؛
+    ظهرت `UP TO DATE` وبقيت العملية حية دون FATAL/ANR/OOM.
+- Release: APK جاهز للرفع؛ SHA-256
+  `ef27f8b8c0fe7d735a90dae7eabca2dd739f3466b315cbf4e8bc109dd5bda9ab`.
+- ملاحظات/مخاطر: Android لا يسمح بتحديث صامت؛ يجب أن يؤكد المستخدم التثبيت،
+  وقد يفعّل السماح لهذا التطبيق بتثبيت APK مرة واحدة.
+- التالي: commit ثم رفع `v0.28.0-alpha` وتسجيل رابط APK المباشر والـcommit.
+
 ### 2026-08-21-13 — تحويل الفصول إلى أربع مراحل مستقلة
 
 - المنفذ: Codex
