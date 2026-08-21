@@ -2377,7 +2377,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             Bitmap atlas = enemyAnimArt[type];
             if (atlas != null) {
                 enemy.animator.bind(atlas, ENEMY_ANIM_COLUMNS, ENEMY_ANIM_ROWS,
-                        ENEMY_ANIM_CELL_WIDTH, ENEMY_ANIM_CELL_HEIGHT);
+                        atlas.getWidth() / ENEMY_ANIM_COLUMNS,
+                        atlas.getHeight() / ENEMY_ANIM_ROWS);
                 enemy.animator.play(ENEMY_IDLE, 6, 8, true, true);
             }
             return;

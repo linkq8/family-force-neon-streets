@@ -38,6 +38,13 @@ warmup = method_body("preloadAllEnemyAnimationsAsync")
 assert "new Thread" in warmup and "Thread.MIN_PRIORITY" in warmup
 assert "decodeEnemyAnimationType" in warmup
 
+spawn_enemy = method_body("spawnEnemy")
+assert "atlas.getWidth() / ENEMY_ANIM_COLUMNS" in spawn_enemy
+assert "atlas.getHeight() / ENEMY_ANIM_ROWS" in spawn_enemy
+assert "ENEMY_ANIM_CELL_WIDTH, ENEMY_ANIM_CELL_HEIGHT" not in spawn_enemy, (
+    "TV atlases must never be sliced with the 160x192 authoring-cell constants"
+)
+
 expected = {
     "tv/backgrounds/street.png": (960, 536),
     "tv/backgrounds/street_retro.png": (960, 540),

@@ -10,7 +10,7 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.24.0-alpha`، `versionCode 24`.
+- النسخة الجاري تجهيزها للنشر: `v0.25.0-alpha`، `versionCode 25`.
 - الفرع المشترك: `main`.
 - آخر commit وظيفي: `bb61b23d1b263829597d9149ecc5314cbe475d9e`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
@@ -174,6 +174,39 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-21-10 — انقلاب أنصاف رسومات الأعداء في v0.24
+
+- المنفذ: Codex
+- طلب المستخدم: الأعداء يظهر نصفهم السفلي في الأعلى والعلوي في الأسفل، مع حركة
+  غير واضحة وغريبة.
+- الحالة: مكتمل برمجيًا ومختبر؛ جارٍ نشر hotfix.
+- نقطة البداية: `v0.24.0-alpha` / commit `e2a35a9`.
+- ما تم:
+  - تحديد regression: بعد التحميل المسبق أصبح `spawnEnemy()` يرى Atlas TV جاهزًا
+    ويربطه بخلايا الأصل الثابتة `160×192`، رغم أن Atlas TV خلاياه `120×144`.
+  - هذا يجعل `SpriteAnimator` يقص مناطق تتجاوز الصف/العمود الصحيح، فيخلط أنصاف
+    الإطارات والصفوف. المسار اللاحق كان يحسب الأبعاد ديناميكيًا بصورة صحيحة.
+  - استبدال الثوابت في `spawnEnemy()` بحساب `atlas width/6` و`height/6`، فيعمل
+    كل من Atlas TV `720×864` والأصل `960×1152` بنفس المسار الصحيح.
+  - إضافة regression gate يرفض أي عودة لثوابت `160×192` في ربط العدو.
+  - فحص Atlas TV بصريًا وفحص لقطة Runtime بعد الإصلاح؛ الجسم والإطارات كاملة.
+  - رفع النسخة إلى `versionCode 25` / `0.25.0-alpha`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `android/app/build.gradle`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/tools/test_runtime_smoothness_contract.py`
+- الاختبارات:
+  - `test_runtime_smoothness_contract.py` — PASS؛ أبعاد spawn ديناميكية.
+  - `:app:assembleDebug :app:lintDebug` — PASS.
+  - `test_customer_release.sh` — PASS مع محاكي متصل؛ Runtime/TV/remote/مواجهة/
+    ذاكرة وأصول دون FATAL/ANR/OOM.
+  - لقطة Runtime `/tmp/enemy-fix.png` — PASS بصريًا؛ العدو كامل وغير مقلوب.
+- Release: `v0.25.0-alpha` قيد الرفع؛ سيضاف الرابط وSHA بعد النشر.
+- ملاحظات/مخاطر: الصور نفسها سليمة؛ الخلل في حساب source rectangles، فلا حاجة
+  لإعادة إنتاج أو ضغط الرسومات.
+- التالي: نشر APK ثم التحقق على Xiaomi Stick الحقيقي.
 
 ### 2026-08-21-09 — تحسين سلاسة اللعبة كاملة على Android TV
 
@@ -469,8 +502,8 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: تحسين السلاسة الشامل منشور في v0.24 ومختبر آليًا؛ يبقى قياس Xiaomi
-  Stick الحقيقي.
+- الحالة: إصلاح انقلاب رسومات الأعداء مكتمل ومختبر، وجارٍ نشر v0.25؛ يبقى تحقق
+  Xiaomi Stick الحقيقي.
 - آخر عمل: إنشاء نظام السجل المشترك وتعليمات Codex/Claude Code.
 - آخر قرار: `v0.21.0-alpha` لم يحل مشكلة Xiaomi؛ يجري توسيع الاكتشاف ليشمل
   مضيف Xiaomi وأحداث Keyboard مع فصل تصحيح الأزرار عن تصحيح المحاور.
