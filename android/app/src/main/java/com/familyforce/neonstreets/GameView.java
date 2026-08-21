@@ -227,6 +227,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             "ENCOUNTER 1", "ENCOUNTER 2", "ENCOUNTER 3", "ENCOUNTER 4", "ENCOUNTER 5",
             "ENCOUNTER 6", "ENCOUNTER 7", "ENCOUNTER 8", "ENCOUNTER 9"
     };
+    private static final String[] CHAPTER_NAMES = {
+            "NEON MARKET", "TRANSIT NIGHTS", "JUNK MOON"
+    };
+    private static final int[] CHAPTER_ACCENTS = {
+            Color.rgb(255, 194, 70), Color.rgb(70, 224, 216), Color.rgb(183, 232, 106)
+    };
     private static final int[] MAP_ROUTE_COLORS = {
             HERO_COLORS[0], Color.rgb(255, 199, 72), Color.rgb(217, 255, 85)
     };
@@ -265,7 +271,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private final Random random = new Random(0xF4A11L);
 
     private Bitmap background;
-    private Bitmap stageBackground;
+    private final Bitmap[] stageBackgrounds = new Bitmap[3];
     private Bitmap actorAtlas;
     private Bitmap portraits;
     private Bitmap logo;
@@ -1288,9 +1294,24 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         // twice the memory on opaque background alpha channels.
         background = loadOpaqueBitmap("tv/backgrounds/street.png");
         if (background == null) background = loadBitmap("backgrounds/street.png");
-        stageBackground = loadOpaqueBitmap("tv/backgrounds/street_retro.png");
-        if (stageBackground == null) stageBackground = loadBitmap("backgrounds/street_retro.png");
-        if (stageBackground == null) stageBackground = loadBitmap("backgrounds/street_hd.png");
+        stageBackgrounds[0] = loadOpaqueBitmap("tv/backgrounds/stage_market.png");
+        if (stageBackgrounds[0] == null) {
+            stageBackgrounds[0] = loadOpaqueBitmap("tv/backgrounds/street_retro.png");
+        }
+        if (stageBackgrounds[0] == null) {
+            stageBackgrounds[0] = loadBitmap("backgrounds/street_retro.png");
+        }
+        stageBackgrounds[1] = loadOpaqueBitmap("tv/backgrounds/stage_transit.png");
+        if (stageBackgrounds[1] == null) {
+            stageBackgrounds[1] = loadBitmap("backgrounds/stage_transit.png");
+        }
+        stageBackgrounds[2] = loadOpaqueBitmap("tv/backgrounds/stage_harbor.png");
+        if (stageBackgrounds[2] == null) {
+            stageBackgrounds[2] = loadBitmap("backgrounds/stage_harbor.png");
+        }
+        for (int i = 1; i < stageBackgrounds.length; i++) {
+            if (stageBackgrounds[i] == null) stageBackgrounds[i] = stageBackgrounds[0];
+        }
         actorAtlas = loadBitmap("ui/actors.png");
         portraits = loadBitmap("ui/portraits.png");
         logo = loadBitmapSampled(customerProfile.logoAsset, 512, 192);
@@ -2109,7 +2130,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         assistAnimator.clear();
         for (Enemy enemy : enemies) if (enemy != null) enemy.animator.clear();
         recycleBitmap(background);
-        recycleBitmap(stageBackground);
+        for (int i = 0; i < stageBackgrounds.length; i++) {
+            Bitmap bitmap = stageBackgrounds[i];
+            boolean shared = false;
+            for (int j = 0; j < i; j++) shared |= bitmap == stageBackgrounds[j];
+            if (!shared) recycleBitmap(bitmap);
+        }
         recycleBitmap(actorAtlas);
         recycleBitmap(portraits);
         recycleBitmap(logo);
@@ -3855,8 +3881,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setShader(viewportGradient);
         canvas.drawRect(0, 0, virtualWidth, virtualHeight, paint);
         paint.setShader(null);
-        Bitmap scene = (state == PLAY || state == PAUSE || state == GAME_OVER) && stageBackground != null
-                ? stageBackground : background;
+        Bitmap stageScene = currentStageBackground();
+        Bitmap scene = (state == PLAY || state == PAUSE || state == GAME_OVER) && stageScene != null
+                ? stageScene : background;
         if (scene != null) {
             paint.setAlpha(72);
             dest.set(0, 0, virtualWidth, virtualHeight);
@@ -3902,15 +3929,16 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setShader(backdropGradient);
         canvas.drawRect(0, 0, W, H, paint);
         paint.setShader(null);
-        Bitmap scene = (state == PLAY || state == PAUSE || state == GAME_OVER) && stageBackground != null
-                ? stageBackground : background;
+        boolean gameplayScene = state == PLAY || state == PAUSE || state == GAME_OVER;
+        Bitmap stageScene = currentStageBackground();
+        Bitmap scene = gameplayScene && stageScene != null ? stageScene : background;
         if (scene != null) {
             float tileWidth = 640f;
             float base = -(scroll * 0.34f) % tileWidth;
             for (int i = -1; i < 3; i++) {
                 dest.set(base + i * tileWidth, 0, base + (i + 1) * tileWidth, 360);
                 canvas.save();
-                if ((i & 1) != 0 && scene == stageBackground) {
+                if ((i & 1) != 0 && gameplayScene && scene == stageScene) {
                     float center = base + (i + 0.5f) * tileWidth;
                     canvas.scale(-1f, 1f, center, 0f);
                 }
@@ -3922,6 +3950,13 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             canvas.drawRect(0, 110, W, 242, paint);
             paint.setColor(Color.rgb(255, 190, 73));
             for (int i = 0; i < 8; i++) canvas.drawRect(i * 92 - scroll % 92, 150, i * 92 + 34 - scroll % 92, 220, paint);
+        }
+        if (gameplayScene) {
+            int chapter = currentChapter();
+            int accent = CHAPTER_ACCENTS[chapter];
+            paint.setColor(Color.argb(chapter == 1 ? 18 : 24,
+                    Color.red(accent), Color.green(accent), Color.blue(accent)));
+            canvas.drawRect(0, 0, W, H, paint);
         }
         paint.setColor(Color.argb(82, 4, 5, 25));
         canvas.drawRect(0, 0, W, H, paint);
@@ -4293,10 +4328,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             if (x < -80 || x > 700) continue;
             paint.setColor(Color.rgb(18, 20, 48));
             canvas.drawRect(x, 203, x + 5, 315, paint);
-            paint.setColor(i == 3 ? Color.rgb(255, 83, 92) : Color.rgb(255, 194, 70));
+            int signChapter = Math.min(2, Math.max(0, i / 3));
+            paint.setColor(CHAPTER_ACCENTS[signChapter]);
             roundRect(canvas, x - 34, 188, x + 39, 214, 4, paint);
             String sign = i == 0 ? "MARKET" : i == 1 ? "PARK" : i == 2 ? "ALLEY"
-                    : i == 3 ? "JUNK" : i == 4 ? "ROOFTOP" : "DEPOT";
+                    : i == 3 ? "ROOFTOP" : i == 4 ? "DEPOT" : i == 5 ? "TUNNEL"
+                    : i == 6 ? "HARBOR" : i == 7 ? "FREEWAY" : i == 8 ? "PALACE" : "FINALE";
             text(canvas, sign, x + 2, 206,
                     10, Color.rgb(20, 20, 44), true, Paint.Align.CENTER);
         }
@@ -5030,12 +5067,22 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.argb(alpha, 8, 9, 31));
         roundRect(canvas, 154, 102, 486, 163, 12, paint);
         if (zone < ZONE_TRIGGERS.length && zoneActive) {
-            text(canvas, ENCOUNTER_NAMES[zone], W / 2f, 125, 12,
-                    Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
+            text(canvas, CHAPTER_NAMES[currentChapter()] + "  •  " + ENCOUNTER_NAMES[zone], W / 2f, 125, 11,
+                    CHAPTER_ACCENTS[currentChapter()], true, Paint.Align.CENTER);
             text(canvas, AREA_NAMES[zone], W / 2f, 151, 22, Color.WHITE, true, Paint.Align.CENTER);
         } else if (zone < ZONE_TRIGGERS.length) {
             text(canvas, "ROUTE OPEN", W / 2f, 140, 22, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
         }
+    }
+
+    private int currentChapter() {
+        if (zone >= ZONE_TRIGGERS.length) return CHAPTER_NAMES.length - 1;
+        return Math.min(CHAPTER_NAMES.length - 1, Math.max(0, zone / 3));
+    }
+
+    private Bitmap currentStageBackground() {
+        Bitmap selected = stageBackgrounds[currentChapter()];
+        return selected != null ? selected : stageBackgrounds[0];
     }
 
     private void drawPause(Canvas canvas) {

@@ -177,6 +177,52 @@
 
 ## سجل الطلبات والتعديلات المشترك
 
+### 2026-08-21-12 — تنويع المراحل بصريًا
+
+- المنفذ: Codex
+- طلب المستخدم: "لنبدأ تنويع المراحل، لأنها هي التي ستبين أننا طورنا اللعبة فعلاً."
+- الحالة: مكتمل برمجيًا ومختبر؛ جارٍ نشر `v0.26.0-alpha`.
+- نقطة البداية: `v0.25.0-alpha` / commit `57893a0`.
+- ما تم:
+  - بدء مراجعة نظام رسم العالم والمناطق التسع وعقد أصول Android TV.
+  - اعتماد صور ثابتة فقط ومنع أي إنتاج فيديو، مع إبقاء القتال والمنطق الحاليين.
+  - تقسيم المسار إلى ثلاثة فصول بصرية: السوق للمناطق 1–3، محطة/نفق النقل
+    للمناطق 4–6، والميناء/قصر الخردة للمناطق 7–9.
+  - إنشاء خلفيتي النقل والميناء كصور ثابتة، مع محاولة تصحيح واحدة لإزالة النصوص
+    والشخصيات غير المطلوبة، وفحص النتيجة بصريًا قبل الدمج.
+  - إضافة أسماء وألوان الفصول ولافتات صحيحة لكل منطقة، مع انتقال فوري بلا فك صور
+    أو I/O أثناء القتال.
+  - إنشاء نسخ TV بقياس `800×450` وتحميل الخلفيات الثلاث بصيغة `RGB_565`؛ أصبحت
+    ميزانية صور القتال المتحركة `27.72 MiB`.
+  - رفع النسخة إلى `versionCode 26` / `0.26.0-alpha`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `android/app/build.gradle`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/app/src/main/assets/backgrounds/stage_transit.png`
+  - `android/app/src/main/assets/backgrounds/stage_harbor.png`
+  - `android/app/src/main/assets/tv/backgrounds/stage_market.png`
+  - `android/app/src/main/assets/tv/backgrounds/stage_transit.png`
+  - `android/app/src/main/assets/tv/backgrounds/stage_harbor.png`
+  - `android/app/src/main/assets/asset_manifest.json`
+  - `android/design/assets.csv`
+  - `android/tools/generate_tv_optimized_assets.py`
+  - `android/tools/validate_assets.py`
+  - `android/tools/test_runtime_smoothness_contract.py`
+- الاختبارات:
+  - `validate_assets.py` — PASS؛ 53 PNG أساسيًا و8 Atlases و86 ملف manifest.
+  - `test_runtime_smoothness_contract.py` — PASS؛ `27.72 MiB`.
+  - `:app:assembleDebug :app:lintDebug` — PASS.
+  - `test_full_stage_runtime.sh` — PASS؛ المناطق 1–9 حتى النتائج.
+  - فحص صور Runtime للفصول الثلاث — PASS؛ السوق/النقل/قصر الخردة تظهر منفصلة.
+  - `test_customer_release.sh` — PASS؛ الهاتف/Fold/Android TV/ريموت/لاعبان
+    والذاكرة دون FATAL/ANR/OOM.
+- Release: مرشح APK SHA-256
+  `8377dc0c27bcb931036fb32734c844fbd73bcede761a4628071dd516238e856c`؛ النشر قيد التنفيذ.
+- ملاحظات/مخاطر: اختبار المناطق آلي على المحاكي؛ يبقى الاختبار البصري الحقيقي
+  للمراحل الجديدة على Xiaomi Stick مفيدًا، لكنه ليس حاجزًا برمجيًا.
+- التالي: commit ثم GitHub Release، وبعده اختبار بصري للاعبين على Xiaomi Stick.
+
 ### 2026-08-21-11 — اعتماد v0.25 على Xiaomi والمرحلة التالية
 
 - المنفذ: Codex

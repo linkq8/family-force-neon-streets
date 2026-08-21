@@ -51,6 +51,22 @@
       "sha256": "7730934f39fe1f0c68caad57879e4c33156774a215ab5bba1a63dac58db06273"
     },
     {
+      "path": "backgrounds/stage_harbor.png",
+      "bytes": 1840444,
+      "sha256": "af5985645756cbdd8904c38b572f05de5d126e63662b27f6098573045d8520b6",
+      "width": 1376,
+      "height": 768,
+      "mode": "RGB"
+    },
+    {
+      "path": "backgrounds/stage_transit.png",
+      "bytes": 1774767,
+      "sha256": "89068b4fa0f2515a7d3c6a77d7489781e179929f5da157cdcbf09d94f8577e34",
+      "width": 1376,
+      "height": 768,
+      "mode": "RGB"
+    },
+    {
       "path": "backgrounds/street.png",
       "bytes": 1111519,
       "sha256": "58f055c80a9572fa5c20de15c3448780811639d7ae0e19216f7d7c7ea2086087",
@@ -441,6 +457,30 @@
       "width": 192,
       "height": 192,
       "mode": "RGBA"
+    },
+    {
+      "path": "tv/backgrounds/stage_harbor.png",
+      "bytes": 617985,
+      "sha256": "21c04fddc39628a8c0b76665614902bf23fc0a087a2d5cab555c6028d8dcdf43",
+      "width": 800,
+      "height": 450,
+      "mode": "RGB"
+    },
+    {
+      "path": "tv/backgrounds/stage_market.png",
+      "bytes": 318731,
+      "sha256": "cc1c2d86c061d7477256cc006ff298ca960cd1735f1568550b5965cb320bbb0b",
+      "width": 800,
+      "height": 450,
+      "mode": "RGB"
+    },
+    {
+      "path": "tv/backgrounds/stage_transit.png",
+      "bytes": 537615,
+      "sha256": "f03ca5f09fa7759dc209e36bc2ddd7e5ecedac9f7df79e0eb80506591e796086",
+      "width": 800,
+      "height": 450,
+      "mode": "RGB"
     },
     {
       "path": "tv/backgrounds/street.png",
