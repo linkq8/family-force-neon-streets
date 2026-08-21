@@ -284,12 +284,16 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private Bitmap breakFxArt;
     private Bitmap selectedHeroAnimArt;
     private Bitmap assistAnimArt;
+    private final Bitmap[] assistAnimCache = new Bitmap[2];
     private final Rect[] selectedHeroAnimSources = new Rect[HERO_ANIM_ROWS * HERO_ANIM_COLUMNS];
     private final Rect[] assistAnimSources = new Rect[HERO_ANIM_COLUMNS];
+    private final Rect[][] assistAnimSourceCache = {
+            new Rect[HERO_ANIM_COLUMNS], new Rect[HERO_ANIM_COLUMNS]
+    };
     private int loadedHeroAnim = -1;
     private int loadedPlayer2Anim = -1;
     private boolean player2AnimSharesPlayerAnim = false;
-    private int loadedAssistHero = -1;
+    private final int[] loadedAssistHeroes = {-1, -1};
     private final SpriteAnimator playerAnimator = new SpriteAnimator();
     private final SpriteAnimator assistAnimator = new SpriteAnimator();
     private final SpriteAnimator player2Animator = new SpriteAnimator();
@@ -640,6 +644,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 selectedHeroAnimArt = null;
                 playerAnimator.clear();
                 loadedHeroAnim = -1;
+                releaseAssistAnimationRows();
             } else if (nextState == SELECT) {
                 selectionTransitionInProgress = false;
                 clearInputs();
@@ -1153,6 +1158,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             }
             selectedCompanion1 = sanitizeCompanionIndex(selectedCompanion1, selectedHero);
             selectedCompanion2 = sanitizeCompanionIndex(selectedCompanion2, selectedHero2);
+            preloadAssistAnimationRows();
             prefs.edit()
                     .putInt("selected_hero_p1", selectedHero)
                     .putInt("selected_hero_p2", selectedHero2)
@@ -1648,12 +1654,15 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         }
     }
 
-    private synchronized void loadAssistAnimationRow(int hero) {
+    private synchronized void loadAssistAnimationRow(int ownerSlot, int hero) {
+        ownerSlot = ownerSlot == 1 ? 1 : 0;
         hero = sanitizeHeroIndex(hero);
-        if (loadedAssistHero == hero) return;
-        if (assistAnimArt != null && !assistAnimArt.isRecycled()) assistAnimArt.recycle();
-        assistAnimArt = null;
-        assistAnimator.clear();
+        Bitmap cached = assistAnimCache[ownerSlot];
+        if (loadedAssistHeroes[ownerSlot] == hero && cached != null && !cached.isRecycled()) return;
+        recycleBitmap(cached);
+        assistAnimCache[ownerSlot] = null;
+        loadedAssistHeroes[ownerSlot] = -1;
+        Arrays.fill(assistAnimSourceCache[ownerSlot], null);
         BitmapRegionDecoder decoder = null;
         String stem = customerProfile.heroAssetStems[hero] + "_anim.png";
         String path = useReducedMemoryAssets() ? "tv/heroes/" + stem : "heroes/" + stem;
@@ -1664,33 +1673,65 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 int cellHeight = decoder.getHeight() / HERO_ANIM_ROWS;
                 Rect row = new Rect(0, HERO_LINK * cellHeight,
                         decoder.getWidth(), (HERO_LINK + 1) * cellHeight);
-                assistAnimArt = decoder.decodeRegion(row, null);
-                if (assistAnimArt != null) assistAnimArt.prepareToDraw();
+                assistAnimCache[ownerSlot] = decoder.decodeRegion(row, null);
+                if (assistAnimCache[ownerSlot] != null) assistAnimCache[ownerSlot].prepareToDraw();
             }
         } catch (IOException | IllegalArgumentException ignored) {
-            assistAnimArt = null;
+            assistAnimCache[ownerSlot] = null;
         } catch (OutOfMemoryError ignored) {
-            assistAnimArt = null;
+            assistAnimCache[ownerSlot] = null;
         } finally {
             if (decoder != null && !decoder.isRecycled()) decoder.recycle();
         }
-        if (assistAnimArt != null) {
+        Bitmap rowArt = assistAnimCache[ownerSlot];
+        if (rowArt != null) {
             try {
-                Arrays.fill(assistAnimSources, null);
-                cacheHeroAnimSourceRects(assistAnimArt, assistAnimSources, 1, HERO_ANIM_COLUMNS);
-                assistAnimator.bind(assistAnimArt, HERO_ANIM_COLUMNS, 1,
-                        assistAnimArt.getWidth() / HERO_ANIM_COLUMNS,
-                        assistAnimArt.getHeight());
-                assistAnimator.play(0, 8, 14, false, true);
+                cacheHeroAnimSourceRects(rowArt, assistAnimSourceCache[ownerSlot],
+                        1, HERO_ANIM_COLUMNS);
             } catch (RuntimeException | OutOfMemoryError loadFailure) {
                 Log.w(TAG, "Companion animation fell back to compact art", loadFailure);
-                if (!assistAnimArt.isRecycled()) assistAnimArt.recycle();
-                assistAnimArt = null;
-                assistAnimator.clear();
-                Arrays.fill(assistAnimSources, null);
+                recycleBitmap(rowArt);
+                assistAnimCache[ownerSlot] = null;
+                Arrays.fill(assistAnimSourceCache[ownerSlot], null);
             }
         }
-        loadedAssistHero = hero;
+        if (assistAnimCache[ownerSlot] != null) loadedAssistHeroes[ownerSlot] = hero;
+    }
+
+    private synchronized void preloadAssistAnimationRows() {
+        int p1 = sanitizeCompanionIndex(selectedCompanion1, safeHeroIndex(selectedHero));
+        loadAssistAnimationRow(0, p1);
+        if (twoPlayerMode) {
+            int p2 = sanitizeCompanionIndex(selectedCompanion2, safeHeroIndex(selectedHero2));
+            loadAssistAnimationRow(1, p2);
+        }
+    }
+
+    private synchronized void bindPreloadedAssistAnimation(int ownerSlot, int hero) {
+        ownerSlot = ownerSlot == 1 ? 1 : 0;
+        assistAnimator.clear();
+        assistAnimArt = null;
+        Arrays.fill(assistAnimSources, null);
+        Bitmap cached = assistAnimCache[ownerSlot];
+        if (loadedAssistHeroes[ownerSlot] != hero || cached == null || cached.isRecycled()) return;
+        assistAnimArt = cached;
+        System.arraycopy(assistAnimSourceCache[ownerSlot], 0, assistAnimSources, 0,
+                HERO_ANIM_COLUMNS);
+        assistAnimator.bind(cached, HERO_ANIM_COLUMNS, 1,
+                cached.getWidth() / HERO_ANIM_COLUMNS, cached.getHeight());
+        assistAnimator.play(0, 8, 14, false, true);
+    }
+
+    private synchronized void releaseAssistAnimationRows() {
+        assistAnimator.clear();
+        assistAnimArt = null;
+        Arrays.fill(assistAnimSources, null);
+        for (int slot = 0; slot < assistAnimCache.length; slot++) {
+            recycleBitmap(assistAnimCache[slot]);
+            assistAnimCache[slot] = null;
+            loadedAssistHeroes[slot] = -1;
+            Arrays.fill(assistAnimSourceCache[slot], null);
+        }
     }
 
     @Override
@@ -1827,11 +1868,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     synchronized void trimMemory(int level) {
         if (level < android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW) return;
-        if (!assist.active && assistAnimArt != null) {
-            assistAnimator.clear();
-            recycleBitmap(assistAnimArt);
-            assistAnimArt = null;
-            loadedAssistHero = -1;
+        if (!assist.active && (assistAnimCache[0] != null || assistAnimCache[1] != null)) {
+            releaseAssistAnimationRows();
         }
         if (state != PLAY) {
             unloadPlayer2Animation(false);
@@ -2062,7 +2100,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         recycleBitmap(breakFxArt);
         recycleBitmap(selectedHeroAnimArt);
         recycleBitmap(player2AnimArt);
-        recycleBitmap(assistAnimArt);
+        releaseAssistAnimationRows();
     }
 
     boolean handleBack() {
@@ -2159,6 +2197,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         loadSelectedHeroAnimations();
         if (twoPlayerMode) loadPlayer2Animations();
         else unloadPlayer2Animation(false);
+        preloadAssistAnimationRows();
         if (playerAnimator.isBound()) {
             playerAnimator.play(HERO_IDLE, HERO_ANIM_COLUMNS, 8, true, true);
         }
@@ -3563,7 +3602,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         int companion = ownerSlot == 1
                 ? sanitizeCompanionIndex(selectedCompanion2, ownerHero)
                 : sanitizeCompanionIndex(selectedCompanion1, ownerHero);
-        loadAssistAnimationRow(companion);
+        bindPreloadedAssistAnimation(ownerSlot, companion);
         assist.active = true;
         assist.ownerSlot = ownerSlot;
         assist.hero = companion;

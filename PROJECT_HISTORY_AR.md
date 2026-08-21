@@ -10,7 +10,7 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.22.0-alpha`، `versionCode 22`.
+- النسخة الجاري تجهيزها للنشر: `v0.23.0-alpha`، `versionCode 23`.
 - الفرع المشترك: `main`.
 - آخر commit وظيفي: `13783bff59d9bdac55d51a77e9fdab837660af8a`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
@@ -174,6 +174,39 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-21-08 — إزالة تعليق استدعاء Link جذريًا
+
+- المنفذ: Codex
+- طلب المستخدم: حل تعليق استدعاء البطل المساعد على Xiaomi Stick بشكل جذري.
+- الحالة: مكتمل برمجيًا ومختبر؛ جارٍ نشر الإصدار.
+- نقطة البداية: `v0.22.0-alpha` / commit `db70be0`.
+- ما تم:
+  - اعتماد الحل: تجهيز صفوف Link قبل القتال والاحتفاظ بها طوال الجولة، ومنع أي
+    فك PNG أو مسح بكسلات داخل `startAssist()`.
+  - إضافة cache مستقل لصف المساعد الخاص بـP1 وصف المساعد الخاص بـP2، مع حدود
+    الإطارات المحسوبة مسبقًا.
+  - أصبح `startAssist()` يربط Bitmap جاهزًا فقط بلا I/O أو decode أو pixel scan.
+  - الاحتفاظ بالصفوف طوال الجولة وإعادة استخدامها؛ تحريرها عند العودة للقائمة.
+  - عند ضغط الذاكرة أثناء اللعب تُحرر الصفوف فقط إذا لم يكن المساعد نشطًا، وبعدها
+    يستخدم الاستدعاء الرسم الاحتياطي بلا إعادة تحميل متزامنة أو تعليق.
+  - رفع النسخة إلى `versionCode 23` / `0.23.0-alpha`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `android/app/build.gradle`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/tools/test_customer_release.sh`
+  - `android/tools/test_link_preload_contract.py`
+- الاختبارات:
+  - `tools/test_link_preload_contract.py` — PASS؛ يمنع decode/recycle داخل مسار Link.
+  - `:app:assembleDebug :app:lintDebug` — PASS؛ Lint نظيف.
+  - `tools/test_customer_release.sh ../customers/family-current` — PASS مع محاكي
+    Android متصل؛ البناء والتوقيع والأصول والذاكرة وأول مواجهة والسلاح والصوت
+    والـcheckpoint وRuntime QA كلها ناجحة.
+- Release: `v0.23.0-alpha` قيد الرفع؛ سيضاف الرابط وSHA بعد النشر.
+- ملاحظات/مخاطر: يجب موازنة ذاكرة صفين صغيرين للاعبين مع ضغط الذاكرة؛ عند trim
+  ستستخدم اللعبة fallback جاهزًا بدل إعادة التحميل داخل القتال.
+- التالي: نشر APK ثم قياس الاستدعاء على Xiaomi Stick الحقيقي.
 
 ### 2026-08-21-07 — تشخيص تعليق Link على Xiaomi Stick
 
@@ -387,8 +420,8 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: إصلاح DualSense/Xiaomi الموسع منشور في v0.22 ومختبر آليًا؛ يبقى
-  اختبار العتاد الحقيقي.
+- الحالة: إصلاح تعليق Link مكتمل ومختبر آليًا، وجارٍ نشر v0.23؛ يبقى قياسه على
+  Xiaomi Stick الحقيقي.
 - آخر عمل: إنشاء نظام السجل المشترك وتعليمات Codex/Claude Code.
 - آخر قرار: `v0.21.0-alpha` لم يحل مشكلة Xiaomi؛ يجري توسيع الاكتشاف ليشمل
   مضيف Xiaomi وأحداث Keyboard مع فصل تصحيح الأزرار عن تصحيح المحاور.
