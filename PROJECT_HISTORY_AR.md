@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة الجاري تجهيزها للنشر: `v0.25.0-alpha`، `versionCode 25`.
+- النسخة المنشورة: `v0.25.0-alpha`، `versionCode 25`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `bb61b23d1b263829597d9149ecc5314cbe475d9e`.
+- آخر commit وظيفي: `72987a48b4b33d8b333df9548f3026116c7ab08a`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.24.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.24.0-alpha/family-force-family-current.apk
-- SHA-256: `ed08fd254c9b5fc129112c9d22f9f87596dec3c3370dfab9af4dd025858c562a`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.25.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.25.0-alpha/family-force-family-current.apk
+- SHA-256: `81b1cd41d0af2f79a2a5ce5c64ef7dc4345afef8204688097d918e0f83548e45`.
 - حالة QA: بناء Release وLint وفحوص الهاتف/Fold/Android TV ومسار لاعبين ناجحة.
 - اختبار المناطق: مسار تطويري آلي مرّ بالمناطق 1–9 حتى شاشة النتائج بنجاح.
 - التشخيص: يوجد Flight Recorder محلي خفيف يحفظ آخر منطقة، P1/P2، العدو،
@@ -203,7 +203,11 @@
   - `test_customer_release.sh` — PASS مع محاكي متصل؛ Runtime/TV/remote/مواجهة/
     ذاكرة وأصول دون FATAL/ANR/OOM.
   - لقطة Runtime `/tmp/enemy-fix.png` — PASS بصريًا؛ العدو كامل وغير مقلوب.
-- Release: `v0.25.0-alpha` قيد الرفع؛ سيضاف الرابط وSHA بعد النشر.
+- Release: `v0.25.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.25.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.25.0-alpha/family-force-family-current.apk
+- SHA-256: `81b1cd41d0af2f79a2a5ce5c64ef7dc4345afef8204688097d918e0f83548e45`.
+- commit: `72987a48b4b33d8b333df9548f3026116c7ab08a`.
 - ملاحظات/مخاطر: الصور نفسها سليمة؛ الخلل في حساب source rectangles، فلا حاجة
   لإعادة إنتاج أو ضغط الرسومات.
 - التالي: نشر APK ثم التحقق على Xiaomi Stick الحقيقي.
@@ -502,8 +506,8 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: إصلاح انقلاب رسومات الأعداء مكتمل ومختبر، وجارٍ نشر v0.25؛ يبقى تحقق
-  Xiaomi Stick الحقيقي.
+- الحالة: إصلاح انقلاب رسومات الأعداء منشور في v0.25 ومختبر؛ يبقى تحقق Xiaomi
+  Stick الحقيقي.
 - آخر عمل: إنشاء نظام السجل المشترك وتعليمات Codex/Claude Code.
 - آخر قرار: `v0.21.0-alpha` لم يحل مشكلة Xiaomi؛ يجري توسيع الاكتشاف ليشمل
   مضيف Xiaomi وأحداث Keyboard مع فصل تصحيح الأزرار عن تصحيح المحاور.
