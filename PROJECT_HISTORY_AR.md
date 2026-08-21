@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.29.0-alpha`، `versionCode 29`.
+- النسخة المنشورة: `v0.29.1-alpha`، `versionCode 30`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `7af42f21e1beab663911a3746840debad23aa8d7`.
+- آخر commit وظيفي: `1b420082ff5e030abfa1e530012e15a9add09d43`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.29.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.29.0-alpha/family-force-family-current.apk
-- SHA-256: `8b3de3e44b4ad702eba62484921243177f15d0c2560c4c957453ba155f8f939d`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.29.1-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.29.1-alpha/family-force-family-current.apk
+- SHA-256: `ddf07a0355f04b40536e1b75ade913eb3c46c335174d7741b101c3715cc4b4de`.
 - حالة QA: بناء Release وLint وفحوص الهاتف/Fold/Android TV ومسار لاعبين ناجحة.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
   استدعاء الشخصيات الإضافية ونظافة الرسومات والحركة.
@@ -25,8 +25,8 @@
   السلاح، الحركة والذاكرة، ويحفظ تقرير الجلسة السابقة إذا انقطعت.
 - نتيجة اختبار Shield Pro: المناطق 1–9، الموت/الإحياء، الإغلاق/الفتح، فصل اليد،
   الريموت والتقاط الأسلحة تعمل دون خروج غير طبيعي.
-- إصلاح قيد تحقق المستخدم: توسيع توافق DualSense على Xiaomi ليشمل Firmware الذي
-  لا يعلن نطاق trigger المكسور أو يرسل الأزرار كمصدر Keyboard.
+- إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
+  أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
 - العمل التالي الموصى به: تجربة Striker على Xiaomi Stick، ثم فصل تعريفات الأعداء
   وتشكيلات المراحل وتحميل أطالس كل مرحلة قبل إضافة Shield Guard كعدو سادس.
@@ -181,17 +181,39 @@
 
 - المنفذ: Codex
 - طلب المستخدم: وحدة تحكم PS5 أصبحت لا تعمل على Nvidia Shield Pro.
-- الحالة: قيد التنفيذ.
+- الحالة: مكتمل — نُشر تصحيح عاجل مستقل.
 - نقطة البداية: `v0.29.0-alpha` / commit `7af42f2`.
-- ما سيتم: تدقيق طبقة توافق وحدات التحكم ومسارات KeyEvent/MotionEvent واختبارات
-  Android TV، ثم إصلاح محدود يحافظ على الريموت واللمس وبقية أيدي التحكم.
-- الملفات المعدلة حتى الآن:
+- ما تم:
+  - تحديد سببين للتراجع: الاعتماد على اسم الجهاز وحده، والاعتماد على مصدر الحدث
+    اللحظي بدل قدرات InputDevice؛ كلاهما غير موثوق على بعض نسخ Shield OEM.
+  - التعرف على PlayStation بمعرّف Sony `0x054c` إضافة إلى الاسم.
+  - دمج مصادر الجهاز الفعلية مع مصدر الحدث، كي يُعامل زر DualSense المعلن كـ
+    Keyboard كزر Gamepad ويحافظ على هوية P1/P2.
+  - تطبيع scan codes القياسية 304–317 على Shield والتخطيطات القديمة؛ وهي تطابق
+    خريطة AOSP الرسمية لـDualSense ولا تغيّر Xbox/Joy-Con أو الريموت.
+  - رفع `versionCode` إلى 30 و`versionName` إلى `0.29.1-alpha`.
+- الملفات المعدلة:
   - `PROJECT_HISTORY_AR.md`
-- الاختبارات: قيد التنفيذ.
-- Release: لا يوجد بعد.
-- ملاحظات/مخاطر: يجب عدم تطبيق fallback الخاص بتخطيط Xiaomi على Shield أو على
-  أحداث DualSense القياسية، وعدم تسجيل الجهاز كـP2 خطأً بسبب مصادر أحداث مختلفة.
-- التالي: تحديد سبب التراجع، بناء واختبار APK إصلاح، ثم نشره فور نجاح QA.
+  - `android/app/build.gradle`
+  - `android/app/src/main/java/com/familyforce/neonstreets/ControllerCompat.java`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/tests/ControllerCompatMain.java`
+- الاختبارات:
+  - `bash android/tools/test_controller_compat.sh` — PASS؛ يتضمن Sony vendor/OEM
+    name وKeyboard-source scan codes وShield لا يستخدم Xiaomi fallback.
+  - `:app:assembleDebug :app:lintDebug` — PASS.
+  - `bash android/tools/test_customer_release.sh ../customers/family-current` —
+    PASS؛ Release/Lint والأصول والهاتف وFold وAndroid TV ومسار الريموت للاعبين.
+- Release:
+  - tag: `v0.29.1-alpha`
+  - commit: `1b420082ff5e030abfa1e530012e15a9add09d43`
+  - https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.29.1-alpha
+  - https://github.com/linkq8/family-force-neon-streets/releases/download/v0.29.1-alpha/family-force-family-current.apk
+  - SHA-256: `ddf07a0355f04b40536e1b75ade913eb3c46c335174d7741b101c3715cc4b4de`
+- ملاحظات/مخاطر: المحاكي لا يستطيع انتحال Bluetooth HID الحقيقي؛ تبقى تجربة
+  DualSense الفعلية على Shield بوابة قبول المستخدم، لكن مسارات التراجع مغطاة آليًا.
+- التالي: تثبيت `v0.29.1-alpha` على Shield وتجربة D-pad والعصا وCross/Options
+  والقائمة والقتال؛ ثم العودة لخطة EnemyArchetype/StageRoster.
 
 ### 2026-08-21-19 — تحديد الخطوة التالية بعد Striker
 
@@ -878,9 +900,9 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.29.0-alpha` منشور؛ أضيف Striker كخامس نوع عدو متحرك بالكامل.
-- آخر عمل: إنتاج 36 إطار Striker عبر ImageGen المدمج بلا فيديو، ودمجه بأربع
-  مواجهات مع AI/سرعة/هجوم/HP مستقلة ونسخة TV محسنة.
+- الحالة: `v0.29.1-alpha` منشور؛ تصحيح DualSense العاجل لـNvidia Shield جاهز.
+- آخر عمل: جعل اكتشاف PlayStation يعتمد على Sony vendor ID والاسم، وتوحيد مصدر
+  الحدث مع مصادر InputDevice وتطبيع scan codes الرسمية دون تغيير بقية الأيدي.
 - آخر قرار: استخدام ImageGen المدمج للأعداء الجدد، وإنتاج عدو واحد في كل بوابة
   قبول أولية قبل توسيع الدفعة، مع إبقاء ميزانية TV تحت 31 MiB.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
