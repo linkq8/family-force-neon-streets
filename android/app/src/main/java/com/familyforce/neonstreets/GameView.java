@@ -713,6 +713,41 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN;
     }
 
+    private boolean hasLegacyDualSenseLayout(InputDevice device) {
+        if (device == null
+                || ControllerCompat.family(device.getName()) != ControllerCompat.Family.PLAYSTATION) {
+            return false;
+        }
+        InputDevice.MotionRange left = device.getMotionRange(MotionEvent.AXIS_LTRIGGER);
+        InputDevice.MotionRange right = device.getMotionRange(MotionEvent.AXIS_RTRIGGER);
+        // With the missing DualSense fallback layout, Generic.kl mistakes the
+        // signed right-stick axes for triggers. Proper triggers start at 0.
+        return left != null && right != null
+                && left.getMin() < -0.25f && right.getMin() < -0.25f;
+    }
+
+    private int normalizeControllerKey(InputDevice device, int keyCode, int scanCode) {
+        String name = device == null ? "" : device.getName();
+        return ControllerCompat.normalizeGamepadKey(
+                name, keyCode, scanCode, hasLegacyDualSenseLayout(device));
+    }
+
+    private float controllerTriggerValue(MotionEvent event, boolean left) {
+        InputDevice device = event.getDevice();
+        if (hasLegacyDualSenseLayout(device)) {
+            // Missing fallback .kl: physical L2/R2 arrive on the axes that
+            // Generic.kl labels Z/RZ. Normalize their signed range to 0..1.
+            int axis = left ? MotionEvent.AXIS_Z : MotionEvent.AXIS_RZ;
+            InputDevice.MotionRange range = device == null ? null : device.getMotionRange(axis);
+            if (range == null) return 0f;
+            float span = Math.max(0.0001f, range.getMax() - range.getMin());
+            return clamp((event.getAxisValue(axis) - range.getMin()) / span, 0f, 1f);
+        }
+        int trigger = left ? MotionEvent.AXIS_LTRIGGER : MotionEvent.AXIS_RTRIGGER;
+        int alias = left ? MotionEvent.AXIS_BRAKE : MotionEvent.AXIS_GAS;
+        return Math.max(event.getAxisValue(trigger), event.getAxisValue(alias));
+    }
+
     private static boolean isDpadNavigationKey(int keyCode) {
         return keyCode == KeyEvent.KEYCODE_DPAD_LEFT || keyCode == KeyEvent.KEYCODE_DPAD_RIGHT
                 || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN
@@ -5521,8 +5556,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             if (event == null) return super.onKeyDown(keyCode, event);
             InputDevice inputDevice = event.getDevice();
             if (isGamepadSource(event.getSource())) {
-                keyCode = ControllerCompat.normalizeKey(
-                        inputDevice == null ? "" : inputDevice.getName(), keyCode);
+                keyCode = normalizeControllerKey(inputDevice, keyCode, event.getScanCode());
             }
             int source = event.getSource();
             long now = SystemClock.uptimeMillis();
@@ -5691,8 +5725,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             if (event == null) return super.onKeyUp(keyCode, event);
             InputDevice inputDevice = event.getDevice();
             if (isGamepadSource(event.getSource())) {
-                keyCode = ControllerCompat.normalizeKey(
-                        inputDevice == null ? "" : inputDevice.getName(), keyCode);
+                keyCode = normalizeControllerKey(inputDevice, keyCode, event.getScanCode());
             }
             int source = event.getSource();
             int controllerSlot = resolveControllerSlot(event.getDeviceId(), source);
@@ -6101,12 +6134,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             }
             p2Left = p2x < -0.2f; p2Right = p2x > 0.2f;
             p2Up = p2y < -0.2f; p2Down = p2y > 0.2f;
-            boolean nextP2LeftTrigger = Math.max(
-                    event.getAxisValue(MotionEvent.AXIS_LTRIGGER),
-                    event.getAxisValue(MotionEvent.AXIS_BRAKE)) > 0.55f;
-            boolean nextP2RightTrigger = Math.max(
-                    event.getAxisValue(MotionEvent.AXIS_RTRIGGER),
-                    event.getAxisValue(MotionEvent.AXIS_GAS)) > 0.55f;
+            boolean nextP2LeftTrigger = controllerTriggerValue(event, true) > 0.55f;
+            boolean nextP2RightTrigger = controllerTriggerValue(event, false) > 0.55f;
             if (nextP2LeftTrigger && !p2LeftTriggerDown) p2ThrowQueued = true;
             if (nextP2RightTrigger && !p2RightTriggerDown) p2HeavyKickQueued = true;
             p2LeftTriggerDown = nextP2LeftTrigger;
@@ -6144,12 +6173,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         }
         if (Math.abs(hatX) > Math.abs(moveX)) moveX = hatX;
         if (Math.abs(hatY) > Math.abs(moveY)) moveY = hatY;
-        boolean nextLeftTrigger = Math.max(
-                event.getAxisValue(MotionEvent.AXIS_LTRIGGER),
-                event.getAxisValue(MotionEvent.AXIS_BRAKE)) > 0.55f;
-        boolean nextRightTrigger = Math.max(
-                event.getAxisValue(MotionEvent.AXIS_RTRIGGER),
-                event.getAxisValue(MotionEvent.AXIS_GAS)) > 0.55f;
+        boolean nextLeftTrigger = controllerTriggerValue(event, true) > 0.55f;
+        boolean nextRightTrigger = controllerTriggerValue(event, false) > 0.55f;
         if (state == PLAY) {
             if (nextLeftTrigger && !leftTriggerDown) throwQueued = true;
             if (nextRightTrigger && !rightTriggerDown) heavyKickQueued = true;

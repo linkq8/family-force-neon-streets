@@ -10,7 +10,8 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.20.0-alpha`، `versionCode 20`.
+- النسخة المبنية للاختبار: `v0.21.0-alpha`، `versionCode 21`.
+- آخر نسخة منشورة قبل هذا العمل: `v0.20.0-alpha`.
 - الفرع المشترك: `main`.
 - آخر commit وظيفي: `e845b66202d563ef9aa1bb2075cc04ac5b001125`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
@@ -23,7 +24,8 @@
   السلاح، الحركة والذاكرة، ويحفظ تقرير الجلسة السابقة إذا انقطعت.
 - نتيجة اختبار Shield Pro: المناطق 1–9، الموت/الإحياء، الإغلاق/الفتح، فصل اليد،
   الريموت والتقاط الأسلحة تعمل دون خروج غير طبيعي.
-- المشكلة المفتوحة المؤكدة: لا يستطيع المستخدم رمي السلاح رغم وجود مسار L2/THROW.
+- إصلاح قيد تحقق المستخدم: توافق DualSense القديم على Xiaomi Stick ورمي السلاح
+  عبر L2 أو Touchpad.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
 - العمل التالي الموصى به: إصلاح رمي السلاح واختباره لكل من P1/P2 ووحدات التحكم،
   ثم إغلاق بوابة Xiaomi/Checkpoint وإصدار `v0.21.0-alpha`.
@@ -174,6 +176,41 @@
 
 ## سجل الطلبات والتعديلات المشترك
 
+### 2026-08-21-05 — خلل أزرار DualSense على Xiaomi Stick
+
+- المنفذ: Codex
+- طلب المستخدم: ليست كل أزرار PS5 DualSense تعمل بشكل صحيح على Xiaomi Stick؛
+  فحص التوافق وإصلاحه.
+- الحالة: مكتمل برمجيًا؛ بانتظار تحقق المستخدم على Xiaomi Stick الحقيقي.
+- نقطة البداية: `v0.20.0-alpha` / commit `2cb0810`.
+- ما تم:
+  - تبيّن من AOSP أن Android أضاف ملف DualSense fallback للأجهزة التي لا تحمل
+    `CONFIG_HID_PLAYSTATION`، بينما صور TV القديمة قد تفتقده.
+  - إضافة اكتشاف ديناميكي للتخطيط المكسور من نطاق L2/R2 الموقع `-1..1` بدل `0..1`.
+  - إعادة تعيين scan codes `304..317` لأزرار الوجه والكتف وOptions/Share والعصوين.
+  - تصحيح L2/R2 من محوري Z/RZ في التخطيط القديم، مع إبقاء المسار القياسي كما هو.
+  - إضافة ضغط Touchpad كاختصار احتياطي للرمي على DualSense.
+  - عدم تطبيق fallback على Xbox/Joy-Con أو DualSense ذي التخطيط القياسي.
+  - جعل اختبار Android TV للاعبين حتميًا بمسح checkpoint السابق قبل المسار.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `android/app/build.gradle`
+  - `android/app/src/main/java/com/familyforce/neonstreets/ControllerCompat.java`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/tests/ControllerCompatMain.java`
+  - `android/tools/test_customer_release.sh`
+  - `android/CONTROLLER_COMPATIBILITY_REPORT_AR.md`
+- الاختبارات:
+  - `tools/test_controller_compat.sh` — PASS، بما فيها legacy DualSense وعدم تغيير Xbox.
+  - `:app:assembleDebug :app:lintDebug` — PASS.
+  - `tools/test_customer_release.sh` — PASS على البناء والتوقيع والأصول والهاتف
+    وultrawide وFold وAndroid TV ومسار ريموت/لاعبين؛ لا FATAL/ANR/OOM.
+  - Xiaomi Stick + DualSense حقيقي — PENDING USER TEST.
+- Release: `v0.21.0-alpha` قيد الرفع بعد تثبيت commit النهائي.
+- ملاحظات/مخاطر: المحاكي لا يستطيع تقليد key layout الخاص بFirmware Xiaomi؛
+  التعيين واكتشاف المحاور مختبران آليًا لكن يلزم تأكيد المستخدم على الجهاز الحقيقي.
+- التالي: رفع `v0.21.0-alpha`، ثم تجربة جميع أزرار DualSense وL2/Touchpad على Xiaomi.
+
 ### 2026-08-21-04 — نتائج اختبار Shield وخريطة التطوير التالية
 
 - المنفذ: Codex
@@ -285,14 +322,14 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: لا يوجد تعديل برمجي قيد التنفيذ.
+- الحالة: إصلاح DualSense/Xiaomi مكتمل ومختبر آليًا، بانتظار اختبار العتاد الحقيقي.
 - آخر عمل: إنشاء نظام السجل المشترك وتعليمات Codex/Claude Code.
-- آخر قرار: اختبار Shield Pro نجح عمليًا؛ الأولوية الآن إصلاح رمي السلاح، ثم
-  Checkpoint/Xiaomi، ثم updater وتوسعة المحتوى.
+- آخر قرار: نشر `v0.21.0-alpha` بتوافق DualSense القديم وبديل Touchpad للرمي،
+  ثم انتظار نتيجة Xiaomi Stick الحقيقية.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
   3. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
   4. `android/tools/test_customer_release.sh`
-- الإجراء التالي المقترح: إصلاح رمي السلاح واختباره لكل مدخلات P1/P2، ثم بناء
-  ورفع `v0.21.0-alpha` بعد اجتياز Checkpoint وXiaomi أو توثيق نتيجتهما.
+- الإجراء التالي المقترح: تثبيت `v0.21.0-alpha` على Xiaomi Stick وتجربة Cross/
+  Circle/Square/Triangle وL1/R1/L2/R2 وOptions وD-pad والعصا وTouchpad.

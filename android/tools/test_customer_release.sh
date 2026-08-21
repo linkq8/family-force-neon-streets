@@ -82,6 +82,9 @@ run_profile android-tv 1920 1080
 run_tv_two_player_flow() {
     adb shell wm size 1920x1080 >/dev/null
     adb shell am force-stop "$PACKAGE"
+    # Keep this navigation path deterministic even when a previous profile or
+    # installed customer build left a Continue checkpoint behind.
+    adb shell pm clear "$PACKAGE" >/dev/null
     adb logcat -c
     adb shell am start -W -n "$PACKAGE/com.familyforce.neonstreets.MainActivity" \
         > "$REPORT_DIR/android-tv-remote-flow-launch.txt"

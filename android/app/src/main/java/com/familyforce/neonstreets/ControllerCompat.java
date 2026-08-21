@@ -41,7 +41,52 @@ final class ControllerCompat {
      * standardized BUTTON_A/B/X/Y and shoulder events pass through untouched.
      */
     static int normalizeKey(String deviceName, int keyCode) {
+        return normalizeKey(deviceName, keyCode, 0, false);
+    }
+
+    /**
+     * Older Android TV images can miss AOSP's DualSense fallback .kl file.
+     * In that case Linux scan codes reach Generic.kl and face/shoulder buttons
+     * are assigned to the wrong Android key codes. The scan mapping below is
+     * the same mapping used by AOSP's Vendor_054c_Product_0ce6_fallback.kl.
+     */
+    static int normalizeKey(String deviceName, int keyCode, int scanCode,
+                            boolean legacyDualSenseLayout) {
         if (!isSingleJoyCon(deviceName)) return keyCode;
+        return normalizeSingleJoyConKey(keyCode);
+    }
+
+    static int normalizeGamepadKey(String deviceName, int keyCode, int scanCode,
+                                   boolean legacyDualSenseLayout) {
+        if (isSingleJoyCon(deviceName)) return normalizeSingleJoyConKey(keyCode);
+        if (family(deviceName) != Family.PLAYSTATION) return keyCode;
+        if (legacyDualSenseLayout) {
+            switch (scanCode) {
+                case 304: return KeyEvent.KEYCODE_BUTTON_X;      // Square
+                case 305: return KeyEvent.KEYCODE_BUTTON_A;      // Cross
+                case 306: return KeyEvent.KEYCODE_BUTTON_B;      // Circle
+                case 307: return KeyEvent.KEYCODE_BUTTON_Y;      // Triangle
+                case 308: return KeyEvent.KEYCODE_BUTTON_L1;
+                case 309: return KeyEvent.KEYCODE_BUTTON_R1;
+                case 310: return KeyEvent.KEYCODE_BUTTON_L2;
+                case 311: return KeyEvent.KEYCODE_BUTTON_R2;
+                case 312: return KeyEvent.KEYCODE_BUTTON_SELECT;
+                case 313: return KeyEvent.KEYCODE_BUTTON_START;
+                case 314: return KeyEvent.KEYCODE_BUTTON_THUMBL;
+                case 315: return KeyEvent.KEYCODE_BUTTON_THUMBR;
+                case 316: return KeyEvent.KEYCODE_BUTTON_MODE;
+                case 317: return KeyEvent.KEYCODE_BUTTON_L2;     // Touchpad = throw backup
+                default: break;
+            }
+        }
+        // AOSP exposes the DualSense touchpad click as BUTTON_1 in its
+        // fallback layout. Treat it as a redundant throw control so players
+        // are not blocked when an OEM drops the analog L2 axis.
+        if (keyCode == KeyEvent.KEYCODE_BUTTON_1) return KeyEvent.KEYCODE_BUTTON_L2;
+        return keyCode;
+    }
+
+    private static int normalizeSingleJoyConKey(int keyCode) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_BUTTON_1: return KeyEvent.KEYCODE_BUTTON_X; // punch
             case KeyEvent.KEYCODE_BUTTON_2: return KeyEvent.KEYCODE_BUTTON_B; // kick/cancel
