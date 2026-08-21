@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Release guard for the first expanded enemy archetype."""
 
+from collections import deque
 from pathlib import Path
 from PIL import Image
 
@@ -42,10 +43,40 @@ clustered = atlas.resize((480, 576), Image.Resampling.NEAREST).resize(
 )
 assert clustered.tobytes() == atlas.tobytes(), "Striker atlas lost exact 2px clusters"
 for row in range(6):
-    hashes = {
-        atlas.crop((column * 160, row * 192, (column + 1) * 160, (row + 1) * 192)).tobytes()
+    cells = [
+        atlas.crop((column * 160, row * 192, (column + 1) * 160, (row + 1) * 192))
         for column in range(6)
+    ]
+    hashes = {
+        cell.tobytes() for cell in cells
     }
     assert len(hashes) >= 3, (row, "static Striker animation")
+    for column, cell in enumerate(cells):
+        alpha = cell.getchannel("A")
+        pixels = alpha.load()
+        seen = set()
+        components = 0
+        for y in range(192):
+            for x in range(160):
+                if pixels[x, y] == 0 or (x, y) in seen:
+                    continue
+                components += 1
+                queue = deque([(x, y)])
+                seen.add((x, y))
+                while queue:
+                    px, py = queue.popleft()
+                    for nx, ny in ((px - 1, py), (px + 1, py), (px, py - 1), (px, py + 1)):
+                        if (0 <= nx < 160 and 0 <= ny < 192
+                                and pixels[nx, ny] and (nx, ny) not in seen):
+                            seen.add((nx, ny))
+                            queue.append((nx, ny))
+        assert components == 1, (row, column, "detached panel-overflow fragments", components)
 
-print("Striker enemy contract: PASS (runtime, 36 frames, TV variant, 2px clusters)")
+walk_cells = [atlas.crop((column * 160, 192, (column + 1) * 160, 384)).tobytes()
+              for column in range(6)]
+assert len(set(walk_cells)) == 6, "walk bob timing must keep six visible frames"
+attack_cells = [atlas.crop((column * 160, 384, (column + 1) * 160, 576)).tobytes()
+                for column in range(6)]
+assert attack_cells[2] == attack_cells[4], "attack retract must reuse clean authored key"
+
+print("Striker enemy contract: PASS (36 clean connected frames, TV variant, 2px clusters)")

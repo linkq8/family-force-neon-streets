@@ -23,6 +23,16 @@ SHEETS = (
     ("hurt_knockdown_clean.png", 4, 5),
 )
 
+# The source generator let adjacent poses overlap in two rows. Reuse the clean
+# authored poses to form coherent held timing rather than shipping a severed
+# glove/effect from the neighboring panel.
+SAFE_FRAME_REMAP = {
+    1: (3, 3, 4, 4, 5, 5),       # walk: three clean gait keys with 2px bob timing
+    2: (0, 1, 2, 3, 2, 5),       # light attack: anticipation, hit, retract
+}
+
+WALK_BOB_Y = (0, -2, 0, -2, 0, -2)
+
 
 def remove_light_checker(image: Image.Image) -> Image.Image:
     """Remove only the light neutral checker connected to the canvas edge."""
@@ -75,6 +85,65 @@ def hard_alpha(image: Image.Image) -> Image.Image:
     return rgba
 
 
+def keep_character_component(image: Image.Image) -> Image.Image:
+    """Discard panel-overflow fragments while preserving the connected fighter."""
+    rgba = image.convert("RGBA")
+    alpha = rgba.getchannel("A")
+    width, height = rgba.size
+    pixels = alpha.load()
+    seen = bytearray(width * height)
+    largest: list[tuple[int, int]] = []
+    for start_y in range(height):
+        for start_x in range(width):
+            index = start_y * width + start_x
+            if seen[index] or pixels[start_x, start_y] == 0:
+                continue
+            component: list[tuple[int, int]] = []
+            queue = deque([(start_x, start_y)])
+            seen[index] = 1
+            while queue:
+                x, y = queue.popleft()
+                component.append((x, y))
+                for nx, ny in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+                    if not (0 <= nx < width and 0 <= ny < height):
+                        continue
+                    neighbor = ny * width + nx
+                    if seen[neighbor] or pixels[nx, ny] == 0:
+                        continue
+                    seen[neighbor] = 1
+                    queue.append((nx, ny))
+            if len(component) > len(largest):
+                largest = component
+    assert largest, "empty character component"
+    mask = Image.new("L", rgba.size, 0)
+    mask_pixels = mask.load()
+    for x, y in largest:
+        mask_pixels[x, y] = 255
+    clean = Image.new("RGBA", rgba.size, (0, 0, 0, 0))
+    clean.paste(rgba, (0, 0), mask)
+    return clean
+
+
+def clear_panel_edges(image: Image.Image) -> Image.Image:
+    """Cut the sheet gutters before connectivity can join two neighboring poses."""
+    rgba = image.convert("RGBA")
+    inset_x = max(4, round(rgba.width * 0.05))
+    inset_y = max(4, round(rgba.height * 0.03))
+    pixels = rgba.load()
+    for y in range(rgba.height):
+        for x in range(rgba.width):
+            if x < inset_x or x >= rgba.width - inset_x \
+                    or y < inset_y or y >= rgba.height - inset_y:
+                pixels[x, y] = (0, 0, 0, 0)
+    return rgba
+
+
+def translate_cell(image: Image.Image, dx: int, dy: int) -> Image.Image:
+    shifted = Image.new("RGBA", image.size, (0, 0, 0, 0))
+    shifted.alpha_composite(image, (dx, dy))
+    return shifted
+
+
 def split_sheet(path: Path) -> list[list[Image.Image]]:
     image = Image.open(path)
     if image.mode != "RGBA":
@@ -89,7 +158,9 @@ def split_sheet(path: Path) -> list[list[Image.Image]]:
         for column in range(COLS):
             left = round(image.width * column / COLS)
             right = round(image.width * (column + 1) / COLS)
-            frame = hard_alpha(image.crop((left, top, right, bottom)))
+            frame = keep_character_component(
+                clear_panel_edges(hard_alpha(image.crop((left, top, right, bottom))))
+            )
             assert frame.getchannel("A").getbbox(), (path.name, row, column, "empty")
             frames.append(frame)
         result.append(frames)
@@ -118,7 +189,7 @@ def normalize_row(frames: list[Image.Image]) -> list[Image.Image]:
         y = CELL_SIZE[1] - 4 - sprite.height
         assert x >= 4 and y >= 4, (sprite.size, x, y)
         cell.alpha_composite(sprite, (x, y))
-        normalized.append(cell)
+        normalized.append(keep_character_component(cell))
     return normalized
 
 
@@ -148,6 +219,14 @@ def main() -> None:
         rows[first_row] = normalize_row(source_rows[0])
         rows[second_row] = normalize_row(source_rows[1])
     assert all(rows)
+
+    for row, mapping in SAFE_FRAME_REMAP.items():
+        source_frames = rows[row]
+        assert source_frames is not None
+        rows[row] = [source_frames[index].copy() for index in mapping]
+    assert rows[1] is not None
+    rows[1] = [translate_cell(frame, 0, WALK_BOB_Y[index])
+               for index, frame in enumerate(rows[1])]
 
     atlas = Image.new("RGBA", ATLAS_SIZE, (0, 0, 0, 0))
     for row, frames in enumerate(rows):

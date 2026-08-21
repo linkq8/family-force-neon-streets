@@ -164,16 +164,16 @@
     },
     {
       "path": "enemies/striker.png",
-      "bytes": 15932,
-      "sha256": "b4ebd0cb53eab1c0906293187f4829f4aec62386fdff867378bcd68624d6a1c8",
+      "bytes": 15726,
+      "sha256": "90cb56aff562c97144f24932dd6dcb4912ff95d6b8bf197fbc426d8613e1bb9e",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/striker_anim.png",
-      "bytes": 365394,
-      "sha256": "cf476f5689278e6dd4bced1a6dd48f8072703ca2a72ce6a667e040719226944e",
+      "bytes": 352306,
+      "sha256": "c0d06d2e5adc3ca19b96031e1ba85ccef082c3389ef2eb9ff4601826e4f93b82",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -548,8 +548,8 @@
     },
     {
       "path": "tv/enemies/striker_anim.png",
-      "bytes": 696539,
-      "sha256": "1c17a76dda99ab058785b0ba64de328c20a66dac510d1c0365167553bf4ad9b9",
+      "bytes": 720544,
+      "sha256": "8c0e62f14f84ae291f4eae0242c0de40fccd97ae20fbbb413d9984fc0062c731",
       "width": 720,
       "height": 864,
       "mode": "RGBA"
