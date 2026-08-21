@@ -10,7 +10,7 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.23.0-alpha`، `versionCode 23`.
+- النسخة الجاري تجهيزها للنشر: `v0.24.0-alpha`، `versionCode 24`.
 - الفرع المشترك: `main`.
 - آخر commit وظيفي: `812dddfc893835ade902d0c0dd46d92fe64c9f90`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
@@ -174,6 +174,47 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-21-09 — تحسين سلاسة اللعبة كاملة على Android TV
+
+- المنفذ: Codex
+- طلب المستخدم: عدم الاكتفاء بإصلاح Link؛ مراجعة حجم اللعبة والصور والتحريك
+  والبكسلات والاستدعاءات ومنع التعليقات في جميع أجزاء اللعبة، خصوصًا Xiaomi Stick.
+- الحالة: مكتمل برمجيًا ومختبر؛ جارٍ تجهيز الإصدار.
+- نقطة البداية: `v0.23.0-alpha` / commit `fdf375b`.
+- ما تم:
+  - بدء تدقيق دورة الإطار ومسارات تحميل الأصول والذاكرة والصوت والمؤثرات.
+  - نقل فك أطالس الأعداء الأربعة إلى Thread خلفي منخفض الأولوية يبدأ في شاشة
+    الاختيار، مع إبقائها جاهزة طوال المرحلة.
+  - إزالة فك/تحميل/تحرير أطالس الأعداء من بوابات المجموعات و`updateEncounter()`؛
+    إذا لم يكتمل warmup يُستخدم العدو الثابت مؤقتًا بلا حجب لخيط اللعب.
+  - استبدال `getPixel()` المتكرر في فحص حدود إطارات الأبطال بقراءة `getPixels()`
+    كتلية، مع الحفاظ على نفس القص والوضوح.
+  - إضافة بوابة تمنع Bitmap decode/I/O داخل update والقتال وLink، وتثبت أبعاد
+    أصول TV وميزانية قتال متحركة قصوى `26.65 MiB`.
+  - مراجعة الأبعاد: خلايا الأبطال `144×144` والأعداء `120×144` في نسخة TV
+    مناسبة لحجم عرض `640×360`؛ لم تُصغّر أكثر لتجنب خسارة تفاصيل.
+  - توثيق الميزانية والمراجع الرسمية في تقرير Android TV مستقل.
+  - رفع النسخة إلى `versionCode 24` / `0.24.0-alpha`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `android/ANDROID_TV_SMOOTHNESS_REPORT_AR.md`
+  - `android/app/build.gradle`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/tools/test_customer_release.sh`
+  - `android/tools/test_runtime_smoothness_contract.py`
+  - `android/tools/test_tv_encounter_memory_contract.py`
+- الاختبارات:
+  - `test_runtime_smoothness_contract.py` — PASS؛ 26.65 MiB ولا decode داخل PLAY.
+  - `test_tv_encounter_memory_contract.py` — PASS؛ warmup خلفي وتقليل 43.75%.
+  - `test_link_preload_contract.py` — PASS.
+  - `:app:assembleDebug :app:lintDebug` — PASS.
+  - `test_customer_release.sh` — PASS مع محاكي متصل؛ Build/Lint/assets/TV/remote/
+    لاعبان/أول مواجهة/ذاكرة/صوت/checkpoint/Runtime دون FATAL/ANR/OOM.
+- Release: `v0.24.0-alpha` قيد الرفع؛ سيضاف الرابط وSHA بعد النشر.
+- ملاحظات/مخاطر: الهدف إزالة العمل الثقيل من وقت القتال مع الحفاظ على وضوح
+  640×360 والأطالس التلفزيونية وعدم زيادة خطر OOM.
+- التالي: نشر APK ثم جلسة Xiaomi فعلية لقياس Link وبدايات المجموعات والمراحل.
 
 ### 2026-08-21-08 — إزالة تعليق استدعاء Link جذريًا
 
@@ -424,8 +465,8 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: إصلاح تعليق Link منشور في v0.23 ومختبر آليًا؛ يبقى قياسه على Xiaomi
-  Stick الحقيقي.
+- الحالة: تحسين السلاسة الشامل مكتمل ومختبر آليًا، وجارٍ نشر v0.24؛ يبقى قياس
+  Xiaomi Stick الحقيقي.
 - آخر عمل: إنشاء نظام السجل المشترك وتعليمات Codex/Claude Code.
 - آخر قرار: `v0.21.0-alpha` لم يحل مشكلة Xiaomi؛ يجري توسيع الاكتشاف ليشمل
   مضيف Xiaomi وأحداث Keyboard مع فصل تصحيح الأزرار عن تصحيح المحاور.

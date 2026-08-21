@@ -275,6 +275,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private final Bitmap[] enemyArt = new Bitmap[4];
     private final Bitmap[] itemArt = new Bitmap[4];
     private final Bitmap[] enemyAnimArt = new Bitmap[4];
+    private volatile int enemyPreloadGeneration;
+    private volatile boolean enemyPreloadRunning;
     private final Bitmap[] weaponArt = new Bitmap[5];
     private final Bitmap[] propArt = new Bitmap[2];
     private Bitmap actionIcons;
@@ -631,6 +633,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             diagnostics.event("STATE " + stateName(previousState) + ">" + stateName(nextState));
             syncHeroSlotsForSafety();
             if (nextState == MENU) {
+                enemyPreloadGeneration++;
+                enemyPreloadRunning = false;
                 selectionTransitionInProgress = false;
                 prepareEnemyAnimationsForZone(-1);
                 pauseOption = 0;
@@ -660,6 +664,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             } else if (nextState == INTRO || nextState == PLAY) {
                 selectionTransitionInProgress = false;
                 selectionChangedAt = SystemClock.uptimeMillis();
+                if (nextState == PLAY && !enemyPreloadRunning) {
+                    preloadAllEnemyAnimationsAsync();
+                }
             }
         } catch (Throwable runtimeError) {
             Log.e(TAG, "enterState failed " + previousState + " -> " + nextState, runtimeError);
@@ -1185,6 +1192,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             selectedHero2 = selectedHero;
             unloadPlayer2Animation(false);
             unloadSelectedHeroAnimation();
+            preloadAllEnemyAnimationsAsync();
             // Character selection only needs the compact portraits.  The
             // 12+ MiB decoded animation atlases are loaded once, after every
             // required player has confirmed and the battle is starting.
@@ -1410,46 +1418,61 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         return atlas;
     }
 
-    private synchronized void loadEnemyAnimationType(int type) {
-        if (type < 0 || type >= enemyAnimArt.length) return;
-        Bitmap current = enemyAnimArt[type];
-        if (current != null && !current.isRecycled()) return;
+    private Bitmap decodeEnemyAnimationType(int type) {
+        if (type < 0 || type >= enemyAnimArt.length) return null;
         String[] names = {"grunt", "skater", "brute", "boss"};
         boolean reducedMemory = useReducedMemoryAssets();
         Bitmap atlas = loadBitmap((reducedMemory ? "tv/enemies/" : "enemies/")
                 + names[type] + "_anim.png");
         if (atlas != null && atlas.getWidth() % ENEMY_ANIM_COLUMNS == 0
                 && atlas.getHeight() % ENEMY_ANIM_ROWS == 0) {
-            enemyAnimArt[type] = atlas;
-        } else if (atlas != null && !atlas.isRecycled()) {
-            atlas.recycle();
+            return atlas;
         }
+        recycleBitmap(atlas);
+        return null;
+    }
+
+    private void preloadAllEnemyAnimationsAsync() {
+        final int generation = ++enemyPreloadGeneration;
+        enemyPreloadRunning = true;
+        Thread loader = new Thread(() -> {
+            try {
+                for (int type = 0; type < enemyAnimArt.length; type++) {
+                    synchronized (GameView.this) {
+                        if (generation != enemyPreloadGeneration || !appActive) return;
+                        Bitmap current = enemyAnimArt[type];
+                        if (current != null && !current.isRecycled()) continue;
+                    }
+                    Bitmap decoded = decodeEnemyAnimationType(type);
+                    synchronized (GameView.this) {
+                        if (generation != enemyPreloadGeneration || !appActive) {
+                            recycleBitmap(decoded);
+                            return;
+                        }
+                        Bitmap current = enemyAnimArt[type];
+                        if (current == null || current.isRecycled()) enemyAnimArt[type] = decoded;
+                        else recycleBitmap(decoded);
+                    }
+                }
+            } finally {
+                if (generation == enemyPreloadGeneration) enemyPreloadRunning = false;
+            }
+        }, "FamilyForceAssetWarmup");
+        loader.setPriority(Thread.MIN_PRIORITY);
+        loader.start();
     }
 
     private synchronized void prepareEnemyAnimationsForZone(int encounterZone) {
-        boolean[] required = new boolean[enemyAnimArt.length];
-        for (Enemy enemy : enemies) {
-            if (enemy.alive && enemy.zone == encounterZone
-                    && enemy.type >= 0 && enemy.type < required.length) {
-                required[enemy.type] = true;
-            }
-        }
-        boolean loadedOneAtlasThisTick = false;
-        for (int type = 0; type < required.length; type++) {
-            if (required[type]) {
-                Bitmap current = enemyAnimArt[type];
-                if ((current == null || current.isRecycled()) && !loadedOneAtlasThisTick) {
-                    loadEnemyAnimationType(type);
-                    loadedOneAtlasThisTick = true;
-                }
-            } else if (enemyAnimArt[type] != null) {
-                for (Enemy enemy : enemies) {
-                    if (enemy.type == type) enemy.animator.clear();
-                }
-                if (!enemyAnimArt[type].isRecycled()) enemyAnimArt[type].recycle();
+        if (encounterZone < 0) {
+            for (int type = 0; type < enemyAnimArt.length; type++) {
+                for (Enemy enemy : enemies) if (enemy.type == type) enemy.animator.clear();
+                recycleBitmap(enemyAnimArt[type]);
                 enemyAnimArt[type] = null;
             }
+            return;
         }
+        // Atlases are warmed off the game loop and retained for the stage.
+        // Wave gates only bind already-decoded bitmaps.
         for (Enemy enemy : enemies) {
             if (!enemy.alive || enemy.zone != encounterZone) continue;
             Bitmap atlas = enemy.type >= 0 && enemy.type < enemyAnimArt.length
@@ -1626,6 +1649,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         int cellWidth = source.getWidth() / Math.max(1, columns);
         int cellHeight = source.getHeight() / Math.max(1, rows);
         int frameLimit = Math.min(cache.length, rows * columns);
+        int[] pixels = new int[cellWidth * cellHeight];
         for (int frame = 0; frame < frameLimit; frame++) {
             int row = frame / columns;
             int col = frame % columns;
@@ -1635,10 +1659,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             int minY = cellHeight;
             int maxX = -1;
             int maxY = -1;
+            source.getPixels(pixels, 0, cellWidth, sx, sy, cellWidth, cellHeight);
             for (int y = 0; y < cellHeight; y++) {
-                int oy = sy + y;
                 for (int x = 0; x < cellWidth; x++) {
-                    if ((source.getPixel(sx + x, oy) >>> 24) > 12) {
+                    if ((pixels[y * cellWidth + x] >>> 24) > 12) {
                         if (x < minX) minX = x;
                         if (x > maxX) maxX = x;
                         if (y < minY) minY = y;
@@ -1872,6 +1896,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             releaseAssistAnimationRows();
         }
         if (state != PLAY) {
+            enemyPreloadGeneration++;
+            enemyPreloadRunning = false;
             unloadPlayer2Animation(false);
             unloadSelectedHeroAnimation();
             for (int type = 0; type < enemyAnimArt.length; type++) {
@@ -1886,6 +1912,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     void shutdown() {
         appActive = false;
+        enemyPreloadGeneration++;
+        enemyPreloadRunning = false;
         stopLoop();
         savePersistentState();
         diagnostics.snapshot(stateName(state), zone, zoneActive, health, p2Health,
@@ -2198,6 +2226,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (twoPlayerMode) loadPlayer2Animations();
         else unloadPlayer2Animation(false);
         preloadAssistAnimationRows();
+        if (!enemyPreloadRunning) preloadAllEnemyAnimationsAsync();
         if (playerAnimator.isBound()) {
             playerAnimator.play(HERO_IDLE, HERO_ANIM_COLUMNS, 8, true, true);
         }
@@ -3108,9 +3137,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             }
         }
         if (zoneActive) {
-            // Decode at most one missing enemy atlas per simulation tick. This
-            // avoids the first-encounter allocation/GPU-upload burst that can
-            // kill low-memory Android TV processes before enemies appear.
+            // Allocation-free binding only. PNG decode and texture warmup run
+            // on the background asset thread before combat.
             prepareEnemyAnimationsForZone(zone);
             float gateX = ZONE_TRIGGERS[zone] + ENCOUNTER_GATE_OFFSET;
             float playerLimit = gateX - ENCOUNTER_GATE_MARGIN;

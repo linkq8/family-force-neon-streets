@@ -31,6 +31,7 @@ python3 "$SCRIPT_DIR/test_audio_lifecycle_contract.py"
 python3 "$SCRIPT_DIR/test_encounter_gate_contract.py"
 python3 "$SCRIPT_DIR/test_runtime_diagnostics_contract.py"
 python3 "$SCRIPT_DIR/test_link_preload_contract.py"
+python3 "$SCRIPT_DIR/test_runtime_smoothness_contract.py"
 
 python3 "$SCRIPT_DIR/verify_customer_apk.py" --apk "$APK" --pack "$PACK" \
     --aapt "$ANDROID_HOME/build-tools/34.0.0/aapt" \

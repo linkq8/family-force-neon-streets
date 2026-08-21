@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Guard first encounter against Android TV bitmap allocation bursts."""
+"""Guard first encounter against Android TV decode/upload stalls and memory bursts."""
 
 from pathlib import Path
 from PIL import Image
@@ -16,7 +16,11 @@ def main() -> None:
     assert "private boolean useReducedMemoryAssets()" in text
     assert "smallestScreenWidthDp >= 720" in text
     assert 'loadBitmap("tv/heroes/" + stem)' in text
-    assert "loadedOneAtlasThisTick" in text
+    assert "preloadAllEnemyAnimationsAsync" in text
+    assert '"FamilyForceAssetWarmup"' in text
+    assert "loader.setPriority(Thread.MIN_PRIORITY)" in text
+    assert "Bitmap decoded = decodeEnemyAnimationType(type);" in text
+    assert "loadedOneAtlasThisTick" not in text
     assert "atlas.getWidth() / ENEMY_ANIM_COLUMNS" in text
     assert "atlas.getHeight() / ENEMY_ANIM_ROWS" in text
     assert "prepareEnemyAnimationsForZone(zone);" in text
@@ -37,7 +41,8 @@ def main() -> None:
     full_bytes = 4 * 960 * 1152
     tv_bytes = 4 * 720 * 864
     assert tv_bytes * 100 // full_bytes == 56
-    print("TV first-encounter memory contract: PASS (43.75% hero/enemy atlas reduction)")
+    print("TV first-encounter memory contract: PASS "
+          "(background warmup, no wave decode, 43.75% atlas reduction)")
 
 
 if __name__ == "__main__":
