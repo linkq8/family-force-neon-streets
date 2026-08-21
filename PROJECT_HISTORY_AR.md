@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.25.0-alpha`، `versionCode 25`.
+- النسخة المنشورة: `v0.26.0-alpha`، `versionCode 26`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `72987a48b4b33d8b333df9548f3026116c7ab08a`.
+- آخر commit وظيفي: `ccf2512f7c9cfa498c7e391ba3d36d88e250b8ae`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.25.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.25.0-alpha/family-force-family-current.apk
-- SHA-256: `81b1cd41d0af2f79a2a5ce5c64ef7dc4345afef8204688097d918e0f83548e45`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.26.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.26.0-alpha/family-force-family-current.apk
+- SHA-256: `8377dc0c27bcb931036fb32734c844fbd73bcede761a4628071dd516238e856c`.
 - حالة QA: بناء Release وLint وفحوص الهاتف/Fold/Android TV ومسار لاعبين ناجحة.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
   استدعاء الشخصيات الإضافية ونظافة الرسومات والحركة.
@@ -28,8 +28,8 @@
 - إصلاح قيد تحقق المستخدم: توسيع توافق DualSense على Xiaomi ليشمل Firmware الذي
   لا يعلن نطاق trigger المكسور أو يرسل الأزرار كمصدر Keyboard.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: تثبيت `v0.22.0-alpha` على Xiaomi Stick الحقيقي وفحص
-  كل أزرار DualSense والرمي؛ ثم اعتماد الجهاز أو جمع key-event trace إن بقي اختلاف.
+- العمل التالي الموصى به: اختبار بصري للفصول الثلاث الجديدة على Xiaomi Stick
+  بلاعبين؛ ثم إضافة فروق لعب خفيفة لكل فصل (Props وتوزيع أعداء) في إصدار مستقل.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -181,7 +181,7 @@
 
 - المنفذ: Codex
 - طلب المستخدم: "لنبدأ تنويع المراحل، لأنها هي التي ستبين أننا طورنا اللعبة فعلاً."
-- الحالة: مكتمل برمجيًا ومختبر؛ جارٍ نشر `v0.26.0-alpha`.
+- الحالة: مكتمل ومختبر ومنشور.
 - نقطة البداية: `v0.25.0-alpha` / commit `57893a0`.
 - ما تم:
   - بدء مراجعة نظام رسم العالم والمناطق التسع وعقد أصول Android TV.
@@ -217,8 +217,11 @@
   - فحص صور Runtime للفصول الثلاث — PASS؛ السوق/النقل/قصر الخردة تظهر منفصلة.
   - `test_customer_release.sh` — PASS؛ الهاتف/Fold/Android TV/ريموت/لاعبان
     والذاكرة دون FATAL/ANR/OOM.
-- Release: مرشح APK SHA-256
-  `8377dc0c27bcb931036fb32734c844fbd73bcede761a4628071dd516238e856c`؛ النشر قيد التنفيذ.
+- Release: `v0.26.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.26.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.26.0-alpha/family-force-family-current.apk
+- SHA-256: `8377dc0c27bcb931036fb32734c844fbd73bcede761a4628071dd516238e856c`.
+- commit: `ccf2512f7c9cfa498c7e391ba3d36d88e250b8ae`.
 - ملاحظات/مخاطر: اختبار المناطق آلي على المحاكي؛ يبقى الاختبار البصري الحقيقي
   للمراحل الجديدة على Xiaomi Stick مفيدًا، لكنه ليس حاجزًا برمجيًا.
 - التالي: commit ثم GitHub Release، وبعده اختبار بصري للاعبين على Xiaomi Stick.
@@ -577,15 +580,16 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: v0.25 معتمد على Xiaomi Stick الحقيقي: جلسة لاعبين كاملة بلا تقطيع،
-  Link ورسومات الأعداء ناجحة.
-- آخر عمل: إنشاء نظام السجل المشترك وتعليمات Codex/Claude Code.
-- آخر قرار: `v0.21.0-alpha` لم يحل مشكلة Xiaomi؛ يجري توسيع الاكتشاف ليشمل
-  مضيف Xiaomi وأحداث Keyboard مع فصل تصحيح الأزرار عن تصحيح المحاور.
+- الحالة: `v0.26.0-alpha` منشور؛ المناطق التسع مقسمة إلى ثلاثة فصول بصرية،
+  واجتاز مسار المناطق الكامل واختبارات Release على المحاكي.
+- آخر عمل: تنويع خلفيات المراحل وأسمائها وألوانها مع إبقاء ميزانية TV عند
+  `27.72 MiB` ومنع التحميل أثناء القتال.
+- آخر قرار: اعتماد الصور الثابتة فقط للمراحل؛ لا فيديو. الخلفيات الثلاث تبقى
+  محملة مسبقًا بصيغة `RGB_565` لضمان انتقال بلا تقطيع.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
   3. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
   4. `android/tools/test_customer_release.sh`
-- الإجراء التالي المقترح: تثبيت `v0.22.0-alpha` على Xiaomi Stick وتجربة Cross/
-  Circle/Square/Triangle وL1/R1/L2/R2 وOptions وD-pad والعصا وTouchpad.
+- الإجراء التالي المقترح: تثبيت `v0.26.0-alpha` على Xiaomi Stick وتجربة فصل
+  السوق ثم النقل ثم قصر الخردة بلاعبين؛ بعدها تنويع Props والأعداء لكل فصل.
