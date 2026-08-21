@@ -10,14 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المبنية للاختبار: `v0.21.0-alpha`، `versionCode 21`.
-- آخر نسخة منشورة قبل هذا العمل: `v0.20.0-alpha`.
+- النسخة المنشورة: `v0.21.0-alpha`، `versionCode 21`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `e845b66202d563ef9aa1bb2075cc04ac5b001125`.
+- آخر commit وظيفي: `94c42afbe0c215db3b1f8a3666283de29efadeb7`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.20.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.20.0-alpha/family-force-family-current.apk
-- SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.21.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.21.0-alpha/family-force-family-current.apk
+- SHA-256: `4f73a484bab163f033e45c75d9ee7223d9bee1bfd379a12a80dfcdb9543aee8f`.
 - حالة QA: بناء Release وLint وفحوص الهاتف/Fold/Android TV ومسار لاعبين ناجحة.
 - اختبار المناطق: مسار تطويري آلي مرّ بالمناطق 1–9 حتى شاشة النتائج بنجاح.
 - التشخيص: يوجد Flight Recorder محلي خفيف يحفظ آخر منطقة، P1/P2، العدو،
@@ -206,7 +205,11 @@
   - `tools/test_customer_release.sh` — PASS على البناء والتوقيع والأصول والهاتف
     وultrawide وFold وAndroid TV ومسار ريموت/لاعبين؛ لا FATAL/ANR/OOM.
   - Xiaomi Stick + DualSense حقيقي — PENDING USER TEST.
-- Release: `v0.21.0-alpha` قيد الرفع بعد تثبيت commit النهائي.
+- Release: `v0.21.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.21.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.21.0-alpha/family-force-family-current.apk
+- SHA-256: `4f73a484bab163f033e45c75d9ee7223d9bee1bfd379a12a80dfcdb9543aee8f`.
+- commit: `94c42afbe0c215db3b1f8a3666283de29efadeb7`.
 - ملاحظات/مخاطر: المحاكي لا يستطيع تقليد key layout الخاص بFirmware Xiaomi؛
   التعيين واكتشاف المحاور مختبران آليًا لكن يلزم تأكيد المستخدم على الجهاز الحقيقي.
 - التالي: رفع `v0.21.0-alpha`، ثم تجربة جميع أزرار DualSense وL2/Touchpad على Xiaomi.
