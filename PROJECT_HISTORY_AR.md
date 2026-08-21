@@ -12,7 +12,7 @@
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
 - النسخة المنشورة: `v0.26.0-alpha`، `versionCode 26`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `ccf2512f7c9cfa498c7e391ba3d36d88e250b8ae`.
+- آخر commit وظيفي: `ccf2512a8a187e8ec203100f24f8983c580d589c`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
 - Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.26.0-alpha
 - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.26.0-alpha/family-force-family-current.apk
@@ -221,7 +221,9 @@
   https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.26.0-alpha
 - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.26.0-alpha/family-force-family-current.apk
 - SHA-256: `8377dc0c27bcb931036fb32734c844fbd73bcede761a4628071dd516238e856c`.
-- commit: `ccf2512f7c9cfa498c7e391ba3d36d88e250b8ae`.
+- commit: `ccf2512a8a187e8ec203100f24f8983c580d589c`.
+- تصحيح 2026-08-21: استبدال SHA مكتوب خطأ في تحديث السجل الأول بالـSHA الفعلي
+  أعلاه كما يثبته `git rev-parse ccf2512`؛ لا يوجد اختلاف في كود الإصدار.
 - ملاحظات/مخاطر: اختبار المناطق آلي على المحاكي؛ يبقى الاختبار البصري الحقيقي
   للمراحل الجديدة على Xiaomi Stick مفيدًا، لكنه ليس حاجزًا برمجيًا.
 - التالي: commit ثم GitHub Release، وبعده اختبار بصري للاعبين على Xiaomi Stick.
