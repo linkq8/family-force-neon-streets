@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.29.1-alpha`، `versionCode 30`.
+- النسخة المنشورة: `v0.29.2-alpha`، `versionCode 31`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `1b420082ff5e030abfa1e530012e15a9add09d43`.
+- آخر commit وظيفي: `bdf30f6312e5aad2d88268cc17a0a2743d5b5b9f`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.29.1-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.29.1-alpha/family-force-family-current.apk
-- SHA-256: `ddf07a0355f04b40536e1b75ade913eb3c46c335174d7741b101c3715cc4b4de`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.29.2-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.29.2-alpha/family-force-family-current.apk
+- SHA-256: `954ce0dabc5abc2db877a6102901a648b2ea25496d0a2b8c0dda7b472711531d`.
 - حالة QA: بناء Release وLint وفحوص الهاتف/Fold/Android TV ومسار لاعبين ناجحة.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
   استدعاء الشخصيات الإضافية ونظافة الرسومات والحركة.
@@ -182,17 +182,44 @@
 - المنفذ: Codex
 - طلب المستخدم: العدو الجديد يُقص من الأعلى وتظهر أجزاؤه في الأسفل، كما تختفي
   أجزاء من اليمين/اليسار وتظهر من الجهة المقابلة أثناء الحركة.
-- الحالة: قيد التنفيذ.
+- الحالة: مكتمل — أُعيد بناء الأطلس ونُشر Release إصلاح.
 - نقطة البداية: `v0.29.1-alpha` / commit `1b42008`.
-- ما سيتم: فحص أطلس Striker وخلايا 160×192 وقص المصدر والرسم المحسن للتلفاز،
-  ثم إعادة تعبئة الإطارات بهوامش آمنة واختبار كل الصفوف قبل Release إصلاح.
-- الملفات المعدلة حتى الآن:
+- ما تم:
+  - تأكيد أن المحرك يقرأ خلايا نسخة TV بأبعادها الفعلية؛ الخلل داخل صور المصدر:
+    بعض الوضعيات والمؤثرات تجاوزت حدود panel والتصقت بجسم الوضعية المجاورة.
+  - تعديل البناء لمسح gutters، واستخراج أكبر مكوّن متصل يمثل جسم Striker، ومنع
+    الشظايا الصغيرة المنفصلة من دخول الخلية النهائية.
+  - استبدال مفاتيح المشي/الضرب المتداخلة بمفاتيح سليمة من الصور الأصلية نفسها،
+    مع bob بمقدار 2px للحفاظ على ستة إطارات مرئية؛ لم تُنتج صور أو فيديوهات جديدة.
+  - إضافة اختبار يفحص كل خلية من 36 ويشترط مكوّنًا متصلًا واحدًا، ثم إعادة إنتاج
+    أطلس الهاتف 960×1152 وأطلس TV 720×864 وتحديث manifest.
+  - رفع `versionCode` إلى 31 و`versionName` إلى `0.29.2-alpha`.
+- الملفات المعدلة:
   - `PROJECT_HISTORY_AR.md`
-- الاختبارات: قيد التنفيذ.
-- Release: لا يوجد بعد.
-- ملاحظات/مخاطر: الوصف يتطابق مع تجاوز أجزاء الرسمة حدود خلية ثابتة أو قص خاطئ
-  في نسخة TV؛ يجب فحص الأصل والنسخة المحسنة والمحرك بدل إخفاء العرض فقط.
-- التالي: تحديد طبقة الخلل، إصلاحها، تشغيل QA المرئي والعقدي وRuntime، ثم النشر.
+  - `android/app/build.gradle`
+  - `android/app/src/main/assets/asset_manifest.json`
+  - `android/app/src/main/assets/enemies/striker.png`
+  - `android/app/src/main/assets/enemies/striker_anim.png`
+  - `android/app/src/main/assets/tv/enemies/striker_anim.png`
+  - `android/tools/build_striker_enemy.py`
+  - `android/tools/test_striker_enemy_contract.py`
+- الاختبارات:
+  - `test_striker_enemy_contract.py` — PASS؛ 36 خلية نظيفة/مكوّن واحد/2px.
+  - `validate_assets.py` — PASS؛ 89 ملفًا manifest مطابقًا.
+  - `validate_animation_atlases.py` ضمن Release gate — PASS؛ 9/9 أطالس.
+  - `test_runtime_smoothness_contract.py` — PASS؛ ميزانية التحريك 30.09 MiB.
+  - `test_tv_encounter_memory_contract.py` — PASS؛ تخفيض أطلس TV 43.75%.
+  - `test_customer_release.sh` — PASS؛ Release/Lint والهاتف/Fold/Android TV
+    ومسار الريموت للاعبين، بلا FATAL/ANR/OOM.
+- Release:
+  - tag: `v0.29.2-alpha`
+  - commit: `bdf30f6312e5aad2d88268cc17a0a2743d5b5b9f`
+  - https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.29.2-alpha
+  - https://github.com/linkq8/family-force-neon-streets/releases/download/v0.29.2-alpha/family-force-family-current.apk
+  - SHA-256: `954ce0dabc5abc2db877a6102901a648b2ea25496d0a2b8c0dda7b472711531d`
+- ملاحظات/مخاطر: اختبار الأطلس يمنع عودة القطع المنفصلة؛ القبول المرئي النهائي
+  يبقى تجربة Striker الفعلية على جهاز المستخدم في المشي والهجوم والسقوط.
+- التالي: تثبيت `v0.29.2-alpha` وتجربة Striker؛ ثم استكمال بنية قوائم المراحل.
 
 ### 2026-08-21-20 — تراجع DualSense على Nvidia Shield Pro
 
@@ -917,9 +944,9 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.29.1-alpha` منشور؛ تصحيح DualSense العاجل لـNvidia Shield جاهز.
-- آخر عمل: جعل اكتشاف PlayStation يعتمد على Sony vendor ID والاسم، وتوحيد مصدر
-  الحدث مع مصادر InputDevice وتطبيع scan codes الرسمية دون تغيير بقية الأيدي.
+- الحالة: `v0.29.2-alpha` منشور؛ أطلس Striker خالٍ من التفاف أجزاء الخلايا.
+- آخر عمل: إعادة بناء 36 إطارًا من الصور الحالية مع إزالة panel overflow وإضافة
+  اختبار مكوّن متصل لكل خلية، وتجديد نسخة TV دون إنتاج صور أو فيديو جديد.
 - آخر قرار: استخدام ImageGen المدمج للأعداء الجدد، وإنتاج عدو واحد في كل بوابة
   قبول أولية قبل توسيع الدفعة، مع إبقاء ميزانية TV تحت 31 MiB.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
