@@ -177,6 +177,46 @@
 
 ## سجل الطلبات والتعديلات المشترك
 
+### 2026-08-21-16 — مضاعفة خطة الأعداء وتحديد أدوات الصور
+
+- المنفذ: Codex
+- طلب المستخدم: مضاعفة عدد الأعداء الجدد المقترحين، وتحديد الأداة التي ستولد
+  الشخصيات.
+- الحالة: مكتمل — تخطيط وتحقق أدوات فقط، دون توليد أو تعديل Runtime.
+- نقطة البداية: `v0.28.0-alpha` / commit `7c1d993`.
+- ما تم:
+  - توسيع الخطة من 6 إلى 12 نوعًا جديدًا، ليصبح الإجمالي 16 نوعًا مع الأنواع
+    الأربعة الحالية.
+  - الأنواع الجديدة: Striker، Shield Guard، Blaster، Grappler، Hover Drone،
+    Lieutenant، Acrobat، Repair Medic، Bomber، Charger، Magnet Controller،
+    وSoundwave DJ.
+  - اعتماد Higgsfield للصور فقط بلا فيديو: `nano_banana_flash` لإنشاء
+    Character Model Sheet ثابت لكل نوع، و`gpt_image_2` لإنشاء ستة Action Sheets
+    4×2 لكل نوع، ثم اختيار ستة إطارات لكل حالة وبناء Atlas 6×6 محليًا.
+  - اعتماد إزالة chroma-key والتنظيف والـdefringe والتثبيت bottom-center محليًا؛
+    استخدام `image_background_remover` فقط للحالات الصعبة، لتوفير الرصيد.
+  - التحقق من الكتالوج الحي: Nano Banana 2 وGPT Image 2 وImage Background
+    Remover متاحة؛ AutoSprite غير ظاهر في الكتالوج الحالي.
+  - تقدير الإنتاج الأساسي: 12 Model Sheets + 72 Action Sheets = 84 طلب صورة،
+    432 إطار Runtime، وتكلفة Higgsfield تقريبية 162 credit قبل الإعادات؛ مع
+    احتياطي مستهدف 30–40 credit، من الرصيد الحالي 305.96.
+  - تقسيم التنفيذ إلى أربع دفعات، ثلاثة أنواع جديدة في كل إصدار، مع Stage
+    asset packs تمنع تحميل الأطالس الستة عشر معًا على Xiaomi Stick.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+- الاختبارات:
+  - `higgsfield account status` — PASS؛ Ultra، رصيد 305.96.
+  - `higgsfield model list --json` — PASS؛ نماذج الصور المطلوبة متاحة.
+  - `higgsfield generate cost ...` — PASS؛ Nano 1K = 1.5، GPT Image 2 1K
+    medium = 2، Background Remover = 1 credit.
+  - Runtime/Build — SKIPPED؛ هذا طلب خطة فقط.
+- Release: لا يوجد؛ تعديل توثيقي فقط.
+- ملاحظات/مخاطر: 84 صورة تحتاج بوابة قبول قبل أي retry؛ يمنع إرسال دفعات عمياء.
+  جودة Action Sheets يجب أن تعتمد إطارًا كاملًا واتجاهًا ثابتًا وهوية مستقرة؛
+  ويُرفض النوع قبل الدمج إذا لم تمر الحالات الست.
+- التالي: عند طلب التنفيذ، البدء بثلاثة أنواع فقط: Striker وShield وBlaster،
+  ثم اختبار الذاكرة/الحركة على Xiaomi Stick قبل إنتاج الدفعة الثانية.
+
 ### 2026-08-21-15 — خطة توسيع أنواع الأعداء
 
 - المنفذ: Codex
@@ -716,5 +756,6 @@
   3. `android/app/src/main/java/com/familyforce/neonstreets/UpdateManager.java`
   4. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
   5. `android/tools/test_in_app_update_contract.py`
-- الإجراء التالي المقترح: تنفيذ `v0.29` كبنية EnemyArchetype/StageRoster ونوعي
-  Striker وShield، ثم تجربة الأداء وزر التحديث على Xiaomi Stick قبل الدفعة التالية.
+- الإجراء التالي المقترح: تنفيذ `v0.29` كبنية EnemyArchetype/StageRoster وثلاثة
+  أنواع Striker وShield وBlaster بالصور فقط، ثم تجربة الأداء وزر التحديث على
+  Xiaomi Stick قبل إنتاج بقية الدفعات.
