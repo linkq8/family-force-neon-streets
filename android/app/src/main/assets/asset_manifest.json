@@ -147,6 +147,22 @@
       "mode": "RGBA"
     },
     {
+      "path": "enemies/shield_guard.png",
+      "bytes": 17222,
+      "sha256": "1ab119e60663285f87419148e3b9a0c1a6157afc39b79046380cb2d441fedcb8",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/shield_guard_anim.png",
+      "bytes": 426415,
+      "sha256": "f80606a05f5f37fe5a432324bdeb98f61d2f318a07e40c89e0129aa14cea8180",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
       "path": "enemies/skater.png",
       "bytes": 159195,
       "sha256": "5f2814736037ff343534135c624cebd8b42d29aa1145583b96ecb3d24c4029a9",
@@ -534,6 +550,14 @@
       "path": "tv/enemies/grunt_anim.png",
       "bytes": 871046,
       "sha256": "ded9b650a8b32bcf061b179a1e0c1e59d09dc7537f7ed860ed430f768c6dd9d7",
+      "width": 720,
+      "height": 864,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/shield_guard_anim.png",
+      "bytes": 774302,
+      "sha256": "cc764965aaca6ddefe89600979a9726626aafd49838f04878ee393120c3404aa",
       "width": 720,
       "height": 864,
       "mode": "RGBA"

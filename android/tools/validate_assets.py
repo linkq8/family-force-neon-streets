@@ -48,6 +48,7 @@ IMAGE_CONTRACT = {
     "enemies/brute.png": ((512, 512), "RGBA"),
     "enemies/boss.png": ((512, 512), "RGBA"),
     "enemies/striker.png": ((512, 512), "RGBA"),
+    "enemies/shield_guard.png": ((512, 512), "RGBA"),
     "items/food.png": ((128, 128), "RGBA"),
     "items/energy.png": ((128, 128), "RGBA"),
     "items/token.png": ((128, 128), "RGBA"),
@@ -83,7 +84,7 @@ HERO_ANIMATION_CONTRACT = {
 }
 ENEMY_ANIMATION_CONTRACT = {
     f"enemies/{name}_anim.png": (6, 6, 160, 192)
-    for name in ("grunt", "skater", "brute", "boss", "striker")
+    for name in ("grunt", "skater", "brute", "boss", "striker", "shield_guard")
 }
 
 GRID_SHEET_CONTRACT = {

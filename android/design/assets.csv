@@ -27,6 +27,8 @@ enemy_brute_actions,enemy,animation,heavy recycling robot idle walk attacks hurt
 boss_junk_king_actions,boss,animation,Junk King idle walk attacks special hurt and knockdown atlas,6x6 cells at 160x192,frozen formula,Higgsfield FLUX key poses + Seedance video-to-sprite,available:generated+validated
 enemy_striker,enemy,sprite,lean agile transit-parts boxing robot with cyan gloves and magenta scarf,512x512 transparent,frozen formula,ChatGPT built-in ImageGen,available:generated
 enemy_striker_actions,enemy,animation,Striker idle walk jab-cross rising-hook hurt and knockdown atlas,6x6 cells at 160x192,frozen formula,ChatGPT built-in ImageGen model and action sheets,available:generated
+enemy_shield_guard,enemy,sprite,teal transit Shield Guard with mint shield coral baton and directional guard,512x512 transparent,frozen formula,ChatGPT built-in ImageGen,available:generated+validated
+enemy_shield_guard_actions,enemy,animation,Shield Guard idle walk baton strike shield bash hurt and knockdown atlas,6x6 cells at 160x192,frozen formula,ChatGPT built-in ImageGen still model and action sheets only,available:generated+validated
 pickup_food,item,ui,wrapped street snack health pickup,1:1,frozen formula,original procedural,available
 pickup_energy,item,ui,glowing family battery special pickup,1:1,frozen formula,original procedural,available
 pickup_token,item,ui,lime family token score pickup,1:1,frozen formula,original procedural,available

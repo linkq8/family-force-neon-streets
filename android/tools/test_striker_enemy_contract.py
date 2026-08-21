@@ -9,23 +9,24 @@ from PIL import Image
 ANDROID = Path(__file__).resolve().parents[1]
 ASSETS = ANDROID / "app/src/main/assets"
 SOURCE = (ANDROID / "app/src/main/java/com/familyforce/neonstreets/GameView.java").read_text()
+ARCHETYPES = (ANDROID / "app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java").read_text()
 
 required_code = (
-    "private static final int ENEMY_STRIKER = 4;",
-    "private static final int ENEMY_TYPE_COUNT = 5;",
-    '"grunt", "skater", "brute", "boss", "striker"',
+    "private static final int ENEMY_STRIKER = EnemyArchetype.STRIKER;",
+    "private static final int ENEMY_TYPE_COUNT = EnemyArchetype.COUNT;",
     'enemyArt[ENEMY_STRIKER] = loadBitmapSampled("enemies/striker.png"',
-    "type == ENEMY_STRIKER ? 76",
-    "enemy.type == ENEMY_STRIKER ? 1.48f",
-    "enemy.type == ENEMY_STRIKER ? 16",
-    'lastHitEnemy.type == ENEMY_STRIKER ? "STRIKER"',
+    "EnemyArchetype archetype = EnemyArchetype.of(type);",
+    "EnemyArchetype.of(enemy.type).speed",
+    "EnemyArchetype archetype = EnemyArchetype.of(enemy.type);",
+    "EnemyArchetype.of(lastHitEnemy.type).displayName",
 )
 for snippet in required_code:
     assert snippet in SOURCE, f"missing Striker runtime contract: {snippet}"
+assert 'new EnemyArchetype("striker", "STRIKER"' in ARCHETYPES
 
 assert SOURCE.count("spawnEnemy(") >= 1
 assert SOURCE.count("spawnEnemy(0, ENEMY_STRIKER") == 1
-assert SOURCE.count("ENEMY_STRIKER") >= 16
+assert SOURCE.count("ENEMY_STRIKER") >= 4
 
 for relative, dimensions in (
     ("enemies/striker.png", (512, 512)),

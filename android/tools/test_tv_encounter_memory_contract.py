@@ -16,7 +16,7 @@ def main() -> None:
     assert "private boolean useReducedMemoryAssets()" in text
     assert "smallestScreenWidthDp >= 720" in text
     assert 'loadBitmap("tv/heroes/" + stem)' in text
-    assert "preloadAllEnemyAnimationsAsync" in text
+    assert "preloadEnemyAnimationsForStageAsync" in text
     assert '"FamilyForceAssetWarmup"' in text
     assert "loader.setPriority(Thread.MIN_PRIORITY)" in text
     assert "Bitmap decoded = decodeEnemyAnimationType(type);" in text
@@ -26,7 +26,7 @@ def main() -> None:
     assert "prepareEnemyAnimationsForZone(zone);" in text
     assert "void trimMemory(int level)" in text
 
-    for name in ("grunt", "skater", "brute", "boss", "striker"):
+    for name in ("grunt", "skater", "brute", "boss", "striker", "shield_guard"):
         path = ASSETS / f"tv/enemies/{name}_anim.png"
         assert path.is_file(), path
         with Image.open(path) as image:
@@ -42,7 +42,7 @@ def main() -> None:
     tv_bytes = 4 * 720 * 864
     assert tv_bytes * 100 // full_bytes == 56
     print("TV first-encounter memory contract: PASS "
-          "(background warmup, no wave decode, 43.75% atlas reduction)")
+          "(stage roster warmup, maximum five atlases, 43.75% atlas reduction)")
 
 
 if __name__ == "__main__":

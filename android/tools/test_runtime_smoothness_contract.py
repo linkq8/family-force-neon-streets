@@ -34,7 +34,7 @@ for method in ("update", "updateGame", "updateEncounter", "prepareEnemyAnimation
                       "loadEnemyAnimationType", "loadAssistAnimationRow"):
         assert forbidden not in body, f"{method} contains blocking runtime work: {forbidden}"
 
-warmup = method_body("preloadAllEnemyAnimationsAsync")
+warmup = method_body("preloadEnemyAnimationsForStageAsync")
 assert "new Thread" in warmup and "Thread.MIN_PRIORITY" in warmup
 assert "decodeEnemyAnimationType" in warmup
 
@@ -65,7 +65,7 @@ expected = {
 }
 for stem in ("parent", "adam", "shaikha", "sulaiman"):
     expected[f"tv/heroes/{stem}_anim.png"] = (1152, 1584)
-for stem in ("grunt", "skater", "brute", "boss", "striker"):
+for stem in ("grunt", "skater", "brute", "boss", "striker", "shield_guard"):
     expected[f"tv/enemies/{stem}_anim.png"] = (720, 864)
 
 for relative, dimensions in expected.items():
@@ -75,7 +75,7 @@ for relative, dimensions in expected.items():
         assert image.size == dimensions, f"unexpected dimensions for {relative}: {image.size}"
 
 # Peak animated combat textures for low-RAM TV: two hero atlases, two Link rows,
-# five enemy atlases, and both RGB_565 backgrounds. Keep under Android TV's
+# at most five stage-roster enemy atlases, and both RGB_565 backgrounds. Keep under Android TV's
 # recommended 30–40 MiB graphics target with a small tolerance for two-player mode.
 hero_bytes = 2 * 1152 * 1584 * 4
 assist_bytes = 2 * 1152 * (1584 // 11) * 4
