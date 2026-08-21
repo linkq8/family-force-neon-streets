@@ -10,6 +10,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Path;
@@ -214,24 +216,27 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private static final float[] STAGE_SIGN_X = {
             510f, 1015f, 1665f, 2150f, 2760f, 3300f, 3650f, 4260f, 4900f, 5560f
     };
-    private static final String[] AREA_NAMES = {
-            "MARKET WALK", "POCKET PARK", "SERVICE ALLEY", "ROOFTOP RUN",
-            "NEON DEPOT", "TUNNEL RUSH", "HARBOR YARD", "SCRAP FREEWAY",
-            "JUNK PALACE", "FINAL DISTRICT"
+    private static final String[] LOCATION_NAMES = {
+            "MARKET WALK", "POCKET PARK", "ROOFTOP RUN", "NEON DEPOT",
+            "HARBOR YARD", "MOON FREEWAY", "SCRAP DOCK", "PALACE GATE",
+            "JUNK THRONE"
     };
-    private static final String[] AREA_PROGRESS = {
-            "AREA 1/9", "AREA 2/9", "AREA 3/9", "AREA 4/9", "AREA 5/9",
-            "AREA 6/9", "AREA 7/9", "AREA 8/9", "AREA 9/9"
-    };
+    private static final int[] STAGE_START_ZONE = {0, 2, 4, 7};
+    private static final int[] STAGE_END_ZONE = {1, 3, 6, 8};
     private static final String[] ENCOUNTER_NAMES = {
             "ENCOUNTER 1", "ENCOUNTER 2", "ENCOUNTER 3", "ENCOUNTER 4", "ENCOUNTER 5",
             "ENCOUNTER 6", "ENCOUNTER 7", "ENCOUNTER 8", "ENCOUNTER 9"
     };
-    private static final String[] CHAPTER_NAMES = {
-            "NEON MARKET", "TRANSIT NIGHTS", "JUNK MOON"
+    private static final String[] STAGE_NAMES = {
+            "NEON MARKET", "TRANSIT TERMINAL", "MOON HARBOR", "JUNK PALACE"
     };
-    private static final int[] CHAPTER_ACCENTS = {
-            Color.rgb(255, 194, 70), Color.rgb(70, 224, 216), Color.rgb(183, 232, 106)
+    private static final int[] STAGE_ACCENTS = {
+            Color.rgb(255, 194, 70), Color.rgb(70, 224, 216),
+            Color.rgb(183, 232, 106), Color.rgb(255, 92, 164)
+    };
+    private static final ColorMatrixColorFilter[] STAGE_ENEMY_FILTERS = {
+            null, createStageEnemyFilter(24f, 1.08f),
+            createStageEnemyFilter(-42f, 1.12f), createStageEnemyFilter(78f, 1.18f)
     };
     private static final int[] MAP_ROUTE_COLORS = {
             HERO_COLORS[0], Color.rgb(255, 199, 72), Color.rgb(217, 255, 85)
@@ -445,6 +450,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private int zone;
     private boolean zoneActive;
     private int zoneBanner;
+    private int stageTransitionTimer;
+    private int clearedStage;
     private int stageFrames;
     // Debug-only route used by the emulator stage soak test. Release builds
     // ignore the intent that enables it, so customer gameplay is unchanged.
@@ -2116,6 +2123,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         cameraX = clamp(playerX - 210f, 0f, WORLD_END - W + 100f);
         zoneActive = false;
         zoneBanner = 150;
+        stageTransitionTimer = 0;
+        clearedStage = 0;
         clearInputs();
         return true;
     }
@@ -2311,6 +2320,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         zone = 0;
         zoneActive = false;
         zoneBanner = 150;
+        stageTransitionTimer = 0;
+        clearedStage = 0;
         stageFrames = 0;
         automatedStageTicks = 0;
         diagnostics.event("STAGE_RESET");
@@ -2421,6 +2432,15 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             return;
         }
         if (zoneBanner > 0) zoneBanner--;
+        if (stageTransitionTimer > 0) {
+            stageTransitionTimer--;
+            clearInputs();
+            if (stageTransitionTimer == 0) {
+                zoneBanner = 110;
+                diagnostics.event("STAGE_START " + (currentStage() + 1));
+            }
+            return;
+        }
         if (teamComboBanner > 0) teamComboBanner--;
         if (comboWindow > 0 && --comboWindow == 0) combo = 0;
         if (punchChainWindow > 0 && --punchChainWindow == 0) punchChainStep = 0;
@@ -3188,6 +3208,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 diagnostics.event("DEBUG_ZONE_CLEAR " + zone);
             }
             if (!any) {
+                int finishedZone = zone;
+                int finishedStage = stageForZone(finishedZone);
                 dropZoneRewards(zone);
                 diagnostics.event("ZONE_CLEAR " + zone);
                 zone++;
@@ -3195,8 +3217,22 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 zoneBanner = 110;
                 health = Math.min(maxHealth, health + 8);
                 linkMeter = Math.min(100, linkMeter + 15);
-                if (zone >= ZONE_TRIGGERS.length) finishStage();
-                else saveCheckpoint(zone);
+                if (zone >= ZONE_TRIGGERS.length) {
+                    finishStage();
+                } else {
+                    saveCheckpoint(zone);
+                    if (finishedZone == STAGE_END_ZONE[finishedStage]) {
+                        clearedStage = finishedStage;
+                        stageTransitionTimer = automatedFullStageTest ? 12 : 180;
+                        zoneBanner = 0;
+                        health = Math.min(maxHealth, health + Math.max(12, maxHealth / 5));
+                        if (twoPlayerMode) {
+                            p2Health = Math.min(safeHeroMaxHealth(selectedHero2),
+                                    p2Health + Math.max(12, safeHeroMaxHealth(selectedHero2) / 5));
+                        }
+                        diagnostics.event("STAGE_CLEAR " + (finishedStage + 1));
+                    }
+                }
             }
         }
     }
@@ -3952,9 +3988,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             for (int i = 0; i < 8; i++) canvas.drawRect(i * 92 - scroll % 92, 150, i * 92 + 34 - scroll % 92, 220, paint);
         }
         if (gameplayScene) {
-            int chapter = currentChapter();
-            int accent = CHAPTER_ACCENTS[chapter];
-            paint.setColor(Color.argb(chapter == 1 ? 18 : 24,
+            int stage = currentStage();
+            int accent = STAGE_ACCENTS[stage];
+            paint.setColor(Color.argb(stage == 1 ? 18 : stage == 3 ? 34 : 24,
                     Color.red(accent), Color.green(accent), Color.blue(accent)));
             canvas.drawRect(0, 0, W, H, paint);
         }
@@ -4273,7 +4309,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         float reveal = stateMotion(520);
         paint.setColor(Color.argb(230, 12, 13, 42));
         roundRect(canvas, 54, 40, 586, 322, 20, paint);
-        text(canvas, "CHAPTER 1", W / 2f, 72, 14, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
+        text(canvas, "STAGE 1 OF 4", W / 2f, 72, 14, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
         text(canvas, trainingMode ? "TRAINING BLOCK" : "NIGHT MARKET RESCUE", W / 2f, 108, 27,
                 Color.WHITE, true, Paint.Align.CENTER);
         paint.setColor(safeHeroColor(hero));
@@ -4320,6 +4356,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         drawPickupPrompt(canvas);
         if (debugOverlay) drawDebugOverlay(canvas);
         if (zoneBanner > 0) drawZoneBanner(canvas);
+        if (stageTransitionTimer > 0) drawStageTransition(canvas);
     }
 
     private void drawStageProps(Canvas canvas) {
@@ -4328,12 +4365,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             if (x < -80 || x > 700) continue;
             paint.setColor(Color.rgb(18, 20, 48));
             canvas.drawRect(x, 203, x + 5, 315, paint);
-            int signChapter = Math.min(2, Math.max(0, i / 3));
-            paint.setColor(CHAPTER_ACCENTS[signChapter]);
+            int signStage = stageForZone(Math.min(ZONE_TRIGGERS.length - 1, i));
+            paint.setColor(STAGE_ACCENTS[signStage]);
             roundRect(canvas, x - 34, 188, x + 39, 214, 4, paint);
-            String sign = i == 0 ? "MARKET" : i == 1 ? "PARK" : i == 2 ? "ALLEY"
-                    : i == 3 ? "ROOFTOP" : i == 4 ? "DEPOT" : i == 5 ? "TUNNEL"
-                    : i == 6 ? "HARBOR" : i == 7 ? "FREEWAY" : i == 8 ? "PALACE" : "FINALE";
+            String sign = i == 0 ? "MARKET" : i == 1 ? "PARK" : i == 2 ? "ROOFTOP"
+                    : i == 3 ? "DEPOT" : i == 4 ? "HARBOR" : i == 5 ? "FREEWAY"
+                    : i == 6 ? "DOCK" : i == 7 ? "PALACE" : i == 8 ? "THRONE" : "FINALE";
             text(canvas, sign, x + 2, 206,
                     10, Color.rgb(20, 20, 44), true, Paint.Align.CENTER);
         }
@@ -4586,6 +4623,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         Bitmap bitmap = enemyArt[enemy.type];
         if (enemy.flash > 0) {
             pixelPaint.setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP));
+        } else {
+            pixelPaint.setColorFilter(STAGE_ENEMY_FILTERS[stageForZone(enemy.zone)]);
         }
         if (enemy.animator.isBound()) {
             canvas.save();
@@ -4865,10 +4904,14 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         text(canvas, cachedScoreText, 216, 65, 14, Color.WHITE, true, Paint.Align.LEFT);
         paint.setColor(Color.argb(210, 8, 9, 31));
         roundRect(canvas, 480, 13, 626, 61, 10, paint);
-        text(canvas, zone >= ZONE_TRIGGERS.length ? "ROUTE CLEAR" : AREA_NAMES[Math.min(zone, AREA_NAMES.length - 1)], 553, 33, 12,
-                Color.rgb(255, 202, 80), true, Paint.Align.CENTER);
-        text(canvas, AREA_PROGRESS[Math.min(zone, AREA_PROGRESS.length - 1)], 553, 50, 11,
-                Color.LTGRAY, false, Paint.Align.CENTER);
+        int hudStage = currentStage();
+        text(canvas, zone >= ZONE_TRIGGERS.length ? "ALL STAGES CLEAR"
+                        : "STAGE " + (hudStage + 1) + "  " + STAGE_NAMES[hudStage],
+                553, 33, zone >= ZONE_TRIGGERS.length ? 10 : 8,
+                STAGE_ACCENTS[hudStage], true, Paint.Align.CENTER);
+        text(canvas, zone >= ZONE_TRIGGERS.length ? "4/4"
+                        : "WAVE " + waveInStage(zone) + "/" + wavesInStage(hudStage),
+                553, 50, 10, Color.LTGRAY, false, Paint.Align.CENTER);
         if (combo >= 2 && comboWindow > 0) {
             String rating = combo >= 3 ? "IN SYNC!" : "SPARK!";
             text(canvas, rating, 614, 112, 20, Color.rgb(217, 255, 85), true, Paint.Align.RIGHT);
@@ -5067,22 +5110,60 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.argb(alpha, 8, 9, 31));
         roundRect(canvas, 154, 102, 486, 163, 12, paint);
         if (zone < ZONE_TRIGGERS.length && zoneActive) {
-            text(canvas, CHAPTER_NAMES[currentChapter()] + "  •  " + ENCOUNTER_NAMES[zone], W / 2f, 125, 11,
-                    CHAPTER_ACCENTS[currentChapter()], true, Paint.Align.CENTER);
-            text(canvas, AREA_NAMES[zone], W / 2f, 151, 22, Color.WHITE, true, Paint.Align.CENTER);
+            text(canvas, "STAGE " + (currentStage() + 1) + "  •  WAVE "
+                            + waveInStage(zone) + "/" + wavesInStage(currentStage()),
+                    W / 2f, 125, 11, STAGE_ACCENTS[currentStage()], true, Paint.Align.CENTER);
+            text(canvas, LOCATION_NAMES[zone], W / 2f, 151, 22, Color.WHITE, true, Paint.Align.CENTER);
         } else if (zone < ZONE_TRIGGERS.length) {
             text(canvas, "ROUTE OPEN", W / 2f, 140, 22, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
         }
     }
 
-    private int currentChapter() {
-        if (zone >= ZONE_TRIGGERS.length) return CHAPTER_NAMES.length - 1;
-        return Math.min(CHAPTER_NAMES.length - 1, Math.max(0, zone / 3));
+    private static int stageForZone(int zoneIndex) {
+        if (zoneIndex < STAGE_START_ZONE[1]) return 0;
+        if (zoneIndex < STAGE_START_ZONE[2]) return 1;
+        if (zoneIndex < STAGE_START_ZONE[3]) return 2;
+        return 3;
+    }
+
+    private int currentStage() {
+        return stageForZone(Math.min(ZONE_TRIGGERS.length - 1, Math.max(0, zone)));
+    }
+
+    private static int wavesInStage(int stageIndex) {
+        return STAGE_END_ZONE[stageIndex] - STAGE_START_ZONE[stageIndex] + 1;
+    }
+
+    private static int waveInStage(int zoneIndex) {
+        int stageIndex = stageForZone(zoneIndex);
+        return zoneIndex - STAGE_START_ZONE[stageIndex] + 1;
     }
 
     private Bitmap currentStageBackground() {
-        Bitmap selected = stageBackgrounds[currentChapter()];
+        int stage = currentStage();
+        Bitmap selected = stageBackgrounds[Math.min(stageBackgrounds.length - 1, stage)];
         return selected != null ? selected : stageBackgrounds[0];
+    }
+
+    private void drawStageTransition(Canvas canvas) {
+        int nextStage = Math.min(STAGE_NAMES.length - 1, clearedStage + 1);
+        boolean showingClear = stageTransitionTimer > 90;
+        int accent = showingClear ? STAGE_ACCENTS[clearedStage] : STAGE_ACCENTS[nextStage];
+        paint.setColor(Color.argb(236, 6, 8, 28));
+        canvas.drawRect(0, 0, W, H, paint);
+        paint.setColor(Color.argb(250, 13, 18, 48));
+        roundRect(canvas, 88, 72, 552, 286, 24, paint);
+        text(canvas, showingClear ? "STAGE " + (clearedStage + 1) + " CLEAR"
+                        : "STAGE " + (nextStage + 1),
+                W / 2f, 128, 31, accent, true, Paint.Align.CENTER);
+        text(canvas, showingClear ? STAGE_NAMES[clearedStage] : STAGE_NAMES[nextStage],
+                W / 2f, 170, 22, Color.WHITE, true, Paint.Align.CENTER);
+        paint.setColor(accent);
+        canvas.drawRect(165, 191, 475, 197, paint);
+        text(canvas, showingClear ? "TEAM RECOVERY +20%" : "NEW ENEMY COLORS  •  NEW ROUTE",
+                W / 2f, 228, 12, Color.rgb(194, 218, 229), true, Paint.Align.CENTER);
+        text(canvas, showingClear ? "NEXT STAGE" : "GET READY",
+                W / 2f, 259, 10, accent, true, Paint.Align.CENTER);
     }
 
     private void drawPause(Canvas canvas) {
@@ -5135,7 +5216,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         drawBackdrop(canvas, WORLD_END);
         paint.setColor(Color.argb(232, 10, 11, 37));
         roundRect(canvas, 65, 36, 575, 326, 22, paint);
-        text(canvas, "NEIGHBORHOOD SAVED!", W / 2f, 79, 30, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
+        text(canvas, "ALL 4 STAGES CLEAR!", W / 2f, 79, 30, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
         text(canvas, customerProfile.outroMessage, W / 2f, 101, 9,
                 customerProfile.theme.accentColor, true, Paint.Align.CENTER);
         int stars = 1 + (damageTaken < maxHealth / 2 ? 1 : 0) + (totalHits >= 10 ? 1 : 0);
@@ -6349,6 +6430,31 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 .putInt("difficulty", difficulty)
                 .putFloat("touch_opacity", touchOpacity)
                 .apply();
+    }
+
+    private static ColorMatrixColorFilter createStageEnemyFilter(float degrees, float saturation) {
+        float radians = (float) Math.toRadians(degrees);
+        float cosine = (float) Math.cos(radians);
+        float sine = (float) Math.sin(radians);
+        float red = 0.213f;
+        float green = 0.715f;
+        float blue = 0.072f;
+        ColorMatrix hue = new ColorMatrix(new float[] {
+                red + cosine * (1f - red) + sine * (-red),
+                green + cosine * (-green) + sine * (-green),
+                blue + cosine * (-blue) + sine * (1f - blue), 0f, 0f,
+                red + cosine * (-red) + sine * 0.143f,
+                green + cosine * (1f - green) + sine * 0.140f,
+                blue + cosine * (-blue) + sine * -0.283f, 0f, 0f,
+                red + cosine * (-red) + sine * (-(1f - red)),
+                green + cosine * (-green) + sine * green,
+                blue + cosine * (1f - blue) + sine * blue, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+        });
+        ColorMatrix saturationMatrix = new ColorMatrix();
+        saturationMatrix.setSaturation(saturation);
+        hue.postConcat(saturationMatrix);
+        return new ColorMatrixColorFilter(hue);
     }
 
     private static boolean inside(float x, float y, float l, float t, float r, float b) {

@@ -21,7 +21,10 @@ def main() -> None:
     assert '.putBoolean("checkpoint_valid", true)' in text
     assert "if (!valid) prefs.edit().remove(\"checkpoint_valid\").apply();" in text
     assert "if (enemy.alive && enemy.zone < zone)" in text
-    assert "else saveCheckpoint(zone);" in text
+    encounter = text[text.index("private void updateEncounter()"):
+                     text.index("private void dropZoneRewards")]
+    assert "saveCheckpoint(zone);" in encounter
+    assert encounter.index("saveCheckpoint(zone);") < encounter.index("stageTransitionTimer =")
     assert "if (state == PLAY && !zoneActive) saveCheckpoint(zone);" in text
     assert '"CONTINUE"' in text
     print("Checkpoint/continue contract: PASS")

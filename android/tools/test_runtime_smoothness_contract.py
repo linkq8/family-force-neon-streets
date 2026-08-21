@@ -45,6 +45,17 @@ assert "ENEMY_ANIM_CELL_WIDTH, ENEMY_ANIM_CELL_HEIGHT" not in spawn_enemy, (
     "TV atlases must never be sliced with the 160x192 authoring-cell constants"
 )
 
+# Four real stages share existing atlases but must have distinct progress,
+# transitions, and allocation-free enemy palettes.
+assert 'STAGE_START_ZONE = {0, 2, 4, 7}' in text
+assert 'STAGE_END_ZONE = {1, 3, 6, 8}' in text
+assert '"NEON MARKET", "TRANSIT TERMINAL", "MOON HARBOR", "JUNK PALACE"' in text
+assert 'diagnostics.event("STAGE_CLEAR "' in text
+assert 'drawStageTransition(canvas)' in text
+draw_enemy = method_body("drawEnemy")
+assert "STAGE_ENEMY_FILTERS[stageForZone(enemy.zone)]" in draw_enemy
+assert "new ColorMatrix" not in draw_enemy and "new ColorMatrixColorFilter" not in draw_enemy
+
 expected = {
     "tv/backgrounds/street.png": (960, 536),
     "tv/backgrounds/street_retro.png": (960, 540),
