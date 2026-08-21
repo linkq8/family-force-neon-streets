@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة الجاري تجهيزها للنشر: `v0.24.0-alpha`، `versionCode 24`.
+- النسخة المنشورة: `v0.24.0-alpha`، `versionCode 24`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `812dddfc893835ade902d0c0dd46d92fe64c9f90`.
+- آخر commit وظيفي: `bb61b23d1b263829597d9149ecc5314cbe475d9e`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.23.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.23.0-alpha/family-force-family-current.apk
-- SHA-256: `6dc3ca197716d9e7d2be26faa21be3825fe47c82d642d61e47f1fe912d9d3933`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.24.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.24.0-alpha/family-force-family-current.apk
+- SHA-256: `ed08fd254c9b5fc129112c9d22f9f87596dec3c3370dfab9af4dd025858c562a`.
 - حالة QA: بناء Release وLint وفحوص الهاتف/Fold/Android TV ومسار لاعبين ناجحة.
 - اختبار المناطق: مسار تطويري آلي مرّ بالمناطق 1–9 حتى شاشة النتائج بنجاح.
 - التشخيص: يوجد Flight Recorder محلي خفيف يحفظ آخر منطقة، P1/P2، العدو،
@@ -211,7 +211,11 @@
   - `:app:assembleDebug :app:lintDebug` — PASS.
   - `test_customer_release.sh` — PASS مع محاكي متصل؛ Build/Lint/assets/TV/remote/
     لاعبان/أول مواجهة/ذاكرة/صوت/checkpoint/Runtime دون FATAL/ANR/OOM.
-- Release: `v0.24.0-alpha` قيد الرفع؛ سيضاف الرابط وSHA بعد النشر.
+- Release: `v0.24.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.24.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.24.0-alpha/family-force-family-current.apk
+- SHA-256: `ed08fd254c9b5fc129112c9d22f9f87596dec3c3370dfab9af4dd025858c562a`.
+- commit: `bb61b23d1b263829597d9149ecc5314cbe475d9e`.
 - ملاحظات/مخاطر: الهدف إزالة العمل الثقيل من وقت القتال مع الحفاظ على وضوح
   640×360 والأطالس التلفزيونية وعدم زيادة خطر OOM.
 - التالي: نشر APK ثم جلسة Xiaomi فعلية لقياس Link وبدايات المجموعات والمراحل.
@@ -465,8 +469,8 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: تحسين السلاسة الشامل مكتمل ومختبر آليًا، وجارٍ نشر v0.24؛ يبقى قياس
-  Xiaomi Stick الحقيقي.
+- الحالة: تحسين السلاسة الشامل منشور في v0.24 ومختبر آليًا؛ يبقى قياس Xiaomi
+  Stick الحقيقي.
 - آخر عمل: إنشاء نظام السجل المشترك وتعليمات Codex/Claude Code.
 - آخر قرار: `v0.21.0-alpha` لم يحل مشكلة Xiaomi؛ يجري توسيع الاكتشاف ليشمل
   مضيف Xiaomi وأحداث Keyboard مع فصل تصحيح الأزرار عن تصحيح المحاور.
