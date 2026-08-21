@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.28.0-alpha`، `versionCode 28`.
+- النسخة المنشورة: `v0.29.0-alpha`، `versionCode 29`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `975c9043c6c94f39d5ea8df3ce923a37705c6fb0`.
+- آخر commit وظيفي: `7af42f21e1beab663911a3746840debad23aa8d7`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.28.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.28.0-alpha/family-force-family-current.apk
-- SHA-256: `ef27f8b8c0fe7d735a90dae7eabca2dd739f3466b315cbf4e8bc109dd5bda9ab`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.29.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.29.0-alpha/family-force-family-current.apk
+- SHA-256: `8b3de3e44b4ad702eba62484921243177f15d0c2560c4c957453ba155f8f939d`.
 - حالة QA: بناء Release وLint وفحوص الهاتف/Fold/Android TV ومسار لاعبين ناجحة.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
   استدعاء الشخصيات الإضافية ونظافة الرسومات والحركة.
@@ -28,8 +28,8 @@
 - إصلاح قيد تحقق المستخدم: توسيع توافق DualSense على Xiaomi ليشمل Firmware الذي
   لا يعلن نطاق trigger المكسور أو يرسل الأزرار كمصدر Keyboard.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: تثبيت `v0.28.0-alpha` يدويًا هذه المرة، ثم استخدام
-  `SETTINGS > GAME UPDATE` عند صدور `v0.29`؛ وبعدها تنويع Props والأسلحة لكل Stage.
+- العمل التالي الموصى به: تجربة Striker على Xiaomi Stick؛ ثم تنفيذ Shield Guard
+  عبر ImageGen بنفس عقد 36 إطارًا، من دون فيديو أو Higgsfield credits.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -181,7 +181,7 @@
 
 - المنفذ: Codex
 - طلب المستخدم: البدء الآن بتنفيذ عدو واحد من الخطة الجديدة.
-- الحالة: مكتمل برمجيًا ومختبر؛ قيد رفع الإصدار.
+- الحالة: مكتمل ومختبر ومنشور.
 - نقطة البداية: `v0.28.0-alpha` / commit `b6617f8`.
 - ما تم:
   - اختيار Striker كأول عدو لأنه يضيف هجوم combo سريعًا مع أقل مخاطرة على
@@ -229,11 +229,16 @@
     FATAL/ANR/OOM.
   - `android/tools/test_customer_release.sh` — PASS؛ Release/Lint والهاتف وFold
     وAndroid TV والريموت واللاعبان والعقود الكاملة.
-- Release: APK جاهز؛ SHA-256
-  `8b3de3e44b4ad702eba62484921243177f15d0c2560c4c957453ba155f8f939d`.
+  - اختبار updater فعلي من `v0.28` إلى `v0.29` — PASS؛ نزّل وتحقق وفتح إذن
+    المصدر ثم Package Installer، وبعد التأكيد أصبحت النسخة المثبتة 29.
+- Release: `v0.29.0-alpha`، commit
+  `7af42f21e1beab663911a3746840debad23aa8d7`:
+  - https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.29.0-alpha
+  - https://github.com/linkq8/family-force-neon-streets/releases/download/v0.29.0-alpha/family-force-family-current.apk
+  - SHA-256: `8b3de3e44b4ad702eba62484921243177f15d0c2560c4c957453ba155f8f939d`.
 - ملاحظات/مخاطر: لن يدمج Atlas قبل فحص وضوح الإطارات وثبات الاتجاه والقدم،
   ولن تُحمّل أصول إضافية على TV خارج Stage pack المطلوب.
-- التالي: commit ورفع `v0.29.0-alpha` إلى GitHub Releases وتسجيل الرابط والـcommit.
+- التالي: اختبار Striker يدويًا على Xiaomi Stick، ثم إنتاج Shield Guard بالطريقة نفسها.
 
 ### 2026-08-21-17 — اعتماد ImageGen كمسار أعداء أقل تكلفة
 
@@ -832,17 +837,16 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.28.0-alpha` منشور؛ اللعبة مستقرة وتحتوي محدثًا داخليًا آمنًا.
-- آخر عمل: إضافة `SETTINGS > GAME UPDATE` لفحص GitHub وتنزيل APK العميل الصحيح
-  والتحقق من SHA-256 والحزمة والإصدار والشهادة قبل فتح مثبت Android الرسمي.
-- آخر قرار: لا تثبيت صامت ولا اعتماديات إضافية؛ ContentProvider داخلي محدود
-  القراءة، واللعبة تبقى قابلة للعب إذا فشل الإنترنت أو فحص التحديث.
+- الحالة: `v0.29.0-alpha` منشور؛ أضيف Striker كخامس نوع عدو متحرك بالكامل.
+- آخر عمل: إنتاج 36 إطار Striker عبر ImageGen المدمج بلا فيديو، ودمجه بأربع
+  مواجهات مع AI/سرعة/هجوم/HP مستقلة ونسخة TV محسنة.
+- آخر قرار: استخدام ImageGen المدمج للأعداء الجدد، وإنتاج عدو واحد في كل بوابة
+  قبول أولية قبل توسيع الدفعة، مع إبقاء ميزانية TV تحت 31 MiB.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
-  3. `android/app/src/main/java/com/familyforce/neonstreets/UpdateManager.java`
-  4. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
-  5. `android/tools/test_in_app_update_contract.py`
-- الإجراء التالي المقترح: تنفيذ `v0.29` كبنية EnemyArchetype/StageRoster وثلاثة
-  أنواع Striker وShield وBlaster باستخدام ImageGen المدمج (12 صورة إجمالًا)،
-  ثم تجربة الأداء وزر التحديث على Xiaomi Stick قبل إنتاج بقية الدفعات.
+  3. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  4. `android/tools/build_striker_enemy.py`
+  5. `android/tools/test_striker_enemy_contract.py`
+- الإجراء التالي المقترح: اختبار `v0.29` وStriker على Xiaomi Stick، ثم تنفيذ
+  Shield Guard كعدو سادس بالطريقة نفسها وإصدار نسخة مستقلة بعد QA.
