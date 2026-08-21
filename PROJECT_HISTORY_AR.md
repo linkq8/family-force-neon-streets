@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة الجاري تجهيزها للنشر: `v0.22.0-alpha`، `versionCode 22`.
+- النسخة المنشورة: `v0.22.0-alpha`، `versionCode 22`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `94c42afbe0c215db3b1f8a3666283de29efadeb7`.
+- آخر commit وظيفي: `13783bff59d9bdac55d51a77e9fdab837660af8a`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.21.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.21.0-alpha/family-force-family-current.apk
-- SHA-256: `4f73a484bab163f033e45c75d9ee7223d9bee1bfd379a12a80dfcdb9543aee8f`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.22.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.22.0-alpha/family-force-family-current.apk
+- SHA-256: `31805a102da8bd7e2c5c56b8fd0f74bbcab4fdf49ae2a87409583198e584cac1`.
 - حالة QA: بناء Release وLint وفحوص الهاتف/Fold/Android TV ومسار لاعبين ناجحة.
 - اختبار المناطق: مسار تطويري آلي مرّ بالمناطق 1–9 حتى شاشة النتائج بنجاح.
 - التشخيص: يوجد Flight Recorder محلي خفيف يحفظ آخر منطقة، P1/P2، العدو،
@@ -202,7 +202,11 @@
   - `:app:assembleDebug :app:lintDebug` — PASS؛ Lint نظيف.
   - `tools/test_customer_release.sh ../customers/family-current` — PASS؛ بناء
     Release والأصول والذاكرة وأول مواجهة والسلاح والـcheckpoint والصوت ومسار TV.
-- Release: `v0.22.0-alpha` قيد الرفع؛ سيضاف الرابط وSHA بعد النشر.
+- Release: `v0.22.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.22.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.22.0-alpha/family-force-family-current.apk
+- SHA-256: `31805a102da8bd7e2c5c56b8fd0f74bbcab4fdf49ae2a87409583198e584cac1`.
+- commit: `13783bff59d9bdac55d51a77e9fdab837660af8a`.
 - ملاحظات/مخاطر: يلزم تفعيل fallback بحسب هوية مضيف Xiaomi مع إبقاء تصحيح
   المحاور منفصلًا حتى لا يتضرر Firmware حديث بتخطيط triggers صحيح.
 - التالي: اختبار APK المنشور على Xiaomi Stick الحقيقي؛ المحاكي لا يحاكي Firmware Bluetooth.
@@ -357,8 +361,8 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: إصلاح DualSense/Xiaomi الموسع مكتمل ومختبر آليًا، وجارٍ نشر v0.22؛
-  يبقى اختبار العتاد الحقيقي.
+- الحالة: إصلاح DualSense/Xiaomi الموسع منشور في v0.22 ومختبر آليًا؛ يبقى
+  اختبار العتاد الحقيقي.
 - آخر عمل: إنشاء نظام السجل المشترك وتعليمات Codex/Claude Code.
 - آخر قرار: `v0.21.0-alpha` لم يحل مشكلة Xiaomi؛ يجري توسيع الاكتشاف ليشمل
   مضيف Xiaomi وأحداث Keyboard مع فصل تصحيح الأزرار عن تصحيح المحاور.
