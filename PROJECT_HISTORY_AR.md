@@ -10,7 +10,7 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.21.0-alpha`، `versionCode 21`.
+- النسخة الجاري تجهيزها للنشر: `v0.22.0-alpha`، `versionCode 22`.
 - الفرع المشترك: `main`.
 - آخر commit وظيفي: `94c42afbe0c215db3b1f8a3666283de29efadeb7`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
@@ -23,11 +23,11 @@
   السلاح، الحركة والذاكرة، ويحفظ تقرير الجلسة السابقة إذا انقطعت.
 - نتيجة اختبار Shield Pro: المناطق 1–9، الموت/الإحياء، الإغلاق/الفتح، فصل اليد،
   الريموت والتقاط الأسلحة تعمل دون خروج غير طبيعي.
-- إصلاح قيد تحقق المستخدم: توافق DualSense القديم على Xiaomi Stick ورمي السلاح
-  عبر L2 أو Touchpad.
+- إصلاح قيد تحقق المستخدم: توسيع توافق DualSense على Xiaomi ليشمل Firmware الذي
+  لا يعلن نطاق trigger المكسور أو يرسل الأزرار كمصدر Keyboard.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: إصلاح رمي السلاح واختباره لكل من P1/P2 ووحدات التحكم،
-  ثم إغلاق بوابة Xiaomi/Checkpoint وإصدار `v0.21.0-alpha`.
+- العمل التالي الموصى به: تثبيت `v0.22.0-alpha` على Xiaomi Stick الحقيقي وفحص
+  كل أزرار DualSense والرمي؛ ثم اعتماد الجهاز أو جمع key-event trace إن بقي اختلاف.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -174,6 +174,38 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-21-06 — استمرار خلل DualSense على Xiaomi بعد v0.21
+
+- المنفذ: Codex
+- طلب المستخدم: المشكلة لا تزال موجودة بعد تثبيت إصلاح DualSense الأول.
+- الحالة: مكتمل برمجيًا؛ بانتظار تحقق المستخدم على Xiaomi Stick الحقيقي.
+- نقطة البداية: `v0.21.0-alpha` / commit `d68ac9a`.
+- ما تم:
+  - الاستنتاج الأولي: Firmware Xiaomi لا يعلن trigger ranges بالتوقيع الذي اعتمد
+    عليه Auto-detection، أو يرسل KeyEvent للأزرار بمصدر Keyboard.
+  - إضافة fallback ضيق لأسماء مضيف Xiaomi/Mi Box/Mi Stick/Mi TV، ولا يعمل إلا
+    عندما تكون اليد PlayStation ورمز المسح ضمن تعيين AOSP.
+  - تمرير أحداث DualSense عبر التطبيع حتى إن أعلنها النظام كمصدر Keyboard.
+  - فصل اكتشاف محاور L2/R2 القديمة عن fallback الأزرار؛ لا تُحوّل Z/RZ إلا عند
+    وجود نطاق signed فعليًا، حمايةً لإصدارات Xiaomi الحديثة.
+  - رفع النسخة إلى `versionCode 22` / `0.22.0-alpha`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `android/app/build.gradle`
+  - `android/app/src/main/java/com/familyforce/neonstreets/ControllerCompat.java`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/tests/ControllerCompatMain.java`
+  - `android/CONTROLLER_COMPATIBILITY_REPORT_AR.md`
+- الاختبارات:
+  - `tools/test_controller_compat.sh` — PASS؛ Xiaomi/Mi Box موجب وShield/Sony سالب.
+  - `:app:assembleDebug :app:lintDebug` — PASS؛ Lint نظيف.
+  - `tools/test_customer_release.sh ../customers/family-current` — PASS؛ بناء
+    Release والأصول والذاكرة وأول مواجهة والسلاح والـcheckpoint والصوت ومسار TV.
+- Release: `v0.22.0-alpha` قيد الرفع؛ سيضاف الرابط وSHA بعد النشر.
+- ملاحظات/مخاطر: يلزم تفعيل fallback بحسب هوية مضيف Xiaomi مع إبقاء تصحيح
+  المحاور منفصلًا حتى لا يتضرر Firmware حديث بتخطيط triggers صحيح.
+- التالي: اختبار APK المنشور على Xiaomi Stick الحقيقي؛ المحاكي لا يحاكي Firmware Bluetooth.
 
 ### 2026-08-21-05 — خلل أزرار DualSense على Xiaomi Stick
 
@@ -325,14 +357,15 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: إصلاح DualSense/Xiaomi مكتمل ومختبر آليًا، بانتظار اختبار العتاد الحقيقي.
+- الحالة: إصلاح DualSense/Xiaomi الموسع مكتمل ومختبر آليًا، وجارٍ نشر v0.22؛
+  يبقى اختبار العتاد الحقيقي.
 - آخر عمل: إنشاء نظام السجل المشترك وتعليمات Codex/Claude Code.
-- آخر قرار: نشر `v0.21.0-alpha` بتوافق DualSense القديم وبديل Touchpad للرمي،
-  ثم انتظار نتيجة Xiaomi Stick الحقيقية.
+- آخر قرار: `v0.21.0-alpha` لم يحل مشكلة Xiaomi؛ يجري توسيع الاكتشاف ليشمل
+  مضيف Xiaomi وأحداث Keyboard مع فصل تصحيح الأزرار عن تصحيح المحاور.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
   3. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
   4. `android/tools/test_customer_release.sh`
-- الإجراء التالي المقترح: تثبيت `v0.21.0-alpha` على Xiaomi Stick وتجربة Cross/
+- الإجراء التالي المقترح: تثبيت `v0.22.0-alpha` على Xiaomi Stick وتجربة Cross/
   Circle/Square/Triangle وL1/R1/L2/R2 وOptions وD-pad والعصا وTouchpad.

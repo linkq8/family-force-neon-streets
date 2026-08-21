@@ -35,6 +35,16 @@ final class ControllerCompat {
                 || name.contains("joycon 2") || name.contains("joy con 2");
     }
 
+    /** Narrow fallback for Xiaomi Android TV builds missing AOSP's DualSense key layout. */
+    static boolean needsXiaomiDualSenseKeyFallback(String manufacturer, String brand,
+                                                    String model) {
+        String host = normalizedName(manufacturer) + " " + normalizedName(brand)
+                + " " + normalizedName(model);
+        return host.contains("xiaomi") || host.contains("mibox") || host.contains("mi box")
+                || host.contains("mistick") || host.contains("mi stick")
+                || host.contains("mitv") || host.contains("mi tv");
+    }
+
     /**
      * Some Android/TV Bluetooth stacks expose a sideways single Joy-Con's face
      * and SL/SR buttons as generic BUTTON_1..8. Convert only that fallback;

@@ -45,6 +45,18 @@ public final class ControllerCompatMain {
         require(ControllerCompat.normalizeGamepadKey("DualSense Wireless Controller",
                         KeyEvent.KEYCODE_BUTTON_A, 304, false) == KeyEvent.KEYCODE_BUTTON_A,
                 "standard DualSense mapping must pass through");
+        require(ControllerCompat.needsXiaomiDualSenseKeyFallback(
+                        "Xiaomi", "Xiaomi", "TV Stick 4K"),
+                "Xiaomi TV Stick host fallback");
+        require(ControllerCompat.needsXiaomiDualSenseKeyFallback(
+                        "Amlogic", "MIBOX4", "MIBOX4"),
+                "Mi Box host fallback");
+        require(!ControllerCompat.needsXiaomiDualSenseKeyFallback(
+                        "NVIDIA", "NVIDIA", "SHIELD Android TV"),
+                "Shield must keep standard DualSense mapping");
+        require(!ControllerCompat.needsXiaomiDualSenseKeyFallback(
+                        "Sony", "BRAVIA", "BRAVIA 4K GB"),
+                "Sony TV must keep standard DualSense mapping");
         System.out.println("ControllerCompat tests passed");
     }
 }

@@ -18,6 +18,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.os.Build;
 import android.os.SystemClock;
 import android.view.HapticFeedbackConstants;
 import android.view.InputDevice;
@@ -713,7 +714,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 || keyCode == KeyEvent.KEYCODE_DPAD_UP || keyCode == KeyEvent.KEYCODE_DPAD_DOWN;
     }
 
-    private boolean hasLegacyDualSenseLayout(InputDevice device) {
+    private boolean hasLegacyDualSenseAxes(InputDevice device) {
         if (device == null
                 || ControllerCompat.family(device.getName()) != ControllerCompat.Family.PLAYSTATION) {
             return false;
@@ -726,15 +727,30 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 && left.getMin() < -0.25f && right.getMin() < -0.25f;
     }
 
+    private boolean useLegacyDualSenseKeys(InputDevice device) {
+        if (device == null
+                || ControllerCompat.family(device.getName()) != ControllerCompat.Family.PLAYSTATION) {
+            return false;
+        }
+        return hasLegacyDualSenseAxes(device)
+                || ControllerCompat.needsXiaomiDualSenseKeyFallback(
+                        Build.MANUFACTURER, Build.BRAND, Build.MODEL);
+    }
+
+    private static boolean isPlayStationDevice(InputDevice device) {
+        return device != null
+                && ControllerCompat.family(device.getName()) == ControllerCompat.Family.PLAYSTATION;
+    }
+
     private int normalizeControllerKey(InputDevice device, int keyCode, int scanCode) {
         String name = device == null ? "" : device.getName();
         return ControllerCompat.normalizeGamepadKey(
-                name, keyCode, scanCode, hasLegacyDualSenseLayout(device));
+                name, keyCode, scanCode, useLegacyDualSenseKeys(device));
     }
 
     private float controllerTriggerValue(MotionEvent event, boolean left) {
         InputDevice device = event.getDevice();
-        if (hasLegacyDualSenseLayout(device)) {
+        if (hasLegacyDualSenseAxes(device)) {
             // Missing fallback .kl: physical L2/R2 arrive on the axes that
             // Generic.kl labels Z/RZ. Normalize their signed range to 0..1.
             int axis = left ? MotionEvent.AXIS_Z : MotionEvent.AXIS_RZ;
@@ -5555,7 +5571,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         try {
             if (event == null) return super.onKeyDown(keyCode, event);
             InputDevice inputDevice = event.getDevice();
-            if (isGamepadSource(event.getSource())) {
+            if (isGamepadSource(event.getSource()) || isPlayStationDevice(inputDevice)) {
                 keyCode = normalizeControllerKey(inputDevice, keyCode, event.getScanCode());
             }
             int source = event.getSource();
@@ -5724,7 +5740,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         try {
             if (event == null) return super.onKeyUp(keyCode, event);
             InputDevice inputDevice = event.getDevice();
-            if (isGamepadSource(event.getSource())) {
+            if (isGamepadSource(event.getSource()) || isPlayStationDevice(inputDevice)) {
                 keyCode = normalizeControllerKey(inputDevice, keyCode, event.getScanCode());
             }
             int source = event.getSource();
