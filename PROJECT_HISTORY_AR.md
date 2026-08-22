@@ -10,15 +10,15 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.34.1-alpha`، `versionCode 41`.
+- النسخة المنشورة: `v0.35.0-alpha`، `versionCode 42`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `3c634ae`.
+- آخر commit وظيفي: `a9730d7`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.34.1-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.34.1-alpha/family-force-family-current.apk
-- SHA-256: `50e5d1eb69b0f91af737e22ee0c67c5a12e5f9f33ddd74bf1e4c9a865138e6c2`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.35.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.35.0-alpha/family-force-family-current.apk
+- SHA-256: `86e94a995c64330f75d729b03dc8db9444cf17ae217224a0d333e3abf2bf17d3`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس والتحكم وعقود
-  البانوراما/القص/ذاكرة TV ناجحة؛ الميزانية `37.99 MiB`. نجح Android TV
+  البانوراما/القص/ذاكرة TV ناجحة؛ الميزانية `28.09 MiB`. نجح Android TV
   Emulator في المسار الكامل للمناطق التسع واختبارات phone/Fold/TV/remote.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
   استدعاء الشخصيات الإضافية ونظافة الرسومات والحركة.
@@ -30,8 +30,8 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: اختبار وضوح Striker/Shield Guard وحركة Stage 4 من
-  أول خطوة في `v0.34.1` على Xiaomi Stick وShield الحقيقيين.
+- العمل التالي الموصى به: تثبيت `v0.35.0-alpha` على Xiaomi Stick وShield وفحص
+  وضوح جميع الشخصيات أثناء idle/walk/attack على الشاشة الحقيقية.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -178,6 +178,50 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-22-37 — إعادة بناء دقة Runtime لكل الشخصيات
+
+- المنفذ: Codex
+- طلب المستخدم: رسومات الأعداء الجديدة ما زالت الأسوأ؛ البكسلات كبيرة وباهتة
+  ومغبشة. المطلوب معالجة عامة لكل الشخصيات وإعادة الأطالس إذا لزم.
+- الحالة: مكتمل ومنشور.
+- نقطة البداية: `v0.34.1-alpha` / commit `3c634ae`.
+- القرار: الإبقاء على أطالس التأليف الأصلية، وبناء أطالس Runtime بخلايا تساوي
+  حجم العرض المنطقي لكل بطل/عدو، مع حواف alpha صلبة ولوحة محدودة ورسم 1:1.
+- القيود: لا فيديو، لا sharpen قاسٍ، والذاكرة تحت سقف TV الآمن.
+- ما تم:
+  - بناء 10 أطالس Runtime بالحجم المنطقي الفعلي بدل تصغير أطالس كبيرة كل إطار.
+  - اشتقاق الأبطال والأعداء الثمانية القدامى مباشرة من الإطارات عالية الدقة،
+    مع downscale عالي الجودة وalpha صلب وتحديد خفيف.
+  - تحويل Striker وShield Guard إلى خلايا Runtime مطابقة للحجم عبر nearest
+    للحفاظ على التفاصيل ومنع الضبابية وتضخم عناقيد البكسل.
+  - رسم كل الأبطال والأعداء 1:1 بلا bitmap filtering، وإلغاء مسار Essa الخاص
+    الذي كان يجعل وضوح الوقوف مختلفًا عن بقية الحركات.
+  - خفض ميزانية الصور المتحركة من `37.99 MiB` إلى `28.09 MiB`.
+- الملفات المعدلة:
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/app/src/main/assets/runtime/heroes/*.png`
+  - `android/app/src/main/assets/runtime/enemies/*.png`
+  - `android/tools/generate_runtime_character_atlases.py`
+  - `android/tools/test_runtime_character_atlases.py`
+  - `android/tools/validate_assets.py`
+  - `android/docs/VISUAL_ASSET_STANDARD_AR.md`
+  - `android/app/build.gradle`
+- الاختبارات:
+  - `validate_assets.py` — PASS، 117 ملفًا موثقًا.
+  - `test_runtime_character_atlases.py` — PASS، 10/10 أطالس exact-scale.
+  - `validate_animation_atlases.py --allow-nonclustered` — PASS.
+  - `test_runtime_smoothness_contract.py` — PASS، `28.09 MiB`.
+  - `test_full_stage_runtime.sh` — PASS، المسار الكامل للمناطق التسع على TV.
+  - `test_customer_release.sh customers/family-current` — PASS، Release/R8/Lint
+    واختبارات phone/Fold/TV/remote والذاكرة والقتال.
+- Release: `v0.35.0-alpha` / commit `a9730d7`:
+  - https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.35.0-alpha
+  - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.35.0-alpha/family-force-family-current.apk
+  - SHA-256: `86e94a995c64330f75d729b03dc8db9444cf17ae217224a0d333e3abf2bf17d3`.
+- ملاحظات/مخاطر: لم تُنتج صور AI أو فيديوهات جديدة. إعادة التوليد الكاملة للأطالس
+  الثمانية القديمة تعتمد على مكتبة الإطارات عالية الدقة المحلية غير المنشورة.
+- التالي: فحص بصري قصير على Xiaomi Stick وShield؛ لا يوجد crash أو مانع آلي معروف.
 
 ### 2026-08-22-36 — إصلاح وضوح العدوين وحركة/دقة البانوراما
 
@@ -1473,11 +1517,11 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.34.1-alpha` منشور؛ حركة Stage 4 ووضوح الخلفيات/العدوين مصححة.
-- آخر عمل: بدء panorama من أول خطوة، تقليل التعتيم، ورفع atlas العدوين إلى
-  `840×1008` مع filtering خفيف بدل nearest/sharpen القاسي.
-- آخر قرار: حد TV الرسومي 40 MiB؛ النسخة الحالية `37.99 MiB` وتحميل الأعداء
-  يبقى حسب المرحلة بحد أقصى خمسة أطالس.
+- الحالة: `v0.35.0-alpha` منشور؛ أطالس Runtime لجميع الشخصيات أعيد بناؤها.
+- آخر عمل: exact-scale atlases لكل الأبطال والأعداء، alpha صلب، ورسم 1:1 بلا
+  filtering، مع إعادة اشتقاق ثمانية ممثلين من الإطارات عالية الدقة.
+- آخر قرار: الأطلس داخل اللعبة يطابق حجم العرض المنطقي ولا يُصغّر أثناء الرسم؛
+  الميزانية الحالية `28.09 MiB` وبحد أقصى خمسة أطالس أعداء.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
@@ -1486,5 +1530,5 @@
   5. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
   6. `android/docs/VISUAL_ASSET_STANDARD_AR.md`
   7. `android/tools/test_visual_refresh_contract.py`
-- الإجراء التالي المقترح: تثبيت `v0.34.1-alpha` على Xiaomi Stick وShield، وفحص
-  حركة Stage 4 من أول خطوة ووضوح العدوين أثناء كل الحركات.
+- الإجراء التالي المقترح: تثبيت `v0.35.0-alpha` على Xiaomi Stick وShield، وفحص
+  وضوح جميع الشخصيات أثناء الحركة والقتال على الشاشة الحقيقية.
