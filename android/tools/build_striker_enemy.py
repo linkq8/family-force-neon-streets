@@ -257,6 +257,63 @@ def normalize_row(frames: list[Image.Image]) -> list[Image.Image]:
     return normalized
 
 
+def normalize_row_dense(frames: list[Image.Image], cell_size=(320, 384)) -> list[Image.Image]:
+    """Keep one real source pixel per output pixel; never create 2x clusters."""
+    boxes = [frame.getchannel("A").getbbox() for frame in frames]
+    assert all(boxes)
+    widths = [box[2] - box[0] for box in boxes if box]
+    heights = [box[3] - box[1] for box in boxes if box]
+    safe_width = round(cell_size[0] * SAFE_WIDTH / CELL_SIZE[0])
+    safe_height = round(cell_size[1] * SAFE_HEIGHT / CELL_SIZE[1])
+    safe_bottom = round(cell_size[1] * SAFE_BOTTOM / CELL_SIZE[1])
+    scale = min(safe_width / max(widths), safe_height / max(heights))
+    normalized = []
+    for frame, box in zip(frames, boxes):
+        assert box is not None
+        cropped = frame.crop(box)
+        target = (max(2, round(cropped.width * scale)),
+                  max(2, round(cropped.height * scale)))
+        sprite = cropped.resize(target, Image.Resampling.LANCZOS)
+        cell = Image.new("RGBA", cell_size, (0, 0, 0, 0))
+        x = (cell_size[0] - sprite.width) // 2
+        y = cell_size[1] - safe_bottom - sprite.height
+        assert x >= 12 and y >= 12, (sprite.size, x, y)
+        cell.alpha_composite(sprite, (x, y))
+        normalized.append(keep_character_component(cell))
+    return normalized
+
+
+def build_dense_atlas(cell_size=(320, 384)) -> Image.Image:
+    """Build a high-density source atlas directly from the approved sheets."""
+    rows: list[list[Image.Image] | None] = [None] * ROWS
+    for filename, first_row, second_row in SHEETS:
+        source_rows = split_sheet(SOURCE / filename)
+        rows[first_row] = normalize_row_dense(source_rows[0], cell_size)
+        rows[second_row] = normalize_row_dense(source_rows[1], cell_size)
+    for row, mapping in SAFE_FRAME_REMAP.items():
+        assert rows[row] is not None
+        rows[row] = [rows[row][index].copy() for index in mapping]
+    scale_x = cell_size[0] / CELL_SIZE[0]
+    scale_y = cell_size[1] / CELL_SIZE[1]
+    assert rows[1] is not None and rows[2] is not None
+    rows[1] = [translate_cell(frame, 0, round(WALK_BOB_Y[index] * scale_y))
+               for index, frame in enumerate(rows[1])]
+    rows[2] = [translate_cell(frame, round(ATTACK_LUNGE_X[index] * scale_x), 0)
+               for index, frame in enumerate(rows[2])]
+    # Translation can expose tiny disconnected remnants that were outside the
+    # authored pose's main component.  Remove them after motion is applied so
+    # neither the runtime atlas nor filtered TV rendering can magnify them.
+    rows[1] = [keep_character_component(frame) for frame in rows[1]]
+    rows[2] = [keep_character_component(frame) for frame in rows[2]]
+    atlas = Image.new("RGBA", (cell_size[0] * COLS, cell_size[1] * ROWS),
+                      (0, 0, 0, 0))
+    for row, frames in enumerate(rows):
+        assert frames is not None
+        for column, frame in enumerate(frames):
+            atlas.alpha_composite(frame, (column * cell_size[0], row * cell_size[1]))
+    return atlas
+
+
 def validate(atlas: Image.Image) -> None:
     assert atlas.size == ATLAS_SIZE and atlas.mode == "RGBA"
     raw = list(atlas.getdata())
@@ -296,6 +353,8 @@ def main() -> None:
     assert rows[2] is not None
     rows[2] = [translate_cell(frame, ATTACK_LUNGE_X[index], 0)
                for index, frame in enumerate(rows[2])]
+    rows[1] = [keep_character_component(frame) for frame in rows[1]]
+    rows[2] = [keep_character_component(frame) for frame in rows[2]]
 
     atlas = Image.new("RGBA", ATLAS_SIZE, (0, 0, 0, 0))
     for row, frames in enumerate(rows):

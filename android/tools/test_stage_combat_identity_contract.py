@@ -39,9 +39,10 @@ for snippet in (
 for weapon in ("WEAPON_BAT", "WEAPON_PIPE", "WEAPON_MALLET", "WEAPON_SIGN"):
     assert f"spawnWorldObject({weapon}" in game, weapon
 
-# Stage-specific loading must remain bounded even after combat rules diverge.
-assert "static int decodedAtlasCount(int stage)" in rosters
-assert "{EnemyArchetype.GRUNT, EnemyArchetype.BRUTE, EnemyArchetype.BOSS," in rosters
-assert "EnemyArchetype.STRIKER, EnemyArchetype.SHIELD_GUARD}" in rosters
+# Encounter-specific loading must remain bounded even with denser art.
+assert "static int decodedAtlasCount(int zone)" in rosters
+assert "static boolean includesZone(int zone, int type)" in rosters
+assert "EnemyArchetype.BOSS," in rosters
+assert "EnemyArchetype.STRIKER}" in rosters
 
 print("Stage combat identity contract: PASS (4 rules, elites, rewards, bounded rosters)")

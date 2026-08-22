@@ -82,13 +82,13 @@ for name in ("parent", "adam", "shaikha", "sulaiman"):
     IMAGE_CONTRACT[f"heroes/{name}_portrait.png"] = ((256, 256), "RGBA")
     IMAGE_CONTRACT[f"heroes/{name}_portrait_ready.png"] = ((256, 256), "RGBA")
 for name, logical_cell in {"parent": 126, "adam": 77, "shaikha": 77, "sulaiman": 88}.items():
-    cell = round(logical_cell * 1.5)
+    cell = max(192, round(logical_cell * 2.25))
     IMAGE_CONTRACT[f"runtime/heroes/{name}_anim.png"] = ((cell * 8, cell * 11), "RGBA")
 for name, logical_height in {
     "grunt": 120, "skater": 110, "brute": 136, "boss": 160,
     "striker": 116, "shield_guard": 132,
 }.items():
-    height = round(logical_height * 1.5)
+    height = round(logical_height * 2.25)
     width = round(height * 160 / 192)
     IMAGE_CONTRACT[f"runtime/enemies/{name}_anim.png"] = ((width * 6, height * 6), "RGBA")
 

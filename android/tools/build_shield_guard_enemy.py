@@ -210,6 +210,51 @@ def normalize_row(frames: list[Image.Image]) -> list[Image.Image]:
     return normalized
 
 
+def normalize_row_dense(frames: list[Image.Image], cell_size=(320, 384)) -> list[Image.Image]:
+    """Preserve the source detail instead of manufacturing 2x pixel clusters."""
+    boxes = [frame.getchannel("A").getbbox() for frame in frames]
+    assert all(boxes)
+    widths = [box[2] - box[0] for box in boxes if box]
+    heights = [box[3] - box[1] for box in boxes if box]
+    safe_width = round(cell_size[0] * SAFE_WIDTH / CELL_SIZE[0])
+    safe_height = round(cell_size[1] * SAFE_HEIGHT / CELL_SIZE[1])
+    safe_bottom = round(cell_size[1] * SAFE_BOTTOM / CELL_SIZE[1])
+    scale = min(safe_width / max(widths), safe_height / max(heights))
+    normalized = []
+    for frame, box in zip(frames, boxes):
+        assert box is not None
+        cropped = frame.crop(box)
+        target = (max(2, round(cropped.width * scale)),
+                  max(2, round(cropped.height * scale)))
+        sprite = cropped.resize(target, Image.Resampling.LANCZOS)
+        cell = Image.new("RGBA", cell_size, (0, 0, 0, 0))
+        x = (cell_size[0] - sprite.width) // 2
+        y = cell_size[1] - safe_bottom - sprite.height
+        assert x >= 12 and y >= 12, (sprite.size, x, y)
+        cell.alpha_composite(sprite, (x, y))
+        normalized.append(cell)
+    return normalized
+
+
+def build_dense_atlas(cell_size=(320, 384)) -> Image.Image:
+    """Build a non-clustered atlas directly from the approved source sheets."""
+    rows: list[list[Image.Image] | None] = [None] * ROWS
+    for filename, first, second in SHEETS:
+        pair = split_sheet(SOURCE / filename)
+        rows[first] = normalize_row_dense(pair[0], cell_size)
+        rows[second] = normalize_row_dense(pair[1], cell_size)
+    for row, mapping in SAFE_FRAME_REMAP.items():
+        assert rows[row]
+        rows[row] = [rows[row][index].copy() for index in mapping]
+    atlas = Image.new("RGBA", (cell_size[0] * COLS, cell_size[1] * ROWS),
+                      (0, 0, 0, 0))
+    for row, frames in enumerate(rows):
+        assert frames
+        for column, frame in enumerate(frames):
+            atlas.alpha_composite(frame, (column * cell_size[0], row * cell_size[1]))
+    return atlas
+
+
 def validate(atlas: Image.Image) -> None:
     assert atlas.size == ATLAS_SIZE and atlas.mode == "RGBA"
     assert all(a in (0, 255) for *_, a in atlas.getdata())

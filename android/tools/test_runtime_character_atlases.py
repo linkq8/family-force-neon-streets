@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify 1.5x-density character atlases and filtered minification."""
+"""Verify placement-locked high-density atlases and filtered minification."""
 
 from pathlib import Path
 from PIL import Image, ImageChops
@@ -11,10 +11,10 @@ JAVA = (ROOT / "android/app/src/main/java/com/familyforce/neonstreets/GameView.j
 heroes = {"parent": 126, "adam": 77, "shaikha": 77, "sulaiman": 88}
 enemies = {"grunt": 120, "skater": 110, "brute": 136, "boss": 160,
            "striker": 116, "shield_guard": 132}
-density = 1.5
+density = 2.25
 
 for name, cell in heroes.items():
-    cell = round(cell * density)
+    cell = max(192, round(cell * density))
     path = ASSETS / f"runtime/heroes/{name}_anim.png"
     with Image.open(path) as atlas:
         assert atlas.size == (cell * 8, cell * 11) and atlas.mode == "RGBA"
@@ -37,4 +37,4 @@ assert 'Paint enemyPaint = crispCharacterPaint' in JAVA
 assert 'Paint.FILTER_BITMAP_FLAG' in JAVA
 animated = JAVA[JAVA.index("private void drawAnimatedHero"):JAVA.index("private void drawHeldWeapon")]
 assert "crispCharacterPaint" in animated and "heroPaint" not in animated
-print("Runtime character atlas contract: PASS (10 1.5x atlases, filtered minification)")
+print("Runtime character atlas contract: PASS (10 placement-locked 2.25x atlases)")

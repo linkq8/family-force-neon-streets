@@ -35,7 +35,7 @@ assert SOURCE.count("ENEMY_STRIKER") >= 4
 for relative, dimensions in (
     ("enemies/striker.png", (512, 512)),
     ("enemies/striker_anim.png", (960, 1152)),
-    ("tv/enemies/striker_anim.png", (720, 864)),
+    ("tv/enemies/striker_anim.png", (840, 1008)),
 ):
     with Image.open(ASSETS / relative) as image:
         assert image.size == dimensions, (relative, image.size)
@@ -43,10 +43,6 @@ for relative, dimensions in (
         assert image.getchannel("A").getbbox() is not None, relative
 
 atlas = Image.open(ASSETS / "enemies/striker_anim.png").convert("RGBA")
-clustered = atlas.resize((480, 576), Image.Resampling.NEAREST).resize(
-    atlas.size, Image.Resampling.NEAREST
-)
-assert clustered.tobytes() == atlas.tobytes(), "Striker atlas lost exact 2px clusters"
 for row in range(6):
     cells = [
         atlas.crop((column * 160, row * 192, (column + 1) * 160, (row + 1) * 192))
@@ -95,10 +91,19 @@ for column in range(6):
 tv = Image.open(ASSETS / "tv/enemies/striker_anim.png").convert("RGBA")
 for row in range(6):
     for column in range(6):
-        bbox = tv.crop((column * 120, row * 144, (column + 1) * 120,
-                        (row + 1) * 144)).getchannel("A").getbbox()
+        bbox = tv.crop((column * 140, row * 168, (column + 1) * 140,
+                        (row + 1) * 168)).getchannel("A").getbbox()
         assert bbox is not None
-        assert min(bbox[0], bbox[1], 120 - bbox[2], 144 - bbox[3]) >= 8, (
+        assert min(bbox[0], bbox[1], 140 - bbox[2], 168 - bbox[3]) >= 8, (
             row, column, "unsafe TV margin", bbox)
 
-print("Striker enemy contract: PASS (36 frames, 12px/8px safe gutters, 2px clusters)")
+runtime = Image.open(ASSETS / "runtime/enemies/striker_anim.png").convert("RGBA")
+runtime_clustered = runtime.resize((runtime.width // 2, runtime.height // 2),
+                                   Image.Resampling.NEAREST).resize(
+    runtime.size, Image.Resampling.NEAREST
+)
+assert runtime_clustered.tobytes() != runtime.tobytes(), (
+    "runtime Striker must be rebuilt from source without 2px clusters"
+)
+
+print("Striker enemy contract: PASS (36 frames, dense runtime source, safe gutters)")

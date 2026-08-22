@@ -268,8 +268,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
      */
     private final Paint heroPaint = new Paint(Paint.ANTI_ALIAS_FLAG
             | Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
-    // Runtime atlases are baked at 1.5x logical size. Bilinear minification
-    // preserves the extra facial/armor detail without enlarging pixel blocks.
+    // Runtime atlases are placement-locked at 2.25x logical size (minimum
+    // 192px hero cells). Filtering now performs a small final resample instead
+    // of magnifying low-resolution pixels two or three times on a TV.
     private final Paint crispCharacterPaint = new Paint(Paint.ANTI_ALIAS_FLAG
             | Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG);
     private final Paint portraitPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
@@ -692,7 +693,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 selectionTransitionInProgress = false;
                 selectionChangedAt = SystemClock.uptimeMillis();
                 if (nextState == PLAY && !enemyPreloadRunning) {
-                    preloadEnemyAnimationsForStageAsync(stageForZone(zone));
+                    preloadEnemyAnimationsForZoneAsync(zone);
                 }
             }
         } catch (Throwable runtimeError) {
@@ -1243,7 +1244,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             selectedHero2 = selectedHero;
             unloadPlayer2Animation(false);
             unloadSelectedHeroAnimation();
-            preloadEnemyAnimationsForStageAsync(stageForZone(zone));
+            preloadEnemyAnimationsForZoneAsync(zone);
             // Character selection only needs the compact portraits.  The
             // 12+ MiB decoded animation atlases are loaded once, after every
             // required player has confirmed and the battle is starting.
@@ -1519,7 +1520,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         return null;
     }
 
-    private void preloadEnemyAnimationsForStageAsync(final int requestedStage) {
+    private void preloadEnemyAnimationsForZoneAsync(final int requestedZone) {
         final int generation = ++enemyPreloadGeneration;
         enemyPreloadRunning = true;
         Thread loader = new Thread(() -> {
@@ -1527,7 +1528,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 for (int type = 0; type < enemyAnimArt.length; type++) {
                     synchronized (GameView.this) {
                         if (generation != enemyPreloadGeneration || !appActive) return;
-                        if (!StageRoster.includes(requestedStage, type)) {
+                        if (!StageRoster.includesZone(requestedZone, type)) {
                             for (Enemy enemy : enemies) if (enemy.type == type) enemy.animator.clear();
                             recycleBitmap(enemyAnimArt[type]);
                             enemyAnimArt[type] = null;
@@ -2330,7 +2331,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (twoPlayerMode) loadPlayer2Animations();
         else unloadPlayer2Animation(false);
         preloadAssistAnimationRows();
-        if (!enemyPreloadRunning) preloadEnemyAnimationsForStageAsync(0);
+        if (!enemyPreloadRunning) preloadEnemyAnimationsForZoneAsync(0);
         if (playerAnimator.isBound()) {
             playerAnimator.play(HERO_IDLE, HERO_ANIM_COLUMNS, 8, true, true);
         }
@@ -3308,7 +3309,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 zone++;
                 zoneActive = false;
                 zoneBanner = 110;
-                preloadEnemyAnimationsForStageAsync(stageForZone(zone));
+                preloadEnemyAnimationsForZoneAsync(zone);
                 StageCombatRule clearedRule = StageCombatRule.forStage(finishedStage);
                 health = Math.min(maxHealth, health + clearedRule.clearHeal);
                 linkMeter = Math.min(100, linkMeter + clearedRule.clearLink);

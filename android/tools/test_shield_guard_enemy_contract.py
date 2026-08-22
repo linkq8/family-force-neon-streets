@@ -19,8 +19,8 @@ assert "enemy.type == ENEMY_SHIELD_GUARD && enemy.guard > 0" in game
 assert "if (hitFromFront)" in game
 assert 'diagnostics.event("GUARD_BREAK z="' in game
 assert 'new EnemyArchetype("shield_guard", "SHIELD GUARD"' in archetypes
-assert "EnemyArchetype.STRIKER, EnemyArchetype.SHIELD_GUARD}" in rosters
-assert "StageRoster.includes(requestedStage, type)" in game
+assert "EnemyArchetype.GRUNT, EnemyArchetype.SHIELD_GUARD}" in rosters
+assert "StageRoster.includesZone(requestedZone, type)" in game
 assert "spawnEnemy(8, ENEMY_STRIKER, 5760, 270);" in game
 assert "component_boxes(foreground_candidates(image))" in builder
 assert "if len(selected) == COLS" in builder
@@ -60,4 +60,13 @@ for row in range(6):
         assert min(bbox[0], bbox[1], 140 - bbox[2], 168 - bbox[3]) >= 9, (
             row, column, "unsafe TV margin", bbox)
 
-print("Shield Guard enemy contract: PASS (36 frames, 12px/9px safe gutters, guard)")
+runtime = Image.open(ASSETS / "runtime/enemies/shield_guard_anim.png").convert("RGBA")
+runtime_clustered = runtime.resize((runtime.width // 2, runtime.height // 2),
+                                   Image.Resampling.NEAREST).resize(
+    runtime.size, Image.Resampling.NEAREST
+)
+assert runtime_clustered.tobytes() != runtime.tobytes(), (
+    "runtime Shield Guard must be rebuilt from source without 2px clusters"
+)
+
+print("Shield Guard enemy contract: PASS (36 frames, dense runtime source, guard)")

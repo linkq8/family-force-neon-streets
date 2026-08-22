@@ -10,11 +10,15 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
+from build_shield_guard_enemy import build_dense_atlas as build_shield_dense
+from build_striker_enemy import build_dense_atlas as build_striker_dense
+
 
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "android/app/src/main/assets"
 
-SOURCE_DENSITY = 1.5
+SOURCE_DENSITY = 2.25
+MIN_HERO_CELL = 192
 
 HEROES = {
     "parent": 126,
@@ -90,17 +94,21 @@ def clean_resize(cell: Image.Image, size: tuple[int, int]) -> Image.Image:
 
 
 def normalize_highres(frame: Image.Image, size: tuple[int, int],
+                       reference_box: tuple[int, int, int, int],
+                       reference_size: tuple[int, int],
                        remove_green: bool = False) -> Image.Image:
     frame = frame.convert("RGBA")
     bbox = frame.getchannel("A").point(lambda value: 255 if value >= 16 else 0).getbbox()
     if bbox is None:
         return Image.new("RGBA", size, (0, 0, 0, 0))
     actor = defringe(frame.crop(bbox), remove_green=remove_green)
-    safe_inset = max(6, round(min(size) * 0.04))
-    max_width = max(1, size[0] - safe_inset * 2)
-    max_height = max(1, size[1] - safe_inset * 2)
-    scale = min(max_width / actor.width, max_height / actor.height)
-    target = (max(1, round(actor.width * scale)), max(1, round(actor.height * scale)))
+    scale_x = size[0] / reference_size[0]
+    scale_y = size[1] / reference_size[1]
+    left = round(reference_box[0] * scale_x)
+    top = round(reference_box[1] * scale_y)
+    right = round(reference_box[2] * scale_x)
+    bottom = round(reference_box[3] * scale_y)
+    target = (max(1, right - left), max(1, bottom - top))
     actor = actor.resize(target, Image.Resampling.LANCZOS)
     alpha = actor.getchannel("A").point(lambda value: 0 if value < 10 else value)
     rgb = actor.convert("RGB")
@@ -109,45 +117,55 @@ def normalize_highres(frame: Image.Image, size: tuple[int, int],
     clean_actor = Image.new("RGBA", actor.size, (0, 0, 0, 0))
     clean_actor.alpha_composite(actor)
     output = Image.new("RGBA", size, (0, 0, 0, 0))
-    output.alpha_composite(clean_actor, ((size[0] - actor.width) // 2,
-                                         size[1] - safe_inset - actor.height))
+    output.alpha_composite(clean_actor, (left, top))
     return output
 
 
 def build_from_frames(root: Path, output: Path, actions: tuple[str, ...],
-                      columns: int, cell_size: tuple[int, int]) -> None:
+                      columns: int, cell_size: tuple[int, int],
+                      reference_path: Path) -> None:
     atlas = Image.new("RGBA", (cell_size[0] * columns, cell_size[1] * len(actions)),
                       (0, 0, 0, 0))
-    for row, action in enumerate(actions):
-        frames = sorted((root / "removed" / action).glob("*.png"))
-        if not frames:
-            raise FileNotFoundError(root / "removed" / action)
-        indices = [round(i * (len(frames) - 1) / max(1, columns - 1)) for i in range(columns)]
-        for column, index in enumerate(indices):
-            with Image.open(frames[index]) as frame:
-                cell = normalize_highres(frame, cell_size,
-                                         remove_green=root.name == "hero_1")
-            atlas.alpha_composite(cell, (column * cell_size[0], row * cell_size[1]))
+    with Image.open(reference_path) as reference:
+        reference = reference.convert("RGBA")
+        reference_cell = (reference.width // columns, reference.height // len(actions))
+        for row, action in enumerate(actions):
+            frames = sorted((root / "removed" / action).glob("*.png"))
+            if not frames:
+                raise FileNotFoundError(root / "removed" / action)
+            indices = [round(i * (len(frames) - 1) / max(1, columns - 1))
+                       for i in range(columns)]
+            for column, index in enumerate(indices):
+                ref_cell = reference.crop((column * reference_cell[0], row * reference_cell[1],
+                                           (column + 1) * reference_cell[0],
+                                           (row + 1) * reference_cell[1]))
+                ref_box = ref_cell.getchannel("A").point(
+                    lambda value: 255 if value > 12 else 0).getbbox()
+                if ref_box is None:
+                    ref_box = (0, 0, reference_cell[0], reference_cell[1])
+                with Image.open(frames[index]) as frame:
+                    cell = normalize_highres(frame, cell_size, ref_box, reference_cell,
+                                             remove_green=root.name == "hero_1")
+                atlas.alpha_composite(cell, (column * cell_size[0], row * cell_size[1]))
     output.parent.mkdir(parents=True, exist_ok=True)
     atlas.save(output, optimize=True, compress_level=9)
 
 
-def build(source: Path, output: Path, columns: int, rows: int,
-          cell_size: tuple[int, int]) -> None:
-    with Image.open(source) as master:
-        master = master.convert("RGBA")
-        source_w = master.width // columns
-        source_h = master.height // rows
-        assert source_w * columns == master.width
-        assert source_h * rows == master.height
-        target_w, target_h = cell_size
-        atlas = Image.new("RGBA", (target_w * columns, target_h * rows), (0, 0, 0, 0))
-        for row in range(rows):
-            for column in range(columns):
-                cell = master.crop((column * source_w, row * source_h,
-                                    (column + 1) * source_w, (row + 1) * source_h))
-                atlas.alpha_composite(clean_resize(cell, cell_size),
-                                      (column * target_w, row * target_h))
+def build_from_master(master: Image.Image, output: Path, columns: int, rows: int,
+                      cell_size: tuple[int, int]) -> None:
+    master = master.convert("RGBA")
+    source_w = master.width // columns
+    source_h = master.height // rows
+    assert source_w * columns == master.width
+    assert source_h * rows == master.height
+    target_w, target_h = cell_size
+    atlas = Image.new("RGBA", (target_w * columns, target_h * rows), (0, 0, 0, 0))
+    for row in range(rows):
+        for column in range(columns):
+            cell = master.crop((column * source_w, row * source_h,
+                                (column + 1) * source_w, (row + 1) * source_h))
+            atlas.alpha_composite(clean_resize(cell, cell_size),
+                                  (column * target_w, row * target_h))
     output.parent.mkdir(parents=True, exist_ok=True)
     atlas.save(output, optimize=True, compress_level=9)
 
@@ -177,21 +195,25 @@ def refresh_manifest() -> None:
 
 def main() -> None:
     for name, logical_cell in HEROES.items():
-        cell = round(logical_cell * SOURCE_DENSITY)
+        cell = max(MIN_HERO_CELL, round(logical_cell * SOURCE_DENSITY))
         build_from_frames(RAW_ROOT / HERO_RAW[name],
                           ASSETS / f"runtime/heroes/{name}_anim.png",
-                          HERO_ACTIONS, 8, (cell, cell))
+                          HERO_ACTIONS, 8, (cell, cell),
+                          ASSETS / f"heroes/{name}_anim.png")
     for name, logical_height in ENEMIES.items():
         height = round(logical_height * SOURCE_DENSITY)
         width = round(height * 160 / 192)
         output = ASSETS / f"runtime/enemies/{name}_anim.png"
         if name in ENEMY_RAW:
             build_from_frames(RAW_ROOT / ENEMY_RAW[name], output,
-                              ENEMY_ACTIONS, 6, (width, height))
+                              ENEMY_ACTIONS, 6, (width, height),
+                              ASSETS / f"enemies/{name}_anim.png")
+        elif name == "striker":
+            build_from_master(build_striker_dense(), output, 6, 6, (width, height))
         else:
-            build(ASSETS / f"enemies/{name}_anim.png", output, 6, 6, (width, height))
+            build_from_master(build_shield_dense(), output, 6, 6, (width, height))
     refresh_manifest()
-    print("Generated 10 1.5x-density runtime atlases and refreshed manifest")
+    print("Generated 10 placement-locked 2.25x runtime atlases and refreshed manifest")
 
 
 if __name__ == "__main__":

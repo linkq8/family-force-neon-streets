@@ -34,7 +34,7 @@ for method in ("update", "updateGame", "updateEncounter", "prepareEnemyAnimation
                       "loadEnemyAnimationType", "loadAssistAnimationRow"):
         assert forbidden not in body, f"{method} contains blocking runtime work: {forbidden}"
 
-warmup = method_body("preloadEnemyAnimationsForStageAsync")
+warmup = method_body("preloadEnemyAnimationsForZoneAsync")
 assert "new Thread" in warmup and "Thread.MIN_PRIORITY" in warmup
 assert "decodeEnemyAnimationType" in warmup
 
@@ -77,9 +77,9 @@ hero_runtime = {"parent": 126, "adam": 77, "shaikha": 77, "sulaiman": 88}
 enemy_runtime = {"grunt": (100, 120), "skater": (92, 110), "brute": (113, 136),
                  "boss": (133, 160), "striker": (97, 116),
                  "shield_guard": (110, 132)}
-density = 1.5
+density = 2.25
 for stem, cell in hero_runtime.items():
-    cell = round(cell * density)
+    cell = max(192, round(cell * density))
     expected[f"runtime/heroes/{stem}_anim.png"] = (cell * 8, cell * 11)
 for stem, (cell_width, cell_height) in enemy_runtime.items():
     cell_height = round(cell_height * density)
@@ -98,22 +98,23 @@ for relative, dimensions in expected.items():
     with Image.open(path) as image:
         assert image.size == dimensions, f"unexpected dimensions for {relative}: {image.size}"
 
-# Peak animated combat textures for low-RAM TV: two hero atlases, two Link rows,
-# at most five stage-roster enemy atlases, and both RGB_565 backgrounds. Keep under Android TV's
-# recommended 30–40 MiB graphics target with a small tolerance for two-player mode.
+# Peak animated combat textures: two hero atlases, two Link rows, at most four
+# encounter-roster enemy atlases, and RGB_565 backgrounds. Higher source density
+# is deliberate; encounter-scoped loading prevents all six enemy atlases coexisting.
 # Worst distinct hero pair is Essa + Sulaiman; same-hero P2 shares the bitmap.
-hero_dimensions = {stem: (round(cell * density) * 8, round(cell * density) * 11)
+hero_dimensions = {stem: (max(192, round(cell * density)) * 8,
+                           max(192, round(cell * density)) * 11)
                    for stem, cell in hero_runtime.items()}
 hero_bytes = sum(w * h * 4 for w, h in
                  (hero_dimensions["parent"], hero_dimensions["sulaiman"]))
-assist_bytes = sum(round(hero_runtime[stem] * density) * 8
-                   * round(hero_runtime[stem] * density) * 4
+assist_bytes = sum(max(192, round(hero_runtime[stem] * density)) * 8
+                   * max(192, round(hero_runtime[stem] * density)) * 4
                    for stem in ("parent", "sulaiman"))
 enemy_dense = [(round(h * density * 160 / 192), round(h * density))
                for _, h in enemy_runtime.values()]
-enemy_bytes = sum(sorted((w * 6 * h * 6 * 4 for w, h in enemy_dense), reverse=True)[:5])
+enemy_bytes = sum(sorted((w * 6 * h * 6 * 4 for w, h in enemy_dense), reverse=True)[:4])
 background_bytes = (960 * 536 + 4 * 1800 * 600) * 2
 combat_mib = (hero_bytes + assist_bytes + enemy_bytes + background_bytes) / (1024 * 1024)
-assert combat_mib < 72.0, f"animated TV combat texture budget too high: {combat_mib:.2f} MiB"
+assert combat_mib < 98.0, f"animated TV combat texture budget too high: {combat_mib:.2f} MiB"
 
 print(f"Runtime smoothness/TV asset contract: PASS ({combat_mib:.2f} MiB animated budget)")
