@@ -268,7 +268,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
      */
     private final Paint heroPaint = new Paint(Paint.ANTI_ALIAS_FLAG
             | Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
-    private final Paint crispCharacterPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
+    // Runtime atlases are baked at 1.5x logical size. Bilinear minification
+    // preserves the extra facial/armor detail without enlarging pixel blocks.
+    private final Paint crispCharacterPaint = new Paint(Paint.ANTI_ALIAS_FLAG
+            | Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG);
     private final Paint portraitPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
     private final Rect source = new Rect();
     private final RectF dest = new RectF();

@@ -81,13 +81,16 @@ for name in ("parent", "adam", "shaikha", "sulaiman"):
     IMAGE_CONTRACT[f"heroes/{name}.png"] = ((256, 384), "RGBA")
     IMAGE_CONTRACT[f"heroes/{name}_portrait.png"] = ((256, 256), "RGBA")
     IMAGE_CONTRACT[f"heroes/{name}_portrait_ready.png"] = ((256, 256), "RGBA")
-for name, cell in {"parent": 126, "adam": 77, "shaikha": 77, "sulaiman": 88}.items():
+for name, logical_cell in {"parent": 126, "adam": 77, "shaikha": 77, "sulaiman": 88}.items():
+    cell = round(logical_cell * 1.5)
     IMAGE_CONTRACT[f"runtime/heroes/{name}_anim.png"] = ((cell * 8, cell * 11), "RGBA")
-for name, dimensions in {
-    "grunt": (600, 720), "skater": (552, 660), "brute": (678, 816),
-    "boss": (798, 960), "striker": (582, 696), "shield_guard": (660, 792),
+for name, logical_height in {
+    "grunt": 120, "skater": 110, "brute": 136, "boss": 160,
+    "striker": 116, "shield_guard": 132,
 }.items():
-    IMAGE_CONTRACT[f"runtime/enemies/{name}_anim.png"] = (dimensions, "RGBA")
+    height = round(logical_height * 1.5)
+    width = round(height * 160 / 192)
+    IMAGE_CONTRACT[f"runtime/enemies/{name}_anim.png"] = ((width * 6, height * 6), "RGBA")
 
 WAV_NAMES = ("punch", "damage", "pickup", "confirm", "victory", "jump", "special")
 ICON_DENSITIES = {"mdpi": 1, "hdpi": 1.5, "xhdpi": 2, "xxhdpi": 3, "xxxhdpi": 4}

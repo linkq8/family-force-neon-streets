@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Bake every animation atlas at its exact 640x360 logical render size."""
+"""Bake TV-safe animation atlases above logical render size for clean sampling."""
 
 from __future__ import annotations
 
@@ -7,11 +7,14 @@ import hashlib
 import json
 from pathlib import Path
 
-from PIL import Image, ImageFilter
+import numpy as np
+from PIL import Image
 
 
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "android/app/src/main/assets"
+
+SOURCE_DENSITY = 1.5
 
 HEROES = {
     "parent": 126,
@@ -36,47 +39,78 @@ HERO_ACTIONS = ("idle", "walk", "punch", "kick", "heavy_punch", "heavy_kick",
 ENEMY_ACTIONS = ("idle", "walk", "attack1", "attack2", "hurt", "knockdown")
 
 
+def defringe(frame: Image.Image, remove_green: bool = False) -> Image.Image:
+    """Replace chroma-contaminated edge RGB from the nearest opaque interior."""
+    pixels = np.array(frame.convert("RGBA"), dtype=np.uint8)
+    alpha = pixels[:, :, 3]
+    visible = alpha > 8
+    core = visible.copy()
+    # The remover left a 6–10 source-pixel chroma rim on some clips. Rebuild
+    # that rim from interior colours; at runtime this is still sub-pixel detail.
+    for _ in range(8):
+        padded = np.pad(core, 1, constant_values=False)
+        core = core & padded[:-2, 1:-1] & padded[2:, 1:-1] \
+            & padded[1:-1, :-2] & padded[1:-1, 2:]
+    rgb = pixels[:, :, :3].copy()
+    known = core.copy()
+    if remove_green:
+        green_spill = (rgb[:, :, 1] > 40) \
+            & (rgb[:, :, 1] > rgb[:, :, 0] * 1.22) \
+            & (rgb[:, :, 1] > rgb[:, :, 2] * 1.22)
+        known &= ~green_spill
+    for _ in range(20):
+        unresolved = visible & ~known
+        if not unresolved.any():
+            break
+        changed = np.zeros_like(known)
+        for dy, dx in ((-1, 0), (1, 0), (0, -1), (0, 1),
+                       (-1, -1), (-1, 1), (1, -1), (1, 1)):
+            source_known = np.roll(np.roll(known, dy, axis=0), dx, axis=1)
+            take = unresolved & source_known & ~changed
+            shifted = np.roll(np.roll(rgb, dy, axis=0), dx, axis=1)
+            rgb[take] = shifted[take]
+            changed |= take
+        if not changed.any():
+            break
+        known |= changed
+    pixels[:, :, :3] = rgb
+    pixels[~visible, :3] = 0
+    return Image.fromarray(pixels)
+
+
 def clean_resize(cell: Image.Image, size: tuple[int, int]) -> Image.Image:
-    # One deterministic nearest sample per final logical pixel. Filtering here
-    # caused the exact haze the user reported; filtering later caused uneven
-    # cluster sizes. At exact runtime dimensions nearest means no live scaling.
-    resized = cell.convert("RGBA").resize(size, Image.Resampling.NEAREST)
-    alpha = resized.getchannel("A").point(lambda value: 255 if value >= 80 else 0)
-    rgb = resized.convert("RGB")
-    # A finite non-dithered palette keeps every pixel deliberate without
-    # inventing gray transition pixels around faces, armor, or outlines.
-    rgb = rgb.quantize(colors=192, method=Image.Quantize.MEDIANCUT,
-                       dither=Image.Dither.NONE).convert("RGB")
-    result = rgb.convert("RGBA")
+    # The authored Striker/Guard sheets are already clean raster art. Preserve
+    # their colour range and sample into the 1.5x runtime grid only once.
+    result = cell.convert("RGBA").resize(size, Image.Resampling.LANCZOS)
+    alpha = result.getchannel("A").point(lambda value: 0 if value < 10 else value)
     result.putalpha(alpha)
     clean = Image.new("RGBA", size, (0, 0, 0, 0))
     clean.alpha_composite(result)
     return clean
 
 
-def normalize_highres(frame: Image.Image, size: tuple[int, int]) -> Image.Image:
+def normalize_highres(frame: Image.Image, size: tuple[int, int],
+                       remove_green: bool = False) -> Image.Image:
     frame = frame.convert("RGBA")
     bbox = frame.getchannel("A").point(lambda value: 255 if value >= 16 else 0).getbbox()
     if bbox is None:
         return Image.new("RGBA", size, (0, 0, 0, 0))
-    actor = frame.crop(bbox)
-    max_width = max(1, size[0] - 8)
-    max_height = max(1, size[1] - 8)
+    actor = defringe(frame.crop(bbox), remove_green=remove_green)
+    safe_inset = max(6, round(min(size) * 0.04))
+    max_width = max(1, size[0] - safe_inset * 2)
+    max_height = max(1, size[1] - safe_inset * 2)
     scale = min(max_width / actor.width, max_height / actor.height)
     target = (max(1, round(actor.width * scale)), max(1, round(actor.height * scale)))
     actor = actor.resize(target, Image.Resampling.LANCZOS)
-    alpha = actor.getchannel("A").point(lambda value: 255 if value >= 72 else 0)
-    rgb = actor.convert("RGB").filter(
-        ImageFilter.UnsharpMask(radius=0.58, percent=155, threshold=2)
-    ).quantize(colors=160, method=Image.Quantize.MEDIANCUT,
-               dither=Image.Dither.NONE).convert("RGB")
+    alpha = actor.getchannel("A").point(lambda value: 0 if value < 10 else value)
+    rgb = actor.convert("RGB")
     actor = rgb.convert("RGBA")
     actor.putalpha(alpha)
     clean_actor = Image.new("RGBA", actor.size, (0, 0, 0, 0))
     clean_actor.alpha_composite(actor)
     output = Image.new("RGBA", size, (0, 0, 0, 0))
     output.alpha_composite(clean_actor, ((size[0] - actor.width) // 2,
-                                         size[1] - 4 - actor.height))
+                                         size[1] - safe_inset - actor.height))
     return output
 
 
@@ -91,7 +125,8 @@ def build_from_frames(root: Path, output: Path, actions: tuple[str, ...],
         indices = [round(i * (len(frames) - 1) / max(1, columns - 1)) for i in range(columns)]
         for column, index in enumerate(indices):
             with Image.open(frames[index]) as frame:
-                cell = normalize_highres(frame, cell_size)
+                cell = normalize_highres(frame, cell_size,
+                                         remove_green=root.name == "hero_1")
             atlas.alpha_composite(cell, (column * cell_size[0], row * cell_size[1]))
     output.parent.mkdir(parents=True, exist_ok=True)
     atlas.save(output, optimize=True, compress_level=9)
@@ -141,11 +176,13 @@ def refresh_manifest() -> None:
 
 
 def main() -> None:
-    for name, cell in HEROES.items():
+    for name, logical_cell in HEROES.items():
+        cell = round(logical_cell * SOURCE_DENSITY)
         build_from_frames(RAW_ROOT / HERO_RAW[name],
                           ASSETS / f"runtime/heroes/{name}_anim.png",
                           HERO_ACTIONS, 8, (cell, cell))
-    for name, height in ENEMIES.items():
+    for name, logical_height in ENEMIES.items():
+        height = round(logical_height * SOURCE_DENSITY)
         width = round(height * 160 / 192)
         output = ASSETS / f"runtime/enemies/{name}_anim.png"
         if name in ENEMY_RAW:
@@ -154,7 +191,7 @@ def main() -> None:
         else:
             build(ASSETS / f"enemies/{name}_anim.png", output, 6, 6, (width, height))
     refresh_manifest()
-    print("Generated 10 exact-scale crisp runtime atlases and refreshed manifest")
+    print("Generated 10 1.5x-density runtime atlases and refreshed manifest")
 
 
 if __name__ == "__main__":
