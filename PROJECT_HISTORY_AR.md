@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.30.0-alpha`، `versionCode 33`.
+- النسخة المنشورة: `v0.30.1-alpha`، `versionCode 34`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `71594e31659b69490a35b5db92e2579ecd26660f`.
+- آخر commit وظيفي: `f12a8d3b40019636587b53dc64f7045463617580`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.30.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.30.0-alpha/family-force-neon-streets.apk
-- SHA-256: `75f9c7b0d0c254f7f1c42ea06d819d5ebd1d81bf2d1d63c188d95f5cde57eac3`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.30.1-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.30.1-alpha/family-force-neon-streets.apk
+- SHA-256: `a86935bbff5b9510862d6f6cf087dd3b6378ebbd96824d9514f4c12f9f8b496f`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس والتحكم وعقود
   ذاكرة/سلاسة TV ناجحة؛ لم يكن جهاز أو Emulator متصلًا لهذه النسخة.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
@@ -29,8 +29,8 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: تجربة Shield Guard وعداد GUARD ومسار المراحل كاملًا
-  على Xiaomi Stick وShield، ومراقبة Flight Recorder والذاكرة خلال الانتقالات.
+- العمل التالي الموصى به: تجربة Striker وShield Guard بكل الحركات والاتجاهين على
+  Xiaomi Stick وShield، ثم تجربة عداد GUARD ومسار المراحل كاملًا.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -182,16 +182,37 @@
 
 - المنفذ: Codex
 - طلب المستخدم: إصلاح Striker وShield Guard لأن الحركة تُقص الرسم من إحدى الجهات.
-- الحالة: قيد التنفيذ.
+- الحالة: مكتمل.
 - نقطة البداية: `v0.30.0-alpha` / commit `71594e3`.
-- ما سيتم: قياس حدود كل إطار في المصدر وأطلس الهاتف وTV، إعادة بناء الأطلسين
-  بمساحة أمان تستوعب أقصى حركة، وإضافة اختبار يمنع ملامسة أو قص أي حافة.
-- الملفات المعدلة حتى الآن:
-  - `PROJECT_HISTORY_AR.md`
-- الاختبارات: قيد التنفيذ.
-- Release: لا يوجد بعد.
-- ملاحظات/مخاطر: سيُعاد استخدام الصور الحالية أولًا؛ لن تُنشأ فيديوهات.
-- التالي: تدقيق بصري ورقمي لكل خلية وتحديد هل القص من المصدر أم من التطبيع.
+- ما تم:
+  - ثبت أن المصدر كامل، وأن السبب هو تطبيع قديم يترك 4–6px فقط حول الحركة.
+  - أعيد بناء 36 إطار Striker و36 إطار Shield Guard داخل الخلايا الأصلية
+    `160×192` مع هامش لا يقل عن 12px من الجهات الأربع.
+  - أعيدت نسخ TV بنسبة 75% مع هامش فعلي لا يقل عن 8px بكل خلية.
+  - أزيل اندفاع لكمة Striker غير الآمن واستبدل باندفاع 4px داخل صندوق أضيق.
+  - أعيدت fallback masters والـmanifest، ولم تُنشأ صور مصدر أو فيديوهات جديدة.
+- الملفات المعدلة:
+  - `android/tools/build_striker_enemy.py`
+  - `android/tools/build_shield_guard_enemy.py`
+  - `android/tools/test_striker_enemy_contract.py`
+  - `android/tools/test_shield_guard_enemy_contract.py`
+  - أطالس/masters الهاتف وTV للعدوين و`asset_manifest.json`.
+  - `android/app/build.gradle` (`versionCode 34` / `0.30.1-alpha`).
+- الاختبارات:
+  - فحص هوامش 72 إطارًا — PASS: 12px للهاتف و8px لـTV كحد أدنى.
+  - `validate_assets.py` — PASS: 55 PNG، 10 أطالس، 92 ملف manifest.
+  - `validate_animation_atlases.py --allow-nonclustered` — PASS: 10/10.
+  - `test_customer_release.sh customers/family-current` — PASS؛ Release/R8/Lint/
+    signature/archive/controller/TV memory والسلاسة نجحت.
+  - Runtime على جهاز/Emulator — SKIPPED؛ لم يكن جهاز متصلًا.
+- Release: `v0.30.1-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.30.1-alpha
+  - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.30.1-alpha/family-force-neon-streets.apk
+  - SHA-256: `a86935bbff5b9510862d6f6cf087dd3b6378ebbd96824d9514f4c12f9f8b496f`.
+  - commit: `f12a8d3b40019636587b53dc64f7045463617580`.
+- ملاحظات/مخاطر: يلزم تأكيد بصري على جهاز المستخدم في الاتجاهين؛ لا يوجد قص
+  حسابيًا داخل أطالس الهاتف أو TV بعد الإصلاح.
+- التالي: اختبار كل صف حركة للعدوين يمينًا ويسارًا على Xiaomi Stick أو Shield.
 
 ### 2026-08-21-24 — تجهيز v0.30.0-alpha
 
@@ -1066,9 +1087,9 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.30.0-alpha` منشور؛ Shield Guard مدمج مع تحميل أطالس مرحلي.
-- آخر عمل: فصل بيانات الأعداء/تشكيلات المراحل، إنشاء Shield Guard من صور ثابتة،
-  وإضافة GUARD أمامي مع نسخة TV وميزانية قصوى `30.09 MiB`.
+- الحالة: `v0.30.1-alpha` منشور؛ قص Striker وShield Guard أُصلح بهوامش آمنة.
+- آخر عمل: إعادة بناء 72 إطارًا بهامش 12px للهاتف و8px للتلفاز دون تقليل دقة
+  الخلايا، مع اختبارات تمنع عودة ملامسة الحواف.
 - آخر قرار: إبقاء التحميل حسب المرحلة وعدم الاحتفاظ بالأنواع الستة معًا، والاستمرار
   بصورة Model/Action Sheets فقط من دون فيديو.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
@@ -1078,6 +1099,5 @@
   4. `android/app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java`
   5. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
   6. `android/tools/test_shield_guard_enemy_contract.py`
-- الإجراء التالي المقترح: تثبيت `v0.30.0-alpha` على Xiaomi Stick وShield، ولعب
-  المراحل كاملة مع Shield Guard وضربه أماميًا وخلفيًا وكسر GUARD، ثم فحص Flight
-  Recorder والذاكرة قبل إضافة نوع عدو آخر.
+- الإجراء التالي المقترح: تثبيت `v0.30.1-alpha` على Xiaomi Stick وShield، وفحص
+  كل حركات Striker وShield Guard يمينًا ويسارًا، ثم كسر GUARD وإكمال المراحل.
