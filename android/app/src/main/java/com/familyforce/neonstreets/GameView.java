@@ -233,6 +233,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private static final String[] STAGE_NAMES = {
             "NEON MARKET", "TRANSIT TERMINAL", "MOON HARBOR", "JUNK PALACE"
     };
+    private static final String[] STAGE_CODES = {"MKT", "TRN", "HBR", "JNK"};
+    private static final String[] STAGE_DISTRICTS = {
+            "FOOD STREET", "LAST TRAIN", "CARGO MOON", "ROYAL SCRAP"
+    };
     private static final int[] STAGE_ACCENTS = {
             Color.rgb(255, 194, 70), Color.rgb(70, 224, 216),
             Color.rgb(183, 232, 106), Color.rgb(255, 92, 164)
@@ -4094,6 +4098,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             paint.setColor(Color.argb(stage == 1 ? 18 : stage == 3 ? 34 : 24,
                     Color.red(accent), Color.green(accent), Color.blue(accent)));
             canvas.drawRect(0, 0, W, H, paint);
+            drawStreetAtmosphere(canvas, scroll, stage, accent);
         }
         paint.setColor(Color.argb(82, 4, 5, 25));
         canvas.drawRect(0, 0, W, H, paint);
@@ -4104,6 +4109,52 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             float x = i * 64 - (scroll * 0.72f) % 64;
             canvas.drawRect(x, 335, x + 26, 338, paint);
         }
+    }
+
+    private void drawStreetAtmosphere(Canvas canvas, float scroll, int stage, int accent) {
+        float slow = (scroll * 0.16f) % 96f;
+        int accentR = Color.red(accent);
+        int accentG = Color.green(accent);
+        int accentB = Color.blue(accent);
+
+        // Sparse lit windows create depth without another decoded background.
+        for (int i = -1; i < 9; i++) {
+            float x = i * 96f - slow;
+            float height = 23f + ((i + stage * 3) & 3) * 9f;
+            paint.setColor(Color.argb(92, 8, 14, 35));
+            canvas.drawRect(x, 102f - height, x + 54f, 105f, paint);
+            paint.setColor(Color.argb(76, accentR, accentG, accentB));
+            canvas.drawRect(x + 9f, 83f - height * 0.24f, x + 15f, 89f - height * 0.24f, paint);
+            canvas.drawRect(x + 29f, 72f - height * 0.18f, x + 35f, 78f - height * 0.18f, paint);
+        }
+
+        // Overhead light pools and wet-road reflections make each district feel alive.
+        float lampOffset = (scroll * 0.46f) % 180f;
+        for (int i = -1; i < 5; i++) {
+            float x = i * 180f - lampOffset;
+            paint.setColor(Color.argb(72, accentR, accentG, accentB));
+            canvas.drawOval(x - 34f, 278f, x + 34f, 288f, paint);
+            paint.setColor(Color.argb(28, accentR, accentG, accentB));
+            canvas.drawRect(x - 3f, 289f, x + 3f, 329f, paint);
+        }
+
+        paint.setColor(Color.argb(92, accentR, accentG, accentB));
+        float roadShift = (scroll * 0.72f) % 128f;
+        for (int i = -1; i < 7; i++) {
+            float x = i * 128f - roadShift;
+            canvas.drawRect(x, 323f, x + 50f, 325f, paint);
+        }
+        paint.setColor(Color.argb(76, 230, 238, 242));
+        canvas.drawRect(0f, 309f, W, 311f, paint);
+
+        // A compact district stamp reinforces that the four stages are distinct.
+        paint.setColor(Color.argb(188, 5, 12, 31));
+        roundRect(canvas, 18f, 79f, 119f, 105f, 7f, paint);
+        paint.setColor(accent);
+        canvas.drawRect(18f, 79f, 23f, 105f, paint);
+        text(canvas, "S" + (stage + 1) + "  " + STAGE_CODES[stage], 30f, 91f, 9,
+                Color.WHITE, true, Paint.Align.LEFT);
+        text(canvas, STAGE_DISTRICTS[stage], 30f, 101f, 6, accent, true, Paint.Align.LEFT);
     }
 
     private void drawTitle(Canvas canvas) {
@@ -4149,6 +4200,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 Color.WHITE, true, Paint.Align.LEFT);
         text(canvas, "CHOOSE YOUR NIGHT ROUTE", 28, 55, 10,
                 Color.rgb(144, 221, 224), true, Paint.Align.LEFT);
+        text(canvas, "04 STAGES  •  LOCAL CO-OP  •  TV READY", 612, 52, 8,
+                Color.rgb(217, 255, 85), true, Paint.Align.RIGHT);
         paint.setColor(Color.rgb(46, 65, 102));
         canvas.drawRect(28, 65, 612, 67, paint);
         float reveal = stateMotion(430);
@@ -4188,6 +4241,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                         : menuChoice == 3 ? "SAFE PRACTICE • ALL COMMANDS"
                         : "AUDIO • TOUCH • ACCESSIBILITY",
                 365, 132, 9, routeColor, true, Paint.Align.LEFT);
+        drawMenuRouteStrip(canvas, routeColor);
         drawMapRoute(canvas);
         paint.setColor(Color.argb(210, 16, 31, 65));
         roundRect(canvas, 357, 249, 594, 296, 11, paint);
@@ -4197,6 +4251,20 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.restore();
         text(canvas, "D-PAD  NAVIGATE     A / OK  SELECT     B / BACK  RETURN",
                 W / 2f, 341, 9, Color.rgb(190, 207, 222), true, Paint.Align.CENTER);
+    }
+
+    private void drawMenuRouteStrip(Canvas canvas, int routeColor) {
+        float left = 365f;
+        float y = 225f;
+        paint.setColor(Color.rgb(43, 58, 91));
+        canvas.drawRect(left, y, 586f, y + 2f, paint);
+        for (int i = 0; i < STAGE_CODES.length; i++) {
+            float x = left + 14f + i * 64f;
+            paint.setColor(i == 0 ? routeColor : Color.rgb(67, 86, 122));
+            canvas.drawCircle(x, y + 1f, i == 0 ? 5f : 4f, paint);
+            text(canvas, STAGE_CODES[i], x, y + 14f, 6,
+                    i == 0 ? routeColor : Color.rgb(153, 177, 195), true, Paint.Align.CENTER);
+        }
     }
 
     private void drawMapRoute(Canvas canvas) {
@@ -4269,6 +4337,13 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         text(canvas, twoPlayerMode ? "Both players confirm before departure"
                         : "Choose a hero and a Link companion",
                 24, 51, 10, Color.rgb(144, 221, 224), true, Paint.Align.LEFT);
+        paint.setColor(Color.argb(220, 19, 31, 64));
+        roundRect(canvas, 456, 18, 616, 51, 9, paint);
+        text(canvas, activeSelectionSlot == 0 ? "P1 SELECTING" : "P2 SELECTING",
+                536, 32, 10, activeSelectionSlot == 0 ? Color.rgb(217, 255, 85)
+                        : Color.rgb(255, 192, 65), true, Paint.Align.CENTER);
+        text(canvas, "D-PAD HERO  •  L1/R1 LINK", 536, 44, 7,
+                Color.rgb(190, 207, 222), true, Paint.Align.CENTER);
         paint.setColor(Color.rgb(46, 65, 102));
         canvas.drawRect(24, 62, 616, 64, paint);
         float reveal = stateMotion(380);
@@ -4464,24 +4539,42 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         for (int i = 0; i < STAGE_SIGN_X.length; i++) {
             float x = STAGE_SIGN_X[i] - cameraX;
             if (x < -80 || x > 700) continue;
-            paint.setColor(Color.rgb(18, 20, 48));
-            canvas.drawRect(x, 203, x + 5, 315, paint);
+            paint.setColor(Color.rgb(12, 17, 39));
+            canvas.drawRect(x, 204, x + 6, 315, paint);
+            paint.setColor(Color.argb(120, 180, 205, 220));
+            canvas.drawRect(x + 6, 208, x + 8, 315, paint);
             int signStage = stageForZone(Math.min(ZONE_TRIGGERS.length - 1, i));
-            paint.setColor(STAGE_ACCENTS[signStage]);
-            roundRect(canvas, x - 34, 188, x + 39, 214, 4, paint);
+            int signAccent = STAGE_ACCENTS[signStage];
+            paint.setColor(Color.argb(120, Color.red(signAccent), Color.green(signAccent),
+                    Color.blue(signAccent)));
+            roundRect(canvas, x - 39, 181, x + 44, 219, 7, paint);
+            paint.setColor(Color.rgb(8, 16, 39));
+            roundRect(canvas, x - 35, 185, x + 40, 215, 5, paint);
+            paint.setColor(signAccent);
+            canvas.drawRect(x - 35, 185, x + 40, 190, paint);
             String sign = i == 0 ? "MARKET" : i == 1 ? "PARK" : i == 2 ? "ROOFTOP"
                     : i == 3 ? "DEPOT" : i == 4 ? "HARBOR" : i == 5 ? "FREEWAY"
                     : i == 6 ? "DOCK" : i == 7 ? "PALACE" : i == 8 ? "THRONE" : "FINALE";
-            text(canvas, sign, x + 2, 206,
-                    10, Color.rgb(20, 20, 44), true, Paint.Align.CENTER);
+            text(canvas, sign, x + 2, 205,
+                    9, Color.WHITE, true, Paint.Align.CENTER);
+            text(canvas, "S" + (signStage + 1) + "  ›", x + 34, 214,
+                    6, signAccent, true, Paint.Align.RIGHT);
         }
         if (zoneActive && zone < ZONE_TRIGGERS.length) {
             float gate = ZONE_TRIGGERS[zone] + ENCOUNTER_GATE_OFFSET - cameraX;
             if (gate > 0 && gate < W) {
-                paint.setColor(Color.argb(150, 217, 255, 85));
-                canvas.drawRect(gate, 210, gate + 4, 335, paint);
-                text(canvas, "DEFEAT ENEMIES", gate - 5, 226, 8,
-                        Color.rgb(217, 255, 85), true, Paint.Align.RIGHT);
+                int gateAccent = STAGE_ACCENTS[currentStage()];
+                paint.setColor(Color.argb(86, Color.red(gateAccent), Color.green(gateAccent),
+                        Color.blue(gateAccent)));
+                canvas.drawRect(gate - 3, 208, gate + 7, 337, paint);
+                paint.setColor(gateAccent);
+                canvas.drawRect(gate, 208, gate + 3, 337, paint);
+                paint.setColor(Color.argb(224, 7, 15, 36));
+                roundRect(canvas, gate - 112, 214, gate - 8, 240, 7, paint);
+                text(canvas, "ROUTE LOCKED", gate - 60, 226, 8,
+                        gateAccent, true, Paint.Align.CENTER);
+                text(canvas, "CLEAR THE WAVE", gate - 60, 236, 6,
+                        Color.WHITE, true, Paint.Align.CENTER);
             }
         }
     }
@@ -5292,20 +5385,25 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private void drawPause(Canvas canvas) {
         paint.setColor(Color.argb(205, 5, 5, 25));
         canvas.drawRect(0, 0, W, H, paint);
-        paint.setColor(Color.argb(245, 20, 21, 58));
-        roundRect(canvas, 178, 49, 462, 323, 18, paint);
-        text(canvas, "PAUSED", W / 2f, 82, 26, Color.WHITE, true, Paint.Align.CENTER);
+        int pauseAccent = STAGE_ACCENTS[currentStage()];
+        paint.setColor(Color.argb(245, 12, 20, 49));
+        roundRect(canvas, 154, 40, 486, 326, 18, paint);
+        paint.setColor(pauseAccent);
+        canvas.drawRect(154, 40, 486, 46, paint);
+        text(canvas, "ROUTE PAUSED", W / 2f, 78, 24, Color.WHITE, true, Paint.Align.CENTER);
+        text(canvas, "STAGE " + (currentStage() + 1) + "  •  " + STAGE_NAMES[currentStage()],
+                W / 2f, 94, 8, pauseAccent, true, Paint.Align.CENTER);
         String controllerStatus = controllerLabel(primaryControllerId, "P1");
         if (twoPlayerMode) controllerStatus += "  •  " + controllerLabel(secondaryControllerId, "P2");
-        text(canvas, controllerStatus, W / 2f, 105, 8,
+        text(canvas, controllerStatus, W / 2f, 109, 8,
                 Color.rgb(144, 221, 224), true, Paint.Align.CENTER);
-        button(canvas, 218, 118, 422, 158, "RESUME", Color.rgb(217, 255, 85), Color.rgb(14, 24, 34),
+        button(canvas, 202, 122, 438, 160, "RESUME ROUTE", Color.rgb(217, 255, 85), Color.rgb(14, 24, 34),
                 pauseOption == 0);
-        button(canvas, 218, 171, 422, 211, "SETTINGS", Color.rgb(66, 214, 224), Color.rgb(14, 24, 34),
+        button(canvas, 202, 173, 438, 211, "SETTINGS", Color.rgb(66, 214, 224), Color.rgb(14, 24, 34),
                 pauseOption == 1);
-        button(canvas, 218, 224, 422, 264, "RESTART", Color.rgb(255, 197, 70), Color.rgb(14, 24, 34),
+        button(canvas, 202, 224, 438, 262, "RESTART STAGE", Color.rgb(255, 197, 70), Color.rgb(14, 24, 34),
                 pauseOption == 2);
-        button(canvas, 218, 277, 422, 310, "QUIT TO MAP", Color.rgb(255, 85, 94), Color.rgb(255, 255, 255),
+        button(canvas, 202, 275, 438, 311, "QUIT TO MAP", Color.rgb(255, 85, 94), Color.rgb(255, 255, 255),
                 pauseOption == 3);
     }
 

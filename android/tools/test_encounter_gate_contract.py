@@ -14,7 +14,8 @@ def main() -> None:
     assert "playerX = Math.min(playerX, playerLimit);" in text
     assert "if (twoPlayerMode) player2X = Math.min(player2X, playerLimit);" in text
     assert "enemy.x = Math.min(enemy.x, playerLimit - 8f);" in text
-    assert 'text(canvas, "DEFEAT ENEMIES"' in text
+    assert 'text(canvas, "ROUTE LOCKED"' in text
+    assert 'text(canvas, "CLEAR THE WAVE"' in text
     assert "zoneActive = false;" in text
     print("Encounter gate/P1-P2 progression contract: PASS")
 
