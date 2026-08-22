@@ -178,6 +178,31 @@
 
 ## سجل الطلبات والتعديلات المشترك
 
+### 2026-08-22-26 — تشخيص CHECK FAILED في تحديث اللعبة
+
+- المنفذ: Codex
+- طلب المستخدم: لماذا أصبح GAME UPDATE يعرض `CHECK FAILED`؟
+- الحالة: مكتمل — تشخيص فقط.
+- نقطة البداية: `v0.30.1-alpha` / commit `f12a8d3`.
+- ما تم:
+  - فحص `UpdateManager` وManifest وBuildConfig وGitHub Latest Release API.
+  - ثبت أن الاتصال والإصدار والـSHA موجودة، لكن التطبيق يطلب أصلًا باسم
+    `family-force-family-current.apk` بينما Release الحالي يحتوي
+    `family-force-neon-streets.apk`؛ فيفشل `findAsset` برسالة
+    `No matching customer APK` وتعرض الواجهة `CHECK FAILED`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+- الاختبارات:
+  - `gh api .../releases/latest` — PASS؛ أحدث tag هو `v0.30.1-alpha` والأصل
+    الوحيد اسمه `family-force-neon-streets.apk`.
+  - مطابقة `UpdateManager.wantedName` مع `BuildConfig.CUSTOMER_ID` — FAIL متوقع؛
+    الاسم المطلوب `family-force-family-current.apk` غير موجود في Release.
+- Release: لا يوجد؛ لم يُغيّر GitHub Release لأن الطلب كان تشخيصًا.
+- ملاحظات/مخاطر: إصلاح Release بإضافة APK نفسه بالاسم المتوقع يعيد التحديث
+  للنسخ المثبتة فورًا، ولا يحتاج إصدار تطبيق جديد.
+- التالي: عند طلب الإصلاح، رفع الأصل الموقّع نفسه إلى `v0.30.1-alpha` باسم
+  `family-force-family-current.apk` والتحقق من digest وLatest API.
+
 ### 2026-08-22-25 — إصلاح قص آخر عدوين
 
 - المنفذ: Codex
