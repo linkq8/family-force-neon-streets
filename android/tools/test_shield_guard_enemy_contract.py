@@ -41,5 +41,20 @@ for row in range(6):
         ImageChops.difference(frames[0].getchannel("A"), frame.getchannel("A")).getbbox()
         is not None for frame in frames[1:]
     )
+    for column, frame in enumerate(frames):
+        bbox = frame.getchannel("A").getbbox()
+        assert bbox is not None
+        assert min(bbox[0], bbox[1], 160 - bbox[2], 192 - bbox[3]) >= 12, (
+            row, column, "unsafe motion margin", bbox)
 
-print("Shield Guard enemy contract: PASS (36 frames, guard, staged loading)")
+with Image.open(ASSETS / "tv/enemies/shield_guard_anim.png") as source:
+    tv = source.convert("RGBA")
+for row in range(6):
+    for column in range(6):
+        bbox = tv.crop((column * 120, row * 144, (column + 1) * 120,
+                        (row + 1) * 144)).getchannel("A").getbbox()
+        assert bbox is not None
+        assert min(bbox[0], bbox[1], 120 - bbox[2], 144 - bbox[3]) >= 8, (
+            row, column, "unsafe TV margin", bbox)
+
+print("Shield Guard enemy contract: PASS (36 frames, 12px/8px safe gutters, guard)")

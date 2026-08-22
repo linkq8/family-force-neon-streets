@@ -148,16 +148,16 @@
     },
     {
       "path": "enemies/shield_guard.png",
-      "bytes": 17222,
-      "sha256": "1ab119e60663285f87419148e3b9a0c1a6157afc39b79046380cb2d441fedcb8",
+      "bytes": 15067,
+      "sha256": "04e6196bbd22f51f5e0efd63658a2ca7fecae41755335b92f2f7ca9d1c10376b",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/shield_guard_anim.png",
-      "bytes": 426415,
-      "sha256": "f80606a05f5f37fe5a432324bdeb98f61d2f318a07e40c89e0129aa14cea8180",
+      "bytes": 370474,
+      "sha256": "f4305b0734c25436d2692e700f65de0669db72ee167b5ce3ad9c92a0bc9d0d32",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -180,16 +180,16 @@
     },
     {
       "path": "enemies/striker.png",
-      "bytes": 15726,
-      "sha256": "90cb56aff562c97144f24932dd6dcb4912ff95d6b8bf197fbc426d8613e1bb9e",
+      "bytes": 13950,
+      "sha256": "85ebf7c5ac22194b12612768d7fcfdba3f9255ea780981b23afb3cee4ed40957",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/striker_anim.png",
-      "bytes": 328045,
-      "sha256": "f273b7c2419e70f97ef14eff7c0072695ccec47fe78476fa7ded6ae2eca6ca35",
+      "bytes": 275148,
+      "sha256": "10498793bfde6e801cc52616c89aa8bf5aa8520d7f571170ed456270a7c3c996",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -556,8 +556,8 @@
     },
     {
       "path": "tv/enemies/shield_guard_anim.png",
-      "bytes": 774302,
-      "sha256": "cc764965aaca6ddefe89600979a9726626aafd49838f04878ee393120c3404aa",
+      "bytes": 673037,
+      "sha256": "6eded603c30b1afc11fd249ec57b777649764dab196e9725f7f81b120bae9c5d",
       "width": 720,
       "height": 864,
       "mode": "RGBA"
@@ -572,8 +572,8 @@
     },
     {
       "path": "tv/enemies/striker_anim.png",
-      "bytes": 688498,
-      "sha256": "d674811fcd108d256b75d569d218c2d373aa01331a1b715c5e1e2fcb2a41c812",
+      "bytes": 581064,
+      "sha256": "482b93535c9f73dbd00a9603ee7a3f633020433bba56b183b332640b1a88d5b7",
       "width": 720,
       "height": 864,
       "mode": "RGBA"

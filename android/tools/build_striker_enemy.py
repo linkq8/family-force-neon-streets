@@ -32,7 +32,10 @@ SAFE_FRAME_REMAP = {
 }
 
 WALK_BOB_Y = (0, -2, 0, -2, 0, -2)
-ATTACK_LUNGE_X = (0, 0, 4, 10, 4, 0)
+SAFE_WIDTH = 128
+SAFE_HEIGHT = 164
+SAFE_BOTTOM = 12
+ATTACK_LUNGE_X = (0, 0, 2, 4, 2, 0)
 
 
 def remove_light_checker(image: Image.Image) -> Image.Image:
@@ -173,7 +176,9 @@ def normalize_row(frames: list[Image.Image]) -> list[Image.Image]:
     assert all(boxes)
     widths = [box[2] - box[0] for box in boxes if box]
     heights = [box[3] - box[1] for box in boxes if box]
-    scale = min(148 / max(widths), 178 / max(heights))
+    # Leave enough room for runtime bob, hit recoil, TV resampling and facing
+    # flips.  The old 148x178 box left only 4-6px and visibly clipped gloves.
+    scale = min(SAFE_WIDTH / max(widths), SAFE_HEIGHT / max(heights))
     normalized = []
     for frame, box in zip(frames, boxes):
         assert box is not None
@@ -187,8 +192,8 @@ def normalize_row(frames: list[Image.Image]) -> list[Image.Image]:
         sprite = small.resize((target[0] * 2, target[1] * 2), Image.Resampling.NEAREST)
         cell = Image.new("RGBA", CELL_SIZE, (0, 0, 0, 0))
         x = ((CELL_SIZE[0] - sprite.width) // 2) & ~1
-        y = CELL_SIZE[1] - 4 - sprite.height
-        assert x >= 4 and y >= 4, (sprite.size, x, y)
+        y = CELL_SIZE[1] - SAFE_BOTTOM - sprite.height
+        assert x >= 12 and y >= 12, (sprite.size, x, y)
         cell.alpha_composite(sprite, (x, y))
         normalized.append(keep_character_component(cell))
     return normalized
@@ -208,7 +213,7 @@ def validate(atlas: Image.Image) -> None:
             cell = atlas.crop((column * 160, row * 192, (column + 1) * 160, (row + 1) * 192))
             bbox = cell.getchannel("A").getbbox()
             assert bbox is not None, (row, column, "empty")
-            assert min(bbox[0], bbox[1], 160 - bbox[2], 192 - bbox[3]) >= 4, (row, column, bbox)
+            assert min(bbox[0], bbox[1], 160 - bbox[2], 192 - bbox[3]) >= 12, (row, column, bbox)
             hashes.add(hashlib.sha256(cell.tobytes()).digest())
         assert len(hashes) >= 3, (row, "insufficient motion", len(hashes))
 
@@ -228,6 +233,8 @@ def main() -> None:
     assert rows[1] is not None
     rows[1] = [translate_cell(frame, 0, WALK_BOB_Y[index])
                for index, frame in enumerate(rows[1])]
+    # A restrained 4px lunge restores an extra timing key while the narrower
+    # normalization still guarantees at least 12px on every side.
     assert rows[2] is not None
     rows[2] = [translate_cell(frame, ATTACK_LUNGE_X[index], 0)
                for index, frame in enumerate(rows[2])]

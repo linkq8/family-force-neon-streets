@@ -54,6 +54,10 @@ for row in range(6):
     assert len(hashes) >= 3, (row, "static Striker animation")
     for column, cell in enumerate(cells):
         alpha = cell.getchannel("A")
+        bbox = alpha.getbbox()
+        assert bbox is not None
+        margins = (bbox[0], bbox[1], 160 - bbox[2], 192 - bbox[3])
+        assert min(margins) >= 12, (row, column, "unsafe motion margin", margins)
         pixels = alpha.load()
         seen = set()
         components = 0
@@ -82,6 +86,15 @@ assert attack_cells[2] == attack_cells[4], "attack retract must reuse clean lung
 for column in range(6):
     cell = atlas.crop((column * 160, 192, (column + 1) * 160, 384))
     bbox = cell.getchannel("A").getbbox()
-    assert bbox is not None and bbox[2] <= 150, ("walk glove clipped at right edge", column, bbox)
+    assert bbox is not None and bbox[2] <= 148, ("walk glove clipped at right edge", column, bbox)
 
-print("Striker enemy contract: PASS (36 clean connected frames, TV variant, 2px clusters)")
+tv = Image.open(ASSETS / "tv/enemies/striker_anim.png").convert("RGBA")
+for row in range(6):
+    for column in range(6):
+        bbox = tv.crop((column * 120, row * 144, (column + 1) * 120,
+                        (row + 1) * 144)).getchannel("A").getbbox()
+        assert bbox is not None
+        assert min(bbox[0], bbox[1], 120 - bbox[2], 144 - bbox[3]) >= 8, (
+            row, column, "unsafe TV margin", bbox)
+
+print("Striker enemy contract: PASS (36 frames, 12px/8px safe gutters, 2px clusters)")

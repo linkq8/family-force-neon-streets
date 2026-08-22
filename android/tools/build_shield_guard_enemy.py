@@ -16,6 +16,9 @@ OUTPUT = ROOT / "android/app/src/main/assets/enemies"
 ATLAS_SIZE = (960, 1152)
 CELL_SIZE = (160, 192)
 COLS, ROWS = 6, 6
+SAFE_WIDTH = 132
+SAFE_HEIGHT = 164
+SAFE_BOTTOM = 12
 SHEETS = (
     ("idle_walk.png", 0, 1),
     ("attacks.png", 2, 3),
@@ -135,7 +138,9 @@ def normalize_row(frames: list[Image.Image]) -> list[Image.Image]:
     assert all(boxes)
     widths = [box[2] - box[0] for box in boxes if box]
     heights = [box[3] - box[1] for box in boxes if box]
-    scale = min(148 / max(widths), 178 / max(heights))
+    # Reserve motion-safe gutters. The prior 148x178 normalization left only
+    # 4-6px, which became visually cropped after TV scaling and animation.
+    scale = min(SAFE_WIDTH / max(widths), SAFE_HEIGHT / max(heights))
     normalized = []
     for frame, box in zip(frames, boxes):
         assert box is not None
@@ -150,8 +155,8 @@ def normalize_row(frames: list[Image.Image]) -> list[Image.Image]:
         sprite.putdata(data)
         cell = Image.new("RGBA", CELL_SIZE, (0, 0, 0, 0))
         x = ((CELL_SIZE[0] - sprite.width) // 2) & ~1
-        y = (CELL_SIZE[1] - 4 - sprite.height) & ~1
-        assert x >= 4 and y >= 4, (sprite.size, x, y)
+        y = (CELL_SIZE[1] - SAFE_BOTTOM - sprite.height) & ~1
+        assert x >= 12 and y >= 12, (sprite.size, x, y)
         cell.alpha_composite(sprite, (x, y))
         normalized.append(cell)
     return normalized
@@ -168,7 +173,7 @@ def validate(atlas: Image.Image) -> None:
         for column in range(COLS):
             cell = atlas.crop((column*160, row*192, (column+1)*160, (row+1)*192))
             bbox = cell.getchannel("A").getbbox()
-            assert bbox and min(bbox[0], bbox[1], 160-bbox[2], 192-bbox[3]) >= 4, (row, column, bbox)
+            assert bbox and min(bbox[0], bbox[1], 160-bbox[2], 192-bbox[3]) >= 12, (row, column, bbox)
             hashes.add(hashlib.sha256(cell.tobytes()).digest())
         assert len(hashes) >= 3, (row, len(hashes))
 
