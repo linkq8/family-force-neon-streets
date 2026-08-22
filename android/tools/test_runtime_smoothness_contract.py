@@ -55,6 +55,11 @@ assert 'drawStageTransition(canvas)' in text
 draw_enemy = method_body("drawEnemy")
 assert "STAGE_ENEMY_FILTERS[stageForZone(enemy.zone)]" in draw_enemy
 assert "new ColorMatrix" not in draw_enemy and "new ColorMatrixColorFilter" not in draw_enemy
+draw_backdrop = method_body("drawBackdrop")
+assert "stagePanProgress" in draw_backdrop
+assert "tileWidth" not in draw_backdrop
+assert "canvas.scale(-1f" not in draw_backdrop
+assert "new Bitmap[4]" in SOURCE.read_text(encoding="utf-8")
 
 expected = {
     "tv/backgrounds/street.png": (960, 536),

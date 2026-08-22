@@ -57,6 +57,13 @@ def generate_variant(source_rel: str, output_rel: str, size: tuple[int, int], mo
             rgb = resized.convert("RGB").filter(
                 ImageFilter.UnsharpMask(radius=0.8, percent=115, threshold=3)
             )
+            if output_rel in (
+                "tv/enemies/striker_anim.png",
+                "tv/enemies/shield_guard_anim.png",
+            ):
+                rgb = rgb.filter(
+                    ImageFilter.UnsharpMask(radius=0.55, percent=185, threshold=1)
+                )
             rgb.putalpha(resized.getchannel("A"))
             resized = rgb
         else:

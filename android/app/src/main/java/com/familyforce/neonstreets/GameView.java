@@ -4079,18 +4079,20 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         Bitmap scene = (gameplayScene || state == MENU || state == SELECT) && stageScene != null
                 ? stageScene : background;
         if (scene != null) {
-            float tileWidth = 640f;
-            float base = -(scroll * 0.34f) % tileWidth;
-            for (int i = -1; i < 3; i++) {
-                dest.set(base + i * tileWidth, 0, base + (i + 1) * tileWidth, 360);
-                canvas.save();
-                if ((i & 1) != 0 && gameplayScene && scene == stageScene) {
-                    float center = base + (i + 0.5f) * tileWidth;
-                    canvas.scale(-1f, 1f, center, 0f);
-                }
-                canvas.drawBitmap(scene, null, dest, paint);
-                canvas.restore();
+            if (scene == stageScene) {
+                // One continuous stage plate: gently pan inside a slightly
+                // oversized image. Never tile or mirror it; both caused hard
+                // seams and made scenery change when the player backtracked.
+                float panoramaWidth = 690f;
+                float panoramaHeight = panoramaWidth * scene.getHeight() / scene.getWidth();
+                float progress = gameplayScene ? stagePanProgress(scroll, currentStage()) : 0.5f;
+                float left = -(panoramaWidth - W) * progress;
+                float top = (H - panoramaHeight) * 0.5f;
+                dest.set(left, top, left + panoramaWidth, top + panoramaHeight);
+            } else {
+                dest.set(0f, 0f, W, H);
             }
+            canvas.drawBitmap(scene, null, dest, paint);
         } else {
             paint.setColor(Color.rgb(23, 78, 92));
             canvas.drawRect(0, 110, W, 242, paint);
@@ -4106,13 +4108,25 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         }
         paint.setColor(Color.argb(82, 4, 5, 25));
         canvas.drawRect(0, 0, W, H, paint);
-        paint.setColor(Color.rgb(31, 35, 58));
-        canvas.drawRect(0, 312, W, 360, paint);
-        paint.setColor(Color.argb(100, 108, 116, 148));
-        for (int i = -1; i < 14; i++) {
-            float x = i * 64 - (scroll * 0.72f) % 64;
-            canvas.drawRect(x, 335, x + 26, 338, paint);
+        if (scene != stageScene) {
+            paint.setColor(Color.rgb(31, 35, 58));
+            canvas.drawRect(0, 312, W, 360, paint);
+            paint.setColor(Color.argb(100, 108, 116, 148));
+            for (int i = -1; i < 14; i++) {
+                float x = i * 64 - (scroll * 0.72f) % 64;
+                canvas.drawRect(x, 335, x + 26, 338, paint);
+            }
         }
+    }
+
+    private float stagePanProgress(float scroll, int stage) {
+        int safeStage = clampInt(stage, 0, STAGE_NAMES.length - 1);
+        float start = safeStage == 0 ? 0f
+                : Math.max(0f, ZONE_TRIGGERS[STAGE_START_ZONE[safeStage]] - W * 0.35f);
+        float end = Math.min(WORLD_END - W,
+                ZONE_TRIGGERS[STAGE_END_ZONE[safeStage]] + ENCOUNTER_GATE_OFFSET);
+        if (end <= start + 1f) return 0.5f;
+        return clamp((scroll - start) / (end - start), 0f, 1f);
     }
 
     private void drawTitle(Canvas canvas) {
@@ -4165,7 +4179,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         float reveal = stateMotion(430);
         canvas.save();
         canvas.translate(-20f * (1f - reveal), 0f);
-        paint.setColor(Color.argb(220, 9, 19, 48));
+        paint.setColor(Color.argb(190, 9, 19, 48));
         roundRect(canvas, 28, 82, 318, 312, 14, paint);
         paint.setColor(Color.rgb(64, 87, 123));
         canvas.drawRect(53, 103, 57, 291, paint);
@@ -4182,7 +4196,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.save();
         canvas.translate(20f * (1f - reveal), 0f);
         int routeColor = MENU_ROUTE_COLORS[clampInt(menuChoice, 0, MENU_ROUTE_COLORS.length - 1)];
-        paint.setColor(Color.argb(224, 9, 19, 48));
+        paint.setColor(Color.argb(204, 9, 19, 48));
         roundRect(canvas, 339, 82, 612, 312, 16, paint);
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2f);
@@ -5502,29 +5516,24 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private void menuCard(Canvas canvas, float left, float top, float right, float bottom,
                           String title, String subtitle, int accent, boolean selected) {
         if (selected) {
-            paint.setColor(Color.argb(205, 20, 34, 68));
-            roundRect(canvas, left + 8f, top + 3f, right - 8f, bottom - 3f, 8, paint);
-        }
-        if (selected) {
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeWidth(3f);
             paint.setColor(accent);
-            roundRect(canvas, left, top, right, bottom, 12f, paint);
-            paint.setStyle(Paint.Style.FILL);
+            roundRect(canvas, left + 7f, top + 3f, right - 7f, bottom - 3f, 10f, paint);
+        } else {
+            paint.setColor(Color.argb(90, 121, 151, 180));
+            canvas.drawRect(left + 49f, bottom - 1f, right - 16f, bottom, paint);
         }
-        paint.setColor(accent);
-        canvas.drawCircle(left + 27, (top + bottom) * 0.5f, selected ? 12f : 9f, paint);
-        paint.setColor(Color.rgb(7, 16, 38));
-        canvas.drawCircle(left + 27, (top + bottom) * 0.5f, selected ? 5f : 4f, paint);
-        paint.setColor(accent);
-        canvas.drawRect(left + 39, (top + bottom) * 0.5f - 2f, right - 24,
-                (top + bottom) * 0.5f + 2f, paint);
-        text(canvas, title, left + 55, top + 16, 12, Color.WHITE, true, Paint.Align.LEFT);
-        text(canvas, subtitle, left + 55, top + 32, 7, Color.rgb(182, 211, 221), true, Paint.Align.LEFT);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(2f);
-        canvas.drawCircle(right - 18, (top + bottom) * 0.5f, 7f, paint);
-        paint.setStyle(Paint.Style.FILL);
+        int foreground = selected ? Color.rgb(7, 16, 38) : Color.WHITE;
+        int supporting = selected ? Color.argb(210, 7, 16, 38) : Color.rgb(182, 211, 221);
+        paint.setColor(selected ? Color.rgb(7, 16, 38) : accent);
+        canvas.drawCircle(left + 27, (top + bottom) * 0.5f, selected ? 10f : 6f, paint);
+        if (!selected) {
+            paint.setColor(Color.rgb(7, 16, 38));
+            canvas.drawCircle(left + 27, (top + bottom) * 0.5f, 2.5f, paint);
+        }
+        text(canvas, title, left + 48, top + 17, 12, foreground, true, Paint.Align.LEFT);
+        text(canvas, subtitle, left + 48, top + 32, 7, supporting, true, Paint.Align.LEFT);
+        text(canvas, selected ? "SELECT  ›" : "›", right - 18, top + 26,
+                selected ? 8 : 12, foreground, true, Paint.Align.RIGHT);
     }
 
     private void settingRow(Canvas canvas, float x, float y, String label, String value, boolean on) {

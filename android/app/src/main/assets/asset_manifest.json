@@ -580,8 +580,8 @@
     },
     {
       "path": "tv/enemies/shield_guard_anim.png",
-      "bytes": 661657,
-      "sha256": "73022f987de76e39b1c8d2fb375b8d0c4bf982eff039dbdd90ef9dca67cbcd23",
+      "bytes": 669425,
+      "sha256": "f2fd1a92db34ea776a6d5b86ca6dcc30a16bd20566df05eaf00533657eed5301",
       "width": 720,
       "height": 864,
       "mode": "RGBA"
@@ -596,8 +596,8 @@
     },
     {
       "path": "tv/enemies/striker_anim.png",
-      "bytes": 571703,
-      "sha256": "c54ffdd8362a0b1ee582151cdf0aa6f06afbe39cb457f5eae15d70a8fbf765af",
+      "bytes": 580143,
+      "sha256": "685d443b4f685527f976e7fe1b0345d3eb94336ce72f6ca4f4cb9f1d39247359",
       "width": 720,
       "height": 864,
       "mode": "RGBA"
