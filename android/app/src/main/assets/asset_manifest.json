@@ -51,6 +51,38 @@
       "sha256": "7730934f39fe1f0c68caad57879e4c33156774a215ab5bba1a63dac58db06273"
     },
     {
+      "path": "backgrounds/panoramas/stage_harbor.png",
+      "bytes": 2186910,
+      "sha256": "434c7d150a52997244cc63930a3698723733e11d07c61e3b57090aea07598938",
+      "width": 2172,
+      "height": 724,
+      "mode": "RGB"
+    },
+    {
+      "path": "backgrounds/panoramas/stage_market.png",
+      "bytes": 2135360,
+      "sha256": "0d94c863b507b486c023e169bf9aa08e5b5b7ac6dc55cbb71b0390354472f065",
+      "width": 2172,
+      "height": 724,
+      "mode": "RGB"
+    },
+    {
+      "path": "backgrounds/panoramas/stage_palace.png",
+      "bytes": 3144788,
+      "sha256": "caf0bc513bd4caecd699aea38158f5c0954c0ecd1b9809c55226febbfa83efcc",
+      "width": 2172,
+      "height": 724,
+      "mode": "RGB"
+    },
+    {
+      "path": "backgrounds/panoramas/stage_transit.png",
+      "bytes": 2395559,
+      "sha256": "6c5f2461c09ff57dc81e080eedbdf4def222b60bedcb66c2a83e7c12ce75cdbc",
+      "width": 2172,
+      "height": 724,
+      "mode": "RGB"
+    },
+    {
       "path": "backgrounds/stage_harbor.png",
       "bytes": 1616076,
       "sha256": "8844a1d06fd2a7d8154c02516b41ea7a9d8c9d4ccc990151de34a46b2004a6df",
@@ -164,16 +196,16 @@
     },
     {
       "path": "enemies/shield_guard.png",
-      "bytes": 15613,
-      "sha256": "1809f76395b2aa66a822e3f141b0905c379948c9196de72f37993bd65eac1686",
+      "bytes": 213356,
+      "sha256": "f26aed5c7f98d56d584d437fc2e2d3bd43ad5a5e90f9af4ddcdcd7b6af0f4a97",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/shield_guard_anim.png",
-      "bytes": 363539,
-      "sha256": "3246df647f6e12c7890582c7c9c82a3851f3c3e456614e5efe48906cd1194cca",
+      "bytes": 1126243,
+      "sha256": "bf764f7ee73c203609d66fd798f0ba67dfa0d03817134cded4a4d469574336a5",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -196,16 +228,16 @@
     },
     {
       "path": "enemies/striker.png",
-      "bytes": 14066,
-      "sha256": "c1fe7c1b236d48f86b6234bcb739f8c9d3e6149e8288c4f5b029ae0b963359c9",
+      "bytes": 196745,
+      "sha256": "569b2bc900cfdb9a9a06ba1c6768a38a6b9ec925f5a882060d77ffe2d075f0ba",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/striker_anim.png",
-      "bytes": 269908,
-      "sha256": "f5ee44eb8ce6efa9a25358761dee404f5fc1bb7a8a7615ca677a3fcc09130cd6",
+      "bytes": 743511,
+      "sha256": "83d1228243838894ededbe7505fd322c9d9fb0e66f17fa83d80d366bc13e4630",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -268,8 +300,16 @@
     },
     {
       "path": "heroes/adam_portrait.png",
-      "bytes": 22200,
-      "sha256": "bf1c4a69c9dd44c960e574cfdfcdea3d10a166f8e03dfe48aadf02edce937da4",
+      "bytes": 81403,
+      "sha256": "e5f6c1632721e5930550087ac0d658b24c0da947ab45d6fd33f70f7204df4d75",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/adam_portrait_ready.png",
+      "bytes": 80567,
+      "sha256": "9cddfd2562da5151b91a97518a38a99856d6e50c08e484d13805381d67fb57bd",
       "width": 256,
       "height": 256,
       "mode": "RGBA"
@@ -396,8 +436,16 @@
     },
     {
       "path": "heroes/parent_portrait.png",
-      "bytes": 26574,
-      "sha256": "f6518371e49f9cf41094ed0c03a03cca896d6b9fb9b913ef395987918e5fc4d1",
+      "bytes": 80395,
+      "sha256": "bb562a72e7c05e209bac60e164b69fd6d4a8b5281cbbcdd0364f3ead1ee75f52",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/parent_portrait_ready.png",
+      "bytes": 83623,
+      "sha256": "82315d2ae7e1a0130ea19b88efacd83582720357724728ba6874e0f593a7eea1",
       "width": 256,
       "height": 256,
       "mode": "RGBA"
@@ -420,8 +468,16 @@
     },
     {
       "path": "heroes/shaikha_portrait.png",
-      "bytes": 23288,
-      "sha256": "cf2f9d1b6a6a840fc71a91f01e1829a009b06db133c861e1235a31f14d49047d",
+      "bytes": 71835,
+      "sha256": "64c2336b7cfd109d5222951459f066735aa0f8807b6bc876f51f614106dea7f4",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/shaikha_portrait_ready.png",
+      "bytes": 82509,
+      "sha256": "aaa4339f7b60008d5ac0c5f2d26f1fc7d8e097817f7e2045ed6b4cc276da26ff",
       "width": 256,
       "height": 256,
       "mode": "RGBA"
@@ -444,8 +500,16 @@
     },
     {
       "path": "heroes/sulaiman_portrait.png",
-      "bytes": 19094,
-      "sha256": "f3994451b1dfc3076d3f846f2c35e4e85ccb7a2a968bd369bcdd0a9652ed6ad0",
+      "bytes": 74459,
+      "sha256": "7314811f4232acda34cbc95d1b64c49629a5c72dc25de0705cd8bc5834fad0ce",
+      "width": 256,
+      "height": 256,
+      "mode": "RGBA"
+    },
+    {
+      "path": "heroes/sulaiman_portrait_ready.png",
+      "bytes": 80616,
+      "sha256": "c63238cd43e89da61574ac461ba0b916786354411229fb319342e0f38e2c781f",
       "width": 256,
       "height": 256,
       "mode": "RGBA"
@@ -505,6 +569,38 @@
       "width": 192,
       "height": 192,
       "mode": "RGBA"
+    },
+    {
+      "path": "tv/backgrounds/panoramas/stage_harbor.png",
+      "bytes": 1669866,
+      "sha256": "e055eb4da232142d7a18e5fec2b543b552dedf0fde9c4080935b5045b211fad2",
+      "width": 1800,
+      "height": 600,
+      "mode": "RGB"
+    },
+    {
+      "path": "tv/backgrounds/panoramas/stage_market.png",
+      "bytes": 1636915,
+      "sha256": "f0a481d5ae34f276cb366e7aabe5c104ccc9a3d9d2d6e8ca5419cb1ed5684ce5",
+      "width": 1800,
+      "height": 600,
+      "mode": "RGB"
+    },
+    {
+      "path": "tv/backgrounds/panoramas/stage_palace.png",
+      "bytes": 2389137,
+      "sha256": "7fd512f4d2a00f50ee35bbf798efc233de0c4d7505b9222e30e3004503b8b983",
+      "width": 1800,
+      "height": 600,
+      "mode": "RGB"
+    },
+    {
+      "path": "tv/backgrounds/panoramas/stage_transit.png",
+      "bytes": 1845784,
+      "sha256": "0419fc90719fddefd955f3a52b68692840fb170d8d99a62914f84b4552a071e0",
+      "width": 1800,
+      "height": 600,
+      "mode": "RGB"
     },
     {
       "path": "tv/backgrounds/stage_harbor.png",
@@ -580,8 +676,8 @@
     },
     {
       "path": "tv/enemies/shield_guard_anim.png",
-      "bytes": 669425,
-      "sha256": "f2fd1a92db34ea776a6d5b86ca6dcc30a16bd20566df05eaf00533657eed5301",
+      "bytes": 643837,
+      "sha256": "71de2f39daa1b5e10e7085e595819a3dec334f71077b9388da31f8bf8b44ba6f",
       "width": 720,
       "height": 864,
       "mode": "RGBA"
@@ -596,8 +692,8 @@
     },
     {
       "path": "tv/enemies/striker_anim.png",
-      "bytes": 580143,
-      "sha256": "685d443b4f685527f976e7fe1b0345d3eb94336ce72f6ca4f4cb9f1d39247359",
+      "bytes": 448636,
+      "sha256": "672e3ab8aac77c0073f7a8d98d1c8a9ba62a81803738efa027828238abdc87e2",
       "width": 720,
       "height": 864,
       "mode": "RGBA"

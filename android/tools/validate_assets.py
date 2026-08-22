@@ -38,6 +38,10 @@ IMAGE_CONTRACT = {
     "backgrounds/stage_transit.png": ((1376, 768), "RGB"),
     "backgrounds/stage_harbor.png": ((1376, 768), "RGB"),
     "backgrounds/stage_palace.png": ((1376, 768), "RGB"),
+    "backgrounds/panoramas/stage_market.png": ((2172, 724), "RGB"),
+    "backgrounds/panoramas/stage_transit.png": ((2172, 724), "RGB"),
+    "backgrounds/panoramas/stage_harbor.png": ((2172, 724), "RGB"),
+    "backgrounds/panoramas/stage_palace.png": ((2172, 724), "RGB"),
     "backgrounds/title.png": ((1376, 768), "RGB"),
     "ui/actors.png": ((128, 512), "RGBA"),
     "ui/portraits.png": ((128, 128), "RGBA"),
@@ -76,6 +80,7 @@ for hero in range(1, 5):
 for name in ("parent", "adam", "shaikha", "sulaiman"):
     IMAGE_CONTRACT[f"heroes/{name}.png"] = ((256, 384), "RGBA")
     IMAGE_CONTRACT[f"heroes/{name}_portrait.png"] = ((256, 256), "RGBA")
+    IMAGE_CONTRACT[f"heroes/{name}_portrait_ready.png"] = ((256, 256), "RGBA")
 
 WAV_NAMES = ("punch", "damage", "pickup", "confirm", "victory", "jump", "special")
 ICON_DENSITIES = {"mdpi": 1, "hdpi": 1.5, "xhdpi": 2, "xxhdpi": 3, "xxxhdpi": 4}
@@ -123,7 +128,7 @@ def validate_image(relative: str, expected_size: tuple[int, int],
                 assert bad_clear_pixels == 0, (relative, bad_clear_pixels)
             personalized = relative.startswith(
                 ("heroes/parent", "heroes/adam", "heroes/shaikha", "heroes/sulaiman")
-            )
+            ) and "_portrait" not in relative
             if personalized:
                 half = image.resize(
                     (image.width // 2, image.height // 2), Image.Resampling.NEAREST
@@ -138,6 +143,13 @@ def validate_image(relative: str, expected_size: tuple[int, int],
                 assert len(visible_rgb) <= palette_limit, (
                     relative, len(visible_rgb), palette_limit
                 )
+            if "_portrait" in relative:
+                visible_rgb = {
+                    (red, green, blue)
+                    for red, green, blue, opacity in image.getdata()
+                    if opacity > 0
+                }
+                assert len(visible_rgb) <= 192, (relative, len(visible_rgb), 192)
                 if not relative.endswith("_portrait.png"):
                     assert set(alpha.getdata()) <= {0, 255}, f"soft matte: {relative}"
                     bbox = alpha.getbbox()

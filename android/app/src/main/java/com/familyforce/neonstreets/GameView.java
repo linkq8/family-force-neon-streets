@@ -290,6 +290,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private final Bitmap[] heroArt = new Bitmap[4];
     private final Bitmap[] heroHdArt = new Bitmap[4];
     private final Bitmap[] heroPortraits = new Bitmap[4];
+    private final Bitmap[] heroReadyPortraits = new Bitmap[4];
     private final Bitmap[] enemyArt = new Bitmap[ENEMY_TYPE_COUNT];
     private final Bitmap[] itemArt = new Bitmap[4];
     private final Bitmap[] enemyAnimArt = new Bitmap[ENEMY_TYPE_COUNT];
@@ -1334,24 +1335,36 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         // twice the memory on opaque background alpha channels.
         background = loadOpaqueBitmap("tv/backgrounds/street.png");
         if (background == null) background = loadBitmap("backgrounds/street.png");
-        stageBackgrounds[0] = loadOpaqueBitmap("tv/backgrounds/stage_market.png");
+        stageBackgrounds[0] = loadOpaqueBitmap("tv/backgrounds/panoramas/stage_market.png");
         if (stageBackgrounds[0] == null) {
-            stageBackgrounds[0] = loadOpaqueBitmap("tv/backgrounds/street_retro.png");
+            stageBackgrounds[0] = loadOpaqueBitmap("backgrounds/panoramas/stage_market.png");
+        }
+        if (stageBackgrounds[0] == null) {
+            stageBackgrounds[0] = loadOpaqueBitmap("tv/backgrounds/stage_market.png");
         }
         if (stageBackgrounds[0] == null) {
             stageBackgrounds[0] = loadBitmap("backgrounds/street_retro.png");
         }
-        stageBackgrounds[1] = loadOpaqueBitmap("tv/backgrounds/stage_transit.png");
+        stageBackgrounds[1] = loadOpaqueBitmap("tv/backgrounds/panoramas/stage_transit.png");
         if (stageBackgrounds[1] == null) {
-            stageBackgrounds[1] = loadBitmap("backgrounds/stage_transit.png");
+            stageBackgrounds[1] = loadOpaqueBitmap("backgrounds/panoramas/stage_transit.png");
         }
-        stageBackgrounds[2] = loadOpaqueBitmap("tv/backgrounds/stage_harbor.png");
+        if (stageBackgrounds[1] == null) {
+            stageBackgrounds[1] = loadOpaqueBitmap("tv/backgrounds/stage_transit.png");
+        }
+        stageBackgrounds[2] = loadOpaqueBitmap("tv/backgrounds/panoramas/stage_harbor.png");
         if (stageBackgrounds[2] == null) {
-            stageBackgrounds[2] = loadBitmap("backgrounds/stage_harbor.png");
+            stageBackgrounds[2] = loadOpaqueBitmap("backgrounds/panoramas/stage_harbor.png");
         }
-        stageBackgrounds[3] = loadOpaqueBitmap("tv/backgrounds/stage_palace.png");
+        if (stageBackgrounds[2] == null) {
+            stageBackgrounds[2] = loadOpaqueBitmap("tv/backgrounds/stage_harbor.png");
+        }
+        stageBackgrounds[3] = loadOpaqueBitmap("tv/backgrounds/panoramas/stage_palace.png");
         if (stageBackgrounds[3] == null) {
-            stageBackgrounds[3] = loadBitmap("backgrounds/stage_palace.png");
+            stageBackgrounds[3] = loadOpaqueBitmap("backgrounds/panoramas/stage_palace.png");
+        }
+        if (stageBackgrounds[3] == null) {
+            stageBackgrounds[3] = loadOpaqueBitmap("tv/backgrounds/stage_palace.png");
         }
         for (int i = 1; i < stageBackgrounds.length; i++) {
             if (stageBackgrounds[i] == null) stageBackgrounds[i] = stageBackgrounds[0];
@@ -1366,6 +1379,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         for (int i = 0; i < heroNames.length; i++) {
             heroArt[i] = loadBitmap("heroes/" + heroNames[i] + ".png");
             heroPortraits[i] = loadBitmap("heroes/" + heroNames[i] + "_portrait.png");
+            heroReadyPortraits[i] = loadBitmap("heroes/" + heroNames[i] + "_portrait_ready.png");
         }
         // 384x576 is still 2x the maximum on-screen idle height. Loading the
         // 1373x2048 authoring master here cost 10.7 MiB for no visible gain.
@@ -2198,6 +2212,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         for (Bitmap bitmap : heroArt) recycleBitmap(bitmap);
         for (Bitmap bitmap : heroHdArt) recycleBitmap(bitmap);
         for (Bitmap bitmap : heroPortraits) recycleBitmap(bitmap);
+        for (Bitmap bitmap : heroReadyPortraits) recycleBitmap(bitmap);
         for (Bitmap bitmap : enemyArt) recycleBitmap(bitmap);
         for (Bitmap bitmap : enemyAnimArt) recycleBitmap(bitmap);
         for (Bitmap bitmap : itemArt) recycleBitmap(bitmap);
@@ -4080,19 +4095,20 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 ? stageScene : background;
         if (scene != null) {
             if (scene == stageScene) {
-                // One continuous stage plate: gently pan inside a slightly
-                // oversized image. Never tile or mirror it; both caused hard
-                // seams and made scenery change when the player backtracked.
-                float panoramaWidth = 690f;
-                float panoramaHeight = panoramaWidth * scene.getHeight() / scene.getWidth();
+                // Move a native 16:9 window through one continuous 3:1 plate.
+                // The crop follows world progress in both directions, so the
+                // scenery has real travel distance without seams or tile swaps.
                 float progress = gameplayScene ? stagePanProgress(scroll, currentStage()) : 0.5f;
-                float left = -(panoramaWidth - W) * progress;
-                float top = (H - panoramaHeight) * 0.5f;
-                dest.set(left, top, left + panoramaWidth, top + panoramaHeight);
+                int cropHeight = scene.getHeight();
+                int cropWidth = Math.min(scene.getWidth(), Math.round(cropHeight * W / (float) H));
+                int maxLeft = Math.max(0, scene.getWidth() - cropWidth);
+                int left = Math.round(maxLeft * progress);
+                source.set(left, 0, left + cropWidth, cropHeight);
+                dest.set(0f, 0f, W, H);
             } else {
                 dest.set(0f, 0f, W, H);
             }
-            canvas.drawBitmap(scene, null, dest, paint);
+            canvas.drawBitmap(scene, scene == stageScene ? source : null, dest, paint);
         } else {
             paint.setColor(Color.rgb(23, 78, 92));
             canvas.drawRect(0, 110, W, 242, paint);
@@ -4441,7 +4457,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(selected ? accent : Color.rgb(77, 79, 121));
         roundRect(canvas, x, y, x + 140, y + 175, 14, paint);
         paint.setStyle(Paint.Style.FILL);
-        drawPortrait(canvas, hero, x + 22, y + 6, 96, 96);
+        drawSelectionPortrait(canvas, hero, selected, x + 22, y + 6, 96, 96);
         paint.setColor(accent);
         canvas.drawRect(x + 12, y + 105, x + 128, y + 109, paint);
         text(canvas, safeHeroName(hero), x + 70, y + 130, hero == 3 ? 12 : 15, Color.WHITE, true, Paint.Align.CENTER);
@@ -5500,6 +5516,21 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             paint.setColor(Color.rgb(28, 28, 56));
             canvas.drawCircle(x + width * 0.43f, y + height * 0.45f, 3, paint);
             canvas.drawCircle(x + width * 0.57f, y + height * 0.45f, 3, paint);
+        }
+    }
+
+    private void drawSelectionPortrait(Canvas canvas, int hero, boolean ready,
+                                       float x, float y, float width, float height) {
+        hero = safeHeroIndex(hero);
+        Bitmap selected = ready && heroReadyPortraits[hero] != null
+                ? heroReadyPortraits[hero] : heroPortraits[hero];
+        paint.setColor(Color.rgb(25, 27, 65));
+        roundRect(canvas, x, y, x + width, y + height, 8, paint);
+        if (selected != null) {
+            dest.set(x, y, x + width, y + height);
+            canvas.drawBitmap(selected, null, dest, portraitPaint);
+        } else {
+            drawPortrait(canvas, hero, x, y, width, height);
         }
     }
 

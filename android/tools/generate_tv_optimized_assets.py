@@ -23,6 +23,13 @@ VARIANTS = (
     ("backgrounds/stage_transit.png", "tv/backgrounds/stage_transit.png", (800, 450), "RGB"),
     ("backgrounds/stage_harbor.png", "tv/backgrounds/stage_harbor.png", (800, 450), "RGB"),
     ("backgrounds/stage_palace.png", "tv/backgrounds/stage_palace.png", (800, 450), "RGB"),
+    # True 3:1 continuous stage plates. Runtime takes a moving 16:9 crop;
+    # unlike the old 800px plates these expose more than one full screen of
+    # scenery and never tile, mirror, or jump when the player backtracks.
+    ("backgrounds/panoramas/stage_market.png", "tv/backgrounds/panoramas/stage_market.png", (1800, 600), "RGB"),
+    ("backgrounds/panoramas/stage_transit.png", "tv/backgrounds/panoramas/stage_transit.png", (1800, 600), "RGB"),
+    ("backgrounds/panoramas/stage_harbor.png", "tv/backgrounds/panoramas/stage_harbor.png", (1800, 600), "RGB"),
+    ("backgrounds/panoramas/stage_palace.png", "tv/backgrounds/panoramas/stage_palace.png", (1800, 600), "RGB"),
     # The idle master is rendered at at most 192 logical pixels. A 384x576
     # source retains 2x vertical detail without keeping the 10.7 MiB decode.
     ("heroes/parent_hd.png", "tv/heroes/parent_hd.png", (384, 576), "RGBA"),
