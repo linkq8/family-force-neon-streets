@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.30.2-alpha`، `versionCode 35`.
+- النسخة المنشورة: `v0.31.0-alpha`، `versionCode 36`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `bc337a0ce0d1887dd4b5cf80d8c682da89a13062`.
+- آخر commit وظيفي: `285c6faf2c2cba4873687236e193df15d7e0cf8f`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.30.2-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.30.2-alpha/family-force-family-current.apk
-- SHA-256: `1fc0a4fce3c210f399952563e60802095d518b2d84c684292c39377dc8dbc82d`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.31.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.31.0-alpha/family-force-family-current.apk
+- SHA-256: `18b767fcae9b516467d2dad47541fa2ac4fc2ad1cf6434340e00142e28471b85`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس والتحكم وعقود
   ذاكرة/سلاسة TV ناجحة؛ لم يكن جهاز أو Emulator متصلًا لهذه النسخة.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
@@ -182,16 +182,38 @@
 
 - المنفذ: Codex
 - طلب المستخدم: تنفيذ الخطوة التالية المقترحة.
-- الحالة: قيد التنفيذ.
+- الحالة: مكتمل.
 - نقطة البداية: `v0.30.2-alpha` / commit `bc337a0`.
-- ما سيتم: إضافة قواعد مستقلة للمراحل الأربع، أهداف ومؤشرات واضحة، تشكيلات ومكافآت
-  وMini-boss مختلفة باستخدام الأصول الحالية فقط، ثم QA ونشر `v0.31.0-alpha`.
-- الملفات المعدلة حتى الآن:
-  - `PROJECT_HISTORY_AR.md`
-- الاختبارات: قيد التنفيذ.
-- Release: لا يوجد بعد.
-- ملاحظات/مخاطر: يجب عدم زيادة عدد الأطالس المحمّلة أو كسر مسار المناطق 1–9.
-- التالي: فصل بيانات قواعد المراحل وربطها بالـspawn/rewards/HUD والانتقالات.
+- ما تم:
+  - إضافة `StageCombatRule` ثابتة للمراحل الأربع: HP/damage/attack pressure،
+    recovery، Link، bonus، Elite zone/type، objective وhint.
+  - Stage 1 STREET RUSH، Stage 2 BREAK THE LINE، Stage 3 HARBOR HOLD،
+    Stage 4 BOSS GAUNTLET بقواعد فعلية مختلفة.
+  - إضافة Mini-boss/Stage Boss وتسميات واضحة، ومكافآت bat/pipe/mallet/sign.
+  - تطبيق recovery وLink على P1 وP2، وإضافة bonus للمرحلة الأخيرة أيضًا.
+  - إبقاء تحميل الأطالس حسب Stage بحد أقصى خمسة وميزانية TV `30.09 MiB`.
+  - رفع `versionCode 36` / `0.31.0-alpha` دون صور أو فيديو جديد.
+- الملفات المعدلة:
+  - `android/app/src/main/java/com/familyforce/neonstreets/StageCombatRule.java`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/tools/test_stage_combat_identity_contract.py`
+  - `android/tools/test_enemy_attack_tokens_contract.py`
+  - `android/tools/test_customer_release.sh`
+  - `android/app/build.gradle`.
+- الاختبارات:
+  - Stage combat identity contract — PASS: 4 rules/elites/rewards/bounded rosters.
+  - Build Debug + Lint — PASS.
+  - `test_customer_release.sh` — PASS؛ Release/R8/Lint/signature/archive/controller/
+    encounters/checkpoints/weapons/10 atlases/TV memory+smoothing نجحت.
+  - Runtime جهاز/Emulator — SKIPPED؛ لم يكن جهاز متصلًا.
+- Release: `v0.31.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.31.0-alpha
+  - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.31.0-alpha/family-force-family-current.apk
+  - SHA-256: `18b767fcae9b516467d2dad47541fa2ac4fc2ad1cf6434340e00142e28471b85`.
+  - commit: `285c6faf2c2cba4873687236e193df15d7e0cf8f`.
+- ملاحظات/مخاطر: يلزم ضبط صعوبة القواعد بعد جلسة فعلية لاعب/لاعبين، خصوصًا
+  ضغط Stage 3 وStage 4؛ لم يُدع اختبار عتاد هنا.
+- التالي: GAME UPDATE ثم لعب المراحل الأربع وتسجيل ملاحظات الصعوبة والمكافآت.
 
 ### 2026-08-22-29 — الخطوة التالية بعد إصلاح العدوين
 
@@ -1206,9 +1228,9 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.30.2-alpha` منشور؛ استخراج القفاز والدرع أصبح من silhouette كامل.
-- آخر عمل: إزالة التقسيم ذي الأعمدة المتساوية الذي كان يقص المصدر، وإعادة بناء
-  72 إطارًا من الحدود الحقيقية مع هوامش الهاتف/TV الآمنة.
+- الحالة: `v0.31.0-alpha` منشور؛ المراحل الأربع تملك هويات قتال ومكافآت مختلفة.
+- آخر عمل: إضافة قواعد Stage مستقلة وMini-boss وأهداف/HUD ومكافآت، مع إبقاء
+  الأطالس والذاكرة ضمن الحد السابق ودون أصول جديدة.
 - آخر قرار: إبقاء التحميل حسب المرحلة وعدم الاحتفاظ بالأنواع الستة معًا، والاستمرار
   بصورة Model/Action Sheets فقط من دون فيديو.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
@@ -1218,5 +1240,5 @@
   4. `android/app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java`
   5. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
   6. `android/tools/test_shield_guard_enemy_contract.py`
-- الإجراء التالي المقترح: تحديث إلى `v0.30.2-alpha` على Xiaomi Stick وShield، وفحص
-  كل حركات Striker وShield Guard يمينًا ويسارًا، ثم كسر GUARD وإكمال المراحل.
+- الإجراء التالي المقترح: تحديث إلى `v0.31.0-alpha` ولعب المراحل الأربع في نمطي
+  لاعب/لاعبين، ثم ضبط HP/pressure/recovery من ملاحظات الجهاز الحقيقي.
