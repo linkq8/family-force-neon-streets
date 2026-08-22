@@ -33,6 +33,7 @@ python3 "$SCRIPT_DIR/test_runtime_diagnostics_contract.py"
 python3 "$SCRIPT_DIR/test_link_preload_contract.py"
 python3 "$SCRIPT_DIR/test_runtime_smoothness_contract.py"
 python3 "$SCRIPT_DIR/test_shield_guard_enemy_contract.py"
+python3 "$SCRIPT_DIR/test_stage_combat_identity_contract.py"
 
 python3 "$SCRIPT_DIR/verify_customer_apk.py" --apk "$APK" --pack "$PACK" \
     --aapt "$ANDROID_HOME/build-tools/34.0.0/aapt" \

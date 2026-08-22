@@ -2433,7 +2433,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             enemy.x = x;
             enemy.y = y;
             EnemyArchetype archetype = EnemyArchetype.of(type);
-            enemy.hp = archetype.maxHp;
+            StageCombatRule stageRule = StageCombatRule.forStage(stageForZone(enemyZone));
+            enemy.elite = stageRule.isElite(enemyZone, type);
+            int hpPercent = stageRule.hpPercent + (enemy.elite ? 35 : 0);
+            enemy.hp = Math.max(1, archetype.maxHp * hpPercent / 100);
             enemy.maxHp = enemy.hp;
             enemy.attackCooldown = type == ENEMY_STRIKER
                     ? 24 + random.nextInt(34) : 30 + random.nextInt(60);
@@ -3276,13 +3279,24 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 zoneActive = false;
                 zoneBanner = 110;
                 preloadEnemyAnimationsForStageAsync(stageForZone(zone));
-                health = Math.min(maxHealth, health + 8);
-                linkMeter = Math.min(100, linkMeter + 15);
+                StageCombatRule clearedRule = StageCombatRule.forStage(finishedStage);
+                health = Math.min(maxHealth, health + clearedRule.clearHeal);
+                linkMeter = Math.min(100, linkMeter + clearedRule.clearLink);
+                if (twoPlayerMode) {
+                    p2Health = Math.min(safeHeroMaxHealth(selectedHero2),
+                            p2Health + clearedRule.clearHeal);
+                    p2Link = Math.min(100, p2Link + clearedRule.clearLink);
+                }
+                boolean stageCleared = finishedZone == STAGE_END_ZONE[finishedStage];
+                if (stageCleared) {
+                    score += clearedRule.clearBonus;
+                    diagnostics.event("STAGE_BONUS " + clearedRule.clearBonus);
+                }
                 if (zone >= ZONE_TRIGGERS.length) {
                     finishStage();
                 } else {
                     saveCheckpoint(zone);
-                    if (finishedZone == STAGE_END_ZONE[finishedStage]) {
+                    if (stageCleared) {
                         clearedStage = finishedStage;
                         stageTransitionTimer = automatedFullStageTest ? 12 : 180;
                         zoneBanner = 0;
@@ -3300,8 +3314,25 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private void dropZoneRewards(int clearedZone) {
         float x = playerX + 70f;
-        spawnItem(clearedZone == 1 ? ITEM_BAT : ITEM_FOOD, x, playerY - 18f);
-        spawnItem(clearedZone == 2 ? ITEM_TOKEN : ITEM_ENERGY, x + 55f, playerY + 22f);
+        int stage = stageForZone(clearedZone);
+        boolean finalWave = clearedZone == STAGE_END_ZONE[stage];
+        if (stage == 0) {
+            spawnItem(finalWave ? ITEM_TOKEN : ITEM_FOOD, x, playerY - 18f);
+            spawnItem(ITEM_ENERGY, x + 55f, playerY + 22f);
+            if (finalWave) spawnWorldObject(WEAPON_BAT, x + 105f, playerY + 4f);
+        } else if (stage == 1) {
+            spawnItem(ITEM_ENERGY, x, playerY - 18f);
+            spawnItem(ITEM_TOKEN, x + 55f, playerY + 22f);
+            if (finalWave) spawnWorldObject(WEAPON_PIPE, x + 105f, playerY + 4f);
+        } else if (stage == 2) {
+            spawnItem(ITEM_FOOD, x, playerY - 18f);
+            spawnItem(ITEM_ENERGY, x + 55f, playerY + 22f);
+            if (finalWave) spawnWorldObject(WEAPON_MALLET, x + 105f, playerY + 4f);
+        } else {
+            spawnItem(ITEM_ENERGY, x, playerY - 18f);
+            spawnItem(ITEM_TOKEN, x + 55f, playerY + 22f);
+            if (!finalWave) spawnWorldObject(WEAPON_SIGN, x + 105f, playerY + 4f);
+        }
     }
 
     private void spawnItem(int type, float x, float y) {
@@ -3565,7 +3596,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     private void updateEnemies() {
-        float enemyDamageScale = difficulty == 0 ? 0.72f : difficulty == 2 ? 1.35f : 1f;
+        StageCombatRule stageRule = StageCombatRule.forStage(currentStage());
+        float enemyDamageScale = (difficulty == 0 ? 0.72f : difficulty == 2 ? 1.35f : 1f)
+                * stageRule.damagePercent / 100f;
         for (Enemy enemy : enemies) {
             if (!enemy.alive || !enemy.active) continue;
             if (enemy.flash > 0) enemy.flash--;
@@ -3614,7 +3647,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                         && enemy.x <= cameraX + W - 18f;
                 if (dx < (enemy.type == 3 ? 95f
                         : enemy.type == ENEMY_STRIKER ? 64f : 57f) && dy < 36f
-                        && visibleThreat && countAttackingEnemies() < 2
+                        && visibleThreat && countAttackingEnemies() < stageRule.maxAttackers
                         && countAttackingEnemiesForTarget(targetSlot) < perPlayerAttackLimit) {
                     enemy.attackVariant = enemy.type == 3
                             || random.nextInt(enemy.type == ENEMY_STRIKER ? 2 : 4) == 0 ? 1 : 0;
@@ -4739,7 +4772,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             canvas.drawCircle(x + 7, enemy.y - enemy.z - height * 0.68f, 3, paint);
         }
         pixelPaint.setColorFilter(null);
-        if (enemy.hp < enemy.maxHp || enemy.type == 3) {
+        if (enemy.hp < enemy.maxHp || enemy.type == 3 || enemy.elite) {
             float barW = enemy.type == 3 ? 92f : 54f;
             paint.setColor(Color.argb(190, 10, 10, 25));
             canvas.drawRect(x - barW / 2, enemy.y - enemy.z - height - 10,
@@ -4748,6 +4781,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             canvas.drawRect(x - barW / 2, enemy.y - enemy.z - height - 10,
                     x - barW / 2 + barW * Math.max(0, enemy.hp) / enemy.maxHp,
                     enemy.y - enemy.z - height - 5, paint);
+        }
+        if (enemy.elite && enemy.alive) {
+            text(canvas, enemy.type == EnemyArchetype.BOSS ? "STAGE BOSS" : "MINI-BOSS",
+                    x, enemy.y - enemy.z - height - (enemy.maxGuard > 0 ? 25f : 14f), 7f,
+                    STAGE_ACCENTS[stageForZone(enemy.zone)], true, Paint.Align.CENTER);
         }
         if (enemy.maxGuard > 0 && enemy.guard > 0) {
             float guardW = 62f;
@@ -5189,10 +5227,13 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.argb(alpha, 8, 9, 31));
         roundRect(canvas, 154, 102, 486, 163, 12, paint);
         if (zone < ZONE_TRIGGERS.length && zoneActive) {
+            StageCombatRule rule = StageCombatRule.forStage(currentStage());
             text(canvas, "STAGE " + (currentStage() + 1) + "  •  WAVE "
                             + waveInStage(zone) + "/" + wavesInStage(currentStage()),
-                    W / 2f, 125, 11, STAGE_ACCENTS[currentStage()], true, Paint.Align.CENTER);
-            text(canvas, LOCATION_NAMES[zone], W / 2f, 151, 22, Color.WHITE, true, Paint.Align.CENTER);
+                    W / 2f, 120, 10, STAGE_ACCENTS[currentStage()], true, Paint.Align.CENTER);
+            text(canvas, rule.objective, W / 2f, 140, 15, Color.WHITE, true, Paint.Align.CENTER);
+            text(canvas, LOCATION_NAMES[zone], W / 2f, 155, 8,
+                    Color.rgb(194, 218, 229), true, Paint.Align.CENTER);
         } else if (zone < ZONE_TRIGGERS.length) {
             text(canvas, "ROUTE OPEN", W / 2f, 140, 22, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
         }
@@ -5239,9 +5280,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 W / 2f, 170, 22, Color.WHITE, true, Paint.Align.CENTER);
         paint.setColor(accent);
         canvas.drawRect(165, 191, 475, 197, paint);
-        text(canvas, showingClear ? "TEAM RECOVERY +20%" : "NEW ENEMY COLORS  •  NEW ROUTE",
+        StageCombatRule transitionRule = StageCombatRule.forStage(
+                showingClear ? clearedStage : nextStage);
+        text(canvas, showingClear ? "STAGE BONUS  +" + transitionRule.clearBonus
+                        : transitionRule.objective,
                 W / 2f, 228, 12, Color.rgb(194, 218, 229), true, Paint.Align.CENTER);
-        text(canvas, showingClear ? "NEXT STAGE" : "GET READY",
+        text(canvas, showingClear ? "NEXT STAGE" : transitionRule.hint,
                 W / 2f, 259, 10, accent, true, Paint.Align.CENTER);
     }
 
@@ -6613,6 +6657,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         int lastTeamComboFrame;
         boolean attackHitFired;
         boolean defeated;
+        boolean elite;
         float x;
         float y;
         float z;
