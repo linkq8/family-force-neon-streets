@@ -15,7 +15,7 @@
 - آخر commit وظيفي: `f12a8d3b40019636587b53dc64f7045463617580`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
 - Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.30.1-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.30.1-alpha/family-force-neon-streets.apk
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.30.1-alpha/family-force-family-current.apk
 - SHA-256: `a86935bbff5b9510862d6f6cf087dd3b6378ebbd96824d9514f4c12f9f8b496f`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس والتحكم وعقود
   ذاكرة/سلاسة TV ناجحة؛ لم يكن جهاز أو Emulator متصلًا لهذه النسخة.
@@ -177,6 +177,28 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-22-27 — إصلاح أصل التحديث داخل GitHub Release
+
+- المنفذ: Codex
+- طلب المستخدم: تنفيذ إصلاح `CHECK FAILED`.
+- الحالة: مكتمل.
+- نقطة البداية: `v0.30.1-alpha` / commit `f12a8d3`.
+- ما تم:
+  - رفع الـAPK الموقّع نفسه إلى `v0.30.1-alpha` باسم
+    `family-force-family-current.apk` الذي يطلبه `UpdateManager`.
+  - أبقي الأصل العام أيضًا؛ الأصلان متطابقان byte-for-byte ولا توجد إعادة بناء.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+- الاختبارات:
+  - GitHub Latest API asset lookup — PASS؛ الاسم المطلوب موجود.
+  - الحجم — PASS: `44,245,233` bytes لكلا الأصلين.
+  - SHA-256 — PASS: `a86935bbff5b9510862d6f6cf087dd3b6378ebbd96824d9514f4c12f9f8b496f`.
+- Release: أصل مصحح داخل `v0.30.1-alpha`:
+  https://github.com/linkq8/family-force-neon-streets/releases/download/v0.30.1-alpha/family-force-family-current.apk
+- ملاحظات/مخاطر: النسخة `v0.30.1` ستعرض `UP TO DATE`؛ النسخ الأقدم ستجد
+  الأصل وتبدأ التنزيل. ما زال تثبيت APK يحتاج موافقة Android النظامية.
+- التالي: تجربة GAME UPDATE على الجهاز؛ لا حاجة لتنزيل APK يدويًا لهذا الإصلاح.
 
 ### 2026-08-22-26 — تشخيص CHECK FAILED في تحديث اللعبة
 
