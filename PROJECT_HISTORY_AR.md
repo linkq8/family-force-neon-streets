@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.30.1-alpha`، `versionCode 34`.
+- النسخة المنشورة: `v0.30.2-alpha`، `versionCode 35`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `f12a8d3b40019636587b53dc64f7045463617580`.
+- آخر commit وظيفي: `bc337a0ce0d1887dd4b5cf80d8c682da89a13062`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.30.1-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.30.1-alpha/family-force-family-current.apk
-- SHA-256: `a86935bbff5b9510862d6f6cf087dd3b6378ebbd96824d9514f4c12f9f8b496f`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.30.2-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.30.2-alpha/family-force-family-current.apk
+- SHA-256: `1fc0a4fce3c210f399952563e60802095d518b2d84c684292c39377dc8dbc82d`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس والتحكم وعقود
   ذاكرة/سلاسة TV ناجحة؛ لم يكن جهاز أو Emulator متصلًا لهذه النسخة.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
@@ -182,17 +182,36 @@
 
 - المنفذ: Codex
 - طلب المستخدم: لا يزال القفاز والدرع يُقصان من المقدمة أثناء الحركة.
-- الحالة: قيد التنفيذ.
+- الحالة: مكتمل.
 - نقطة البداية: `v0.30.1-alpha` / commit `f12a8d3`.
-- ما سيتم: تدقيق اكتمال الأداة داخل صور المصدر، استبدال الإطارات ذات الطرف
-  المقطوع بصور ثابتة كاملة داخل Safe Box، ثم إعادة بناء الأطلسين وفحصهما بصريًا.
-- الملفات المعدلة حتى الآن:
-  - `PROJECT_HISTORY_AR.md`
-- الاختبارات: قيد التنفيذ.
-- Release: لا يوجد بعد.
-- ملاحظات/مخاطر: هامش الشفافية وحده لا يكشف أن الرسم مقصوص قبل التطبيع؛ ستضاف
-  بوابة silhouette/طرف أمامي إلى جانب هامش الخلية. لا فيديو.
-- التالي: عرض Action Sheets الأصلية وتحديد الإطارات المتضررة قبل تعديلها.
+- ما تم:
+  - ثبت أن الرسومات الكاملة موجودة، لكن تقسيم Action Sheet إلى أعمدة متساوية
+    كان يقطع مقدمة القفاز والدرع قبل إضافة الهامش الشفاف.
+  - استبدل التقسيم الحسابي باكتشاف كل silhouette متصل واستخراج حدوده الحقيقية.
+  - أعيد بناء masters وأطالس الهاتف وTV للعدوين مع إبقاء هامش 12px/8px.
+  - أضيفت بوابة اختبار تلزم component-aware extraction؛ لم تُنتج صور أو فيديوهات.
+- الملفات المعدلة:
+  - `android/tools/build_striker_enemy.py`
+  - `android/tools/build_shield_guard_enemy.py`
+  - `android/tools/test_striker_enemy_contract.py`
+  - `android/tools/test_shield_guard_enemy_contract.py`
+  - masters/atlases الهاتف وTV للعدوين و`asset_manifest.json`.
+  - `android/app/build.gradle` (`versionCode 35` / `0.30.2-alpha`).
+- الاختبارات:
+  - الفحص البصري للأطلسين — PASS؛ القفاز والدرع كاملان داخل Safe Box.
+  - `validate_assets.py` و10/10 atlas QA — PASS.
+  - `test_customer_release.sh customers/family-current` — PASS؛ Release/R8/Lint/
+    signature/archive/controller/TV memory/smoothness نجحت.
+  - Latest API — PASS؛ الاسمان العام واسم العميل موجودان بنفس SHA والحجم.
+  - Runtime جهاز/Emulator — SKIPPED؛ لم يكن جهاز متصلًا.
+- Release: `v0.30.2-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.30.2-alpha
+  - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.30.2-alpha/family-force-family-current.apk
+  - SHA-256: `1fc0a4fce3c210f399952563e60802095d518b2d84c684292c39377dc8dbc82d`.
+  - commit: `bc337a0ce0d1887dd4b5cf80d8c682da89a13062`.
+- ملاحظات/مخاطر: يلزم تأكيد بصري على الجهاز؛ هذه النسخة تعالج القص قبل التطبيع،
+  لا مجرد إضافة padding بعده.
+- التالي: استخدام GAME UPDATE، ثم اختبار المشي والهجوم للعدوين يمينًا ويسارًا.
 
 ### 2026-08-22-27 — إصلاح أصل التحديث داخل GitHub Release
 
@@ -1150,9 +1169,9 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.30.1-alpha` منشور؛ قص Striker وShield Guard أُصلح بهوامش آمنة.
-- آخر عمل: إعادة بناء 72 إطارًا بهامش 12px للهاتف و8px للتلفاز دون تقليل دقة
-  الخلايا، مع اختبارات تمنع عودة ملامسة الحواف.
+- الحالة: `v0.30.2-alpha` منشور؛ استخراج القفاز والدرع أصبح من silhouette كامل.
+- آخر عمل: إزالة التقسيم ذي الأعمدة المتساوية الذي كان يقص المصدر، وإعادة بناء
+  72 إطارًا من الحدود الحقيقية مع هوامش الهاتف/TV الآمنة.
 - آخر قرار: إبقاء التحميل حسب المرحلة وعدم الاحتفاظ بالأنواع الستة معًا، والاستمرار
   بصورة Model/Action Sheets فقط من دون فيديو.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
@@ -1162,5 +1181,5 @@
   4. `android/app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java`
   5. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
   6. `android/tools/test_shield_guard_enemy_contract.py`
-- الإجراء التالي المقترح: تثبيت `v0.30.1-alpha` على Xiaomi Stick وShield، وفحص
+- الإجراء التالي المقترح: تحديث إلى `v0.30.2-alpha` على Xiaomi Stick وShield، وفحص
   كل حركات Striker وShield Guard يمينًا ويسارًا، ثم كسر GUARD وإكمال المراحل.
