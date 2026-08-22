@@ -10,15 +10,15 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.35.0-alpha`، `versionCode 42`.
+- النسخة المنشورة: `v0.35.1-alpha`، `versionCode 43`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `a9730d7`.
+- آخر commit وظيفي: `294eb44`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.35.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.35.0-alpha/family-force-family-current.apk
-- SHA-256: `86e94a995c64330f75d729b03dc8db9444cf17ae217224a0d333e3abf2bf17d3`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.35.1-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.35.1-alpha/family-force-family-current.apk
+- SHA-256: `0bdf47007e40c28f07465e461819fcc93825d5094402fb18aeae4b1c0c069043`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس والتحكم وعقود
-  البانوراما/القص/ذاكرة TV ناجحة؛ الميزانية `28.09 MiB`. نجح Android TV
+  البانوراما/القص/ذاكرة TV ناجحة؛ الميزانية `51.70 MiB`. نجح Android TV
   Emulator في المسار الكامل للمناطق التسع واختبارات phone/Fold/TV/remote.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
   استدعاء الشخصيات الإضافية ونظافة الرسومات والحركة.
@@ -30,7 +30,7 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: تثبيت `v0.35.0-alpha` على Xiaomi Stick وShield وفحص
+- العمل التالي الموصى به: تثبيت `v0.35.1-alpha` على Xiaomi Stick وShield وفحص
   وضوح جميع الشخصيات أثناء idle/walk/attack على الشاشة الحقيقية.
 
 ## بروتوكول التحديث الإلزامي
@@ -178,6 +178,41 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-22-38 — تصحيح مسار كثافة رسومات الشخصيات
+
+- المنفذ: Codex
+- طلب المستخدم: النسخة الأخيرة جعلت جميع اللاعبين والأعداء أسوأ؛ البكسلات
+  أكبر والتربيش/التغبيش أكثر، والمطلوب التراجع عن المسار الخاطئ وإصلاحه.
+- الحالة: مكتمل ومنشور.
+- نقطة البداية: `v0.35.0-alpha` / commit `a9730d7`.
+- التشخيص الأولي: أطالس Runtime المطابقة تمامًا لحجم العرض خفّضت الدقة المصدرية
+  أكثر من اللازم، ثم كبّرها Surface التلفاز من 640×360 إلى 1080p/4K؛ فظهرت
+  عناقيد البكسل أكبر رغم نجاح اختبارات الأبعاد والذاكرة.
+- الخطة: إعادة بناء أطالس متوسطة/عالية الكثافة من الإطارات الأصلية، استخدام
+  downsampling مفلتر أثناء الرسم بدل 1:1 منخفض الدقة، ثم مقارنة لقطات فعلية
+  للحركة قبل إصدار APK. لا صور AI جديدة ولا فيديو.
+- ما تم:
+  - استبدال أطالس 1× المرفوضة بأطالس Runtime بكثافة `1.5×` لكل الأبطال
+    والأعداء العشرة، مع بقاء الحجم المرئي داخل اللعب بلا تغيير.
+  - إلغاء تقليل الألوان القاسي والـnearest 1:1، واعتماد تصغير مفلتر من مصدر
+    أعلى كثافة إلى الشاشة للحفاظ على الوجه والدروع والتفاصيل.
+  - إضافة defringe يعيد بناء حافة كل إطار من ألوان جسم الشخصية الداخلية، وإزالة
+    الهالة الخضراء القديمة من إطارات Essa من دون قص الأطراف.
+  - مقارنة 1080p فعلية داخل اللعب أثناء الوقوف والمشي والوصول لأول مواجهة.
+- الاختبارات:
+  - أطالس Runtime وmanifest وanimation rows — PASS، 10/10.
+  - `test_full_stage_runtime.sh` — PASS، المناطق التسع كاملة على Android TV.
+  - `test_customer_release.sh customers/family-current` — PASS، Release/R8/Lint
+    والهاتف/Fold/TV/remote والقتال والذاكرة.
+  - مسار TV المسرّع: `87.6 MB PSS`، jank `0.36%`، بلا crash/OOM/ANR.
+- Release: `v0.35.1-alpha` / commit `294eb44`:
+  - https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.35.1-alpha
+  - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.35.1-alpha/family-force-family-current.apk
+  - SHA-256: `0bdf47007e40c28f07465e461819fcc93825d5094402fb18aeae4b1c0c069043`.
+- ملاحظات/مخاطر: الميزانية الرسومية ارتفعت من 28.09 إلى `51.70 MiB` مقابل
+  استعادة التفاصيل، لكنها بقيت مستقرة في المسار الكامل. لا صور AI ولا فيديو.
+- التالي: التحقق البصري على Xiaomi Stick وShield الحقيقيين.
 
 ### 2026-08-22-37 — إعادة بناء دقة Runtime لكل الشخصيات
 
@@ -1517,11 +1552,11 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.35.0-alpha` منشور؛ أطالس Runtime لجميع الشخصيات أعيد بناؤها.
-- آخر عمل: exact-scale atlases لكل الأبطال والأعداء، alpha صلب، ورسم 1:1 بلا
-  filtering، مع إعادة اشتقاق ثمانية ممثلين من الإطارات عالية الدقة.
-- آخر قرار: الأطلس داخل اللعبة يطابق حجم العرض المنطقي ولا يُصغّر أثناء الرسم؛
-  الميزانية الحالية `28.09 MiB` وبحد أقصى خمسة أطالس أعداء.
+- الحالة: `v0.35.1-alpha` منشور؛ تم إلغاء مسار 1× المرفوض واعتماد كثافة 1.5×.
+- آخر عمل: إعادة بناء جميع أطالس الشخصيات بألوان كاملة وحواف منزوعة chroma
+  وتصغير مفلتر، مع مقارنة 1080p فعلية ومسار TV كامل.
+- آخر قرار: جودة التلفاز تحتاج مصدرًا أعلى من حجم العرض؛ الميزانية الحالية
+  `51.70 MiB`، وPSS المقاس `87.6 MB` مع بقاء تحميل الأعداء محدودًا حسب المرحلة.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
@@ -1530,5 +1565,5 @@
   5. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
   6. `android/docs/VISUAL_ASSET_STANDARD_AR.md`
   7. `android/tools/test_visual_refresh_contract.py`
-- الإجراء التالي المقترح: تثبيت `v0.35.0-alpha` على Xiaomi Stick وShield، وفحص
+- الإجراء التالي المقترح: تثبيت `v0.35.1-alpha` على Xiaomi Stick وShield، وفحص
   وضوح جميع الشخصيات أثناء الحركة والقتال على الشاشة الحقيقية.
