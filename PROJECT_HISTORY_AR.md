@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.33.0-alpha`، `versionCode 38`.
+- النسخة المنشورة: `v0.33.1-alpha`، `versionCode 39`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `4192a3ac0705feec48659df78c3fda2002d87005`.
+- آخر commit وظيفي: `cc060ddcb2c1b6eeb21dd8536fe89161cbb93cb0`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.33.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.33.0-alpha/family-force-family-current.apk
-- SHA-256: `3b40609350d4081edcefe333834d3f3593b03e580ef92e72ec9ca635c42a670d`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.33.1-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.33.1-alpha/family-force-family-current.apk
+- SHA-256: `5804999b6d3b28a31a81c0224a9436d1b40c5a9149a06713128b718bd06bb312`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس والتحكم وعقود
   ذاكرة/سلاسة TV ناجحة؛ لم يكن جهاز أو Emulator متصلًا لهذه النسخة.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
@@ -29,7 +29,8 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: اختبار بصري وأداء `v0.33` على Xiaomi Stick وShield،
+- العمل التالي الموصى به: اختبار backtracking والقوائم ووضوح العدوين في `v0.33.1`
+  على Xiaomi Stick وShield،
   ثم إضافة عدو بعيد المدى في `v0.34` من دون تجاوز خمسة أطالس على Android TV.
 
 ## بروتوكول التحديث الإلزامي
@@ -183,7 +184,7 @@
 - المنفذ: Codex
 - طلب المستخدم: إصلاح قطع/تكرار الخلفيات وعدم تجانس الأرضية، تحسين وضوح
   الأعداء الجدد، وإعادة بناء القوائم بشكل أجمل وأكثر ترتيبًا.
-- الحالة: مكتمل — بانتظار تسجيل تفاصيل GitHub Release.
+- الحالة: مكتمل ومنشور.
 - نقطة البداية: `v0.33.0-alpha` / commit `4192a3a`.
 - التشخيص الأولي:
   - الخلفية تُضغط إلى 640×360 ثم تتكرر وتنعكس كل 640px، فتظهر وصلة وتبدل عند
@@ -214,7 +215,12 @@
   - Release/R8/Lint/signature/archive/assets/controller contracts — PASS.
   - TV memory/smoothness — PASS؛ بقيت `30.78 MiB`.
   - Runtime جهاز فعلي — SKIPPED؛ لا جهاز أو Emulator متصل.
-- Release: `v0.33.1-alpha`؛ تُسجل الروابط وSHA بعد الرفع.
+- Release: `v0.33.1-alpha`، commit
+  `cc060ddcb2c1b6eeb21dd8536fe89161cbb93cb0`:
+  - https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.33.1-alpha
+  - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.33.1-alpha/family-force-family-current.apk
+  - الحجم: `48,783,107` bytes.
+  - SHA-256: `5804999b6d3b28a31a81c0224a9436d1b40c5a9149a06713128b718bd06bb312`.
 - التالي: اختبار backtracking في كل Stage والقوائم ووضوح العدوين على Xiaomi/Shield.
 
 ### 2026-08-22-33 — إعادة بناء بصرية كبيرة للمراحل والقوائم
