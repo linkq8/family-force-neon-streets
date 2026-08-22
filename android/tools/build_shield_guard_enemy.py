@@ -30,8 +30,8 @@ SHEETS = (
 SAFE_FRAME_REMAP = {2: (0, 1, 2, 3, 3, 5)}
 
 
-def foreground_mask(image: Image.Image) -> Image.Image:
-    """Extract bright/saturated enamel art from its dark navy presentation."""
+def foreground_candidates(image: Image.Image) -> Image.Image:
+    """Return all likely enamel-art pixels before choosing a pose."""
     rgb = image.convert("RGB")
     rough = Image.new("L", rgb.size, 0)
     source = rgb.load()
@@ -46,7 +46,42 @@ def foreground_mask(image: Image.Image) -> Image.Image:
                 target[x, y] = 255
     # Close small gaps, include the dark ink outline, then fill enclosed holes.
     rough = rough.filter(ImageFilter.MaxFilter(11)).filter(ImageFilter.MinFilter(7))
-    return largest_component(rough)
+    return rough
+
+
+def foreground_mask(image: Image.Image) -> Image.Image:
+    return largest_component(foreground_candidates(image))
+
+
+def component_boxes(mask: Image.Image) -> list[tuple[int, int, int, int]]:
+    width, height = mask.size
+    pixels = mask.load()
+    seen = bytearray(width * height)
+    boxes = []
+    for sy in range(height):
+        for sx in range(width):
+            index = sy * width + sx
+            if seen[index] or pixels[sx, sy] == 0:
+                continue
+            queue = deque([(sx, sy)])
+            seen[index] = 1
+            count = 0
+            left = right = sx
+            top = bottom = sy
+            while queue:
+                x, y = queue.popleft()
+                count += 1
+                left, right = min(left, x), max(right, x)
+                top, bottom = min(top, y), max(bottom, y)
+                for nx, ny in ((x-1,y),(x+1,y),(x,y-1),(x,y+1)):
+                    if 0 <= nx < width and 0 <= ny < height:
+                        ni = ny * width + nx
+                        if not seen[ni] and pixels[nx, ny]:
+                            seen[ni] = 1
+                            queue.append((nx, ny))
+            if count >= 5000:
+                boxes.append((left, top, right + 1, bottom + 1))
+    return boxes
 
 
 def largest_component(mask: Image.Image) -> Image.Image:
@@ -117,8 +152,21 @@ def extract_frame(frame: Image.Image) -> Image.Image:
 
 def split_sheet(path: Path) -> list[list[Image.Image]]:
     image = Image.open(path).convert("RGB")
+    boxes = component_boxes(foreground_candidates(image))
     result = []
     for row in range(2):
+        selected = [box for box in boxes
+                    if ((box[1] + box[3]) * 0.5 < image.height * 0.5) == (row == 0)]
+        selected.sort(key=lambda box: box[0])
+        if len(selected) == COLS:
+            frames = []
+            for left, top, right, bottom in selected:
+                pad = 8
+                frames.append(extract_frame(image.crop((max(0, left-pad), max(0, top-pad),
+                                                        min(image.width, right+pad),
+                                                        min(image.height, bottom+pad)))))
+            result.append(frames)
+            continue
         frames = []
         top = round(image.height * row / 2)
         bottom = round(image.height * (row + 1) / 2)

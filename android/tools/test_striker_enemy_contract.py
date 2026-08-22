@@ -10,6 +10,7 @@ ANDROID = Path(__file__).resolve().parents[1]
 ASSETS = ANDROID / "app/src/main/assets"
 SOURCE = (ANDROID / "app/src/main/java/com/familyforce/neonstreets/GameView.java").read_text()
 ARCHETYPES = (ANDROID / "app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java").read_text()
+BUILDER = (ANDROID / "tools/build_striker_enemy.py").read_text()
 
 required_code = (
     "private static final int ENEMY_STRIKER = EnemyArchetype.STRIKER;",
@@ -23,6 +24,9 @@ required_code = (
 for snippet in required_code:
     assert snippet in SOURCE, f"missing Striker runtime contract: {snippet}"
 assert 'new EnemyArchetype("striker", "STRIKER"' in ARCHETYPES
+assert "complete_component_rows" in BUILDER
+assert "component_boxes" in BUILDER
+assert "if component_rows[row] is not None" in BUILDER
 
 assert SOURCE.count("spawnEnemy(") >= 1
 assert SOURCE.count("spawnEnemy(0, ENEMY_STRIKER") == 1

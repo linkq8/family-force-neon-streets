@@ -142,6 +142,60 @@ def clear_panel_edges(image: Image.Image) -> Image.Image:
     return rgba
 
 
+def component_boxes(mask: Image.Image) -> list[tuple[int, int, int, int]]:
+    """Find complete authored poses without assuming equal-width panels."""
+    width, height = mask.size
+    pixels = mask.load()
+    seen = bytearray(width * height)
+    boxes = []
+    for sy in range(height):
+        for sx in range(width):
+            index = sy * width + sx
+            if seen[index] or pixels[sx, sy] == 0:
+                continue
+            queue = deque([(sx, sy)])
+            seen[index] = 1
+            count = 0
+            left = right = sx
+            top = bottom = sy
+            while queue:
+                x, y = queue.popleft()
+                count += 1
+                left, right = min(left, x), max(right, x)
+                top, bottom = min(top, y), max(bottom, y)
+                for nx, ny in ((x-1,y),(x+1,y),(x,y-1),(x,y+1)):
+                    if 0 <= nx < width and 0 <= ny < height:
+                        ni = ny * width + nx
+                        if not seen[ni] and pixels[nx, ny]:
+                            seen[ni] = 1
+                            queue.append((nx, ny))
+            if count >= 5000:
+                boxes.append((left, top, right + 1, bottom + 1))
+    return boxes
+
+
+def complete_component_rows(image: Image.Image) -> list[list[Image.Image] | None]:
+    """Use transparent source components when all six poses are separable."""
+    clean = hard_alpha(image)
+    boxes = component_boxes(clean.getchannel("A"))
+    result: list[list[Image.Image] | None] = []
+    for row in range(2):
+        selected = [box for box in boxes
+                    if ((box[1] + box[3]) * 0.5 < image.height * 0.5) == (row == 0)]
+        selected.sort(key=lambda box: box[0])
+        if len(selected) != COLS:
+            result.append(None)
+            continue
+        frames = []
+        for left, top, right, bottom in selected:
+            pad = 8
+            crop = clean.crop((max(0, left-pad), max(0, top-pad),
+                                min(clean.width, right+pad), min(clean.height, bottom+pad)))
+            frames.append(keep_character_component(crop))
+        result.append(frames)
+    return result
+
+
 def translate_cell(image: Image.Image, dx: int, dy: int) -> Image.Image:
     shifted = Image.new("RGBA", image.size, (0, 0, 0, 0))
     shifted.alpha_composite(image, (dx, dy))
@@ -150,12 +204,16 @@ def translate_cell(image: Image.Image, dx: int, dy: int) -> Image.Image:
 
 def split_sheet(path: Path) -> list[list[Image.Image]]:
     image = Image.open(path)
+    component_rows = complete_component_rows(image.convert("RGBA")) if image.mode == "RGBA" else [None, None]
     if image.mode != "RGBA":
         image = remove_light_checker(image)
     else:
         image = image.convert("RGBA")
     result: list[list[Image.Image]] = []
     for row in range(2):
+        if component_rows[row] is not None:
+            result.append(component_rows[row])
+            continue
         frames = []
         top = round(image.height * row / 2)
         bottom = round(image.height * (row + 1) / 2)

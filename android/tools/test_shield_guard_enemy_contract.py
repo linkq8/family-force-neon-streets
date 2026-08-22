@@ -11,6 +11,7 @@ JAVA = ANDROID / "app/src/main/java/com/familyforce/neonstreets"
 game = (JAVA / "GameView.java").read_text(encoding="utf-8")
 archetypes = (JAVA / "EnemyArchetype.java").read_text(encoding="utf-8")
 rosters = (JAVA / "StageRoster.java").read_text(encoding="utf-8")
+builder = (ANDROID / "tools/build_shield_guard_enemy.py").read_text(encoding="utf-8")
 
 assert "ENEMY_TYPE_COUNT = EnemyArchetype.COUNT" in game
 assert 'loadBitmapSampled("enemies/shield_guard.png"' in game
@@ -21,6 +22,8 @@ assert 'new EnemyArchetype("shield_guard", "SHIELD GUARD"' in archetypes
 assert "EnemyArchetype.STRIKER, EnemyArchetype.SHIELD_GUARD}" in rosters
 assert "StageRoster.includes(requestedStage, type)" in game
 assert "spawnEnemy(8, ENEMY_STRIKER, 5760, 270);" in game
+assert "component_boxes(foreground_candidates(image))" in builder
+assert "if len(selected) == COLS" in builder
 
 for relative, expected in (
     ("enemies/shield_guard.png", (512, 512)),
