@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.32.0-alpha`، `versionCode 37`.
+- النسخة المنشورة: `v0.33.0-alpha`، `versionCode 38`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `99855dc13b612c6372ba85bbe8a219aac4f4bc66`.
+- آخر commit وظيفي: `4192a3ac0705feec48659df78c3fda2002d87005`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.32.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.32.0-alpha/family-force-family-current.apk
-- SHA-256: `f06773def76e074507c8e4e628e25550b5e5041604061d0510a0b90e45f4972f`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.33.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.33.0-alpha/family-force-family-current.apk
+- SHA-256: `3b40609350d4081edcefe333834d3f3593b03e580ef92e72ec9ca635c42a670d`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس والتحكم وعقود
   ذاكرة/سلاسة TV ناجحة؛ لم يكن جهاز أو Emulator متصلًا لهذه النسخة.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
@@ -29,8 +29,8 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: اختبار بصري وأداء `v0.32` على Xiaomi Stick وShield،
-  ثم إضافة عدو بعيد المدى في `v0.33` من دون تجاوز خمسة أطالس على Android TV.
+- العمل التالي الموصى به: اختبار بصري وأداء `v0.33` على Xiaomi Stick وShield،
+  ثم إضافة عدو بعيد المدى في `v0.34` من دون تجاوز خمسة أطالس على Android TV.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -183,7 +183,7 @@
 - المنفذ: Codex
 - طلب المستخدم: رفض التحسينات السطحية السابقة وطلب تحسينات كبيرة وجميلة فعلًا
   للشارع والخلفيات واللافتات والقوائم.
-- الحالة: مكتمل — بانتظار تسجيل تفاصيل GitHub Release.
+- الحالة: مكتمل ومنشور.
 - نقطة البداية: `v0.32.0-alpha` / commit `99855dc`.
 - القرار:
   - استبدال طبقات الإضاءة/الانعكاسات الإجرائية الضعيفة بأصول خلفية مرسومة حقيقية.
@@ -212,7 +212,12 @@
   - Release/R8/Lint/signature/archive/assets/controller contracts — PASS.
   - TV memory/smoothness — PASS؛ الميزانية `30.78 MiB` وحد أطالس الأعداء خمسة.
   - Runtime جهاز فعلي — SKIPPED؛ لا جهاز أو Emulator متصل.
-- Release: `v0.33.0-alpha`؛ تُسجل الروابط وSHA بعد الرفع.
+- Release: `v0.33.0-alpha`، commit
+  `4192a3ac0705feec48659df78c3fda2002d87005`:
+  - https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.33.0-alpha
+  - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.33.0-alpha/family-force-family-current.apk
+  - الحجم: `48,766,719` bytes.
+  - SHA-256: `3b40609350d4081edcefe333834d3f3593b03e580ef92e72ec9ca635c42a670d`.
 - ملاحظات: الصور أُنتجت بأداة ImageGen المدمجة، من دون أي فيديو.
 - التالي: اختبار المشاهد الأربعة والقائمة على Xiaomi Stick/Shield من مسافة التلفاز.
 
