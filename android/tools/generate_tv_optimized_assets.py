@@ -16,12 +16,13 @@ ASSETS = ROOT / "app/src/main/assets"
 VARIANTS = (
     ("backgrounds/street.png", "tv/backgrounds/street.png", (960, 536), "RGB"),
     ("backgrounds/street_retro.png", "tv/backgrounds/street_retro.png", (960, 540), "RGB"),
-    # Three chapter backgrounds stay resident to make transitions instant. At
+    # Four chapter backgrounds stay resident to make transitions instant. At
     # 800x450 RGB_565 they retain 1.25x logical detail while remaining cheap
     # enough for low-memory Android TV devices.
-    ("backgrounds/street_retro.png", "tv/backgrounds/stage_market.png", (800, 450), "RGB"),
+    ("backgrounds/stage_market.png", "tv/backgrounds/stage_market.png", (800, 450), "RGB"),
     ("backgrounds/stage_transit.png", "tv/backgrounds/stage_transit.png", (800, 450), "RGB"),
     ("backgrounds/stage_harbor.png", "tv/backgrounds/stage_harbor.png", (800, 450), "RGB"),
+    ("backgrounds/stage_palace.png", "tv/backgrounds/stage_palace.png", (800, 450), "RGB"),
     # The idle master is rendered at at most 192 logical pixels. A 384x576
     # source retains 2x vertical detail without keeping the 10.7 MiB decode.
     ("heroes/parent_hd.png", "tv/heroes/parent_hd.png", (384, 576), "RGBA"),

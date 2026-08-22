@@ -52,16 +52,32 @@
     },
     {
       "path": "backgrounds/stage_harbor.png",
-      "bytes": 1840444,
-      "sha256": "af5985645756cbdd8904c38b572f05de5d126e63662b27f6098573045d8520b6",
+      "bytes": 1616076,
+      "sha256": "8844a1d06fd2a7d8154c02516b41ea7a9d8c9d4ccc990151de34a46b2004a6df",
+      "width": 1376,
+      "height": 768,
+      "mode": "RGB"
+    },
+    {
+      "path": "backgrounds/stage_market.png",
+      "bytes": 1642702,
+      "sha256": "ae075a790bebcbdf2579b66c9ad15cbb11b6c67f8f7d44f95c87b9d0fb9c72e3",
+      "width": 1376,
+      "height": 768,
+      "mode": "RGB"
+    },
+    {
+      "path": "backgrounds/stage_palace.png",
+      "bytes": 2077731,
+      "sha256": "dad2f66bde0cdbcb096d2907af364d145a1d29bc87db2ad454f1f6facbbdccc7",
       "width": 1376,
       "height": 768,
       "mode": "RGB"
     },
     {
       "path": "backgrounds/stage_transit.png",
-      "bytes": 1774767,
-      "sha256": "89068b4fa0f2515a7d3c6a77d7489781e179929f5da157cdcbf09d94f8577e34",
+      "bytes": 1648114,
+      "sha256": "632eb0e9b29fef7a09d34117109fc0bcc4594222e18dac3516561cc33c378504",
       "width": 1376,
       "height": 768,
       "mode": "RGB"
@@ -492,24 +508,32 @@
     },
     {
       "path": "tv/backgrounds/stage_harbor.png",
-      "bytes": 617985,
-      "sha256": "21c04fddc39628a8c0b76665614902bf23fc0a087a2d5cab555c6028d8dcdf43",
+      "bytes": 603477,
+      "sha256": "bed9e6de2d7ecd318efe700370b1a98d3af1a219e098a2fae7784a99bb002c02",
       "width": 800,
       "height": 450,
       "mode": "RGB"
     },
     {
       "path": "tv/backgrounds/stage_market.png",
-      "bytes": 318731,
-      "sha256": "cc1c2d86c061d7477256cc006ff298ca960cd1735f1568550b5965cb320bbb0b",
+      "bytes": 630172,
+      "sha256": "3f41c2fd4a0801c516373155cff14c02029e85d964055e69bc4d2626ec88b27b",
+      "width": 800,
+      "height": 450,
+      "mode": "RGB"
+    },
+    {
+      "path": "tv/backgrounds/stage_palace.png",
+      "bytes": 782872,
+      "sha256": "7d7a24956264b8fd8d16b3d028f1bb30c034e6e7c12f9d939702a8f6d75ef291",
       "width": 800,
       "height": 450,
       "mode": "RGB"
     },
     {
       "path": "tv/backgrounds/stage_transit.png",
-      "bytes": 537615,
-      "sha256": "f03ca5f09fa7759dc209e36bc2ddd7e5ecedac9f7df79e0eb80506591e796086",
+      "bytes": 640321,
+      "sha256": "255b525b0181ac2bb7ab70fb91f07b523f3303e0665794957a3c76c1b3ddd1f6",
       "width": 800,
       "height": 450,
       "mode": "RGB"

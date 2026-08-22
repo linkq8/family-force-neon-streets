@@ -62,6 +62,7 @@ expected = {
     "tv/backgrounds/stage_market.png": (800, 450),
     "tv/backgrounds/stage_transit.png": (800, 450),
     "tv/backgrounds/stage_harbor.png": (800, 450),
+    "tv/backgrounds/stage_palace.png": (800, 450),
 }
 for stem in ("parent", "adam", "shaikha", "sulaiman"):
     expected[f"tv/heroes/{stem}_anim.png"] = (1152, 1584)
@@ -80,7 +81,7 @@ for relative, dimensions in expected.items():
 hero_bytes = 2 * 1152 * 1584 * 4
 assist_bytes = 2 * 1152 * (1584 // 11) * 4
 enemy_bytes = 5 * 720 * 864 * 4
-background_bytes = (960 * 536 + 3 * 800 * 450) * 2
+background_bytes = (960 * 536 + 4 * 800 * 450) * 2
 combat_mib = (hero_bytes + assist_bytes + enemy_bytes + background_bytes) / (1024 * 1024)
 assert combat_mib < 31.0, f"animated TV combat texture budget too high: {combat_mib:.2f} MiB"
 

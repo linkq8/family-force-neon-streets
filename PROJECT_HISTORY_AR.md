@@ -178,6 +178,44 @@
 
 ## سجل الطلبات والتعديلات المشترك
 
+### 2026-08-22-33 — إعادة بناء بصرية كبيرة للمراحل والقوائم
+
+- المنفذ: Codex
+- طلب المستخدم: رفض التحسينات السطحية السابقة وطلب تحسينات كبيرة وجميلة فعلًا
+  للشارع والخلفيات واللافتات والقوائم.
+- الحالة: مكتمل — بانتظار تسجيل تفاصيل GitHub Release.
+- نقطة البداية: `v0.32.0-alpha` / commit `99855dc`.
+- القرار:
+  - استبدال طبقات الإضاءة/الانعكاسات الإجرائية الضعيفة بأصول خلفية مرسومة حقيقية.
+  - إنشاء أربع مراحل ذات تكوينات مختلفة، لا مجرد ألوان مختلفة للمشهد نفسه.
+  - إعادة بناء لغة اللافتات والقوائم حول هوية Arcade/Transit واحدة.
+  - صور ثابتة فقط، مع ضبط أحجام TV واختبار الذاكرة والأداء قبل الإصدار.
+- ما تم:
+  - أربع خلفيات مرسومة جديدة فعلًا: Night Market، Transit Terminal، Moon Harbor،
+    Junk Palace؛ لكل واحدة تكوين وعمارة وأرضية وإضاءة مستقلة.
+  - إصلاح بنيوي: Stage 4 لم تعد تعيد استخدام خلفية Stage 3.
+  - إزالة طبقات النوافذ/الانعكاسات الإجرائية السابقة بالكامل.
+  - تحويل لوحة القائمة إلى أربعة Stage previews حقيقية، وتخفيف الغطاء الداكن حتى
+    يظهر الفن بدل إخفائه، مع الإبقاء على وضوح التركيز والتحكم.
+  - إضافة أصل 1376×768 لكل مرحلة ونسخة TV محسنة 800×450.
+- الملفات الأساسية المعدلة:
+  - `android/app/src/main/assets/backgrounds/stage_*.png`
+  - `android/app/src/main/assets/tv/backgrounds/stage_*.png`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/tools/generate_tv_optimized_assets.py`
+  - `android/tools/validate_assets.py`
+  - `android/tools/test_runtime_smoothness_contract.py`
+  - `android/app/build.gradle`
+- الاختبارات:
+  - مراجعة contact sheet للأصول الأربع — PASS.
+  - Debug + Lint — PASS.
+  - Release/R8/Lint/signature/archive/assets/controller contracts — PASS.
+  - TV memory/smoothness — PASS؛ الميزانية `30.78 MiB` وحد أطالس الأعداء خمسة.
+  - Runtime جهاز فعلي — SKIPPED؛ لا جهاز أو Emulator متصل.
+- Release: `v0.33.0-alpha`؛ تُسجل الروابط وSHA بعد الرفع.
+- ملاحظات: الصور أُنتجت بأداة ImageGen المدمجة، من دون أي فيديو.
+- التالي: اختبار المشاهد الأربعة والقائمة على Xiaomi Stick/Shield من مسافة التلفاز.
+
 ### 2026-08-22-32 — تحسين الشارع والخلفيات واللافتات والقوائم
 
 - المنفذ: Codex
