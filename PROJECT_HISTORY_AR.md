@@ -10,15 +10,16 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.34.0-alpha`، `versionCode 40`.
+- النسخة المنشورة: `v0.34.1-alpha`، `versionCode 41`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `8219c8b`.
+- آخر commit وظيفي: `3c634ae`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.34.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.34.0-alpha/family-force-family-current.apk
-- SHA-256: `828a004a220d5f0c3912cc0e61c4d448198f3f2de8c65661f47549238c871edc`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.34.1-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.34.1-alpha/family-force-family-current.apk
+- SHA-256: `50e5d1eb69b0f91af737e22ee0c67c5a12e5f9f33ddd74bf1e4c9a865138e6c2`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس والتحكم وعقود
-  البانوراما/القص/ذاكرة TV ناجحة؛ الميزانية `36.27 MiB` ولم يكن جهاز متصلًا.
+  البانوراما/القص/ذاكرة TV ناجحة؛ الميزانية `37.99 MiB`. نجح Android TV
+  Emulator في المسار الكامل للمناطق التسع واختبارات phone/Fold/TV/remote.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
   استدعاء الشخصيات الإضافية ونظافة الرسومات والحركة.
 - اختبار المناطق: مسار تطويري آلي مرّ بالمناطق 1–9 حتى شاشة النتائج بنجاح.
@@ -29,8 +30,8 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: اختبار حركة البانوراما ذهابًا وإيابًا، صور Ready،
-  ووضوح Striker/Shield Guard في `v0.34.0` على Xiaomi Stick وShield.
+- العمل التالي الموصى به: اختبار وضوح Striker/Shield Guard وحركة Stage 4 من
+  أول خطوة في `v0.34.1` على Xiaomi Stick وShield الحقيقيين.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -177,6 +178,53 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-22-36 — إصلاح وضوح العدوين وحركة/دقة البانوراما
+
+- المنفذ: Codex
+- طلب المستخدم: Striker وShield Guard أصبحا أسوأ، وخلفية Stage 4 تبقى ثابتة
+  في بداية المشي ولا تتحرك إلا عند ظهور الأعداء؛ المطلوب تحسين وضوح الأعداء
+  والخلفيات وإصلاح حجمها وحركتها.
+- الحالة: مكتمل ومنشور.
+- نقطة البداية: `v0.34.0-alpha` / commit `8219c8b`.
+- القيود: صور ثابتة فقط؛ اختبار Android TV Emulator قبل الإصدار.
+- التشخيص:
+  - Stage 4 كانت تبدأ pan عند `4820-224=4596` بينما الكاميرا تدخلها عند `4395`؛
+    لذلك بقيت الخلفية ثابتة لنحو 200 وحدة حتى اقتراب Encounter التالي.
+  - العدوّان كانا يصغران إلى `720×864` ثم يرسمان بـnearest-neighbour، مع sharpen
+    ثانٍ قوي؛ فصارت التفاصيل بكسلات سميكة وغير متجانسة.
+  - غطاء ليلي alpha=82 كان يخفي تفاصيل البانوراما أكثر من اللازم.
+- ما تم:
+  - حساب بداية كل panorama من موضع كاميرا بوابة المرحلة السابقة؛ Stage 4 تبدأ
+    عند `4180+425-210=4395` وتتحرك من أول تقدم للكاميرا.
+  - خفض غطاء المراحل إلى alpha=34 لإظهار الأرض واللافتات والعمارة بوضوح أكبر.
+  - رفع نسختي TV للعدوين إلى `840×1008` (خلية `140×168`) بدل `720×864`،
+    وإلغاء sharpen القاسي، واستخدام Paint مفلتر ودقيق لهما فقط.
+  - إبقاء الأعداء القدامى على مسار pixelPaint الأصلي حتى لا تتغير هويتهم.
+- الملفات الأساسية:
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/app/src/main/assets/tv/enemies/{striker,shield_guard}_anim.png`
+  - `android/tools/generate_tv_optimized_assets.py`
+  - `android/tools/test_visual_refresh_contract.py`
+  - `android/tools/test_runtime_smoothness_contract.py`
+  - `android/tools/test_tv_encounter_memory_contract.py`
+- الاختبارات:
+  - `validate_assets.py` و10/10 atlases — PASS.
+  - Visual refresh/camera math — PASS؛ Stage 4 start=`4395` وحركة أولية موجبة.
+  - Shield Guard — PASS: 36 إطارًا وهوامش 12px/9px.
+  - TV budget — PASS: `37.99 MiB` تحت حد 40 MiB.
+  - `test_full_stage_runtime.sh` على Android TV Emulator — PASS: المناطق 1–9،
+    لا FATAL/ANR/OOM، مع لقطة Stage 4 واضحة.
+  - `test_customer_release.sh` — PASS: phone/ultrawide/Fold/TV ومسار remote.
+  - Release/R8/Lint/signature/APK verification — PASS.
+- Release: `v0.34.1-alpha`، commit `3c634ae`:
+  - https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.34.1-alpha
+  - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.34.1-alpha/family-force-family-current.apk
+  - الحجم: `69,117,058` bytes.
+  - SHA-256: `50e5d1eb69b0f91af737e22ee0c67c5a12e5f9f33ddd74bf1e4c9a865138e6c2`.
+- ملاحظات/مخاطر: Emulator أثبت المسار والأداء؛ تبقى مراجعة حسية نهائية على لوحة
+  TV الحقيقية لأن معالجة الحركة/الحدة تختلف بين الشركات.
+- التالي: تثبيت النسخة على Xiaomi Stick وShield ومقارنة العدوين وStage 4.
 
 ### 2026-08-22-35 — بانوراما عريضة ومعيار فني موحد وصور اختيار تفاعلية
 
@@ -1425,10 +1473,10 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.34.0-alpha` منشور؛ بانورامات طويلة ورسومات موحدة وصور Ready مدمجة.
-- آخر عمل: استبدال pan اللوحة الصغيرة بنافذة متحركة داخل 3:1 panorama، وإعادة
-  Striker/Shield Guard وصور الاختيار والأيقونة بمعيار فني واحد دون فيديو.
-- آخر قرار: حد TV الرسومي 40 MiB؛ النسخة الحالية `36.27 MiB` وتحميل الأعداء
+- الحالة: `v0.34.1-alpha` منشور؛ حركة Stage 4 ووضوح الخلفيات/العدوين مصححة.
+- آخر عمل: بدء panorama من أول خطوة، تقليل التعتيم، ورفع atlas العدوين إلى
+  `840×1008` مع filtering خفيف بدل nearest/sharpen القاسي.
+- آخر قرار: حد TV الرسومي 40 MiB؛ النسخة الحالية `37.99 MiB` وتحميل الأعداء
   يبقى حسب المرحلة بحد أقصى خمسة أطالس.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
@@ -1438,5 +1486,5 @@
   5. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
   6. `android/docs/VISUAL_ASSET_STANDARD_AR.md`
   7. `android/tools/test_visual_refresh_contract.py`
-- الإجراء التالي المقترح: تثبيت `v0.34.0-alpha` على Xiaomi Stick وShield، وفحص
-  البانوراما عند التقدم/الرجوع، تبدل صور Ready، ووضوح العدوين أثناء كل الحركات.
+- الإجراء التالي المقترح: تثبيت `v0.34.1-alpha` على Xiaomi Stick وShield، وفحص
+  حركة Stage 4 من أول خطوة ووضوح العدوين أثناء كل الحركات.
