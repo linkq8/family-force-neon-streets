@@ -571,6 +571,86 @@
       "mode": "RGBA"
     },
     {
+      "path": "runtime/enemies/boss_anim.png",
+      "bytes": 851516,
+      "sha256": "d1bd6226bda760cfaae88292f1307d81da2cbdb856ba78a8bd56e796b8cc024d",
+      "width": 798,
+      "height": 960,
+      "mode": "RGBA"
+    },
+    {
+      "path": "runtime/enemies/brute_anim.png",
+      "bytes": 672270,
+      "sha256": "db8da2720c3e3dfe6a0ac56fc7963dc04fffcbe3159710f0b9589f23d893a1cb",
+      "width": 678,
+      "height": 816,
+      "mode": "RGBA"
+    },
+    {
+      "path": "runtime/enemies/grunt_anim.png",
+      "bytes": 529248,
+      "sha256": "1a58d05491b8365a86bab95d9db2ab3a9a8546989a1a0f2a63ac348bbcf72272",
+      "width": 600,
+      "height": 720,
+      "mode": "RGBA"
+    },
+    {
+      "path": "runtime/enemies/shield_guard_anim.png",
+      "bytes": 532680,
+      "sha256": "8073f15a4e4109073a9eb5a4a5f32455f3b1ca1bd7b87afa8c2d29c6f7ff0b76",
+      "width": 660,
+      "height": 792,
+      "mode": "RGBA"
+    },
+    {
+      "path": "runtime/enemies/skater_anim.png",
+      "bytes": 374422,
+      "sha256": "454c20d32ad1da8756875779f12ce17aae09f42f37286658d93083c82e84750a",
+      "width": 552,
+      "height": 660,
+      "mode": "RGBA"
+    },
+    {
+      "path": "runtime/enemies/striker_anim.png",
+      "bytes": 279880,
+      "sha256": "a3583bf7ff1eb9301689a6c3efc6fbddf011c43daf290fea710052dedf8cfeed",
+      "width": 582,
+      "height": 696,
+      "mode": "RGBA"
+    },
+    {
+      "path": "runtime/heroes/adam_anim.png",
+      "bytes": 534727,
+      "sha256": "d55fce2e96cdc6fec48e53931afe6d57fe60e095806a5cbbb7fe880efbd98697",
+      "width": 616,
+      "height": 847,
+      "mode": "RGBA"
+    },
+    {
+      "path": "runtime/heroes/parent_anim.png",
+      "bytes": 1131747,
+      "sha256": "f8eaa5d0f9f67771d619bd5a4fcf24767ed1e81a2c64895dc1563942fd639c68",
+      "width": 1008,
+      "height": 1386,
+      "mode": "RGBA"
+    },
+    {
+      "path": "runtime/heroes/shaikha_anim.png",
+      "bytes": 442792,
+      "sha256": "cf05eb7455d6537c46c4b39252dd9fc7ce65103abf5247870d277e014f289283",
+      "width": 616,
+      "height": 847,
+      "mode": "RGBA"
+    },
+    {
+      "path": "runtime/heroes/sulaiman_anim.png",
+      "bytes": 636606,
+      "sha256": "81ff85c5a199235366951ca996cfa1c74cb835f3e3f2f83169818de5abd78f0f",
+      "width": 704,
+      "height": 968,
+      "mode": "RGBA"
+    },
+    {
       "path": "tv/backgrounds/panoramas/stage_harbor.png",
       "bytes": 1669866,
       "sha256": "e055eb4da232142d7a18e5fec2b543b552dedf0fde9c4080935b5045b211fad2",

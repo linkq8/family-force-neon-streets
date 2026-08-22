@@ -25,7 +25,7 @@ assert 'backgrounds/panoramas/stage_market.png' in JAVA
 assert 'int cropWidth = Math.min(scene.getWidth()' in JAVA
 assert 'STAGE_END_ZONE[safeStage - 1]' in JAVA
 assert 'drawSelectionPortrait(canvas, hero, selected' in JAVA
-assert 'fineEnemyPaint' in JAVA
+assert 'crispCharacterPaint' in JAVA
 assert 'heroReadyPortraits' in JAVA
 assert 'Shader.TileMode.REPEAT' not in JAVA[JAVA.index('private void drawBackdrop'):JAVA.index('private float stagePanProgress')]
 

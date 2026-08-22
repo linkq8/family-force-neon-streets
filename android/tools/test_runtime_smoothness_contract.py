@@ -73,6 +73,14 @@ expected = {
     "tv/backgrounds/panoramas/stage_harbor.png": (1800, 600),
     "tv/backgrounds/panoramas/stage_palace.png": (1800, 600),
 }
+hero_runtime = {"parent": 126, "adam": 77, "shaikha": 77, "sulaiman": 88}
+enemy_runtime = {"grunt": (100, 120), "skater": (92, 110), "brute": (113, 136),
+                 "boss": (133, 160), "striker": (97, 116),
+                 "shield_guard": (110, 132)}
+for stem, cell in hero_runtime.items():
+    expected[f"runtime/heroes/{stem}_anim.png"] = (cell * 8, cell * 11)
+for stem, (cell_width, cell_height) in enemy_runtime.items():
+    expected[f"runtime/enemies/{stem}_anim.png"] = (cell_width * 6, cell_height * 6)
 for stem in ("parent", "adam", "shaikha", "sulaiman"):
     expected[f"tv/heroes/{stem}_anim.png"] = (1152, 1584)
 for stem in ("grunt", "skater", "brute", "boss"):
@@ -89,10 +97,11 @@ for relative, dimensions in expected.items():
 # Peak animated combat textures for low-RAM TV: two hero atlases, two Link rows,
 # at most five stage-roster enemy atlases, and both RGB_565 backgrounds. Keep under Android TV's
 # recommended 30–40 MiB graphics target with a small tolerance for two-player mode.
-hero_bytes = 2 * 1152 * 1584 * 4
-assist_bytes = 2 * 1152 * (1584 // 11) * 4
-# Worst roster: three legacy enemies plus both fine-detail newcomers.
-enemy_bytes = (3 * 720 * 864 + 2 * 840 * 1008) * 4
+# Worst distinct hero pair is Essa + Sulaiman; same-hero P2 shares the bitmap.
+hero_bytes = (1008 * 1386 + 704 * 968) * 4
+assist_bytes = (1008 * 126 + 704 * 88) * 4
+# Conservative five largest exact-scale enemy atlases.
+enemy_bytes = sum(sorted((w * 6 * h * 6 * 4 for w, h in enemy_runtime.values()), reverse=True)[:5])
 background_bytes = (960 * 536 + 4 * 1800 * 600) * 2
 combat_mib = (hero_bytes + assist_bytes + enemy_bytes + background_bytes) / (1024 * 1024)
 assert combat_mib < 40.0, f"animated TV combat texture budget too high: {combat_mib:.2f} MiB"

@@ -268,8 +268,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
      */
     private final Paint heroPaint = new Paint(Paint.ANTI_ALIAS_FLAG
             | Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
-    private final Paint fineEnemyPaint = new Paint(Paint.ANTI_ALIAS_FLAG
-            | Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
+    private final Paint crispCharacterPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG);
     private final Paint portraitPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
     private final Rect source = new Rect();
     private final RectF dest = new RectF();
@@ -1489,14 +1488,14 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (bitmap == null || bitmap.isRecycled()) return false;
         return bitmap.getWidth() % HERO_ANIM_COLUMNS == 0
                 && bitmap.getHeight() % HERO_ANIM_ROWS == 0
-                && bitmap.getWidth() / HERO_ANIM_COLUMNS >= 96
-                && bitmap.getHeight() / HERO_ANIM_ROWS >= 96;
+                && bitmap.getWidth() / HERO_ANIM_COLUMNS >= 64
+                && bitmap.getHeight() / HERO_ANIM_ROWS >= 64;
     }
 
     private Bitmap loadHeroAnimationAtlas(int hero) {
         String stem = customerProfile.heroAssetStems[safeHeroIndex(hero)] + "_anim.png";
-        Bitmap atlas = null;
-        if (useReducedMemoryAssets()) atlas = loadBitmap("tv/heroes/" + stem);
+        Bitmap atlas = loadBitmap("runtime/heroes/" + stem);
+        if (atlas == null && useReducedMemoryAssets()) atlas = loadBitmap("tv/heroes/" + stem);
         if (atlas == null) atlas = loadBitmap("heroes/" + stem);
         return atlas;
     }
@@ -1504,8 +1503,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private Bitmap decodeEnemyAnimationType(int type) {
         if (type < 0 || type >= enemyAnimArt.length) return null;
         boolean reducedMemory = useReducedMemoryAssets();
-        Bitmap atlas = loadBitmap((reducedMemory ? "tv/enemies/" : "enemies/")
-                + EnemyArchetype.of(type).asset + "_anim.png");
+        String stem = EnemyArchetype.of(type).asset + "_anim.png";
+        Bitmap atlas = loadBitmap("runtime/enemies/" + stem);
+        if (atlas == null) {
+            atlas = loadBitmap((reducedMemory ? "tv/enemies/" : "enemies/") + stem);
+        }
         if (atlas != null && atlas.getWidth() % ENEMY_ANIM_COLUMNS == 0
                 && atlas.getHeight() % ENEMY_ANIM_ROWS == 0) {
             return atlas;
@@ -1780,7 +1782,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         Arrays.fill(assistAnimSourceCache[ownerSlot], null);
         BitmapRegionDecoder decoder = null;
         String stem = customerProfile.heroAssetStems[hero] + "_anim.png";
-        String path = useReducedMemoryAssets() ? "tv/heroes/" + stem : "heroes/" + stem;
+        String path = "runtime/heroes/" + stem;
         try (InputStream input = getContext().getAssets().open(path)) {
             decoder = BitmapRegionDecoder.newInstance(input, false);
             if (decoder != null && decoder.getWidth() % HERO_ANIM_COLUMNS == 0
@@ -4715,48 +4717,20 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         int frame = animator.frame();
         Bitmap sourceBitmap = animator == playerAnimator ? selectedHeroAnimArt
                 : animator == player2Animator ? player2AnimArt : assistAnimArt;
-        Rect[] sourceCache = animator == playerAnimator ? selectedHeroAnimSources
-                : animator == player2Animator ? player2AnimSources : assistAnimSources;
         if (sourceBitmap == null || sourceBitmap.isRecycled()) return;
-        if (hero == 0 && animator == playerAnimator && animator.row() == HERO_IDLE
-                && attackTimer <= 0 && heroHdArt[0] != null && !heroHdArt[0].isRecycled()) {
-            Bitmap hd = heroHdArt[0];
-            float hdHeight = height;
-            float hdWidth = hdHeight * hd.getWidth() / Math.max(1f, hd.getHeight());
-            canvas.save();
-            canvas.translate(x, baseY);
-            if (flip) canvas.scale(-1f, 1f);
-            dest.set(-hdWidth * 0.5f, -hdHeight, hdWidth * 0.5f, 0f);
-            heroPaint.setAlpha(alpha);
-            canvas.drawBitmap(hd, null, dest, heroPaint);
-            heroPaint.setAlpha(255);
-            canvas.restore();
-            return;
-        }
-        int sourceIndex = animator == assistAnimator ? frame : row * HERO_ANIM_COLUMNS + frame;
-        if (sourceIndex < 0 || sourceIndex >= sourceCache.length) sourceIndex = 0;
-        Rect sourceRect = sourceCache[sourceIndex];
-        if (sourceRect == null || sourceRect.isEmpty()) sourceRect = HERO_ANIM_FULL_CELL;
-        float atlasCellWidth = sourceBitmap.getWidth() / (float) HERO_ANIM_COLUMNS;
-        float atlasCellHeight = animator == assistAnimator ? sourceBitmap.getHeight()
-                : sourceBitmap.getHeight() / (float) HERO_ANIM_ROWS;
-        float frameHeight = sourceRect.height();
-        float frameWidth = sourceRect.width();
-        if (frameHeight <= 0f) {
-            frameHeight = atlasCellHeight;
-            frameWidth = atlasCellWidth;
-            sourceRect = HERO_ANIM_FULL_CELL;
-        }
-        float width = height * frameWidth / frameHeight;
-        float sourceCenterX = sourceRect.centerX() - (float) sourceRect.left;
-        float xOffset = (sourceCenterX - (atlasCellWidth * 0.5f)) / frameWidth * width;
+        int atlasCellWidth = sourceBitmap.getWidth() / HERO_ANIM_COLUMNS;
+        int atlasCellHeight = animator == assistAnimator ? sourceBitmap.getHeight()
+                : sourceBitmap.getHeight() / HERO_ANIM_ROWS;
+        int sourceRow = animator == assistAnimator ? 0 : row;
+        source.set(frame * atlasCellWidth, sourceRow * atlasCellHeight,
+                (frame + 1) * atlasCellWidth, (sourceRow + 1) * atlasCellHeight);
         canvas.save();
         canvas.translate(x, baseY);
         if (flip) canvas.scale(-1f, 1f);
-        dest.set(-width * 0.5f - xOffset, -height, width * 0.5f - xOffset, 0f);
-        heroPaint.setAlpha(alpha);
-        canvas.drawBitmap(sourceBitmap, sourceRect, dest, heroPaint);
-        heroPaint.setAlpha(255);
+        dest.set(-height * 0.5f, -height, height * 0.5f, 0f);
+        crispCharacterPaint.setAlpha(alpha);
+        canvas.drawBitmap(sourceBitmap, source, dest, crispCharacterPaint);
+        crispCharacterPaint.setAlpha(255);
         canvas.restore();
     }
 
@@ -4835,8 +4809,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.argb(100, 0, 0, 0));
         canvas.drawOval(x - width * 0.34f, enemy.y - 6, x + width * 0.34f, enemy.y + 7, paint);
         Bitmap bitmap = enemyArt[enemy.type];
-        Paint enemyPaint = enemy.type == ENEMY_STRIKER || enemy.type == ENEMY_SHIELD_GUARD
-                ? fineEnemyPaint : pixelPaint;
+        Paint enemyPaint = crispCharacterPaint;
         if (enemy.flash > 0) {
             enemyPaint.setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP));
         } else {

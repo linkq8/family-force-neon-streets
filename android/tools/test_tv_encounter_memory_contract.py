@@ -12,10 +12,10 @@ ASSETS = ROOT / "app/src/main/assets"
 
 def main() -> None:
     text = SOURCE.read_text(encoding="utf-8")
-    assert 'reducedMemory ? "tv/enemies/" : "enemies/"' in text
+    assert 'loadBitmap("runtime/enemies/" + stem)' in text
     assert "private boolean useReducedMemoryAssets()" in text
     assert "smallestScreenWidthDp >= 720" in text
-    assert 'loadBitmap("tv/heroes/" + stem)' in text
+    assert 'loadBitmap("runtime/heroes/" + stem)' in text
     assert "preloadEnemyAnimationsForStageAsync" in text
     assert '"FamilyForceAssetWarmup"' in text
     assert "loader.setPriority(Thread.MIN_PRIORITY)" in text
