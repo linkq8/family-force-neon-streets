@@ -4,21 +4,21 @@
 > يجب على كل وكيل قراءته قبل تعديل المشروع، وتحديثه بعد كل طلب أو تعديل أو
 > اختبار أو Release. سجل الأحداث أدناه تراكمي؛ لا تُحذف الإدخالات القديمة.
 
-آخر تحديث: 21 أغسطس 2026 — Codex
+آخر تحديث: 22 أغسطس 2026 — Codex
 
 ## حالة العمل الحالية
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.33.1-alpha`، `versionCode 39`.
+- النسخة المنشورة: `v0.34.0-alpha`، `versionCode 40`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `cc060ddcb2c1b6eeb21dd8536fe89161cbb93cb0`.
+- آخر commit وظيفي: `8219c8b`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.33.1-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.33.1-alpha/family-force-family-current.apk
-- SHA-256: `5804999b6d3b28a31a81c0224a9436d1b40c5a9149a06713128b718bd06bb312`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.34.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.34.0-alpha/family-force-family-current.apk
+- SHA-256: `828a004a220d5f0c3912cc0e61c4d448198f3f2de8c65661f47549238c871edc`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس والتحكم وعقود
-  ذاكرة/سلاسة TV ناجحة؛ لم يكن جهاز أو Emulator متصلًا لهذه النسخة.
+  البانوراما/القص/ذاكرة TV ناجحة؛ الميزانية `36.27 MiB` ولم يكن جهاز متصلًا.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
   استدعاء الشخصيات الإضافية ونظافة الرسومات والحركة.
 - اختبار المناطق: مسار تطويري آلي مرّ بالمناطق 1–9 حتى شاشة النتائج بنجاح.
@@ -29,9 +29,8 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: اختبار backtracking والقوائم ووضوح العدوين في `v0.33.1`
-  على Xiaomi Stick وShield،
-  ثم إضافة عدو بعيد المدى في `v0.34` من دون تجاوز خمسة أطالس على Android TV.
+- العمل التالي الموصى به: اختبار حركة البانوراما ذهابًا وإيابًا، صور Ready،
+  ووضوح Striker/Shield Guard في `v0.34.0` على Xiaomi Stick وShield.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -178,6 +177,57 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-22-35 — بانوراما عريضة ومعيار فني موحد وصور اختيار تفاعلية
+
+- المنفذ: Codex
+- طلب المستخدم: رفض حركة اللوحة الواحدة البطيئة، وطلب خلفيات بانورامية طويلة
+  متكاملة، إعادة إنتاج Striker/Shield Guard ببكسل أدق، صور اختيار عادية ومتحمسة
+  للأبطال الأربعة، وأيقونة موحدة للهاتف وAndroid TV مع معيار جودة ثابت.
+- الحالة: مكتمل ومنشور.
+- نقطة البداية: `v0.33.1-alpha` / commit `cc060dd`.
+- القرار:
+  - إنشاء بانوراما ثابتة بعرض عدة شاشات لكل Stage وربط pan بتقدم اللاعب.
+  - إعادة رسم العدوين الجديدين من جديد بدل تكبير/شحذ الأطالس الحالية.
+  - إضافة 8 صور اختيار: 4 neutral + 4 battle-ready مع تبديل لحظي عند الاختيار.
+  - إنشاء Master icon واحد ثم اشتقاق legacy/adaptive/TV منه.
+  - توثيق Standard رسومي واختبارات للأبعاد والذاكرة والتجانس.
+- القيود: صور ثابتة فقط؛ لا فيديو؛ الحفاظ على Android TV والاستجابة بالريموت.
+- ما تم:
+  - إضافة أربع بانورامات حقيقية `2172×724` ونسخ TV `1800×600`؛ المحرك يعرض
+    نافذة 16:9 تتحرك داخل الصورة بحسب تقدم العالم، بلا tile أو mirror أو تبديل.
+  - إعادة بناء أطلسي Striker وShield Guard ببكسل أدق، `960×1152`، وضبط كل خلية
+    داخل هامش آمن ثم إنتاج نسخة TV `720×864`؛ 36/36 إطار لكل عدو.
+  - استبدال صور الاختيار الأربع وإضافة أربع صور `_ready` تتبدل عند اختيار البطل.
+  - إنشاء أيقونات Legacy/Adaptive جديدة وإعلان Android TV مستقل `320×180`.
+  - إضافة معيار رسومي عربي، مصدر أيقونة محفوظ، وأدوات بناء/اختبار قابلة للإعادة.
+- الملفات الأساسية:
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/app/src/main/assets/backgrounds/panoramas/`
+  - `android/app/src/main/assets/tv/backgrounds/panoramas/`
+  - `android/app/src/main/assets/enemies/{striker,shield_guard}_anim.png`
+  - `android/app/src/main/assets/heroes/*_portrait_ready.png`
+  - `android/app/src/main/res/drawable-nodpi/tv_banner.png`
+  - `android/docs/VISUAL_ASSET_STANDARD_AR.md`
+  - `android/tools/build_visual_refresh_assets.py`
+  - `android/tools/package_visual_icon.py`
+  - `android/tools/test_visual_refresh_contract.py`
+- الاختبارات:
+  - `validate_assets.py` — PASS: 65 PNG أساسي، 10 أطالس، 107 ملفات manifested.
+  - `validate_animation_atlases.py --allow-nonclustered` — PASS: 10/10.
+  - `test_shield_guard_enemy_contract.py` — PASS: 36 إطارًا وهوامش 12px/8px.
+  - `test_visual_refresh_contract.py` — PASS: بانوراما/صور Ready/منع التكرار.
+  - `test_runtime_smoothness_contract.py` — PASS: `36.27 MiB` تحت حد 40 MiB.
+  - Debug/Release + R8 + Lint + توقيع + APK verification — PASS.
+  - Runtime جهاز فعلي — SKIPPED؛ لا جهاز أو Emulator متصل.
+- Release: `v0.34.0-alpha`، commit `8219c8b`:
+  - https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.34.0-alpha
+  - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.34.0-alpha/family-force-family-current.apk
+  - الحجم: `68,507,918` bytes.
+  - SHA-256: `828a004a220d5f0c3912cc0e61c4d448198f3f2de8c65661f47549238c871edc`.
+- ملاحظات/مخاطر: ملف الطلب ما زال Draft لأن سجل الموافقة التجاري غير granted؛
+  هذا لا يغيّر التوقيع أو قابلية تثبيت APK، لكنه يمنع وسمه كتسليم تجاري نهائي.
+- التالي: اختبار بصري على Xiaomi Stick/Shield للحركة العكسية وReady portraits.
 
 ### 2026-08-22-34 — بانوراما المراحل وتوحيد وضوح الأعداء وإعادة ترتيب القوائم
 
@@ -1375,17 +1425,18 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.31.0-alpha` منشور؛ المراحل الأربع تملك هويات قتال ومكافآت مختلفة.
-- آخر عمل: إضافة قواعد Stage مستقلة وMini-boss وأهداف/HUD ومكافآت، مع إبقاء
-  الأطالس والذاكرة ضمن الحد السابق ودون أصول جديدة.
-- آخر قرار: إبقاء التحميل حسب المرحلة وعدم الاحتفاظ بالأنواع الستة معًا، والاستمرار
-  بصورة Model/Action Sheets فقط من دون فيديو.
+- الحالة: `v0.34.0-alpha` منشور؛ بانورامات طويلة ورسومات موحدة وصور Ready مدمجة.
+- آخر عمل: استبدال pan اللوحة الصغيرة بنافذة متحركة داخل 3:1 panorama، وإعادة
+  Striker/Shield Guard وصور الاختيار والأيقونة بمعيار فني واحد دون فيديو.
+- آخر قرار: حد TV الرسومي 40 MiB؛ النسخة الحالية `36.27 MiB` وتحميل الأعداء
+  يبقى حسب المرحلة بحد أقصى خمسة أطالس.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
   3. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
   4. `android/app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java`
   5. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
-  6. `android/tools/test_shield_guard_enemy_contract.py`
-- الإجراء التالي المقترح: تحديث إلى `v0.31.0-alpha` ولعب المراحل الأربع في نمطي
-  لاعب/لاعبين، ثم ضبط HP/pressure/recovery من ملاحظات الجهاز الحقيقي.
+  6. `android/docs/VISUAL_ASSET_STANDARD_AR.md`
+  7. `android/tools/test_visual_refresh_contract.py`
+- الإجراء التالي المقترح: تثبيت `v0.34.0-alpha` على Xiaomi Stick وShield، وفحص
+  البانوراما عند التقدم/الرجوع، تبدل صور Ready، ووضوح العدوين أثناء كل الحركات.
