@@ -268,6 +268,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
      */
     private final Paint heroPaint = new Paint(Paint.ANTI_ALIAS_FLAG
             | Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
+    private final Paint fineEnemyPaint = new Paint(Paint.ANTI_ALIAS_FLAG
+            | Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
     private final Paint portraitPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
     private final Rect source = new Rect();
     private final RectF dest = new RectF();
@@ -4122,7 +4124,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     Color.red(accent), Color.green(accent), Color.blue(accent)));
             canvas.drawRect(0, 0, W, H, paint);
         }
-        paint.setColor(Color.argb(82, 4, 5, 25));
+        // Panoramas already carry their intended night grading. The former
+        // 82-alpha veil hid signs, faces, and ground texture on TV panels.
+        paint.setColor(Color.argb(scene == stageScene ? 34 : 82, 4, 5, 25));
         canvas.drawRect(0, 0, W, H, paint);
         if (scene != stageScene) {
             paint.setColor(Color.rgb(31, 35, 58));
@@ -4137,8 +4141,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private float stagePanProgress(float scroll, int stage) {
         int safeStage = clampInt(stage, 0, STAGE_NAMES.length - 1);
-        float start = safeStage == 0 ? 0f
-                : Math.max(0f, ZONE_TRIGGERS[STAGE_START_ZONE[safeStage]] - W * 0.35f);
+        // A stage begins where the camera stopped after the preceding gate,
+        // not near its first encounter. This makes scenery react from the
+        // player's first step instead of waiting ~200 world units in Stage 4.
+        float start = safeStage == 0 ? 0f : Math.max(0f,
+                ZONE_TRIGGERS[STAGE_END_ZONE[safeStage - 1]]
+                        + ENCOUNTER_GATE_OFFSET - 210f);
         float end = Math.min(WORLD_END - W,
                 ZONE_TRIGGERS[STAGE_END_ZONE[safeStage]] + ENCOUNTER_GATE_OFFSET);
         if (end <= start + 1f) return 0.5f;
@@ -4827,17 +4835,19 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.argb(100, 0, 0, 0));
         canvas.drawOval(x - width * 0.34f, enemy.y - 6, x + width * 0.34f, enemy.y + 7, paint);
         Bitmap bitmap = enemyArt[enemy.type];
+        Paint enemyPaint = enemy.type == ENEMY_STRIKER || enemy.type == ENEMY_SHIELD_GUARD
+                ? fineEnemyPaint : pixelPaint;
         if (enemy.flash > 0) {
-            pixelPaint.setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP));
+            enemyPaint.setColorFilter(new PorterDuffColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP));
         } else {
-            pixelPaint.setColorFilter(STAGE_ENEMY_FILTERS[stageForZone(enemy.zone)]);
+            enemyPaint.setColorFilter(STAGE_ENEMY_FILTERS[stageForZone(enemy.zone)]);
         }
         if (enemy.animator.isBound()) {
             canvas.save();
             if (!enemy.facingRight) canvas.scale(-1f, 1f, x, 0f);
             dest.set(x - width * 0.5f, enemy.y - enemy.z - height,
                     x + width * 0.5f, enemy.y - enemy.z);
-            enemy.animator.draw(canvas, pixelPaint, source, dest);
+            enemy.animator.draw(canvas, enemyPaint, source, dest);
             canvas.restore();
         } else if (bitmap != null) {
             float bob = enemy.state == ENEMY_STATE_WALK
@@ -4866,7 +4876,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             canvas.rotate(rotation);
             canvas.scale((enemy.facingRight ? 1f : -1f) * scaleX, scaleY);
             dest.set(-width * 0.5f, -height, width * 0.5f, 0f);
-            canvas.drawBitmap(bitmap, null, dest, pixelPaint);
+            canvas.drawBitmap(bitmap, null, dest, enemyPaint);
             canvas.restore();
         } else {
             paint.setColor(enemy.type == 3 ? Color.rgb(166, 83, 224) : Color.rgb(20, 157, 148));
@@ -4876,7 +4886,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             canvas.drawCircle(x - 7, enemy.y - enemy.z - height * 0.68f, 3, paint);
             canvas.drawCircle(x + 7, enemy.y - enemy.z - height * 0.68f, 3, paint);
         }
-        pixelPaint.setColorFilter(null);
+        enemyPaint.setColorFilter(null);
         if (enemy.hp < enemy.maxHp || enemy.type == 3 || enemy.elite) {
             float barW = enemy.type == 3 ? 92f : 54f;
             paint.setColor(Color.argb(190, 10, 10, 25));

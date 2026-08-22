@@ -75,8 +75,10 @@ expected = {
 }
 for stem in ("parent", "adam", "shaikha", "sulaiman"):
     expected[f"tv/heroes/{stem}_anim.png"] = (1152, 1584)
-for stem in ("grunt", "skater", "brute", "boss", "striker", "shield_guard"):
+for stem in ("grunt", "skater", "brute", "boss"):
     expected[f"tv/enemies/{stem}_anim.png"] = (720, 864)
+for stem in ("striker", "shield_guard"):
+    expected[f"tv/enemies/{stem}_anim.png"] = (840, 1008)
 
 for relative, dimensions in expected.items():
     path = ASSETS / relative
@@ -89,7 +91,8 @@ for relative, dimensions in expected.items():
 # recommended 30–40 MiB graphics target with a small tolerance for two-player mode.
 hero_bytes = 2 * 1152 * 1584 * 4
 assist_bytes = 2 * 1152 * (1584 // 11) * 4
-enemy_bytes = 5 * 720 * 864 * 4
+# Worst roster: three legacy enemies plus both fine-detail newcomers.
+enemy_bytes = (3 * 720 * 864 + 2 * 840 * 1008) * 4
 background_bytes = (960 * 536 + 4 * 1800 * 600) * 2
 combat_mib = (hero_bytes + assist_bytes + enemy_bytes + background_bytes) / (1024 * 1024)
 assert combat_mib < 40.0, f"animated TV combat texture budget too high: {combat_mib:.2f} MiB"

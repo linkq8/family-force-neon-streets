@@ -28,7 +28,7 @@ assert "if len(selected) == COLS" in builder
 for relative, expected in (
     ("enemies/shield_guard.png", (512, 512)),
     ("enemies/shield_guard_anim.png", (960, 1152)),
-    ("tv/enemies/shield_guard_anim.png", (720, 864)),
+    ("tv/enemies/shield_guard_anim.png", (840, 1008)),
 ):
     with Image.open(ASSETS / relative) as image:
         assert image.size == expected, (relative, image.size)
@@ -54,10 +54,10 @@ with Image.open(ASSETS / "tv/enemies/shield_guard_anim.png") as source:
     tv = source.convert("RGBA")
 for row in range(6):
     for column in range(6):
-        bbox = tv.crop((column * 120, row * 144, (column + 1) * 120,
-                        (row + 1) * 144)).getchannel("A").getbbox()
+        bbox = tv.crop((column * 140, row * 168, (column + 1) * 140,
+                        (row + 1) * 168)).getchannel("A").getbbox()
         assert bbox is not None
-        assert min(bbox[0], bbox[1], 120 - bbox[2], 144 - bbox[3]) >= 8, (
+        assert min(bbox[0], bbox[1], 140 - bbox[2], 168 - bbox[3]) >= 9, (
             row, column, "unsafe TV margin", bbox)
 
-print("Shield Guard enemy contract: PASS (36 frames, 12px/8px safe gutters, guard)")
+print("Shield Guard enemy contract: PASS (36 frames, 12px/9px safe gutters, guard)")

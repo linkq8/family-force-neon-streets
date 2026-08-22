@@ -45,8 +45,10 @@ VARIANTS = (
     ("enemies/skater_anim.png", "tv/enemies/skater_anim.png", (720, 864), "RGBA"),
     ("enemies/brute_anim.png", "tv/enemies/brute_anim.png", (720, 864), "RGBA"),
     ("enemies/boss_anim.png", "tv/enemies/boss_anim.png", (720, 864), "RGBA"),
-    ("enemies/striker_anim.png", "tv/enemies/striker_anim.png", (720, 864), "RGBA"),
-    ("enemies/shield_guard_anim.png", "tv/enemies/shield_guard_anim.png", (720, 864), "RGBA"),
+    # Fine-detail newcomers keep 87.5% masters. Their 140x168 cells are close
+    # to their 116/132px render heights and avoid destructive double reduction.
+    ("enemies/striker_anim.png", "tv/enemies/striker_anim.png", (840, 1008), "RGBA"),
+    ("enemies/shield_guard_anim.png", "tv/enemies/shield_guard_anim.png", (840, 1008), "RGBA"),
 )
 
 
@@ -64,13 +66,8 @@ def generate_variant(source_rel: str, output_rel: str, size: tuple[int, int], mo
             rgb = resized.convert("RGB").filter(
                 ImageFilter.UnsharpMask(radius=0.8, percent=115, threshold=3)
             )
-            if output_rel in (
-                "tv/enemies/striker_anim.png",
-                "tv/enemies/shield_guard_anim.png",
-            ):
-                rgb = rgb.filter(
-                    ImageFilter.UnsharpMask(radius=0.55, percent=185, threshold=1)
-                )
+            # Do not add a second aggressive sharpen pass to the detailed
+            # enemies; it created thick crunchy pixels and uneven outlines.
             rgb.putalpha(resized.getchannel("A"))
             resized = rgb
         else:

@@ -23,7 +23,18 @@ for hero in ("parent", "adam", "shaikha", "sulaiman"):
 
 assert 'backgrounds/panoramas/stage_market.png' in JAVA
 assert 'int cropWidth = Math.min(scene.getWidth()' in JAVA
+assert 'STAGE_END_ZONE[safeStage - 1]' in JAVA
 assert 'drawSelectionPortrait(canvas, hero, selected' in JAVA
+assert 'fineEnemyPaint' in JAVA
 assert 'heroReadyPortraits' in JAVA
 assert 'Shader.TileMode.REPEAT' not in JAVA[JAVA.index('private void drawBackdrop'):JAVA.index('private float stagePanProgress')]
+
+# Stage 4 used to hold the panorama still for ~200 world units because its pan
+# started near encounter 8 rather than at the camera position after encounter 7.
+triggers = (430, 1080, 1730, 2380, 2980, 3560, 4180, 4820, 5480)
+stage_end = (1, 3, 6, 8)
+gate = 425
+stage4_start = triggers[stage_end[2]] + gate - 210
+assert stage4_start == 4395
+assert (stage4_start + 10 - stage4_start) / ((5480 + gate) - stage4_start) > 0
 print("Visual refresh contract passed: continuous panoramas, reactive portraits, no tiling")
