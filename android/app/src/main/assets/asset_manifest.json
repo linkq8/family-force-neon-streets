@@ -228,16 +228,16 @@
     },
     {
       "path": "enemies/striker.png",
-      "bytes": 14066,
-      "sha256": "c1fe7c1b236d48f86b6234bcb739f8c9d3e6149e8288c4f5b029ae0b963359c9",
+      "bytes": 108690,
+      "sha256": "efdb39d93fe772a222d4911c6621492df79e595be41c4b58ab9c129a3d89f35f",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/striker_anim.png",
-      "bytes": 269908,
-      "sha256": "f5ee44eb8ce6efa9a25358761dee404f5fc1bb7a8a7615ca677a3fcc09130cd6",
+      "bytes": 756191,
+      "sha256": "4c3c3c38de030689f37a8ee0088d396f240c76c5c357b6f6db4629ca27e971ab",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -420,8 +420,8 @@
     },
     {
       "path": "heroes/parent_anim.png",
-      "bytes": 2218306,
-      "sha256": "cbcfa7c2d10ec80e72226cc5f30acfdf673c2bbf0c7bd7598d658497d0d160f2",
+      "bytes": 2180614,
+      "sha256": "c865e16d10f817fb9cf08d2040ed5d1eae6fd89da0577dcb228293a9c138cd59",
       "width": 1536,
       "height": 2112,
       "mode": "RGBA"
@@ -612,8 +612,8 @@
     },
     {
       "path": "runtime/enemies/striker_anim.png",
-      "bytes": 1536150,
-      "sha256": "69a90e184f15a79bcb71eed6a89577acd7e99586cc76a7bdf7527b5a074a05d5",
+      "bytes": 1322828,
+      "sha256": "bbdaf2b49a0dd9b401a93d4411abddabb90184fe940544abce3a99a0d3689603",
       "width": 1308,
       "height": 1566,
       "mode": "RGBA"
@@ -628,8 +628,8 @@
     },
     {
       "path": "runtime/heroes/parent_anim.png",
-      "bytes": 4775153,
-      "sha256": "8f3ad0089f28eb600cb355bb2299c7e198461bd3d07f8e5446591b6b3a9775db",
+      "bytes": 4431562,
+      "sha256": "ddb0a8a571acc252fbe6dc567d9a0bfe71efe07d07666c206fc56a8ef968b80a",
       "width": 2272,
       "height": 3124,
       "mode": "RGBA"
@@ -772,8 +772,8 @@
     },
     {
       "path": "tv/enemies/striker_anim.png",
-      "bytes": 695929,
-      "sha256": "52de9accd9e62a18ad7cd4f3cec7edced9de1abc42166f2f48995f88d469ef1d",
+      "bytes": 597152,
+      "sha256": "f5a858c237302dd48a61186110e133b1c632e8f0029a27581fccd775a3c8997b",
       "width": 840,
       "height": 1008,
       "mode": "RGBA"
@@ -788,8 +788,8 @@
     },
     {
       "path": "tv/heroes/parent_anim.png",
-      "bytes": 1639385,
-      "sha256": "8b2389d894d6287ff90379405494135a65bc238930ad91f04ff64caf28d9e96a",
+      "bytes": 1286576,
+      "sha256": "5a489595b047ae8aaf946f1db12c0d4771e1cf762f7546a7f1e2fb8f624e1b74",
       "width": 1152,
       "height": 1584,
       "mode": "RGBA"
