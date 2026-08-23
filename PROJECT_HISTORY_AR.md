@@ -4,19 +4,19 @@
 > يجب على كل وكيل قراءته قبل تعديل المشروع، وتحديثه بعد كل طلب أو تعديل أو
 > اختبار أو Release. سجل الأحداث أدناه تراكمي؛ لا تُحذف الإدخالات القديمة.
 
-آخر تحديث: 22 أغسطس 2026 — Codex
+آخر تحديث: 23 أغسطس 2026 — Codex
 
 ## حالة العمل الحالية
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.36.0-alpha`، `versionCode 44`.
+- النسخة المنشورة: `v0.37.0-alpha`، `versionCode 45`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `fba5cf0`.
+- آخر commit وظيفي: `499e228`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.36.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.36.0-alpha/family-force-family-current.apk
-- SHA-256: `6487ecda1befb4ec0fe60c27258a444e9673a2eaa2c5d8c8509e33096a363036`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.37.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.37.0-alpha/family-force-family-current.apk
+- SHA-256: `97abd345f6a7aeb40c652296c1fbd44e9b4058974da0b7b6a35d64eb10b68a48`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس عالية الكثافة
   والتحكم وعقود البانوراما/القص/ذاكرة TV ناجحة؛ الميزانية `97.12 MiB` مع تحميل
   أربعة أطالس أعداء فقط للمنطقة الحالية. نجح Android TV
@@ -31,8 +31,8 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: تثبيت `v0.36.0-alpha` على Xiaomi Stick وShield وفحص
-  وضوح جميع الشخصيات أثناء idle/walk/attack على الشاشة الحقيقية.
+- العمل التالي الموصى به: تثبيت `v0.37.0-alpha` على Xiaomi Stick وShield وفحص
+  Essa وStriker أثناء idle/walk/attack على الشاشة الحقيقية قبل إعادة رسم غيرهما.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -179,6 +179,44 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-23-41 — دمج رسومات جديدة لـEssa وStriker فقط
+
+- المنفذ: Codex
+- طلب المستخدم: عدم استبدال جميع الشخصيات؛ تنفيذ الرسومات الجديدة لـEssa
+  وStriker فقط، ثم بناء النسخة ورفعها.
+- الحالة: مكتمل.
+- نقطة البداية: `v0.36.0-alpha` / commit `f00194b`.
+- النطاق المقفل: أطلسا Essa وStriker وصورهما المساندة فقط؛ Adam وShaikha
+  وSulaiman وبقية الأعداء يجب أن تبقى byte-for-byte بلا تغيير.
+- ما تم:
+  - إنتاج action sheets ثابتة بلا فيديو لجميع حركات Essa الإحدى عشرة وحركات
+    Striker الست، مع Masters وأدلة وضعيات قابلة لإعادة البناء.
+  - بناء أطالس الهاتف وTV وruntime لـEssa وStriker فقط؛ ثبت اختبار SHA أن Adam
+    وShaikha وSulaiman وgrunt وskater وbrute وboss وshield_guard لم تتغير.
+  - إعادة لكمة Striker بذراع أقصر، وتثبيت مقياسه أثناء الحركة، وإضافة هوامش أمان
+    تمنع قص القفاز أو ظهور شظايا من خلية مجاورة.
+  - إضافة باني حتمي واختبار عقد خاص بنطاق الشخصيتين.
+- الملفات الرئيسية المعدلة:
+  - `android/app/src/main/assets/{heroes,runtime/heroes,tv/heroes}/parent_anim.png`
+  - `android/app/src/main/assets/{enemies,runtime/enemies,tv/enemies}/striker_anim.png`
+  - `android/tools/build_two_character_redraw.py`
+  - `android/tools/test_two_character_redraw_contract.py`
+  - `assets/imagegen/android/character-redraw-v3/`
+- الاختبارات:
+  - `test_two_character_redraw_contract.py` — PASS.
+  - `validate_animation_atlases.py` — PASS، 10/10.
+  - runtime atlas/smoothness/TV memory/Striker/stage/assets contracts — PASS.
+  - `test_customer_release.sh customers/family-current` — PASS؛ Build/R8/Lint/
+    signature/assets/controller/combat/TV contracts ناجحة.
+  - `test_full_stage_runtime.sh` — SKIPPED؛ لا يوجد جهاز أو Emulator متصل.
+- commit: `499e228`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.37.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.37.0-alpha/family-force-family-current.apk
+- SHA-256: `97abd345f6a7aeb40c652296c1fbd44e9b4058974da0b7b6a35d64eb10b68a48`.
+- المخاطر المتبقية: يلزم فحص بصري فعلي على Xiaomi Stick وShield؛ لم يكن جهاز
+  أو محاكي متصلًا في وقت الإصدار.
+- التالي: اعتماد أو رفض أسلوب Essa وStriker على التلفاز قبل تطبيقه على أي شخصية أخرى.
 
 ### 2026-08-23-40 — توحيد المعيار البصري وإعادة رسم الأبطال
 
@@ -1642,11 +1680,11 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.36.0-alpha` منشور؛ مسار العرض يعتمد أطالس `2.25×` placement-locked.
-- آخر عمل: إعادة بناء الأطالس العشرة من المصادر المعتمدة، إلغاء عناقيد 2×2
-  الصناعية للعدوين الجديدين، وحصر تحميل الأعداء في المنطقة الحالية.
-- آخر قرار: جودة التلفاز تحتاج حدًا أدنى `192px` للخلية ومصدرًا أعلى من حجم
-  العرض؛ الميزانية `97.12 MiB`، وبقاء warmup عند أربعة أطالس يحمي ذاكرة TV.
+- الحالة: `v0.37.0-alpha` منشور؛ Essa وStriker فقط يستخدمان redraw-v3 الجديد.
+- آخر عمل: إعادة رسم جميع حركات Essa وStriker بصور ثابتة، إصلاح ثبات حجم Striker
+  وهوامش القفاز، وإثبات بقاء أطالس الشخصيات الثماني الأخرى byte-for-byte.
+- آخر قرار: لا تُدمج رسومات الشخصيات الأخرى قبل اعتماد المستخدم لـEssa وStriker
+  على شاشة TV حقيقية؛ ميزانية الحركة ما زالت `97.12 MiB`.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
@@ -1654,6 +1692,6 @@
   4. `android/app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java`
   5. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
   6. `android/docs/VISUAL_ASSET_STANDARD_AR.md`
-  7. `android/tools/test_visual_refresh_contract.py`
-- الإجراء التالي المقترح: تثبيت `v0.36.0-alpha` على Xiaomi Stick وShield، وفحص
-  وضوح جميع الشخصيات أثناء الحركة والقتال على الشاشة الحقيقية.
+  7. `android/tools/test_two_character_redraw_contract.py`
+- الإجراء التالي المقترح: تثبيت `v0.37.0-alpha` على Xiaomi Stick وShield، وفحص
+  وضوح وثبات حجم Essa وStriker أثناء الحركة والقتال.
