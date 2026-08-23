@@ -75,4 +75,28 @@ for relative, cell_width, cell_height, maximum_height_delta in (
         (relative, "walk scale pumping", heights)
     assert len(set(bottoms)) == 1, (relative, "walk ground-line drift", bottoms)
 
+    row_medians = []
+    atlas = Image.open(ASSETS / relative).convert("RGBA")
+    for row in range(10):  # all upright/reaction rows; knockdown is horizontal
+        heights = []
+        for column in range(8):
+            cell = atlas.crop((column * cell_width, row * cell_height,
+                               (column + 1) * cell_width, (row + 1) * cell_height))
+            box = cell.getchannel("A").getbbox()
+            heights.append(box[3] - box[1])
+        assert max(heights) - min(heights) <= maximum_height_delta, \
+            (relative, row, "intra-action scale pumping", heights)
+        row_medians.append(sorted(heights)[len(heights) // 2])
+    assert max(row_medians) - min(row_medians) <= maximum_height_delta, \
+        (relative, "cross-action camera zoom", row_medians)
+
+    down_lengths = []
+    for column in range(8):
+        cell = atlas.crop((column * cell_width, 10 * cell_height,
+                           (column + 1) * cell_width, 11 * cell_height))
+        box = cell.getchannel("A").getbbox()
+        down_lengths.append(max(box[2] - box[0], box[3] - box[1]))
+    assert max(down_lengths) - min(down_lengths) <= maximum_height_delta, \
+        (relative, "knockdown body-length pumping", down_lengths)
+
 print("Two-character redraw contract: PASS (Essa + Striker only, adaptive UHD)")

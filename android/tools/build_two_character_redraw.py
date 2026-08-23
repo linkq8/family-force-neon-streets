@@ -285,58 +285,44 @@ def place_striker_standing(frame: Image.Image, box: tuple[int, int, int, int],
     return output
 
 
-def place_essa_canvas(frame: Image.Image, target_cell: tuple[int, int],
-                      y_adjust: int = 0, row_scale: float = 1.0,
-                      ground_locked: bool = False) -> Image.Image:
-    """Scale the whole authored panel once, never the per-frame body bbox."""
-    inset = max(3, math.ceil(target_cell[0] * 0.025))
-    size = (round((target_cell[0] - inset * 2) * row_scale),
-            round((target_cell[1] - inset * 2) * row_scale))
-    actor = frame.resize(size, Image.Resampling.LANCZOS)
+def place_essa_frame(frame: Image.Image, target_cell: tuple[int, int],
+                     action: str, y_adjust: int = 0) -> Image.Image:
+    """Give every Essa pose one anatomical screen scale.
+
+    Generated sheets preserve identity but not camera distance. Normalize the
+    visible fighter after background removal; jump retains only its authored Y
+    arc, while ground actions share one baseline. Horizontal compression is
+    allowed for wide kicks so the body never shrinks merely to fit a cell.
+    """
+    bbox = frame.getchannel("A").getbbox()
+    if bbox is None:
+        raise ValueError(f"empty Essa {action} frame")
+    center_y = (bbox[1] + bbox[3]) * 0.5 / frame.height
+    actor = frame.crop(bbox)
+    safe = max(5, math.ceil(target_cell[0] * 0.026))
+    if action == "knockdown":
+        target_long = round(min(target_cell) * 0.90)
+        ratio = target_long / max(actor.width, actor.height)
+        width = max(1, round(actor.width * ratio))
+        height = max(1, round(actor.height * ratio))
+    else:
+        height = round(target_cell[1] * 0.84)
+        width = max(1, round(actor.width * height / actor.height))
+        # Keep the canonical height. A wide attack compresses horizontally
+        # rather than zooming the complete character out.
+        width = min(width, target_cell[0] - safe * 2)
+    actor = actor.resize((width, height), Image.Resampling.LANCZOS)
     alpha = actor.getchannel("A").point(lambda value: 255 if value >= 96 else 0)
     actor.putalpha(alpha)
     output = Image.new("RGBA", target_cell, (0, 0, 0, 0))
-    output.alpha_composite(actor, ((target_cell[0] - actor.width) // 2,
-                                    (target_cell[1] - actor.height) // 2 + y_adjust))
-    bbox = output.getchannel("A").getbbox()
-    if bbox is not None:
-        dx = 5 - bbox[0] if bbox[0] < 5 else (target_cell[0] - 5 - bbox[2]
-                                              if bbox[2] > target_cell[0] - 5 else 0)
-        if ground_locked:
-            dy = target_cell[1] - 6 - bbox[3]
-            if bbox[1] + dy < 5:
-                dy = 5 - bbox[1]
-        else:
-            dy = 5 - bbox[1] if bbox[1] < 5 else (target_cell[1] - 1 - bbox[3]
-                                                  if bbox[3] > target_cell[1] - 1 else 0)
-        if dx or dy:
-            shifted = Image.new("RGBA", target_cell, (0, 0, 0, 0))
-            shifted.alpha_composite(output, (dx, dy))
-            output = shifted
+    x = (target_cell[0] - actor.width) // 2
+    if action in ("jump", "knockdown"):
+        y = round(center_y * target_cell[1] - actor.height * 0.5) + y_adjust
+        y = max(safe, min(target_cell[1] - actor.height - safe, y))
+    else:
+        y = target_cell[1] - 6 - actor.height + y_adjust
+    output.alpha_composite(actor, (x, y))
     return output
-
-
-def essa_row_scale(frames: list[Image.Image], target_cell: tuple[int, int]) -> float:
-    """Normalize action-sheet authoring scale while preserving frame motion."""
-    inset = max(3, math.ceil(target_cell[0] * 0.025))
-    inner_width = target_cell[0] - inset * 2
-    inner_height = target_cell[1] - inset * 2
-    neutral = frames[0].getchannel("A").getbbox()
-    if neutral is None:
-        return 1.0
-    neutral_height = (neutral[3] - neutral[1]) / frames[0].height * inner_height
-    scale = target_cell[1] * 0.84 / max(1, neutral_height)
-    # Every row shares one scale. Cap it against the widest/tallest action key
-    # so an extended fist, boot, or energy ring remains inside a 5px gutter.
-    for frame in frames:
-        bbox = frame.getchannel("A").getbbox()
-        if bbox is None:
-            continue
-        width = (bbox[2] - bbox[0]) / frame.width * inner_width
-        height = (bbox[3] - bbox[1]) / frame.height * inner_height
-        scale = min(scale, (target_cell[0] - 10) / max(1, width),
-                    (target_cell[1] - 10) / max(1, height))
-    return max(0.85, min(1.35, scale))
 
 
 def build_actor(name: str, actions: tuple[str, ...], source_columns: int,
@@ -367,8 +353,6 @@ def build_actor(name: str, actions: tuple[str, ...], source_columns: int,
         atlas = Image.new("RGBA", (target_cell[0] * columns, target_cell[1] * rows),
                           (0, 0, 0, 0))
         for row, action in enumerate(actions):
-            row_scale = essa_row_scale(source_rows[row], target_cell) \
-                if name == "essa" and action not in ("jump", "knockdown") else 1.0
             for column, frame in enumerate(source_rows[row]):
                 # Generated idle frames are intentionally restrained. A one
                 # pixel breath keeps the loop visibly alive without rubber scaling.
@@ -377,9 +361,7 @@ def build_actor(name: str, actions: tuple[str, ...], source_columns: int,
                 adjust = (0, -1, 0, -1, 0, -1)[column] \
                     if name == "striker" and action == "idle" else adjust
                 if name == "essa":
-                    cell = place_essa_canvas(
-                        frame, target_cell, adjust, row_scale,
-                        ground_locked=action not in ("jump", "knockdown"))
+                    cell = place_essa_frame(frame, target_cell, action, adjust)
                 elif name == "striker" and action != "knockdown":
                     cell = place_striker_standing(
                         frame, boxes[row][column], reference_cell, target_cell, adjust)
