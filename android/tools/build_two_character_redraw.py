@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build only the approved Essa and Striker redraw atlases."""
+"""Build the approved scale-locked hero and enemy redraw atlases."""
 
 from __future__ import annotations
 
@@ -16,10 +16,13 @@ ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "android/app/src/main/assets"
 SOURCE_V3 = ROOT / "assets/imagegen/android/character-redraw-v3"
 SOURCE_V4 = ROOT / "assets/imagegen/android/character-redraw-v4"
+SOURCE_V5 = ROOT / "assets/imagegen/android/hero-redraw-v5"
 
 ESSA_ACTIONS = ("idle", "walk", "punch", "kick", "heavy_punch",
                 "heavy_kick", "jump", "special", "link", "hurt", "knockdown")
+ADAM_ACTIONS = ESSA_ACTIONS
 STRIKER_ACTIONS = ("idle", "walk", "attack1", "attack2", "hurt", "knockdown")
+SCALE_LOCKED_HEROES = {"essa", "adam"}
 
 # The generated heavy-kick sheet contains the right keys but not chronological
 # panel order. Reorder, never interpolate, to keep one readable action.
@@ -28,7 +31,11 @@ FRAME_REMAP = {
 
 
 def actor_source(name: str) -> Path:
-    return SOURCE_V4 if name == "essa" else SOURCE_V3
+    if name == "essa":
+        return SOURCE_V4
+    if name == "adam":
+        return SOURCE_V5
+    return SOURCE_V3
 
 
 def is_chroma(red: int, green: int, blue: int) -> bool:
@@ -285,9 +292,10 @@ def place_striker_standing(frame: Image.Image, box: tuple[int, int, int, int],
     return output
 
 
-def place_essa_frame(frame: Image.Image, target_cell: tuple[int, int],
-                     action: str, y_adjust: int = 0) -> Image.Image:
-    """Give every Essa pose one anatomical screen scale.
+def place_hero_frame(frame: Image.Image, target_cell: tuple[int, int],
+                     action: str, y_adjust: int = 0,
+                     upright_fill: float = 0.84) -> Image.Image:
+    """Give every playable-hero pose one anatomical screen scale.
 
     Generated sheets preserve identity but not camera distance. Normalize the
     visible fighter after background removal; jump retains only its authored Y
@@ -296,7 +304,7 @@ def place_essa_frame(frame: Image.Image, target_cell: tuple[int, int],
     """
     bbox = frame.getchannel("A").getbbox()
     if bbox is None:
-        raise ValueError(f"empty Essa {action} frame")
+        raise ValueError(f"empty hero {action} frame")
     center_y = (bbox[1] + bbox[3]) * 0.5 / frame.height
     actor = frame.crop(bbox)
     safe = max(5, math.ceil(target_cell[0] * 0.026))
@@ -306,7 +314,7 @@ def place_essa_frame(frame: Image.Image, target_cell: tuple[int, int],
         width = max(1, round(actor.width * ratio))
         height = max(1, round(actor.height * ratio))
     else:
-        height = round(target_cell[1] * 0.84)
+        height = round(target_cell[1] * upright_fill)
         width = max(1, round(actor.width * height / actor.height))
         # Keep the canonical height. A wide attack compresses horizontally
         # rather than zooming the complete character out.
@@ -334,10 +342,10 @@ def build_actor(name: str, actions: tuple[str, ...], source_columns: int,
     for row, action in enumerate(actions):
         source_root = actor_source(name)
         frames = split_sheet(source_root / name / "actions" / f"{action}.png",
-                             4 if name == "essa" else 3, 2,
-                             preserve_canvas=name == "essa")
+                             4 if name in SCALE_LOCKED_HEROES else 3, 2,
+                             preserve_canvas=name in SCALE_LOCKED_HEROES)
         placement = guide_boxes(source_root / name / "guides" / f"{action}.png",
-                                4 if name == "essa" else 3, 2)
+                                4 if name in SCALE_LOCKED_HEROES else 3, 2)
         remap = FRAME_REMAP.get((name, action))
         if remap:
             frames = [frames[index] for index in remap]
@@ -357,11 +365,17 @@ def build_actor(name: str, actions: tuple[str, ...], source_columns: int,
                 # Generated idle frames are intentionally restrained. A one
                 # pixel breath keeps the loop visibly alive without rubber scaling.
                 adjust = (0, -1, -1, 0, -1, -1, 0, 0)[column] \
-                    if name == "essa" and action == "idle" else 0
+                    if name in SCALE_LOCKED_HEROES and action == "idle" else 0
                 adjust = (0, -1, 0, -1, 0, -1)[column] \
                     if name == "striker" and action == "idle" else adjust
-                if name == "essa":
-                    cell = place_essa_frame(frame, target_cell, action, adjust)
+                if name in SCALE_LOCKED_HEROES:
+                    # Adam and Shaikha are both 108 cm. Shaikha's currently
+                    # locked legacy atlas fills 92% of its cell, so Adam uses
+                    # the same source-cell projection until Shaikha receives
+                    # her own V5 pass. This preserves their true equal height.
+                    upright_fill = 0.92 if name == "adam" else 0.84
+                    cell = place_hero_frame(
+                        frame, target_cell, action, adjust, upright_fill)
                 elif name == "striker" and action != "knockdown":
                     cell = place_striker_standing(
                         frame, boxes[row][column], reference_cell, target_cell, adjust)
@@ -402,6 +416,14 @@ def main() -> None:
         # 3072x4224: UHD/4K-class atlas used only on large-heap devices.
         (ASSETS / "uhd/heroes/parent_anim.png", (384, 384)),
     ))
+    build_actor("adam", ADAM_ACTIONS, 8, (
+        (ASSETS / "heroes/adam_anim.png", (192, 192)),
+        (ASSETS / "tv/heroes/adam_anim.png", (144, 144)),
+        # Keep low-memory TV decoded cost unchanged; large-heap devices load
+        # the separate 384px UHD atlas below.
+        (ASSETS / "runtime/heroes/adam_anim.png", (192, 192)),
+        (ASSETS / "uhd/heroes/adam_anim.png", (384, 384)),
+    ))
     build_actor("striker", STRIKER_ACTIONS, 6, (
         (ASSETS / "enemies/striker_anim.png", (160, 192)),
         (ASSETS / "tv/enemies/striker_anim.png", (140, 168)),
@@ -419,7 +441,7 @@ def main() -> None:
     master.alpha_composite(neutral, ((512 - neutral.width) // 2, 480 - neutral.height))
     master.save(ASSETS / "enemies/striker.png", optimize=True, compress_level=9)
     refresh_manifest()
-    print("Built redraws for Essa and Striker only")
+    print("Built scale-locked redraws for Essa, Adam and Striker")
 
 
 if __name__ == "__main__":

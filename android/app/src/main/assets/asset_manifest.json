@@ -292,8 +292,8 @@
     },
     {
       "path": "heroes/adam_anim.png",
-      "bytes": 2699597,
-      "sha256": "ddc48d4e0381f73cf63e3aebcab54ae17d28c4cc5a729d53c0d118459a7d6548",
+      "bytes": 2634913,
+      "sha256": "b3c878ffdaea6a1e8428e49ff257953759087b4e7e5f45aa84cfccecf5c352d0",
       "width": 1536,
       "height": 2112,
       "mode": "RGBA"
@@ -620,8 +620,8 @@
     },
     {
       "path": "runtime/heroes/adam_anim.png",
-      "bytes": 2832278,
-      "sha256": "6dbe7cb5e7186f6dca77f5a8d7d4da6d7491c7df2563f46d081c7016ecdb5aeb",
+      "bytes": 2634913,
+      "sha256": "b3c878ffdaea6a1e8428e49ff257953759087b4e7e5f45aa84cfccecf5c352d0",
       "width": 1536,
       "height": 2112,
       "mode": "RGBA"
@@ -780,8 +780,8 @@
     },
     {
       "path": "tv/heroes/adam_anim.png",
-      "bytes": 1897787,
-      "sha256": "5baee8768074f04e8b77cfe9f63c2ba037eac0d3ea1d56b1b60f5dbd7825f7fd",
+      "bytes": 1564218,
+      "sha256": "4509fafb311af89453d3813a68d9d0b99ba97f03385cab6fdcefaec808c4af91",
       "width": 1152,
       "height": 1584,
       "mode": "RGBA"
@@ -824,6 +824,14 @@
       "sha256": "e6d5c58b4632ec4e299527654f6ae76748cf7509d3634e83b611fd5218cc0054",
       "width": 1920,
       "height": 2304,
+      "mode": "RGBA"
+    },
+    {
+      "path": "uhd/heroes/adam_anim.png",
+      "bytes": 8851399,
+      "sha256": "cfd31152f534a747cd82bdbe480f683251d9543048b298e890db2441a611228f",
+      "width": 3072,
+      "height": 4224,
       "mode": "RGBA"
     },
     {

@@ -9,12 +9,15 @@ ASSETS = ROOT / "android/app/src/main/assets"
 JAVA = (ROOT / "android/app/src/main/java/com/familyforce/neonstreets/GameView.java").read_text()
 
 heroes = {"parent": 126, "adam": 77, "shaikha": 77, "sulaiman": 88}
+# Essa V4 keeps 284px cells. Adam V5 deliberately stays at 192px on the
+# low-memory runtime path and receives a separate 384px UHD atlas.
+hero_runtime_cells = {"parent": 284, "adam": 192, "shaikha": 192, "sulaiman": 198}
 enemies = {"grunt": 120, "skater": 110, "brute": 136, "boss": 160,
            "striker": 116, "shield_guard": 132}
 density = 2.25
 
 for name, cell in heroes.items():
-    cell = max(192, round(cell * density))
+    cell = hero_runtime_cells[name]
     path = ASSETS / f"runtime/heroes/{name}_anim.png"
     with Image.open(path) as atlas:
         assert atlas.size == (cell * 8, cell * 11) and atlas.mode == "RGBA"

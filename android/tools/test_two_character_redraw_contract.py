@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Ensure the two-character redraw does not mutate any other fighter atlas."""
+"""Validate scale-locked redraws without mutating unrelated fighters."""
 
 import hashlib
 from pathlib import Path
@@ -11,7 +11,6 @@ ASSETS = ROOT / "android/app/src/main/assets"
 GAME_VIEW = (ROOT / "android/app/src/main/java/com/familyforce/neonstreets/GameView.java").read_text()
 
 UNTOUCHED = {
-    "runtime/heroes/adam_anim.png": "6dbe7cb5e7186f6dca77f5a8d7d4da6d7491c7df2563f46d081c7016ecdb5aeb",
     "runtime/heroes/shaikha_anim.png": "434a995cff6735f36410c815cdc720e040c9d139375fd31b490f99e0ac89f1ff",
     "runtime/heroes/sulaiman_anim.png": "ab5e1c3e5137ff593ce16f962b5d68d68fc6bc93a615d07402d8864a5aa57ed1",
     "runtime/enemies/grunt_anim.png": "05e6b13b4c94c106a54fb15b8b9bbd0e016f754a7ef892992b36bfeab4a3126d",
@@ -29,6 +28,9 @@ for relative, dimensions, columns, rows in (
     ("heroes/parent_anim.png", (1536, 2112), 8, 11),
     ("runtime/heroes/parent_anim.png", (2272, 3124), 8, 11),
     ("uhd/heroes/parent_anim.png", (3072, 4224), 8, 11),
+    ("heroes/adam_anim.png", (1536, 2112), 8, 11),
+    ("runtime/heroes/adam_anim.png", (1536, 2112), 8, 11),
+    ("uhd/heroes/adam_anim.png", (3072, 4224), 8, 11),
     ("enemies/striker_anim.png", (960, 1152), 6, 6),
     ("runtime/enemies/striker_anim.png", (1308, 1566), 6, 6),
     ("uhd/enemies/striker_anim.png", (1920, 2304), 6, 6),
@@ -62,6 +64,9 @@ for relative, cell_width, cell_height, maximum_height_delta in (
     ("heroes/parent_anim.png", 192, 192, 2),
     ("runtime/heroes/parent_anim.png", 284, 284, 3),
     ("uhd/heroes/parent_anim.png", 384, 384, 5),
+    ("heroes/adam_anim.png", 192, 192, 2),
+    ("runtime/heroes/adam_anim.png", 192, 192, 2),
+    ("uhd/heroes/adam_anim.png", 384, 384, 5),
 ):
     atlas = Image.open(ASSETS / relative).convert("RGBA")
     walk_boxes = []
@@ -99,4 +104,4 @@ for relative, cell_width, cell_height, maximum_height_delta in (
     assert max(down_lengths) - min(down_lengths) <= maximum_height_delta, \
         (relative, "knockdown body-length pumping", down_lengths)
 
-print("Two-character redraw contract: PASS (Essa + Striker only, adaptive UHD)")
+print("Redraw contract: PASS (Essa + Adam scale lock, Striker, adaptive UHD)")
