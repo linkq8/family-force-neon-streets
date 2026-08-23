@@ -8,6 +8,7 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "android/app/src/main/assets"
+GAME_VIEW = (ROOT / "android/app/src/main/java/com/familyforce/neonstreets/GameView.java").read_text()
 
 UNTOUCHED = {
     "runtime/heroes/adam_anim.png": "6dbe7cb5e7186f6dca77f5a8d7d4da6d7491c7df2563f46d081c7016ecdb5aeb",
@@ -27,8 +28,10 @@ for relative, expected in UNTOUCHED.items():
 for relative, dimensions, columns, rows in (
     ("heroes/parent_anim.png", (1536, 2112), 8, 11),
     ("runtime/heroes/parent_anim.png", (2272, 3124), 8, 11),
+    ("uhd/heroes/parent_anim.png", (3072, 4224), 8, 11),
     ("enemies/striker_anim.png", (960, 1152), 6, 6),
     ("runtime/enemies/striker_anim.png", (1308, 1566), 6, 6),
+    ("uhd/enemies/striker_anim.png", (1920, 2304), 6, 6),
 ):
     image = Image.open(ASSETS / relative).convert("RGBA")
     assert image.size == dimensions, (relative, image.size)
@@ -50,4 +53,9 @@ for relative, dimensions, columns, rows in (
             hashes.add(hashlib.sha256(cell.tobytes()).digest())
         assert len(hashes) >= 3, (relative, row, "insufficient visible animation")
 
-print("Two-character redraw contract: PASS (Essa + Striker only)")
+assert "private boolean useUhdCharacterAssets()" in GAME_VIEW
+assert "manager.getMemoryClass() >= 384" in GAME_VIEW
+assert 'loadBitmap("uhd/heroes/" + stem)' in GAME_VIEW
+assert 'loadBitmap("uhd/enemies/" + stem)' in GAME_VIEW
+
+print("Two-character redraw contract: PASS (Essa + Striker only, adaptive UHD)")

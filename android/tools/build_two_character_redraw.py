@@ -317,11 +317,15 @@ def main() -> None:
         (ASSETS / "heroes/parent_anim.png", (192, 192)),
         (ASSETS / "tv/heroes/parent_anim.png", (144, 144)),
         (ASSETS / "runtime/heroes/parent_anim.png", (284, 284)),
+        # 3072x4224: UHD/4K-class atlas used only on large-heap devices.
+        (ASSETS / "uhd/heroes/parent_anim.png", (384, 384)),
     ))
     build_actor("striker", STRIKER_ACTIONS, 6, (
         (ASSETS / "enemies/striker_anim.png", (160, 192)),
         (ASSETS / "tv/enemies/striker_anim.png", (140, 168)),
         (ASSETS / "runtime/enemies/striker_anim.png", (218, 261)),
+        # 1920x2304 with 2x the authored width for cleaner 4K-TV sampling.
+        (ASSETS / "uhd/enemies/striker_anim.png", (320, 384)),
     ))
     # Static Striker fallback comes from the new neutral runtime frame.
     runtime = Image.open(ASSETS / "runtime/enemies/striker_anim.png").convert("RGBA")

@@ -1488,6 +1488,16 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 || !hasLargeBitmapBudget();
     }
 
+    private boolean useUhdCharacterAssets() {
+        ActivityManager manager = (ActivityManager) getContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        // A decoded 4K-class hero atlas is roughly 50 MiB. Keep it away from
+        // TV sticks and OEMs with small heaps; Shield-class TVs and modern
+        // phones get the sharper source while all devices retain a safe path.
+        return manager != null && !manager.isLowRamDevice()
+                && manager.getMemoryClass() >= 384;
+    }
+
     private boolean isValidHeroAtlas(Bitmap bitmap) {
         if (bitmap == null || bitmap.isRecycled()) return false;
         return bitmap.getWidth() % HERO_ANIM_COLUMNS == 0
@@ -1498,7 +1508,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private Bitmap loadHeroAnimationAtlas(int hero) {
         String stem = customerProfile.heroAssetStems[safeHeroIndex(hero)] + "_anim.png";
-        Bitmap atlas = loadBitmap("runtime/heroes/" + stem);
+        Bitmap atlas = useUhdCharacterAssets() ? loadBitmap("uhd/heroes/" + stem) : null;
+        if (atlas == null) atlas = loadBitmap("runtime/heroes/" + stem);
         if (atlas == null && useReducedMemoryAssets()) atlas = loadBitmap("tv/heroes/" + stem);
         if (atlas == null) atlas = loadBitmap("heroes/" + stem);
         return atlas;
@@ -1508,7 +1519,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (type < 0 || type >= enemyAnimArt.length) return null;
         boolean reducedMemory = useReducedMemoryAssets();
         String stem = EnemyArchetype.of(type).asset + "_anim.png";
-        Bitmap atlas = loadBitmap("runtime/enemies/" + stem);
+        Bitmap atlas = useUhdCharacterAssets() ? loadBitmap("uhd/enemies/" + stem) : null;
+        if (atlas == null) atlas = loadBitmap("runtime/enemies/" + stem);
         if (atlas == null) {
             atlas = loadBitmap((reducedMemory ? "tv/enemies/" : "enemies/") + stem);
         }

@@ -819,6 +819,22 @@
       "mode": "RGBA"
     },
     {
+      "path": "uhd/enemies/striker_anim.png",
+      "bytes": 2624822,
+      "sha256": "e6d5c58b4632ec4e299527654f6ae76748cf7509d3634e83b611fd5218cc0054",
+      "width": 1920,
+      "height": 2304,
+      "mode": "RGBA"
+    },
+    {
+      "path": "uhd/heroes/parent_anim.png",
+      "bytes": 7590420,
+      "sha256": "ce67c219ed47090779f7a9f7420890a64e6e2b9dc7d3ee0ab4ec285147099435",
+      "width": 3072,
+      "height": 4224,
+      "mode": "RGBA"
+    },
+    {
       "path": "ui/actors.png",
       "bytes": 15539,
       "sha256": "d55497bbfdf8a388068b89206f53b39c9e5111797e2bf06aabe14c5106d25e71",
