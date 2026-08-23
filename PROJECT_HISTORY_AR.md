@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.39.0-alpha`، `versionCode 47`.
+- النسخة المنشورة: `v0.39.1-alpha`، `versionCode 48`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `cae6709`.
+- آخر commit وظيفي: `bcbd909`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.39.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.39.0-alpha/family-force-family-current.apk
-- SHA-256: `95aa9cf595cc9d799e63e545273ef02e35ac51234a17ba907d69fb0756d70e8d`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.39.1-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.39.1-alpha/family-force-family-current.apk
+- SHA-256: `6338e2fe756a330a868ae7dfcdf607730c191289a43a4d6a3467d50fe35345d4`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس عالية الكثافة
   والتحكم وعقود البانوراما/القص/ذاكرة TV ناجحة؛ الميزانية `97.12 MiB` مع تحميل
   أربعة أطالس أعداء فقط للمنطقة الحالية. نجح Android TV
@@ -31,8 +31,8 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: فحص Essa V4 أثناء idle/walk/attack على Shield وXiaomi،
-  خصوصًا ثبات الحجم ووضوح العين والنظارة على شاشة حقيقية.
+- العمل التالي الموصى به: اختبار `v0.39.1-alpha` بصريًا على Shield/Xiaomi عبر
+  idle→walk→jump→attack للتأكد من ثبات الحجم المدرك على الشاشة الحقيقية.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -179,6 +179,41 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-23-44 — تثبيت مقياس Essa عبر كل الحركات والقفز
+
+- المنفذ: Codex
+- طلب المستخدم: Essa ما زال غير مستقر؛ يتغير حجمه عند الحركة والمشي والقفز.
+- الحالة: مكتمل.
+- نقطة البداية: `v0.39.0-alpha` / commit `ef2559a`.
+- التشخيص الأولي: صف المشي نفسه ثابت (`161–162px`) لكن الانتقال بين الصفوف غير
+  ثابت؛ idle يقارب `162px` بينما heavy actions `130–146px` والقفز `72–111px`،
+  لذلك يبدو الجسم وكأنه يصغر عند تغيير الحالة رغم ثبات مربع العرض في المحرك.
+- ما تم:
+  - استبدال التطبيع على مستوى الصف بتطبيع جسم كل إطار إلى ارتفاع تشريحي واحد
+    لكل الحالات القائمة، مع ضغط أفقي محدود للحركات العريضة بدل تصغير الجسم كله.
+  - تثبيت خط القدم للحركات الأرضية، وحفظ إزاحة Y فقط لمسار القفز دون تغيير حجمه.
+  - تطبيع knockdown حسب البعد الأطول كي يبقى طول الجسم الأفقي ثابتًا.
+  - إضافة عقد شامل يقيس التذبذب داخل الصف، وبين الصفوف العشرة، وطول knockdown
+    في author/runtime/UHD؛ جميعها ناجحة بفارق ارتفاع `0–1px` فعليًا.
+  - لم تُنتج صور جديدة ولم تتغير أي شخصية أخرى.
+- الملفات:
+  - `android/tools/build_two_character_redraw.py`
+  - `android/tools/test_two_character_redraw_contract.py`
+  - أطالس Essa الأربعة فقط و`asset_manifest.json`.
+- الاختبارات:
+  - two-character/cross-action scale contract — PASS.
+  - animation/runtime/smoothness/TV memory/Striker/assets — PASS.
+  - `test_customer_release.sh customers/family-current` — PASS؛ Build/R8/Lint/
+    signature/controller/combat/TV contracts ناجحة.
+  - اختبار جهاز/Emulator — SKIPPED؛ لا يوجد جهاز متصل.
+- commit: `bcbd909`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.39.1-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.39.1-alpha/family-force-family-current.apk
+- SHA-256: `6338e2fe756a330a868ae7dfcdf607730c191289a43a4d6a3467d50fe35345d4`.
+- ملاحظات/مخاطر: يلزم اختبار بصري فعلي؛ القياس الآلي يثبت أبعاد الألفا لكنه لا
+  يقيس الإحساس البصري الناتج من اختلاف وضع الأطراف.
+- التالي: اختبار الانتقالات المذكورة على TV قبل أي تعديل رسم جديد.
 
 ### 2026-08-23-43 — إعادة رسم أطلس Essa بثبات وجودة Striker/Guard
 
@@ -1756,11 +1791,11 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.39.0-alpha` منشور؛ Essa V4 جديد بالكامل وStriker/Guard محفوظان.
-- آخر عمل: إعادة رسم 88 إطارًا لـEssa، توضيح الوجه والعين، وإلغاء scale pumping
-  عبر حفظ مقياس اللوحة وخط الأرض، مع أطالس author/runtime/TV/UHD.
-- آخر قرار: لا تُعدل أي شخصية أخرى حتى يعتمد المستخدم Essa V4 على TV حقيقية؛
-  مسار UHD المتكيف وfallback منخفض الذاكرة باقٍ دون تغيير.
+- الحالة: `v0.39.1-alpha` منشور؛ مقياس Essa مقفل داخل كل حركة وبين كل الحركات.
+- آخر عمل: تطبيع 88 إطارًا إلى مقياس تشريحي واحد، حفظ مسار القفز الرأسي، وتثبيت
+  طول الجسم في knockdown، دون صور جديدة أو تغيير شخصيات أخرى.
+- آخر قرار: اختبار الانتقالات الفعلية على TV هو البوابة التالية؛ لا تعديل رسم
+  جديد قبل معرفة إن بقي اختلاف إدراكي من الوضعيات نفسها.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
@@ -1769,5 +1804,5 @@
   5. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
   6. `android/docs/VISUAL_ASSET_STANDARD_AR.md`
   7. `android/tools/test_two_character_redraw_contract.py`
-- الإجراء التالي المقترح: تثبيت `v0.39.0-alpha` على Shield وXiaomi Stick؛ فحص
-  وجه وعين Essa وثبات حجمه في المشي ثم الهجمات.
+- الإجراء التالي المقترح: تثبيت `v0.39.1-alpha` وفحص idle→walk→jump→attack على
+  Shield وXiaomi Stick مع التركيز على ثبات الحجم.
