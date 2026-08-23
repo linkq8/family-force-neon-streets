@@ -32,8 +32,8 @@ android {
         applicationId customerApplicationId
         minSdk 26
         targetSdk 34
-        versionCode 49
-        versionName "0.40.0-alpha"
+        versionCode 50
+        versionName "0.41.0-alpha"
         buildConfigField "String", "CUSTOMER_ID", "\"${customerId}\""
         buildConfigField "String", "EXPECTED_CERT_SHA256", "\"${expectedCertificateSha256}\""
         manifestPlaceholders = [appLabel: customerAppLabel]

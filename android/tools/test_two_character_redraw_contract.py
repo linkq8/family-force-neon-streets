@@ -11,8 +11,6 @@ ASSETS = ROOT / "android/app/src/main/assets"
 GAME_VIEW = (ROOT / "android/app/src/main/java/com/familyforce/neonstreets/GameView.java").read_text()
 
 UNTOUCHED = {
-    "runtime/heroes/shaikha_anim.png": "434a995cff6735f36410c815cdc720e040c9d139375fd31b490f99e0ac89f1ff",
-    "runtime/heroes/sulaiman_anim.png": "ab5e1c3e5137ff593ce16f962b5d68d68fc6bc93a615d07402d8864a5aa57ed1",
     "runtime/enemies/grunt_anim.png": "05e6b13b4c94c106a54fb15b8b9bbd0e016f754a7ef892992b36bfeab4a3126d",
     "runtime/enemies/skater_anim.png": "ed0aa76495750858b57fc5531c41760bba540c25f543aa01e827b4a2161e3d00",
     "runtime/enemies/brute_anim.png": "dac46363fec96d38e623d7401c2ed5b2b9edc7da1fded53e836e36dde0d9d79f",
@@ -31,6 +29,12 @@ for relative, dimensions, columns, rows in (
     ("heroes/adam_anim.png", (1536, 2112), 8, 11),
     ("runtime/heroes/adam_anim.png", (1536, 2112), 8, 11),
     ("uhd/heroes/adam_anim.png", (3072, 4224), 8, 11),
+    ("heroes/shaikha_anim.png", (1536, 2112), 8, 11),
+    ("runtime/heroes/shaikha_anim.png", (1536, 2112), 8, 11),
+    ("uhd/heroes/shaikha_anim.png", (3072, 4224), 8, 11),
+    ("heroes/sulaiman_anim.png", (1536, 2112), 8, 11),
+    ("runtime/heroes/sulaiman_anim.png", (1584, 2178), 8, 11),
+    ("uhd/heroes/sulaiman_anim.png", (3072, 4224), 8, 11),
     ("enemies/striker_anim.png", (960, 1152), 6, 6),
     ("runtime/enemies/striker_anim.png", (1308, 1566), 6, 6),
     ("uhd/enemies/striker_anim.png", (1920, 2304), 6, 6),
@@ -67,6 +71,12 @@ for relative, cell_width, cell_height, maximum_height_delta in (
     ("heroes/adam_anim.png", 192, 192, 2),
     ("runtime/heroes/adam_anim.png", 192, 192, 2),
     ("uhd/heroes/adam_anim.png", 384, 384, 5),
+    ("heroes/shaikha_anim.png", 192, 192, 2),
+    ("runtime/heroes/shaikha_anim.png", 192, 192, 2),
+    ("uhd/heroes/shaikha_anim.png", 384, 384, 5),
+    ("heroes/sulaiman_anim.png", 192, 192, 2),
+    ("runtime/heroes/sulaiman_anim.png", 198, 198, 3),
+    ("uhd/heroes/sulaiman_anim.png", 384, 384, 5),
 ):
     atlas = Image.open(ASSETS / relative).convert("RGBA")
     walk_boxes = []
@@ -104,4 +114,4 @@ for relative, cell_width, cell_height, maximum_height_delta in (
     assert max(down_lengths) - min(down_lengths) <= maximum_height_delta, \
         (relative, "knockdown body-length pumping", down_lengths)
 
-print("Redraw contract: PASS (Essa + Adam scale lock, Striker, adaptive UHD)")
+print("Redraw contract: PASS (four scale-locked heroes, Striker, adaptive UHD)")

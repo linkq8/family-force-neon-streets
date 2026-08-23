@@ -21,8 +21,10 @@ SOURCE_V5 = ROOT / "assets/imagegen/android/hero-redraw-v5"
 ESSA_ACTIONS = ("idle", "walk", "punch", "kick", "heavy_punch",
                 "heavy_kick", "jump", "special", "link", "hurt", "knockdown")
 ADAM_ACTIONS = ESSA_ACTIONS
+SHAIKHA_ACTIONS = ESSA_ACTIONS
+SULAIMAN_ACTIONS = ESSA_ACTIONS
 STRIKER_ACTIONS = ("idle", "walk", "attack1", "attack2", "hurt", "knockdown")
-SCALE_LOCKED_HEROES = {"essa", "adam"}
+SCALE_LOCKED_HEROES = {"essa", "adam", "shaikha", "sulaiman"}
 
 # The generated heavy-kick sheet contains the right keys but not chronological
 # panel order. Reorder, never interpolate, to keep one readable action.
@@ -33,7 +35,7 @@ FRAME_REMAP = {
 def actor_source(name: str) -> Path:
     if name == "essa":
         return SOURCE_V4
-    if name == "adam":
+    if name in {"adam", "shaikha", "sulaiman"}:
         return SOURCE_V5
     return SOURCE_V3
 
@@ -126,6 +128,12 @@ def split_sheet(path: Path, columns: int, rows: int,
                     keep.update(component)
                 if len(component) > len(largest):
                     largest = component
+        if preserve_canvas and largest:
+            # A hero's authored energy trail may legitimately reach a cell
+            # edge while remaining connected to the body. Keep that largest
+            # component; thin dividers are smaller and residual flecks remain
+            # discarded. Without this, Sulaiman's beam removed its own actor.
+            keep.update(largest)
         if not keep:
             # Allow the caller's explicit remap to discard a generated panel
             # whose actor touches an edge, while keeping parsing deterministic.
@@ -373,7 +381,7 @@ def build_actor(name: str, actions: tuple[str, ...], source_columns: int,
                     # locked legacy atlas fills 92% of its cell, so Adam uses
                     # the same source-cell projection until Shaikha receives
                     # her own V5 pass. This preserves their true equal height.
-                    upright_fill = 0.92 if name == "adam" else 0.84
+                    upright_fill = 0.92 if name != "essa" else 0.84
                     cell = place_hero_frame(
                         frame, target_cell, action, adjust, upright_fill)
                 elif name == "striker" and action != "knockdown":
@@ -424,6 +432,19 @@ def main() -> None:
         (ASSETS / "runtime/heroes/adam_anim.png", (192, 192)),
         (ASSETS / "uhd/heroes/adam_anim.png", (384, 384)),
     ))
+    build_actor("shaikha", SHAIKHA_ACTIONS, 8, (
+        (ASSETS / "heroes/shaikha_anim.png", (192, 192)),
+        (ASSETS / "tv/heroes/shaikha_anim.png", (144, 144)),
+        (ASSETS / "runtime/heroes/shaikha_anim.png", (192, 192)),
+        (ASSETS / "uhd/heroes/shaikha_anim.png", (384, 384)),
+    ))
+    build_actor("sulaiman", SULAIMAN_ACTIONS, 8, (
+        (ASSETS / "heroes/sulaiman_anim.png", (192, 192)),
+        (ASSETS / "tv/heroes/sulaiman_anim.png", (144, 144)),
+        # Preserve the existing low-memory decoded footprint.
+        (ASSETS / "runtime/heroes/sulaiman_anim.png", (198, 198)),
+        (ASSETS / "uhd/heroes/sulaiman_anim.png", (384, 384)),
+    ))
     build_actor("striker", STRIKER_ACTIONS, 6, (
         (ASSETS / "enemies/striker_anim.png", (160, 192)),
         (ASSETS / "tv/enemies/striker_anim.png", (140, 168)),
@@ -441,7 +462,7 @@ def main() -> None:
     master.alpha_composite(neutral, ((512 - neutral.width) // 2, 480 - neutral.height))
     master.save(ASSETS / "enemies/striker.png", optimize=True, compress_level=9)
     refresh_manifest()
-    print("Built scale-locked redraws for Essa, Adam and Striker")
+    print("Built scale-locked redraws for all four heroes and Striker")
 
 
 if __name__ == "__main__":

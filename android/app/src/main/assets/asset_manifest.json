@@ -460,8 +460,8 @@
     },
     {
       "path": "heroes/shaikha_anim.png",
-      "bytes": 2278217,
-      "sha256": "f3770490158ed43009abcfc8a0b7a79ad375a9c5b390f45f3268d74e3c5ec1a2",
+      "bytes": 2753834,
+      "sha256": "a1c6b808562bbc51362129274168bab9a451efe7cbc684ac9ed9fa963941bcaf",
       "width": 1536,
       "height": 2112,
       "mode": "RGBA"
@@ -492,8 +492,8 @@
     },
     {
       "path": "heroes/sulaiman_anim.png",
-      "bytes": 2421164,
-      "sha256": "86f92ed5b9f297594d53fd2caf185836daf4f75e63c9ff8199deb13ce8fb8cb3",
+      "bytes": 2574587,
+      "sha256": "0ccf9b3a796ec9d66fc80acb367a9fff72de3c4d5f8a04d43aa5ff81af49f16c",
       "width": 1536,
       "height": 2112,
       "mode": "RGBA"
@@ -636,16 +636,16 @@
     },
     {
       "path": "runtime/heroes/shaikha_anim.png",
-      "bytes": 2432390,
-      "sha256": "434a995cff6735f36410c815cdc720e040c9d139375fd31b490f99e0ac89f1ff",
+      "bytes": 2753834,
+      "sha256": "a1c6b808562bbc51362129274168bab9a451efe7cbc684ac9ed9fa963941bcaf",
       "width": 1536,
       "height": 2112,
       "mode": "RGBA"
     },
     {
       "path": "runtime/heroes/sulaiman_anim.png",
-      "bytes": 2742796,
-      "sha256": "ab5e1c3e5137ff593ce16f962b5d68d68fc6bc93a615d07402d8864a5aa57ed1",
+      "bytes": 2701420,
+      "sha256": "3a085c5937474b0b136eb90a4a5c4aa36b523a2b9e51aa5bfff70b6bec7afe41",
       "width": 1584,
       "height": 2178,
       "mode": "RGBA"
@@ -804,16 +804,16 @@
     },
     {
       "path": "tv/heroes/shaikha_anim.png",
-      "bytes": 1671507,
-      "sha256": "c8c96e11a8c4ab7182f68f90ecb5fce666ce26648f3f85a124059bda5558204a",
+      "bytes": 1606007,
+      "sha256": "067eebd247858f02b7b3e12f8eb5b706a31b8fb026c9c579be6b4abaa293b811",
       "width": 1152,
       "height": 1584,
       "mode": "RGBA"
     },
     {
       "path": "tv/heroes/sulaiman_anim.png",
-      "bytes": 1732473,
-      "sha256": "898399b58a5366db62ff8b97b06a75e6a8cf740d773ee143a017ef23a03e8006",
+      "bytes": 1530131,
+      "sha256": "c799babaf1fac538c5988de54f9994f8426e1973f01b8f28a36196ba64020e84",
       "width": 1152,
       "height": 1584,
       "mode": "RGBA"
@@ -838,6 +838,22 @@
       "path": "uhd/heroes/parent_anim.png",
       "bytes": 7935541,
       "sha256": "bec8d0b42f33a1746f16d9f66782dd77981441ca84d0722da99e282fc4c4b1ac",
+      "width": 3072,
+      "height": 4224,
+      "mode": "RGBA"
+    },
+    {
+      "path": "uhd/heroes/shaikha_anim.png",
+      "bytes": 9562958,
+      "sha256": "1aa6e8953af61a0d5fdabc92fe58725392e845dbb9ad4cf7d94cb20dc0a6ef2b",
+      "width": 3072,
+      "height": 4224,
+      "mode": "RGBA"
+    },
+    {
+      "path": "uhd/heroes/sulaiman_anim.png",
+      "bytes": 8585824,
+      "sha256": "e89db438f0f86ca6474758bfb9c3b460464dfb43fa6f38be2a3b35877ecce62b",
       "width": 3072,
       "height": 4224,
       "mode": "RGBA"
