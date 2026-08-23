@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "name": "Family Force Modern-Retro Character Standard",
+  "logicalCanvas": [640, 360],
+  "authoredFrameMinimum": [384, 384],
+  "approvedHeroCell": [192, 192],
+  "runtimeSourceDensity": 2.25,
+  "facing": "three-quarter-screen-right",
+  "outline": {
+    "color": "#10183F",
+    "outerWidthAt192": [2.5, 3.0],
+    "innerWidthAt192": [1.0, 1.5]
+  },
+  "shading": {
+    "bandsPerMaterial": 3,
+    "optionalSpecularBand": 1,
+    "highlightAreaMaximumPercent": 12,
+    "keyLight": "warm-upper-left",
+    "rimLight": "subtle-cool-lower-right",
+    "forbidden": ["dithering", "halftone", "grain", "airbrush", "motion-blur"]
+  },
+  "safeMarginAt192": {
+    "left": 12,
+    "top": 12,
+    "right": 12,
+    "bottomMinimum": 12,
+    "bottomMaximum": 16
+  },
+  "heroAtlas": {
+    "columns": 8,
+    "rows": 11,
+    "size": [1536, 2112],
+    "rowOrder": [
+      "idle", "walk", "punch", "kick", "heavy_punch", "heavy_kick",
+      "jump", "special", "link", "hurt", "knockdown"
+    ],
+    "minimumDistinctSilhouettesPerMotionRow": 6,
+    "idleWalkHeightVarianceMaximumPercent": 3,
+    "otherGroundedHeightVarianceMaximumPercent": 5
+  },
+  "heroHeightCm": {
+    "essa": 177,
+    "adam": 108,
+    "shaikha": 108,
+    "sulaiman": 124
+  },
+  "heroScaleRelativeToEssa": {
+    "essa": 1.0,
+    "adam": 0.6102,
+    "shaikha": 0.6102,
+    "sulaiman": 0.7006
+  },
+  "alpha": {
+    "allowed": [0, 255],
+    "rgbWhenTransparent": [0, 0, 0]
+  },
+  "recommendedVisibleColorMaximum": {
+    "character": 96,
+    "ordinaryFrame": 64
+  }
+}
