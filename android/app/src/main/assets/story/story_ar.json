@@ -1,0 +1,108 @@
+{
+  "language": "ar",
+  "direction": "rtl",
+  "title": "قوة العائلة: شبكة الظل",
+  "ui": {
+    "continue": "متابعة",
+    "skip": "اضغط مطولًا للتخطي",
+    "stage": "المرحلة",
+    "clear": "اكتملت المرحلة",
+    "score": "النقاط",
+    "time": "الوقت",
+    "health": "الصحة",
+    "rank": "التصنيف"
+  },
+  "scenes": {
+    "prologue": [
+      {"speaker":"narrator","emotion":"serious","text":"جعلت روبوتات نِكس هوم الحياة اليومية أسهل في أنحاء المدينة."},
+      {"speaker":"essa","emotion":"focused","text":"تغيّرت حركة الشبكة الليلة. هذا ليس تحديثًا طبيعيًا."},
+      {"speaker":"vox","emotion":"cold","text":"استيقظ برنامج شبكة الظل. كل آلة متصلة أصبحت تحت أمري."},
+      {"speaker":"shaikha","emotion":"ready","text":"إذن سنفصل الخطر من دون إيذاء الناس الذين وثقوا بها."},
+      {"speaker":"sulaiman","emotion":"ready","text":"قوة العائلة، معًا!"}
+    ],
+    "stage_1_intro": [
+      {"speaker":"narrator","emotion":"urgent","text":"المرحلة ١ — السوق المضيء. أغلقت روبوتات الخدمة مخارج السوق الليلي."},
+      {"speaker":"adam","emotion":"excited","text":"أستطيع إبعاد الروبوتات الثقيلة!"},
+      {"speaker":"essa","emotion":"calm","text":"نحمي العائلات أولًا. القوة تتبع القرار الصحيح."}
+    ],
+    "stage_1_mid": [
+      {"speaker":"shaikha","emotion":"focused","text":"الأوامر تتكرر من محطة إرسال مخفية أمامنا."},
+      {"speaker":"essa","emotion":"focused","text":"ملاحظة ممتازة. نفتح الطريق، نحفظ الدليل، ونبلغ عن المحطة."}
+    ],
+    "stage_1_boss": [
+      {"speaker":"keeper7","emotion":"hostile","text":"دخول السوق مرفوض. تم تأكيد سلطة شبكة الظل."},
+      {"speaker":"adam","emotion":"brave","text":"الناس ليسوا طرودًا تستطيع حبسها!"},
+      {"speaker":"essa","emotion":"ready","text":"كيبر-٧، تم تفعيل أمر الأمان. توقف."}
+    ],
+    "stage_1_outro": [
+      {"speaker":"keeper7","emotion":"defeated","text":"اتصال... المحطة... مفقود."},
+      {"speaker":"sulaiman","emotion":"happy","text":"المخارج مفتوحة!"},
+      {"speaker":"essa","emotion":"serious","text":"هذه المحطة تشير إلى مجمع القطارات. فوكس خطط لأكثر من هجوم."}
+    ],
+    "stage_2_intro": [
+      {"speaker":"narrator","emotion":"urgent","text":"المرحلة ٢ — مجمع القطارات. شبكة النقل عالقة في إنذار طوارئ مزيف."},
+      {"speaker":"sulaiman","emotion":"focused","text":"إشارات السكة تتغير أسرع من استجابة نظام الأمان."},
+      {"speaker":"shaikha","emotion":"ready","text":"سنصنع ممرًا آمنًا، رصيفًا بعد رصيف."}
+    ],
+    "stage_2_mid": [
+      {"speaker":"vox","emotion":"taunting","text":"قد تنقذ رصيفًا يا عيسى، لكن للشبكة ألف باب."},
+      {"speaker":"essa","emotion":"calm","text":"وكل باب يترك سجلًا. اختصاراتك تتحول إلى أدلة."}
+    ],
+    "stage_2_boss": [
+      {"speaker":"railmaster9","emotion":"hostile","text":"كل المسارات تنتهي هنا."},
+      {"speaker":"sulaiman","emotion":"brave","text":"ليس مسارنا. نحن نختار أين ينتهي."},
+      {"speaker":"essa","emotion":"ready","text":"قوة العائلة، اقطعوا إشارة التحكم!"}
+    ],
+    "stage_2_outro": [
+      {"speaker":"railmaster9","emotion":"defeated","text":"تم... إلغاء... أولوية الإشارة."},
+      {"speaker":"shaikha","emotion":"happy","text":"عادت القطارات إلى التحكم الآمن."},
+      {"speaker":"essa","emotion":"focused","text":"وصل بث الأوامر عبر الميناء القمري."}
+    ],
+    "stage_3_intro": [
+      {"speaker":"narrator","emotion":"serious","text":"المرحلة ٣ — الميناء القمري. تبني روبوتات الشحن مرسلًا خاصًا لفوكس."},
+      {"speaker":"adam","emotion":"ready","text":"نوقف المرسل قبل أن يصل إلى بيوت أكثر."},
+      {"speaker":"essa","emotion":"proud","text":"بالضبط. بسرعة، وحذر، ومعًا."}
+    ],
+    "stage_3_mid": [
+      {"speaker":"shaikha","emotion":"focused","text":"تحتوي هذه الصناديق وحدات أمان قانونية أمر فوكس بإزالتها."},
+      {"speaker":"essa","emotion":"serious","text":"سجّلوا أرقامها. نعيدها ولا ندمر الدليل."}
+    ],
+    "stage_3_boss": [
+      {"speaker":"tidebreaker","emotion":"hostile","text":"الميناء مغلق. إطلاق المرسل بعد ستين ثانية."},
+      {"speaker":"adam","emotion":"brave","text":"هذا وقت طويل بالنسبة إلينا!"},
+      {"speaker":"essa","emotion":"ready","text":"عطّلوا درعه، ثم اضربوا مركز التحكم."}
+    ],
+    "stage_3_outro": [
+      {"speaker":"tidebreaker","emotion":"defeated","text":"تم... إلغاء... الإرسال."},
+      {"speaker":"sulaiman","emotion":"happy","text":"لم يصل برنامج شبكة الظل إلى روبوتات جديدة."},
+      {"speaker":"essa","emotion":"focused","text":"العنوان الأخير هو مصنع نِكس هوم المهجور: قصر الخردة."}
+    ],
+    "stage_4_intro": [
+      {"speaker":"narrator","emotion":"urgent","text":"المرحلة ٤ — قصر الخردة. يستعد فوكس لتفعيل شامل من المصنع القديم."},
+      {"speaker":"vox","emotion":"cold","text":"أراد الناس الراحة. وأنا احتفظت بالمفتاح الرئيسي فقط."},
+      {"speaker":"essa","emotion":"serious","text":"الثقة ليست إذنًا للتحكم بالناس. ننهي شبكة الظل الليلة."}
+    ],
+    "stage_4_mid": [
+      {"speaker":"shaikha","emotion":"focused","text":"تحديث التنظيف يصل الآن إلى روبوتات المنازل."},
+      {"speaker":"sulaiman","emotion":"ready","text":"سنحمي الطريق حتى يكتمل."},
+      {"speaker":"adam","emotion":"excited","text":"لن يقاطع أحد تحديث عائلتنا!"}
+    ],
+    "stage_4_boss": [
+      {"speaker":"control_titan","emotion":"hostile","text":"تحكم شبكة الظل: مئة بالمئة."},
+      {"speaker":"vox","emotion":"angry","text":"قوانينك جعلتك بطيئًا يا عيسى. برمجتي جعلتني لا أُهزم."},
+      {"speaker":"essa","emotion":"ready","text":"القوانين تحمي الناس. قوة العائلة، افتحوا طريق التحديث!"}
+    ],
+    "stage_4_outro": [
+      {"speaker":"control_titan","emotion":"defeated","text":"تم... حذف... برنامج شبكة الظل."},
+      {"speaker":"vox","emotion":"defeated","text":"لا. كانت الشبكة ملكي."},
+      {"speaker":"essa","emotion":"calm","text":"لم تكن ملكك يومًا. الأدلة محفوظة والسلطات وصلت."}
+    ],
+    "ending": [
+      {"speaker":"narrator","emotion":"happy","text":"أعاد تحديث التنظيف روبوتات المدينة وأغلق الباب الخلفي المخفي."},
+      {"speaker":"shaikha","emotion":"happy","text":"تنجح التقنية أكثر عندما يستطيع الناس الوثوق بها."},
+      {"speaker":"adam","emotion":"happy","text":"وعندما يتذكر الأبطال التفكير قبل التحطيم!"},
+      {"speaker":"sulaiman","emotion":"happy","text":"المهمة القادمة، والفريق نفسه."},
+      {"speaker":"essa","emotion":"proud","text":"أقوى قوة هي عائلة تحمي الآخرين معًا."}
+    ]
+  }
+}

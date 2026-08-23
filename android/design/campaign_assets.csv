@@ -1,0 +1,27 @@
+id,role,type,description,size/ratio,style line ref,source
+portrait_essa,dialogue portrait,image,Essa neutral/serious/victory,3x 1:1,V5 modern-retro,derive from approved atlas
+portrait_adam,dialogue portrait,image,Adam neutral/serious/victory no chest mark,3x 1:1,V5 modern-retro,derive from approved atlas
+portrait_shaikha,dialogue portrait,image,Shaikha neutral/serious/victory snowflakes only,3x 1:1,V5 modern-retro,derive from approved atlas
+portrait_sulaiman,dialogue portrait,image,Sulaiman neutral/serious/victory one chest S,3x 1:1,V5 modern-retro,derive from approved atlas
+portrait_vox,dialogue portrait,image,Adrian Vox calm/angry/defeated,3x 1:1,V5 modern-retro,derive from boss art
+portrait_keeper7,boss portrait,image,market security robot,2x 1:1,V5 modern-retro,derive from enemy atlas
+portrait_railmaster9,boss portrait,image,armored conductor robot,2x 1:1,V5 modern-retro,derive from enemy atlas
+portrait_tidebreaker,boss portrait,image,heavy harbor cargo robot,2x 1:1,V5 modern-retro,derive from enemy atlas
+portrait_control_titan,boss portrait,image,final command machine,2x 1:1,V5 modern-retro,derive from boss atlas
+story_prologue,story cards,image,robot rollout and Shadow Code activation,4x 16:9,V5 modern-retro,reuse and composite approved assets
+story_stages,story cards,image,four stage establishing cards,4x 16:9,V5 modern-retro,reuse current panoramas
+story_ending,story cards,image,network freed city repaired family together,3x 16:9,V5 modern-retro,reuse and composite approved assets
+hero_victory,animation,image,one eight-frame victory row per hero,4 sheets,V5 modern-retro,derive from approved Link rows
+hero_entrance,animation,image,one eight-frame entrance row per hero,4 sheets,V5 modern-retro,reuse approved walk/jump rows
+music_story,story music,audio,tense hopeful prologue instrumental,75s loop,modern retro synth,local procedural composition
+music_stage_1,stage music,audio,neon market synth funk,110s loop,modern retro synth,local procedural composition
+music_stage_2,stage music,audio,transit electro breakbeat,110s loop,modern retro synth,local procedural composition
+music_stage_3,stage music,audio,moon harbor nocturnal synthwave,110s loop,modern retro synth,local procedural composition
+music_stage_4,stage music,audio,junk palace industrial electro,110s loop,modern retro synth,local procedural composition
+music_boss,boss music,audio,mechanical boss pressure,85s loop,modern retro synth,local procedural composition
+music_final_boss,final boss music,audio,two-phase control titan escalation,100s loop,modern retro synth,local procedural composition
+music_tally,tally music,audio,arcade score count groove,35s loop,modern retro synth,local procedural composition
+music_ending,ending music,audio,warm heroic resolution,75s,modern retro synth,local procedural composition
+sting_stage_intro,stage intro,audio,four stage motif stings,4x 6s,modern retro synth,local procedural composition
+sting_stage_clear,stage clear,audio,four stage clear fanfares,4x 8s,modern retro synth,local procedural composition
+sting_high_score,high score,audio,new high score jingle,4s,modern retro synth,local procedural composition

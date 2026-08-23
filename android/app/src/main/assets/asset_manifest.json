@@ -6,6 +6,11 @@
       "sha256": "d7f44a1bc0cda7186f871f85aa461cf68ae5d9dda2e1056004ed2c1d4315d34e"
     },
     {
+      "path": "audio/boss.ogg",
+      "bytes": 146699,
+      "sha256": "d3aae2eb8bc1bebd21e900e353cf60dd866f181b8df66c49abb390fbed3cc9c5"
+    },
+    {
       "path": "audio/confirm.wav",
       "bytes": 17014,
       "sha256": "f6fba0e6c609f2ab2351b45eed0692a8c0d34417f23832143895c355d490e52c"
@@ -14,6 +19,16 @@
       "path": "audio/damage.wav",
       "bytes": 33948,
       "sha256": "c5decc266b1f1e59c3f4ff56222c700428f19a9543b7f939c0f12a1e1cfe0ee7"
+    },
+    {
+      "path": "audio/ending.ogg",
+      "bytes": 152825,
+      "sha256": "152e6f63d8bb3ff8147c009f9510fc6f31b968b36f114e1e99c6e45123130ae4"
+    },
+    {
+      "path": "audio/final_boss.ogg",
+      "bytes": 143701,
+      "sha256": "bc8bdf3207ac10fad550a25c5c6067b657e7a1ffe4219c9b140785df0f1ed6e7"
     },
     {
       "path": "audio/jump.wav",
@@ -44,6 +59,76 @@
       "path": "audio/stage.ogg",
       "bytes": 935543,
       "sha256": "facd4c96c9fc68d05dd88d16be273ee07c6daffaeb99c5d8aeca0c9f916404d3"
+    },
+    {
+      "path": "audio/stage_1_clear.wav",
+      "bytes": 50758,
+      "sha256": "01eb0cb99448492c8be3bae6ea32dd57d43d093fcdc0147af69b8c41248fa9b5"
+    },
+    {
+      "path": "audio/stage_1_intro.wav",
+      "bytes": 50758,
+      "sha256": "7c485a72ac08b1d72dc3938092c1a17de631d596d2ffd9350aa34dc1814e456a"
+    },
+    {
+      "path": "audio/stage_2_clear.wav",
+      "bytes": 50758,
+      "sha256": "93f195f64850603f7b753cc621b012a029f712a91799cd0b38f8fad07bb621a0"
+    },
+    {
+      "path": "audio/stage_2_intro.wav",
+      "bytes": 50758,
+      "sha256": "c84e211381cf0f97be4d9280ff48dacbd35fde98bb39ac861132dae598471a4a"
+    },
+    {
+      "path": "audio/stage_3_clear.wav",
+      "bytes": 50758,
+      "sha256": "c4061a32d55771be6dc930967e349fd4426b5f86328343de5813d7db8f210731"
+    },
+    {
+      "path": "audio/stage_3_intro.wav",
+      "bytes": 50758,
+      "sha256": "c614dd9052dbde5bc0432d3a0b513b3965768f872dfc44cc29d91f50794b0674"
+    },
+    {
+      "path": "audio/stage_4_clear.wav",
+      "bytes": 50758,
+      "sha256": "6c5ceaa71d668dc702fdd75dc9c6705efe4c5a2d5ea92d72e55478d9a469de5f"
+    },
+    {
+      "path": "audio/stage_4_intro.wav",
+      "bytes": 50758,
+      "sha256": "79145c1e5169945ad91f0a0543d01fd48d3c6a081cbeac7fc7d89aaa0fd4c15a"
+    },
+    {
+      "path": "audio/stage_harbor.ogg",
+      "bytes": 173041,
+      "sha256": "80b9e8054f17337f62bebad20d80f3007843f1bdc6f3ceebcd31fe952846bf5c"
+    },
+    {
+      "path": "audio/stage_market.ogg",
+      "bytes": 177025,
+      "sha256": "95ed0debfff70da98a1c264b00707f5669ac78bc8c98b3eb7a346e2721e560c8"
+    },
+    {
+      "path": "audio/stage_palace.ogg",
+      "bytes": 182177,
+      "sha256": "3ea0a2eda4913127ee36b444d9de913156e2bd8f00442dc3c13a76ec9ff1296e"
+    },
+    {
+      "path": "audio/stage_transit.ogg",
+      "bytes": 179477,
+      "sha256": "9c19d1a1318220802406bf763fca694547f64c1546849dc73183d19ad51ff605"
+    },
+    {
+      "path": "audio/story.ogg",
+      "bytes": 145040,
+      "sha256": "e972c7df704a0736410d8650d13ff3bebed0b28322b4669fcd9d039ea8f775fc"
+    },
+    {
+      "path": "audio/tally.ogg",
+      "bytes": 120320,
+      "sha256": "a135dfe482c7ea3abcc24e01cf48f3c786af92e7bb9e68849b75534e7f139ab0"
     },
     {
       "path": "audio/victory.wav",
@@ -651,6 +736,16 @@
       "mode": "RGBA"
     },
     {
+      "path": "story/story_ar.json",
+      "bytes": 8120,
+      "sha256": "df76cbe15c3305cf84f9f2c25c785052a4d379546dc75cd29c589683befa8da1"
+    },
+    {
+      "path": "story/story_en.json",
+      "bytes": 6804,
+      "sha256": "3a8bfb6080ca11b4b5ad38513a4ffdefbfd8b43334bd09055246e0b29ec76079"
+    },
+    {
       "path": "tv/backgrounds/panoramas/stage_harbor.png",
       "bytes": 1669866,
       "sha256": "e055eb4da232142d7a18e5fec2b543b552dedf0fde9c4080935b5045b211fad2",
@@ -949,5 +1044,5 @@
   ],
   "project": "Family Force: Neon Streets",
   "status": "direct-reference family character pack; likeness quality is provisional until five or more photos per person enable Soul training",
-  "visual_formula": "High-detail retro arcade pixel art rendered at a modern 360p-to-720p game resolution, with fine 2\u20134 pixel clusters, crisp edges, selective dithering, and no oversized block pixels. Athletic readable silhouettes use dark navy outlines, expressive recognizable faces, dynamic foreshortening, and slightly exaggerated 1990s beat-\u2019em-up proportions. Night streets use indigo, teal, and warm amber; heroes use distinct red-gold, green-purple, pink-ice, and blue-red palettes. Energetic family-friendly lighting and strong foreground contrast maintain a consistent three-quarter side-view belt-brawler perspective."
+  "visual_formula": "High-detail retro arcade pixel art rendered at a modern 360p-to-720p game resolution, with fine 2–4 pixel clusters, crisp edges, selective dithering, and no oversized block pixels. Athletic readable silhouettes use dark navy outlines, expressive recognizable faces, dynamic foreshortening, and slightly exaggerated 1990s beat-’em-up proportions. Night streets use indigo, teal, and warm amber; heroes use distinct red-gold, green-purple, pink-ice, and blue-red palettes. Energetic family-friendly lighting and strong foreground contrast maintain a consistent three-quarter side-view belt-brawler perspective."
 }

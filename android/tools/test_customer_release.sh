@@ -13,6 +13,7 @@ export PATH="$ANDROID_HOME/platform-tools:$PATH"
 
 "$SCRIPT_DIR/test_controller_compat.sh"
 python3 "$SCRIPT_DIR/test_combat_companion_contract.py"
+python3 "$SCRIPT_DIR/test_story_content_contract.py"
 "$SCRIPT_DIR/build_customer_apk.sh" "$PACK" draft
 ORDER_ID=$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))["orderId"])' "$PACK/customer.json")
 SAFE_ID=$(printf '%s' "$ORDER_ID" | tr -cd 'a-z0-9')

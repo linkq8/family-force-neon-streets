@@ -36,7 +36,8 @@ assert "loadAssistAnimationRow(0" in preload, "P1 companion must preload"
 assert "loadAssistAnimationRow(1" in preload, "P2 companion must preload when enabled"
 
 selection = method_body("tryConfirmSelectionToStart")
-assert selection.index("preloadAssistAnimationRows") < selection.index("enterState(INTRO)"), (
+transition = "beginStory(\"prologue\"" if "beginStory(\"prologue\"" in selection else "enterState(INTRO)"
+assert selection.index("preloadAssistAnimationRows") < selection.index(transition), (
     "companion rows must be ready before the intro/play transition"
 )
 

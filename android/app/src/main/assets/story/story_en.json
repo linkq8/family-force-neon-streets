@@ -1,0 +1,108 @@
+{
+  "language": "en",
+  "direction": "ltr",
+  "title": "Family Force: Shadow Grid",
+  "ui": {
+    "continue": "CONTINUE",
+    "skip": "HOLD TO SKIP",
+    "stage": "STAGE",
+    "clear": "STAGE CLEAR",
+    "score": "SCORE",
+    "time": "TIME",
+    "health": "HEALTH",
+    "rank": "RANK"
+  },
+  "scenes": {
+    "prologue": [
+      {"speaker":"narrator","emotion":"serious","text":"NexHome robots made daily life easier across the city."},
+      {"speaker":"essa","emotion":"focused","text":"Their network traffic changed overnight. This is not a normal update."},
+      {"speaker":"vox","emotion":"cold","text":"Shadow Code is awake. Every connected machine now answers to me."},
+      {"speaker":"shaikha","emotion":"ready","text":"Then we disconnect the danger without hurting the people who trusted them."},
+      {"speaker":"sulaiman","emotion":"ready","text":"Family Force, together!"}
+    ],
+    "stage_1_intro": [
+      {"speaker":"narrator","emotion":"urgent","text":"Stage 1 — Neon Market. Service robots have locked the night market exits."},
+      {"speaker":"adam","emotion":"excited","text":"I can move the heavy robots!"},
+      {"speaker":"essa","emotion":"calm","text":"Protect the families first. Strength follows good judgment."}
+    ],
+    "stage_1_mid": [
+      {"speaker":"shaikha","emotion":"focused","text":"The commands are repeating from a hidden relay ahead."},
+      {"speaker":"essa","emotion":"focused","text":"Good catch. We clear the route, preserve the evidence, and report the relay."}
+    ],
+    "stage_1_boss": [
+      {"speaker":"keeper7","emotion":"hostile","text":"MARKET ACCESS DENIED. SHADOW GRID AUTHORITY CONFIRMED."},
+      {"speaker":"adam","emotion":"brave","text":"People are not packages you can lock away!"},
+      {"speaker":"essa","emotion":"ready","text":"Keeper-7, safety override authorized. Stand down."}
+    ],
+    "stage_1_outro": [
+      {"speaker":"keeper7","emotion":"defeated","text":"RELAY... CONNECTION... LOST."},
+      {"speaker":"sulaiman","emotion":"happy","text":"The exits are open!"},
+      {"speaker":"essa","emotion":"serious","text":"This relay points to the transit terminal. Vox planned more than one attack."}
+    ],
+    "stage_2_intro": [
+      {"speaker":"narrator","emotion":"urgent","text":"Stage 2 — Transit Terminal. The transport network is trapped in a false emergency loop."},
+      {"speaker":"sulaiman","emotion":"focused","text":"Rail signals are changing faster than the safety system can respond."},
+      {"speaker":"shaikha","emotion":"ready","text":"We will create a safe path one platform at a time."}
+    ],
+    "stage_2_mid": [
+      {"speaker":"vox","emotion":"taunting","text":"You can save one platform, Essa. The network has a thousand doors."},
+      {"speaker":"essa","emotion":"calm","text":"And every door leaves a record. Your shortcuts are becoming evidence."}
+    ],
+    "stage_2_boss": [
+      {"speaker":"railmaster9","emotion":"hostile","text":"ALL ROUTES NOW TERMINATE HERE."},
+      {"speaker":"sulaiman","emotion":"brave","text":"Not ours. We choose where this route ends."},
+      {"speaker":"essa","emotion":"ready","text":"Family Force, break the control signal!"}
+    ],
+    "stage_2_outro": [
+      {"speaker":"railmaster9","emotion":"defeated","text":"SIGNAL PRIORITY... REVOKED."},
+      {"speaker":"shaikha","emotion":"happy","text":"The trains are returning to safe control."},
+      {"speaker":"essa","emotion":"focused","text":"The command stream came through Moon Harbor."}
+    ],
+    "stage_3_intro": [
+      {"speaker":"narrator","emotion":"serious","text":"Stage 3 — Moon Harbor. Cargo robots are building a private transmitter for Vox."},
+      {"speaker":"adam","emotion":"ready","text":"We stop the transmitter before it reaches more homes."},
+      {"speaker":"essa","emotion":"proud","text":"Exactly. Fast, careful, and together."}
+    ],
+    "stage_3_mid": [
+      {"speaker":"shaikha","emotion":"focused","text":"These crates contain legal safety modules that Vox ordered removed."},
+      {"speaker":"essa","emotion":"serious","text":"Record their serial numbers. We restore them; we do not destroy proof."}
+    ],
+    "stage_3_boss": [
+      {"speaker":"tidebreaker","emotion":"hostile","text":"HARBOR SEALED. TRANSMITTER LAUNCH IN SIXTY SECONDS."},
+      {"speaker":"adam","emotion":"brave","text":"That is plenty of time for us!"},
+      {"speaker":"essa","emotion":"ready","text":"Disable its shield, then strike the control core."}
+    ],
+    "stage_3_outro": [
+      {"speaker":"tidebreaker","emotion":"defeated","text":"TRANSMISSION... CANCELLED."},
+      {"speaker":"sulaiman","emotion":"happy","text":"No new robots received Shadow Code."},
+      {"speaker":"essa","emotion":"focused","text":"The final address is NexHome's abandoned factory—the Junk Palace."}
+    ],
+    "stage_4_intro": [
+      {"speaker":"narrator","emotion":"urgent","text":"Stage 4 — Junk Palace. Vox is preparing a citywide activation from the old factory."},
+      {"speaker":"vox","emotion":"cold","text":"People wanted convenience. I simply kept the master key."},
+      {"speaker":"essa","emotion":"serious","text":"Trust is not permission to control people. We end Shadow Code tonight."}
+    ],
+    "stage_4_mid": [
+      {"speaker":"shaikha","emotion":"focused","text":"Your cleanup patch is reaching the household robots."},
+      {"speaker":"sulaiman","emotion":"ready","text":"We will hold the line while it finishes."},
+      {"speaker":"adam","emotion":"excited","text":"Nobody interrupts our family update!"}
+    ],
+    "stage_4_boss": [
+      {"speaker":"control_titan","emotion":"hostile","text":"SHADOW GRID CONTROL: ONE HUNDRED PERCENT."},
+      {"speaker":"vox","emotion":"angry","text":"Your rules made you slow, Essa. My code made me unstoppable."},
+      {"speaker":"essa","emotion":"ready","text":"Rules protect people. Family Force—open the path for the patch!"}
+    ],
+    "stage_4_outro": [
+      {"speaker":"control_titan","emotion":"defeated","text":"SHADOW CODE... REMOVED."},
+      {"speaker":"vox","emotion":"defeated","text":"No. The network was mine."},
+      {"speaker":"essa","emotion":"calm","text":"It never was. The evidence is secured and the authorities are here."}
+    ],
+    "ending": [
+      {"speaker":"narrator","emotion":"happy","text":"The cleanup patch restored the city's robots and closed the hidden backdoor."},
+      {"speaker":"shaikha","emotion":"happy","text":"Technology works best when people can trust it."},
+      {"speaker":"adam","emotion":"happy","text":"And when heroes remember to think before smashing!"},
+      {"speaker":"sulaiman","emotion":"happy","text":"Next mission, same team."},
+      {"speaker":"essa","emotion":"proud","text":"The strongest force is a family that protects others together."}
+    ]
+  }
+}

@@ -33,6 +33,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
@@ -61,7 +62,14 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private static final int RESULTS = 7;
     private static final int GAME_OVER = 8;
     private static final int GALLERY = 9;
+    private static final int STORY = 10;
+    private static final int TALLY = 11;
     private static final int HERO_SLOT_COUNT = 4;
+
+    private static final int STORY_TO_INTRO = 1;
+    private static final int STORY_TO_PLAY = 2;
+    private static final int STORY_AFTER_STAGE = 3;
+    private static final int STORY_TO_RESULTS = 4;
 
     private static final int ITEM_FOOD = 0;
     private static final int ITEM_ENERGY = 1;
@@ -282,6 +290,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private LinearGradient viewportGradient = new LinearGradient(0, 0, 0, H,
             Color.rgb(19, 14, 61), Color.rgb(4, 28, 42), Shader.TileMode.CLAMP);
     private final AudioController audio;
+    private StoryContent storyContent;
     private final SharedPreferences prefs;
     private final RuntimeDiagnostics diagnostics;
     private final CustomerProfile customerProfile;
@@ -346,6 +355,21 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private volatile boolean updateBusy;
     private int resultsOption;
     private int gameOverOption;
+    private int[] highScores;
+    private List<StoryContent.Line> storyLines;
+    private String storySceneId = "";
+    private int storyLineIndex;
+    private int storyNextAction;
+    private final boolean[] midStoryShown = new boolean[4];
+    private final boolean[] bossStoryShown = new boolean[4];
+    private int stageStartFrame;
+    private int stageStartScore;
+    private int stageStartDamage;
+    private int tallyCombatScore;
+    private int tallyTimeBonus;
+    private int tallyHealthBonus;
+    private int tallyTotal;
+    private String tallyRank = "C";
     private int menuHatX;
     private int menuHatY;
     private int menuHatXPlayer2;
@@ -373,6 +397,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private String cachedWeaponText = "";
     private int cachedCombo = Integer.MIN_VALUE;
     private String cachedComboText = "";
+    private int scorePopupAmount;
+    private int scorePopupTimer;
+    private float scorePopupX;
+    private float scorePopupY;
 
     private float scale = 1f;
     private float offsetX;
@@ -524,6 +552,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         holder.addCallback(this);
         holder.setKeepScreenOn(true);
         audio = new AudioController(context);
+        storyContent = StoryContent.load(context);
         customerProfile = CustomerProfile.load(context);
         System.arraycopy(customerProfile.heroNames, 0, HERO_NAMES, 0, HERO_NAMES.length);
         prefs = context.getSharedPreferences("family_force_settings", Context.MODE_PRIVATE);
@@ -535,6 +564,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         difficulty = prefs.getInt("difficulty", 1);
         touchOpacity = prefs.getFloat("touch_opacity", 0.72f);
         bestScore = prefs.getInt("best_score", 0);
+        highScores = ArcadeLeaderboard.load(prefs);
         selectedHero = sanitizeHeroIndex(prefs.getInt("selected_hero_p1", 0));
         selectedHero2 = sanitizeHeroIndex(prefs.getInt("selected_hero_p2", 1));
         selectedCompanion1 = sanitizeCompanionIndex(
@@ -638,7 +668,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (pauseOption < 0) pauseOption = 0;
         else if (pauseOption > 3) pauseOption = 3;
         if (settingsOption < 0) settingsOption = 0;
-        else if (settingsOption > 6) settingsOption = 6;
+        else if (settingsOption > 7) settingsOption = 7;
         if (resultsOption < 0) resultsOption = 0;
         if (resultsOption > 1) resultsOption = 1;
         if (gameOverOption < 0) gameOverOption = 0;
@@ -689,7 +719,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 resultsOption = 0;
             } else if (nextState == GAME_OVER) {
                 gameOverOption = 0;
-            } else if (nextState == INTRO || nextState == PLAY) {
+            } else if (nextState == INTRO || nextState == PLAY || nextState == STORY
+                    || nextState == TALLY) {
                 selectionTransitionInProgress = false;
                 selectionChangedAt = SystemClock.uptimeMillis();
                 if (nextState == PLAY && !enemyPreloadRunning) {
@@ -1224,7 +1255,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     .putInt("selected_companion_p1", selectedCompanion1)
                     .putInt("selected_companion_p2", selectedCompanion2)
                     .apply();
-            enterState(INTRO);
+            if (automatedFullStageTest) enterState(INTRO);
+            else beginStory("prologue", STORY_TO_INTRO);
             return true;
         } catch (Throwable runtimeError) {
             Log.e(TAG, "Start transition blocked by asset issue", runtimeError);
@@ -2254,7 +2286,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             audio.play(AudioController.CONFIRM);
             return true;
         }
-        if (state == PAUSE || state == SELECT || state == INTRO || state == RESULTS
+        if (state == PAUSE || state == SELECT || state == INTRO || state == STORY
+                || state == TALLY || state == RESULTS
                 || state == GAME_OVER || state == GALLERY) {
             enterState(MENU);
             return true;
@@ -2321,7 +2354,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     private void update() {
-        audio.ensureMusic(state == PLAY || state == PAUSE ? "audio/stage.ogg" : "audio/menu.ogg");
+        audio.ensureMusic(musicForState());
         if (state == PLAY) {
             clampHeroIndexesForPlay();
             updateGame();
@@ -2411,8 +2444,13 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         shakeFrames = 0;
         totalHits = 0;
         damageTaken = 0;
+        stageStartFrame = 0;
+        stageStartScore = 0;
+        stageStartDamage = 0;
         teamComboBanner = 0;
         teamComboCount = 0;
+        Arrays.fill(midStoryShown, false);
+        Arrays.fill(bossStoryShown, false);
         dashAttackActive = false;
         clearInputs();
         for (Enemy enemy : enemies) enemy.alive = false;
@@ -2531,6 +2569,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             return;
         }
         if (teamComboBanner > 0) teamComboBanner--;
+        if (scorePopupTimer > 0) scorePopupTimer--;
         if (comboWindow > 0 && --comboWindow == 0) combo = 0;
         if (punchChainWindow > 0 && --punchChainWindow == 0) punchChainStep = 0;
         if (p2PunchChainWindow > 0 && --p2PunchChainWindow == 0) p2PunchChainStep = 0;
@@ -3265,7 +3304,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         enemy.active = false;
         enemy.alive = false;
         diagnostics.event("ENEMY_DOWN z=" + enemy.zone + " t=" + enemy.type);
-        score += EnemyArchetype.of(enemy.type).score;
+        int reward = EnemyArchetype.of(enemy.type).score;
+        score += reward;
+        showScorePopup(reward, enemy.x - cameraX, enemy.y - 86f);
         spawnDust(enemy.x, enemy.y - 24, Color.rgb(217, 255, 85), enemy.type == 3 ? 20 : 10);
         spawnBreakEffect(enemy.x, enemy.y - 54f, 0f,
                 enemy.type == 3 ? 1.2f : 0.78f);
@@ -3280,6 +3321,19 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             if (twoPlayerMode) player2X = Math.max(player2X, playerX - 50f);
         }
         if (!zoneActive && zone < ZONE_TRIGGERS.length && playerX >= ZONE_TRIGGERS[zone]) {
+            int enteringStage = stageForZone(zone);
+            boolean isBossWave = zone == STAGE_END_ZONE[enteringStage];
+            boolean isMidWave = zone > STAGE_START_ZONE[enteringStage] && !isBossWave;
+            if (!automatedFullStageTest && isBossWave && !bossStoryShown[enteringStage]) {
+                bossStoryShown[enteringStage] = true;
+                beginStory("stage_" + (enteringStage + 1) + "_boss", STORY_TO_PLAY);
+                return;
+            }
+            if (!automatedFullStageTest && isMidWave && !midStoryShown[enteringStage]) {
+                midStoryShown[enteringStage] = true;
+                beginStory("stage_" + (enteringStage + 1) + "_mid", STORY_TO_PLAY);
+                return;
+            }
             zoneActive = true;
             automatedStageTicks = 0;
             diagnostics.event("ZONE_START " + zone);
@@ -3333,15 +3387,19 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 boolean stageCleared = finishedZone == STAGE_END_ZONE[finishedStage];
                 if (stageCleared) {
                     score += clearedRule.clearBonus;
+                    prepareStageTally(finishedStage);
                     diagnostics.event("STAGE_BONUS " + clearedRule.clearBonus);
                 }
                 if (zone >= ZONE_TRIGGERS.length) {
-                    finishStage();
+                    clearedStage = finishedStage;
+                    diagnostics.event("STAGE_CLEAR " + (finishedStage + 1));
+                    if (automatedFullStageTest) finishStage();
+                    else beginStory("stage_" + (finishedStage + 1) + "_outro",
+                            STORY_AFTER_STAGE);
                 } else {
                     saveCheckpoint(zone);
                     if (stageCleared) {
                         clearedStage = finishedStage;
-                        stageTransitionTimer = automatedFullStageTest ? 12 : 180;
                         zoneBanner = 0;
                         health = Math.min(maxHealth, health + Math.max(12, maxHealth / 5));
                         if (twoPlayerMode) {
@@ -3349,6 +3407,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                                     p2Health + Math.max(12, safeHeroMaxHealth(selectedHero2) / 5));
                         }
                         diagnostics.event("STAGE_CLEAR " + (finishedStage + 1));
+                        if (automatedFullStageTest) {
+                            stageTransitionTimer = 12;
+                        } else {
+                            beginStory("stage_" + (finishedStage + 1) + "_outro",
+                                    STORY_AFTER_STAGE);
+                        }
                     }
                 }
             }
@@ -3426,6 +3490,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         else if (item.type == ITEM_ENERGY) energy = Math.min(100, energy + 45);
         else if (item.type == ITEM_TOKEN) {
             score += 1000;
+            showScorePopup(1000, item.x - cameraX, item.y - 38f);
             linkMeter = Math.min(100, linkMeter + 30);
         } else {
             if (heldWeaponType >= 0) dropHeldWeapon(false);
@@ -3926,14 +3991,93 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         diagnostics.event("STAGE_COMPLETE");
         diagnostics.snapshot("RESULTS", zone, false, health, p2Health,
                 activeEnemyCount(), heldWeaponType, attackKind, stageFrames);
-        score += Math.max(0, 5000 - stageFrames / 3);
-        if (health > maxHealth * 0.65f) score += 1200;
         bestScore = Math.max(bestScore, score);
         prefs.edit().putInt("best_score", bestScore).apply();
+        highScores = ArcadeLeaderboard.record(prefs, score);
         clearCheckpoint();
         audio.play(AudioController.VICTORY);
         enterState(RESULTS);
         clearInputs();
+    }
+
+    private void prepareStageTally(int finishedStage) {
+        int elapsed = Math.max(1, stageFrames - stageStartFrame);
+        tallyCombatScore = Math.max(0, score - stageStartScore);
+        tallyTimeBonus = Math.max(0, 2400 - elapsed / 4);
+        int stageDamage = Math.max(0, damageTaken - stageStartDamage);
+        tallyHealthBonus = stageDamage == 0 ? 1500
+                : (health > maxHealth * 0.65f ? 800 : 0);
+        score += tallyTimeBonus + tallyHealthBonus;
+        tallyTotal = tallyCombatScore + tallyTimeBonus + tallyHealthBonus;
+        int target = 5800 + finishedStage * 900;
+        tallyRank = tallyTotal >= target + 2400 ? "S"
+                : tallyTotal >= target + 1200 ? "A"
+                : tallyTotal >= target ? "B"
+                : tallyTotal >= target - 1400 ? "C" : "D";
+    }
+
+    private String musicForState() {
+        if (state == PLAY || state == PAUSE) {
+            int stage = currentStage();
+            if (zone == STAGE_END_ZONE[stage] && bossStoryShown[stage]) {
+                return stage == 3 ? "audio/final_boss.ogg" : "audio/boss.ogg";
+            }
+            String[] tracks = {"audio/stage_market.ogg", "audio/stage_transit.ogg",
+                    "audio/stage_harbor.ogg", "audio/stage_palace.ogg"};
+            String candidate = tracks[currentStage()];
+            return candidate;
+        }
+        if (state == STORY) return "audio/story.ogg";
+        if (state == TALLY) return "audio/tally.ogg";
+        if (state == RESULTS) return "audio/ending.ogg";
+        return "audio/menu.ogg";
+    }
+
+    private void beginStory(String sceneId, int nextAction) {
+        List<StoryContent.Line> lines = storyContent.scene(sceneId);
+        if (lines.isEmpty()) {
+            completeStoryAction(nextAction);
+            return;
+        }
+        storySceneId = sceneId;
+        storyLines = lines;
+        storyLineIndex = 0;
+        storyNextAction = nextAction;
+        clearInputs();
+        enterState(STORY);
+        if (sceneId.endsWith("_intro")) {
+            int stage = Character.digit(sceneId.charAt(6), 10);
+            audio.playStageSting(stage, true);
+        } else if (sceneId.endsWith("_outro")) {
+            int stage = Character.digit(sceneId.charAt(6), 10);
+            audio.playStageSting(stage, false);
+        }
+        diagnostics.event("STORY " + sceneId);
+    }
+
+    private void advanceStory() {
+        if (storyLines == null || storyLines.isEmpty()) {
+            completeStoryAction(storyNextAction);
+            return;
+        }
+        if (++storyLineIndex < storyLines.size()) return;
+        completeStoryAction(storyNextAction);
+    }
+
+    private void completeStoryAction(int action) {
+        storyLines = null;
+        storyLineIndex = 0;
+        if (action == STORY_TO_INTRO) {
+            enterState(INTRO);
+        } else if (action == STORY_TO_PLAY) {
+            enterState(PLAY);
+        } else if (action == STORY_AFTER_STAGE) {
+            enterState(TALLY);
+        } else if (action == STORY_TO_RESULTS) {
+            finishStage();
+        } else {
+            enterState(MENU);
+        }
     }
 
     private int activeEnemyCount() {
@@ -3956,6 +4100,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             case RESULTS: return "RESULTS";
             case GAME_OVER: return "GAME_OVER";
             case GALLERY: return "GALLERY";
+            case STORY: return "STORY";
+            case TALLY: return "TALLY";
             default: return "UNKNOWN";
         }
     }
@@ -4005,6 +4151,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             else if (state == MENU) drawMenu(canvas);
             else if (state == SELECT) drawSelect(canvas);
             else if (state == INTRO) drawIntro(canvas);
+            else if (state == STORY) drawStory(canvas);
+            else if (state == TALLY) drawStageTally(canvas);
             else if (state == PLAY || state == PAUSE) {
                 drawGame(canvas);
                 if (state == PAUSE) drawPause(canvas);
@@ -4547,6 +4695,140 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         button(canvas, 222, 276, 418, 311, "BEGIN", Color.rgb(217, 255, 85), Color.rgb(15, 24, 35));
     }
 
+    private void drawStory(Canvas canvas) {
+        int stage = storySceneId.startsWith("stage_")
+                ? clampInt(Character.digit(storySceneId.charAt(6), 10) - 1, 0, 3)
+                : currentStage();
+        drawBackdrop(canvas, stage == 0 ? 360f : ZONE_TRIGGERS[STAGE_START_ZONE[stage]]);
+        paint.setColor(Color.argb(192, 3, 7, 24));
+        canvas.drawRect(0, 0, W, H, paint);
+        int accent = STAGE_ACCENTS[stage];
+        text(canvas, storyContent.title(), W / 2f, 35, 15, accent, true, Paint.Align.CENTER);
+        text(canvas, storySceneLabel(), W / 2f, 56, 9, Color.rgb(201, 218, 231),
+                true, Paint.Align.CENTER);
+        if (storyLines == null || storyLines.isEmpty()) return;
+        StoryContent.Line line = storyLines.get(clampInt(storyLineIndex, 0, storyLines.size() - 1));
+        int hero = storyHeroIndex(line.speaker);
+        paint.setColor(Color.argb(246, 9, 16, 42));
+        roundRect(canvas, 40, 76, 600, 314, 22, paint);
+        paint.setColor(accent);
+        canvas.drawRect(40, 76, 600, 83, paint);
+        if (hero >= 0) {
+            drawPortrait(canvas, hero, storyContent.isRtl() ? 475 : 67, 103, 96, 96);
+        } else {
+            paint.setColor(Color.argb(230, 28, 39, 70));
+            roundRect(canvas, storyContent.isRtl() ? 474 : 66, 104,
+                    storyContent.isRtl() ? 570 : 162, 200, 18, paint);
+            text(canvas, line.speaker.equals("narrator") ? "◆" : "⚙",
+                    storyContent.isRtl() ? 522 : 114, 166, 42, accent, true, Paint.Align.CENTER);
+        }
+        float textLeft = storyContent.isRtl() ? 70 : 190;
+        float textRight = storyContent.isRtl() ? 450 : 570;
+        Paint.Align align = storyContent.isRtl() ? Paint.Align.RIGHT : Paint.Align.LEFT;
+        float anchor = storyContent.isRtl() ? textRight : textLeft;
+        text(canvas, storySpeakerName(line.speaker), anchor, 126, 18, accent, true, align);
+        text(canvas, line.emotion.toUpperCase(Locale.US), anchor, 145, 8,
+                Color.rgb(145, 175, 198), true, align);
+        drawWrappedText(canvas, line.text, textLeft, textRight, 171, 15,
+                Color.WHITE, align, 22);
+        text(canvas, (storyLineIndex + 1) + " / " + storyLines.size(), W / 2f, 287,
+                8, Color.rgb(148, 170, 193), true, Paint.Align.CENTER);
+        text(canvas, storyContent.ui("continue", "CONTINUE") + "  A / OK",
+                W / 2f, 304, 10, accent, true, Paint.Align.CENTER);
+    }
+
+    private void drawStageTally(Canvas canvas) {
+        int accent = STAGE_ACCENTS[clampInt(clearedStage, 0, 3)];
+        drawBackdrop(canvas, ZONE_TRIGGERS[STAGE_END_ZONE[clampInt(clearedStage, 0, 3)]]);
+        paint.setColor(Color.argb(220, 4, 8, 27));
+        canvas.drawRect(0, 0, W, H, paint);
+        paint.setColor(Color.argb(248, 12, 20, 48));
+        roundRect(canvas, 80, 28, 560, 334, 24, paint);
+        paint.setColor(accent);
+        canvas.drawRect(80, 28, 560, 36, paint);
+        text(canvas, storyContent.ui("clear", "STAGE CLEAR"), W / 2f, 74,
+                28, accent, true, Paint.Align.CENTER);
+        text(canvas, "STAGE " + (clearedStage + 1) + "  •  " + STAGE_NAMES[clearedStage],
+                W / 2f, 96, 10, Color.WHITE, true, Paint.Align.CENTER);
+        // The heroes visibly celebrate instead of freezing on the last KO frame.
+        drawPortrait(canvas, safeHeroIndex(selectedHero), 102, 112, 88, 88);
+        int secondHero = twoPlayerMode ? safeHeroIndex(selectedHero2)
+                : sanitizeCompanionIndex(selectedCompanion1, selectedHero);
+        drawPortrait(canvas, secondHero, 450, 112, 88, 88);
+        text(canvas, "★", 225, 174, 52, Color.rgb(255, 205, 68), true, Paint.Align.CENTER);
+        text(canvas, tallyRank, 320, 183, 76, accent, true, Paint.Align.CENTER);
+        text(canvas, "★", 415, 174, 52, Color.rgb(255, 205, 68), true, Paint.Align.CENTER);
+        resultRow(canvas, 146, 211, "COMBAT", String.format(Locale.US, "+%05d", tallyCombatScore));
+        resultRow(canvas, 146, 235, storyContent.ui("time", "TIME"),
+                String.format(Locale.US, "+%05d", tallyTimeBonus));
+        resultRow(canvas, 146, 259, storyContent.ui("health", "HEALTH"),
+                String.format(Locale.US, "+%05d", tallyHealthBonus));
+        resultRow(canvas, 146, 283, storyContent.ui("score", "SCORE"),
+                String.format(Locale.US, "%07d", score));
+        text(canvas, storyContent.ui("continue", "CONTINUE") + "  A / OK",
+                W / 2f, 319, 11, accent, true, Paint.Align.CENTER);
+    }
+
+    private void completeStageTally() {
+        stageStartFrame = stageFrames;
+        stageStartScore = score;
+        stageStartDamage = damageTaken;
+        if (clearedStage < 3) {
+            beginStory("stage_" + (clearedStage + 2) + "_intro", STORY_TO_PLAY);
+        } else {
+            beginStory("ending", STORY_TO_RESULTS);
+        }
+    }
+
+    private String storySceneLabel() {
+        if (storySceneId.equals("prologue")) return storyContent.isRtl() ? "المقدمة" : "PROLOGUE";
+        if (storySceneId.equals("ending")) return storyContent.isRtl() ? "النهاية" : "ENDING";
+        int stage = storySceneId.length() > 6 ? Character.digit(storySceneId.charAt(6), 10) : 1;
+        return storyContent.ui("stage", "STAGE") + " " + stage + "  •  " + STAGE_NAMES[clampInt(stage - 1, 0, 3)];
+    }
+
+    private int storyHeroIndex(String speaker) {
+        if ("essa".equals(speaker)) return 0;
+        if ("adam".equals(speaker)) return 1;
+        if ("shaikha".equals(speaker)) return 2;
+        if ("sulaiman".equals(speaker)) return 3;
+        return -1;
+    }
+
+    private String storySpeakerName(String speaker) {
+        int hero = storyHeroIndex(speaker);
+        if (hero >= 0) return safeHeroName(hero);
+        if ("narrator".equals(speaker)) return storyContent.isRtl() ? "الراوي" : "NARRATOR";
+        if ("vox".equals(speaker)) return storyContent.isRtl() ? "أدريان فوكس" : "ADRIAN VOX";
+        return speaker.replace('_', ' ').toUpperCase(Locale.US);
+    }
+
+    private void drawWrappedText(Canvas canvas, String value, float left, float right, float y,
+                                 float size, int color, Paint.Align align, float lineHeight) {
+        paint.setShader(null);
+        paint.setColor(color);
+        paint.setTextSize(size);
+        paint.setTextAlign(align);
+        paint.setTypeface(android.graphics.Typeface.DEFAULT_BOLD);
+        float anchor = align == Paint.Align.RIGHT ? right : left;
+        float width = Math.max(40f, right - left);
+        String[] words = value.trim().split("\\s+");
+        StringBuilder line = new StringBuilder();
+        int row = 0;
+        for (String word : words) {
+            String candidate = line.length() == 0 ? word : line + " " + word;
+            if (paint.measureText(candidate) > width && line.length() > 0) {
+                canvas.drawText(line.toString(), anchor, y + row++ * lineHeight, paint);
+                line.setLength(0);
+                line.append(word);
+            } else {
+                line.setLength(0);
+                line.append(candidate);
+            }
+        }
+        if (line.length() > 0) canvas.drawText(line.toString(), anchor, y + row * lineHeight, paint);
+    }
+
     private void drawGame(Canvas canvas) {
         drawBackdrop(canvas, cameraX);
         drawStageProps(canvas);
@@ -4566,6 +4848,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         }
         for (Particle particle : particles) if (particle.active) drawParticle(canvas, particle);
         for (SpriteEffect effect : spriteEffects) if (effect.active) drawSpriteEffect(canvas, effect);
+        drawScorePopup(canvas);
         drawHud(canvas);
         drawPickupPrompt(canvas);
         if (debugOverlay) drawDebugOverlay(canvas);
@@ -4615,6 +4898,22 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                         Color.WHITE, true, Paint.Align.CENTER);
             }
         }
+    }
+
+    private void showScorePopup(int amount, float screenX, float screenY) {
+        scorePopupAmount = Math.max(0, amount);
+        scorePopupTimer = 54;
+        scorePopupX = clamp(screenX, 42f, W - 42f);
+        scorePopupY = clamp(screenY, 78f, H - 62f);
+    }
+
+    private void drawScorePopup(Canvas canvas) {
+        if (scorePopupTimer <= 0 || scorePopupAmount <= 0) return;
+        float progress = 1f - scorePopupTimer / 54f;
+        int alpha = Math.round(255f * Math.min(1f, scorePopupTimer / 15f));
+        int color = Color.argb(alpha, 255, 223, 78);
+        text(canvas, "+" + scorePopupAmount, scorePopupX, scorePopupY - progress * 19f,
+                13, color, true, Paint.Align.CENTER);
     }
 
     private void drawPlayer(Canvas canvas) {
@@ -5434,15 +5733,18 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         drawTopBrand(canvas, "SETTINGS & ACCESSIBILITY");
         paint.setColor(Color.argb(235, 13, 14, 43));
         roundRect(canvas, 76, 70, 564, 318, 18, paint);
-        settingRow(canvas, 104, 88, "MUSIC", musicEnabled ? "ON" : "OFF", musicEnabled, settingsOption == 0);
-        settingRow(canvas, 104, 122, "SOUND EFFECTS", sfxEnabled ? "ON" : "OFF", sfxEnabled, settingsOption == 1);
-        settingRow(canvas, 104, 156, "HAPTICS", hapticsEnabled ? "ON" : "OFF", hapticsEnabled, settingsOption == 2);
-        settingRow(canvas, 104, 190, "SCREEN SHAKE", shakeEnabled ? "ON" : "OFF", shakeEnabled, settingsOption == 3);
+        settingRow(canvas, 104, 80, "MUSIC", musicEnabled ? "ON" : "OFF", musicEnabled, settingsOption == 0);
+        settingRow(canvas, 104, 110, "SOUND EFFECTS", sfxEnabled ? "ON" : "OFF", sfxEnabled, settingsOption == 1);
+        settingRow(canvas, 104, 140, "HAPTICS", hapticsEnabled ? "ON" : "OFF", hapticsEnabled, settingsOption == 2);
+        settingRow(canvas, 104, 170, "SCREEN SHAKE", shakeEnabled ? "ON" : "OFF", shakeEnabled, settingsOption == 3);
         String diff = difficulty == 0 ? "EASY" : difficulty == 2 ? "HARD" : "NORMAL";
-        settingRow(canvas, 104, 224, "DIFFICULTY", diff, true, settingsOption == 4);
-        settingRow(canvas, 104, 258, "GAME UPDATE", updateStatus, !updateBusy, settingsOption == 5);
-        button(canvas, 445, 317, 555, 347, "BACK", Color.rgb(217, 255, 85), Color.rgb(15, 24, 35),
-                settingsOption == 6);
+        settingRow(canvas, 104, 200, "DIFFICULTY", diff, true, settingsOption == 4);
+        settingRow(canvas, 104, 230, "STORY LANGUAGE",
+                "ar".equals(storyContent.language()) ? "العربية" : "ENGLISH", true,
+                settingsOption == 5);
+        settingRow(canvas, 104, 260, "GAME UPDATE", updateStatus, !updateBusy, settingsOption == 6);
+        button(canvas, 445, 316, 555, 346, "BACK", Color.rgb(217, 255, 85), Color.rgb(15, 24, 35),
+                settingsOption == 7);
     }
 
     private void drawResults(Canvas canvas) {
@@ -5456,14 +5758,33 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         for (int i = 0; i < 3; i++) {
             text(canvas, "★", 260 + i * 60, 133, 42, i < stars ? Color.rgb(255, 199, 72) : Color.rgb(58, 59, 91), true, Paint.Align.CENTER);
         }
-        resultRow(canvas, 132, 167, "SCORE", String.format(Locale.US, "%07d", score));
-        resultRow(canvas, 132, 195, "HITS", Integer.toString(totalHits));
-        resultRow(canvas, 132, 223, "DAMAGE TAKEN", Integer.toString(damageTaken));
-        resultRow(canvas, 132, 251, "BEST", String.format(Locale.US, "%07d", bestScore));
+        resultRow(canvas, 104, 161, "SCORE", String.format(Locale.US, "%07d", score));
+        resultRow(canvas, 104, 189, "RANK", overallRank());
+        resultRow(canvas, 104, 217, "BEST", String.format(Locale.US, "%07d", bestScore));
+        text(canvas, "ARCADE TOP 3", 433, 162, 10, Color.rgb(66, 214, 224),
+                true, Paint.Align.CENTER);
+        for (int index = 0; index < 3; index++) {
+            String value = index < highScores.length
+                    ? String.format(Locale.US, "%07d", highScores[index]) : "-------";
+            text(canvas, (index + 1) + ".", 379, 188 + index * 24, 10,
+                    Color.rgb(255, 199, 72), true, Paint.Align.RIGHT);
+            text(canvas, value, 395, 188 + index * 24, 12, Color.WHITE,
+                    true, Paint.Align.LEFT);
+        }
+        text(canvas, "HITS " + totalHits + "  •  DAMAGE " + damageTaken,
+                252, 255, 9, Color.rgb(183, 202, 219), true, Paint.Align.CENTER);
         button(canvas, 126, 280, 309, 315, "PLAY AGAIN", Color.rgb(66, 214, 224), Color.rgb(13, 25, 35),
                 resultsOption == 0);
         button(canvas, 331, 280, 514, 315, "MAP", Color.rgb(217, 255, 85), Color.rgb(13, 25, 35),
                 resultsOption == 1);
+    }
+
+    private String overallRank() {
+        if (score >= 42000) return "S";
+        if (score >= 34000) return "A";
+        if (score >= 27000) return "B";
+        if (score >= 20000) return "C";
+        return "D";
     }
 
     private void drawGameOver(Canvas canvas) {
@@ -5887,6 +6208,14 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             }
             return;
         }
+        if (state == STORY) {
+            advanceStory();
+            return;
+        }
+        if (state == TALLY) {
+            completeStageTally();
+            return;
+        }
         if (state == PAUSE) {
             if (inside(x, y, 218, 112, 422, 164)) safeResumePlay();
             else if (inside(x, y, 218, 165, 422, 217)) {
@@ -5900,16 +6229,17 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             return;
         }
         if (state == SETTINGS) {
-            if (inside(x, y, 90, 76, 545, 110)) {
+            if (inside(x, y, 90, 68, 545, 99)) {
                 musicEnabled = !musicEnabled;
                 audio.setMusicEnabled(musicEnabled);
-            } else if (inside(x, y, 90, 110, 545, 144)) {
+            } else if (inside(x, y, 90, 99, 545, 129)) {
                 sfxEnabled = !sfxEnabled;
                 audio.setSfxEnabled(sfxEnabled);
-            } else if (inside(x, y, 90, 144, 545, 178)) hapticsEnabled = !hapticsEnabled;
-            else if (inside(x, y, 90, 178, 545, 212)) shakeEnabled = !shakeEnabled;
-            else if (inside(x, y, 90, 212, 545, 246)) difficulty = (difficulty + 1) % 3;
-            else if (inside(x, y, 90, 246, 545, 286)) requestUpdateCheck();
+            } else if (inside(x, y, 90, 129, 545, 159)) hapticsEnabled = !hapticsEnabled;
+            else if (inside(x, y, 90, 159, 545, 189)) shakeEnabled = !shakeEnabled;
+            else if (inside(x, y, 90, 189, 545, 219)) difficulty = (difficulty + 1) % 3;
+            else if (inside(x, y, 90, 219, 545, 249)) toggleStoryLanguage();
+            else if (inside(x, y, 90, 249, 545, 292)) requestUpdateCheck();
             else if (inside(x, y, 430, 304, 575, 360)) {
                 saveSettings();
                 enterState(settingsReturn);
@@ -6285,6 +6615,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 }
             } else if (state == INTRO) {
                 safeEnterPlayFromIntro();
+            } else if (state == STORY) {
+                advanceStory();
+            } else if (state == TALLY) {
+                completeStageTally();
             } else if (state == PAUSE || state == SETTINGS || state == RESULTS
                     || state == GAME_OVER || state == GALLERY) {
                 activateSelectedMenuAction();
@@ -6300,16 +6634,13 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private void safeEnterPlayFromIntro() {
         try {
-            if (!tryConfirmSelectionToStart()) {
-                finishSelectionTransition();
-                enterState(SELECT);
-                return;
-            }
             beginSelectionTransition();
+            clampHeroIndexesForPlay();
             clearCheckpoint();
             resetGame();
             saveCheckpoint(0);
-            enterState(PLAY);
+            if (automatedFullStageTest) enterState(PLAY);
+            else beginStory("stage_1_intro", STORY_TO_PLAY);
             finishSelectionTransition();
         } catch (Throwable runtimeError) {
             Log.e(TAG, "Failed to enter PLAY", runtimeError);
@@ -6333,7 +6664,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         try {
             p1Ready = false;
             p2Ready = false;
-            if (state == PAUSE || state == SELECT || state == INTRO || state == RESULTS
+            if (state == PAUSE || state == SELECT || state == INTRO || state == STORY || state == RESULTS
                     || state == GAME_OVER || state == GALLERY) {
                 menuChoice = 0;
                 if (!hasCheckpoint) menuChoice = 1;
@@ -6411,6 +6742,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             case INTRO:
                 safeEnterPlayFromIntro();
                 break;
+            case STORY:
+                advanceStory();
+                break;
+            case TALLY:
+                completeStageTally();
+                break;
             case PAUSE:
                 if (pauseOption == 0) {
                     safeResumePlay();
@@ -6447,10 +6784,14 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     break;
                 }
                 if (settingsOption == 5) {
-                    requestUpdateCheck();
+                    toggleStoryLanguage();
                     break;
                 }
                 if (settingsOption == 6) {
+                    requestUpdateCheck();
+                    break;
+                }
+                if (settingsOption == 7) {
                     saveSettings();
                     enterState(settingsReturn);
                 }
@@ -6514,7 +6855,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (state == SETTINGS) {
             if (vertical != 0 || horizontal != 0) {
                 settingsOption += vertical != 0 ? (vertical > 0 ? 1 : -1) : 0;
-                settingsOption = clampInt(settingsOption, 0, 6);
+                settingsOption = clampInt(settingsOption, 0, 7);
             }
         }
         if (state == RESULTS) {
@@ -6678,6 +7019,13 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 .putInt("difficulty", difficulty)
                 .putFloat("touch_opacity", touchOpacity)
                 .apply();
+    }
+
+    private void toggleStoryLanguage() {
+        String next = "ar".equals(storyContent.language()) ? "en" : "ar";
+        prefs.edit().putString("story_language", next).apply();
+        storyContent = StoryContent.load(getContext());
+        audio.play(AudioController.CONFIRM);
     }
 
     private static ColorMatrixColorFilter createStageEnemyFilter(float degrees, float saturation) {
