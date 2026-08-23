@@ -420,8 +420,8 @@
     },
     {
       "path": "heroes/parent_anim.png",
-      "bytes": 2180614,
-      "sha256": "c865e16d10f817fb9cf08d2040ed5d1eae6fd89da0577dcb228293a9c138cd59",
+      "bytes": 2476251,
+      "sha256": "5ce673f25f4f46b8af67fb9941f9d8391718ed58ee3640aa7f9d4a785c322ec4",
       "width": 1536,
       "height": 2112,
       "mode": "RGBA"
@@ -628,8 +628,8 @@
     },
     {
       "path": "runtime/heroes/parent_anim.png",
-      "bytes": 4431562,
-      "sha256": "ddb0a8a571acc252fbe6dc567d9a0bfe71efe07d07666c206fc56a8ef968b80a",
+      "bytes": 5085572,
+      "sha256": "66701bd6743c9912a4ddd58f3e2ff586e45b9ffedf72d5d0796f8468cf614d21",
       "width": 2272,
       "height": 3124,
       "mode": "RGBA"
@@ -788,8 +788,8 @@
     },
     {
       "path": "tv/heroes/parent_anim.png",
-      "bytes": 1286576,
-      "sha256": "5a489595b047ae8aaf946f1db12c0d4771e1cf762f7546a7f1e2fb8f624e1b74",
+      "bytes": 1443719,
+      "sha256": "7d1d8b184de800116730d89fe636b6aa2c731666480a5c7fdcaa99b888753fd9",
       "width": 1152,
       "height": 1584,
       "mode": "RGBA"
@@ -828,8 +828,8 @@
     },
     {
       "path": "uhd/heroes/parent_anim.png",
-      "bytes": 7590420,
-      "sha256": "ce67c219ed47090779f7a9f7420890a64e6e2b9dc7d3ee0ab4ec285147099435",
+      "bytes": 8734215,
+      "sha256": "e5c500dace18cbf5772a51b037557c8cbb12cb1d65bee3cca41654930c8ccbd6",
       "width": 3072,
       "height": 4224,
       "mode": "RGBA"

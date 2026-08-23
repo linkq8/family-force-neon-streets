@@ -14,7 +14,8 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "android/app/src/main/assets"
-SOURCE = ROOT / "assets/imagegen/android/character-redraw-v3"
+SOURCE_V3 = ROOT / "assets/imagegen/android/character-redraw-v3"
+SOURCE_V4 = ROOT / "assets/imagegen/android/character-redraw-v4"
 
 ESSA_ACTIONS = ("idle", "walk", "punch", "kick", "heavy_punch",
                 "heavy_kick", "jump", "special", "link", "hurt", "knockdown")
@@ -23,16 +24,19 @@ STRIKER_ACTIONS = ("idle", "walk", "attack1", "attack2", "hurt", "knockdown")
 # The generated heavy-kick sheet contains the right keys but not chronological
 # panel order. Reorder, never interpolate, to keep one readable action.
 FRAME_REMAP = {
-    ("essa", "walk"): (0, 1, 2, 3, 5, 6, 7, 0),
-    ("essa", "heavy_kick"): (1, 4, 2, 0, 5, 6, 3, 7),
 }
+
+
+def actor_source(name: str) -> Path:
+    return SOURCE_V4 if name == "essa" else SOURCE_V3
 
 
 def is_chroma(red: int, green: int, blue: int) -> bool:
     return green > 138 and green > red * 1.35 and green > blue * 1.20
 
 
-def split_sheet(path: Path, columns: int, rows: int) -> list[Image.Image]:
+def split_sheet(path: Path, columns: int, rows: int,
+                preserve_canvas: bool = False) -> list[Image.Image]:
     image = Image.open(path).convert("RGB")
     frames = []
     for index in range(columns * rows):
@@ -48,11 +52,45 @@ def split_sheet(path: Path, columns: int, rows: int) -> list[Image.Image]:
         pixels = cell.load()
         rgba = Image.new("RGBA", cell.size, (0, 0, 0, 0))
         output = rgba.load()
-        for y in range(cell.height):
+        edge = ([pixels[x, 0] for x in range(cell.width)]
+                + [pixels[x, cell.height - 1] for x in range(cell.width)]
+                + [pixels[0, y] for y in range(cell.height)]
+                + [pixels[cell.width - 1, y] for y in range(cell.height)])
+        chroma_edge = sum(is_chroma(*color) for color in edge) / max(1, len(edge))
+        if chroma_edge >= 0.5:
+            for y in range(cell.height):
+                for x in range(cell.width):
+                    red, green, blue = pixels[x, y]
+                    if not is_chroma(red, green, blue):
+                        output[x, y] = (red, green, blue, 255)
+        else:
+            # Some otherwise approved sheets arrive on a smooth dark studio
+            # gradient. Flood only locally similar colors from the four edges;
+            # the fighter's hard navy outline stops the flood cleanly.
+            background = set()
+            queue = deque()
             for x in range(cell.width):
-                red, green, blue = pixels[x, y]
-                if not is_chroma(red, green, blue):
-                    output[x, y] = (red, green, blue, 255)
+                queue.extend(((x, 0), (x, cell.height - 1)))
+            for y in range(cell.height):
+                queue.extend(((0, y), (cell.width - 1, y)))
+            while queue:
+                x, y = queue.popleft()
+                if (x, y) in background:
+                    continue
+                background.add((x, y))
+                color = pixels[x, y]
+                for nx, ny in ((x-1, y), (x+1, y), (x, y-1), (x, y+1)):
+                    if not (0 <= nx < cell.width and 0 <= ny < cell.height):
+                        continue
+                    neighbor = pixels[nx, ny]
+                    delta = sum(abs(color[index] - neighbor[index]) for index in range(3))
+                    if delta <= 18 and (nx, ny) not in background:
+                        queue.append((nx, ny))
+            for y in range(cell.height):
+                for x in range(cell.width):
+                    if (x, y) not in background:
+                        red, green, blue = pixels[x, y]
+                        output[x, y] = (red, green, blue, 255)
         # Remove residual grid/background components. Real body/effect pixels
         # are isolated inside the chroma margin and never touch a crop edge.
         alpha = rgba.getchannel("A")
@@ -92,7 +130,7 @@ def split_sheet(path: Path, columns: int, rows: int) -> list[Image.Image]:
         bbox = rgba.getchannel("A").getbbox()
         if bbox is None:
             raise ValueError(f"empty generated cell: {path} #{index}")
-        frames.append(rgba.crop(bbox))
+        frames.append(rgba if preserve_canvas else rgba.crop(bbox))
     return frames
 
 
@@ -247,6 +285,60 @@ def place_striker_standing(frame: Image.Image, box: tuple[int, int, int, int],
     return output
 
 
+def place_essa_canvas(frame: Image.Image, target_cell: tuple[int, int],
+                      y_adjust: int = 0, row_scale: float = 1.0,
+                      ground_locked: bool = False) -> Image.Image:
+    """Scale the whole authored panel once, never the per-frame body bbox."""
+    inset = max(3, math.ceil(target_cell[0] * 0.025))
+    size = (round((target_cell[0] - inset * 2) * row_scale),
+            round((target_cell[1] - inset * 2) * row_scale))
+    actor = frame.resize(size, Image.Resampling.LANCZOS)
+    alpha = actor.getchannel("A").point(lambda value: 255 if value >= 96 else 0)
+    actor.putalpha(alpha)
+    output = Image.new("RGBA", target_cell, (0, 0, 0, 0))
+    output.alpha_composite(actor, ((target_cell[0] - actor.width) // 2,
+                                    (target_cell[1] - actor.height) // 2 + y_adjust))
+    bbox = output.getchannel("A").getbbox()
+    if bbox is not None:
+        dx = 5 - bbox[0] if bbox[0] < 5 else (target_cell[0] - 5 - bbox[2]
+                                              if bbox[2] > target_cell[0] - 5 else 0)
+        if ground_locked:
+            dy = target_cell[1] - 6 - bbox[3]
+            if bbox[1] + dy < 5:
+                dy = 5 - bbox[1]
+        else:
+            dy = 5 - bbox[1] if bbox[1] < 5 else (target_cell[1] - 1 - bbox[3]
+                                                  if bbox[3] > target_cell[1] - 1 else 0)
+        if dx or dy:
+            shifted = Image.new("RGBA", target_cell, (0, 0, 0, 0))
+            shifted.alpha_composite(output, (dx, dy))
+            output = shifted
+    return output
+
+
+def essa_row_scale(frames: list[Image.Image], target_cell: tuple[int, int]) -> float:
+    """Normalize action-sheet authoring scale while preserving frame motion."""
+    inset = max(3, math.ceil(target_cell[0] * 0.025))
+    inner_width = target_cell[0] - inset * 2
+    inner_height = target_cell[1] - inset * 2
+    neutral = frames[0].getchannel("A").getbbox()
+    if neutral is None:
+        return 1.0
+    neutral_height = (neutral[3] - neutral[1]) / frames[0].height * inner_height
+    scale = target_cell[1] * 0.84 / max(1, neutral_height)
+    # Every row shares one scale. Cap it against the widest/tallest action key
+    # so an extended fist, boot, or energy ring remains inside a 5px gutter.
+    for frame in frames:
+        bbox = frame.getchannel("A").getbbox()
+        if bbox is None:
+            continue
+        width = (bbox[2] - bbox[0]) / frame.width * inner_width
+        height = (bbox[3] - bbox[1]) / frame.height * inner_height
+        scale = min(scale, (target_cell[0] - 10) / max(1, width),
+                    (target_cell[1] - 10) / max(1, height))
+    return max(0.85, min(1.35, scale))
+
+
 def build_actor(name: str, actions: tuple[str, ...], source_columns: int,
                 output_specs: tuple[tuple[Path, tuple[int, int]], ...]) -> None:
     columns, rows = source_columns, len(actions)
@@ -254,9 +346,11 @@ def build_actor(name: str, actions: tuple[str, ...], source_columns: int,
     boxes = []
     source_rows = []
     for row, action in enumerate(actions):
-        frames = split_sheet(SOURCE / name / "actions" / f"{action}.png",
-                             4 if name == "essa" else 3, 2)
-        placement = guide_boxes(SOURCE / name / "guides" / f"{action}.png",
+        source_root = actor_source(name)
+        frames = split_sheet(source_root / name / "actions" / f"{action}.png",
+                             4 if name == "essa" else 3, 2,
+                             preserve_canvas=name == "essa")
+        placement = guide_boxes(source_root / name / "guides" / f"{action}.png",
                                 4 if name == "essa" else 3, 2)
         remap = FRAME_REMAP.get((name, action))
         if remap:
@@ -273,6 +367,8 @@ def build_actor(name: str, actions: tuple[str, ...], source_columns: int,
         atlas = Image.new("RGBA", (target_cell[0] * columns, target_cell[1] * rows),
                           (0, 0, 0, 0))
         for row, action in enumerate(actions):
+            row_scale = essa_row_scale(source_rows[row], target_cell) \
+                if name == "essa" and action not in ("jump", "knockdown") else 1.0
             for column, frame in enumerate(source_rows[row]):
                 # Generated idle frames are intentionally restrained. A one
                 # pixel breath keeps the loop visibly alive without rubber scaling.
@@ -280,7 +376,11 @@ def build_actor(name: str, actions: tuple[str, ...], source_columns: int,
                     if name == "essa" and action == "idle" else 0
                 adjust = (0, -1, 0, -1, 0, -1)[column] \
                     if name == "striker" and action == "idle" else adjust
-                if name == "striker" and action != "knockdown":
+                if name == "essa":
+                    cell = place_essa_canvas(
+                        frame, target_cell, adjust, row_scale,
+                        ground_locked=action not in ("jump", "knockdown"))
+                elif name == "striker" and action != "knockdown":
                     cell = place_striker_standing(
                         frame, boxes[row][column], reference_cell, target_cell, adjust)
                 else:

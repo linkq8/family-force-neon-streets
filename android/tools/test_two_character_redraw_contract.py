@@ -58,4 +58,21 @@ assert "manager.getMemoryClass() >= 384" in GAME_VIEW
 assert 'loadBitmap("uhd/heroes/" + stem)' in GAME_VIEW
 assert 'loadBitmap("uhd/enemies/" + stem)' in GAME_VIEW
 
+for relative, cell_width, cell_height, maximum_height_delta in (
+    ("heroes/parent_anim.png", 192, 192, 2),
+    ("runtime/heroes/parent_anim.png", 284, 284, 3),
+    ("uhd/heroes/parent_anim.png", 384, 384, 5),
+):
+    atlas = Image.open(ASSETS / relative).convert("RGBA")
+    walk_boxes = []
+    for column in range(8):
+        cell = atlas.crop((column * cell_width, cell_height,
+                           (column + 1) * cell_width, cell_height * 2))
+        walk_boxes.append(cell.getchannel("A").getbbox())
+    heights = [box[3] - box[1] for box in walk_boxes]
+    bottoms = [box[3] for box in walk_boxes]
+    assert max(heights) - min(heights) <= maximum_height_delta, \
+        (relative, "walk scale pumping", heights)
+    assert len(set(bottoms)) == 1, (relative, "walk ground-line drift", bottoms)
+
 print("Two-character redraw contract: PASS (Essa + Striker only, adaptive UHD)")
