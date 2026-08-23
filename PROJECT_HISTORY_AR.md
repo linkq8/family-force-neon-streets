@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.39.1-alpha`، `versionCode 48`.
+- النسخة المنشورة: `v0.40.0-alpha`، `versionCode 49`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `bcbd909`.
+- آخر commit وظيفي: `4aa3d83`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.39.1-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.39.1-alpha/family-force-family-current.apk
-- SHA-256: `6338e2fe756a330a868ae7dfcdf607730c191289a43a4d6a3467d50fe35345d4`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.40.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.40.0-alpha/family-force-family-current.apk
+- SHA-256: `d82231dbb33b730f7b4baa19646d1dd6bcb53e127e4195224b4c6f1ec23f0766`.
 - حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس عالية الكثافة
   والتحكم وعقود البانوراما/القص/ذاكرة TV ناجحة؛ الميزانية `97.12 MiB` مع تحميل
   أربعة أطالس أعداء فقط للمنطقة الحالية. نجح Android TV
@@ -31,8 +31,8 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: اختبار `v0.39.1-alpha` بصريًا على Shield/Xiaomi عبر
-  idle→walk→jump→attack للتأكد من ثبات الحجم المدرك على الشاشة الحقيقية.
+- العمل التالي الموصى به: اختبار Adam V5 في `v0.40.0-alpha` بصريًا على
+  Shield/Xiaomi عبر idle→walk→jump→attack، ثم معالجة Shaikha وحدها.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -179,6 +179,47 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-23-45 — تطبيق معيار Essa V4 على Adam وShaikha وSulaiman
+
+- المنفذ: Codex
+- طلب المستخدم: بعد نجاح ثبات وجودة Essa، تطبيق الطريقة نفسها على بقية
+  الشخصيات الرئيسية.
+- الحالة: مكتمل — نُفذ Adam وحده بناءً على توجيه المستخدم.
+- نقطة البداية: `v0.39.1-alpha` / commit `f9e287d`.
+- النطاق النهائي لهذه الدفعة: إعادة رسم Adam فقط؛ Essa وShaikha وSulaiman
+  وجميع الأعداء مقفلة دون تغيير.
+- الخطة: اعتماد Masters تحفظ الهوية والعمر والزي، إنتاج 11×8 إطارًا ثابتًا لكل
+  بطل بلا فيديو، تطبيق scale lock نفسه مع نسب الأطوال 108/108/124 سم، فحص
+  الأطالس والذاكرة وTV ثم إصدار APK واحد ورفعه.
+- ما تم:
+  - إنتاج Master واضح لآدم و11 لوحة ثابتة × 8 إطارات، بلا فيديو.
+  - رفض اللوحات الجماعية التي تسرب إليها حرف S؛ إعادة إنتاج آدم منفردًا، مع
+    صدر أخضر بلا أي حرف أو شعار وفحص بصري لكل لوحة قبل الدمج.
+  - تطبيق scale lock على الوقوف والمشي والقفز والقتال والتعافي، مع تثبيت خط
+    الأرض وتطبيع طول knockdown.
+  - إبقاء Adam وShaikha متساويين في الإسقاط لأن كليهما 108 سم.
+  - إضافة UHD 384px للأجهزة ذات الذاكرة الكبيرة، مع Runtime 192px للأجهزة
+    الضعيفة كي تبقى ميزانية Android TV عند `97.12 MiB`.
+- الملفات المعدلة:
+  - `assets/imagegen/android/hero-redraw-v5/adam/`
+  - `android/app/src/main/assets/{heroes,tv/heroes,runtime/heroes,uhd/heroes}/adam_anim.png`
+  - `android/tools/build_two_character_redraw.py`
+  - `android/tools/test_two_character_redraw_contract.py`
+  - `android/tools/test_runtime_character_atlases.py`
+  - `android/app/build.gradle`
+- الاختبارات:
+  - redraw/scale-lock contract — PASS.
+  - animation atlas + family-height contract — PASS (10/10).
+  - runtime atlas/smoothness/TV encounter memory — PASS (`97.12 MiB`).
+  - customer Release build + R8 + Lint + signing + APK asset verification — PASS.
+  - جهاز/Emulator — SKIPPED؛ لا يوجد جهاز متصل.
+- Release: `v0.40.0-alpha` — commit `4aa3d83` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.40.0-alpha
+  — APK SHA-256 `d82231dbb33b730f7b4baa19646d1dd6bcb53e127e4195224b4c6f1ec23f0766`.
+- ملاحظات/مخاطر: نُقلت محاولات Shaikha/Sulaiman غير المعتمدة خارج المشروع ولم
+  تدخل APK. يلزم فحص آدم على TV الحقيقي للحكم على الحركة الإدراكية.
+- التالي: بعد موافقة المستخدم على آدم، تنفيذ Shaikha وحدها بالطريقة نفسها.
 
 ### 2026-08-23-44 — تثبيت مقياس Essa عبر كل الحركات والقفز
 
@@ -1791,11 +1832,12 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.39.1-alpha` منشور؛ مقياس Essa مقفل داخل كل حركة وبين كل الحركات.
-- آخر عمل: تطبيع 88 إطارًا إلى مقياس تشريحي واحد، حفظ مسار القفز الرأسي، وتثبيت
-  طول الجسم في knockdown، دون صور جديدة أو تغيير شخصيات أخرى.
-- آخر قرار: اختبار الانتقالات الفعلية على TV هو البوابة التالية؛ لا تعديل رسم
-  جديد قبل معرفة إن بقي اختلاف إدراكي من الوضعيات نفسها.
+- الحالة: `v0.40.0-alpha` منشور؛ Adam V5 مكتمل منفردًا مع 88 إطارًا نظيفًا
+  بلا حروف أو شعارات وثبات مقياس شامل.
+- آخر عمل: إعادة رسم ودمج Adam فقط، إضافة مسار UHD متكيف، وإبقاء مسار TV
+  منخفض الذاكرة ضمن ميزانية `97.12 MiB`.
+- آخر قرار: تُنفذ الشخصيات واحدة تلو الأخرى لمنع انتقال الهوية؛ Shaikha التالية
+  فقط بعد تحقق المستخدم من Adam على الجهاز الحقيقي.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
@@ -1804,5 +1846,5 @@
   5. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
   6. `android/docs/VISUAL_ASSET_STANDARD_AR.md`
   7. `android/tools/test_two_character_redraw_contract.py`
-- الإجراء التالي المقترح: تثبيت `v0.39.1-alpha` وفحص idle→walk→jump→attack على
-  Shield وXiaomi Stick مع التركيز على ثبات الحجم.
+- الإجراء التالي المقترح: تثبيت `v0.40.0-alpha` وفحص Adam عبر
+  idle→walk→jump→attack على Shield وXiaomi Stick، ثم بدء Shaikha وحدها.
