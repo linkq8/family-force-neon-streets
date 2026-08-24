@@ -30,9 +30,9 @@ for snippet in (
     "score += clearedRule.clearBonus",
     "p2Link = Math.min(100, p2Link + clearedRule.clearLink)",
     'diagnostics.event("STAGE_BONUS "',
-    'enemy.type == EnemyArchetype.BOSS ? "STAGE BOSS" : "MINI-BOSS"',
-    "transitionRule.objective",
-    "transitionRule.hint",
+    'enemy.type == EnemyArchetype.BOSS ? ui("stage_boss", "STAGE BOSS") : ui("mini_boss", "MINI-BOSS")',
+    "stageObjective(nextStage)",
+    "stageHint(nextStage)",
 ):
     assert snippet in game, snippet
 

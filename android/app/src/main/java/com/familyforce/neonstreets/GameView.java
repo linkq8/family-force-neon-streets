@@ -629,17 +629,58 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private String safeHeroName(int hero) {
         int index = safeHeroIndex(hero);
-        return HERO_NAMES[index];
+        String configured = HERO_NAMES[index];
+        String defaultName = index == 0 ? "ESSA" : index == 1 ? "ADAM"
+                : index == 2 ? "SHAIKHA" : "SULAIMAN";
+        if (isArabicUi() && configured.equals(defaultName)) {
+            return ui("hero_" + index, configured);
+        }
+        return configured;
     }
 
     private String safeHeroRole(int hero) {
         int index = safeHeroIndex(hero);
-        return HERO_ROLES[index];
+        return ui("role_" + index, HERO_ROLES[index]);
     }
 
     private String safeHeroMove(int hero) {
         int index = safeHeroIndex(hero);
-        return HERO_MOVES[index];
+        return ui("move_" + index, HERO_MOVES[index]);
+    }
+
+    private boolean isArabicUi() {
+        return storyContent != null && "ar".equals(storyContent.language());
+    }
+
+    private String ui(String key, String fallback) {
+        return storyContent == null ? fallback : storyContent.ui(key, fallback);
+    }
+
+    private String stageName(int stage) {
+        int index = clampInt(stage, 0, STAGE_NAMES.length - 1);
+        return ui("stage_" + index, STAGE_NAMES[index]);
+    }
+
+    private String locationName(int location) {
+        int index = clampInt(location, 0, LOCATION_NAMES.length - 1);
+        return ui("location_" + index, LOCATION_NAMES[index]);
+    }
+
+    private String stageObjective(int stage) {
+        StageCombatRule rule = StageCombatRule.forStage(stage);
+        return ui("objective_" + clampInt(stage, 0, 3), rule.objective);
+    }
+
+    private String stageHint(int stage) {
+        StageCombatRule rule = StageCombatRule.forStage(stage);
+        return ui("hint_" + clampInt(stage, 0, 3), rule.hint);
+    }
+
+    private String localizedUpdateStatus() {
+        String key = updateStatus == null ? "" : updateStatus.trim().toLowerCase(Locale.US)
+                .replace("...", "").replace(' ', '_');
+        if (key.isEmpty()) key = "check_now";
+        return ui(key, updateStatus == null ? "CHECK NOW" : updateStatus);
     }
 
     private int safeHeroColor(int hero) {
@@ -4247,7 +4288,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private void drawInactiveControlSurface(Canvas canvas) {
         drawControlSurface(canvas, 88);
-        text(canvas, "PAUSED  •  CONTROLS LOCKED", virtualWidth * 0.5f,
+        text(canvas, ui("paused_controls", "PAUSED • CONTROLS LOCKED"), virtualWidth * 0.5f,
                 responsiveLayout == LAYOUT_CONTROL_DECK
                         ? gameSceneY + H + 27f : 40f,
                 11, Color.argb(185, 217, 255, 85), true, Paint.Align.CENTER);
@@ -4347,10 +4388,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             text(canvas, customerProfile.eventTitle, W / 2f, 130, 34,
                     customerProfile.theme.accentColor, true, Paint.Align.CENTER);
         }
-        text(canvas, "AN ORIGINAL FAMILY ARCADE BRAWLER", W / 2f, 221, 12,
+        text(canvas, ui("title_tagline", "AN ORIGINAL FAMILY ARCADE BRAWLER"), W / 2f, 221, 12,
                 Color.rgb(130, 233, 226), true, Paint.Align.CENTER);
-        pulseButton(canvas, 205, 236, 435, 279, "TAP TO START");
-        text(canvas, "ANDROID ALPHA  •  NO ADS  •  OFFLINE", W / 2f, 335, 11,
+        pulseButton(canvas, 205, 236, 435, 279, ui("tap_to_start", "TAP TO START"));
+        text(canvas, ui("alpha_note", "ANDROID ALPHA • NO ADS • OFFLINE"), W / 2f, 335, 11,
                 Color.argb(190, 255, 255, 255), false, Paint.Align.CENTER);
     }
 
@@ -4360,9 +4401,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.drawRect(0, 0, W, H, paint);
         text(canvas, customerProfile.eventTitle, 28, 34, 18,
                 Color.WHITE, true, Paint.Align.LEFT);
-        text(canvas, "CHOOSE YOUR NIGHT ROUTE", 28, 55, 10,
+        text(canvas, ui("menu_heading", "CHOOSE YOUR NIGHT ROUTE"), 28, 55, 10,
                 Color.rgb(144, 221, 224), true, Paint.Align.LEFT);
-        text(canvas, "04 STAGES  •  LOCAL CO-OP  •  TV READY", 612, 52, 8,
+        text(canvas, ui("menu_meta", "04 STAGES • LOCAL CO-OP • TV READY"), 612, 52, 8,
                 Color.rgb(217, 255, 85), true, Paint.Align.RIGHT);
         paint.setColor(Color.rgb(46, 65, 102));
         canvas.drawRect(28, 65, 612, 67, paint);
@@ -4377,11 +4418,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.drawRect(73, 172, 300, 174, paint);
         canvas.drawRect(73, 218, 300, 220, paint);
         canvas.drawRect(73, 264, 300, 266, paint);
-        menuCard(canvas, 28, 82, 318, 124, "CONTINUE", hasCheckpoint ? "RESUME SAFE CHECKPOINT" : "NO SAVED ROUTE", MENU_ROUTE_COLORS[0], menuChoice == 0);
-        menuCard(canvas, 28, 128, 318, 170, "1 PLAYER", "NEW SOLO FAMILY RUN", MENU_ROUTE_COLORS[1], menuChoice == 1);
-        menuCard(canvas, 28, 174, 318, 216, "2 PLAYERS", "NEW LOCAL CO-OP TEAM", MENU_ROUTE_COLORS[2], menuChoice == 2);
-        menuCard(canvas, 28, 220, 318, 262, "TRAINING", "MOVES & WEAPONS", MENU_ROUTE_COLORS[3], menuChoice == 3);
-        menuCard(canvas, 28, 266, 318, 308, "SETTINGS", "SOUND & COMFORT", MENU_ROUTE_COLORS[4], menuChoice == 4);
+        menuCard(canvas, 28, 82, 318, 124, ui("continue_game", "CONTINUE"),
+                hasCheckpoint ? ui("continue_saved", "RESUME SAFE CHECKPOINT") : ui("continue_empty", "NO SAVED ROUTE"), MENU_ROUTE_COLORS[0], menuChoice == 0);
+        menuCard(canvas, 28, 128, 318, 170, ui("one_player", "1 PLAYER"), ui("one_player_sub", "NEW SOLO FAMILY RUN"), MENU_ROUTE_COLORS[1], menuChoice == 1);
+        menuCard(canvas, 28, 174, 318, 216, ui("two_players", "2 PLAYERS"), ui("two_players_sub", "NEW LOCAL CO-OP TEAM"), MENU_ROUTE_COLORS[2], menuChoice == 2);
+        menuCard(canvas, 28, 220, 318, 262, ui("training", "TRAINING"), ui("training_sub", "MOVES & WEAPONS"), MENU_ROUTE_COLORS[3], menuChoice == 3);
+        menuCard(canvas, 28, 266, 318, 308, ui("settings", "SETTINGS"), ui("settings_sub", "SOUND & COMFORT"), MENU_ROUTE_COLORS[4], menuChoice == 4);
         canvas.restore();
         canvas.save();
         canvas.translate(20f * (1f - reveal), 0f);
@@ -4393,24 +4435,24 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.argb(220, Color.red(routeColor), Color.green(routeColor), Color.blue(routeColor)));
         roundRect(canvas, 339, 82, 612, 312, 16, paint);
         paint.setStyle(Paint.Style.FILL);
-        text(canvas, menuChoice == 0 ? "SAFE CHECKPOINT" : menuChoice == 1
-                        ? "SOLO DEPARTURE" : menuChoice == 2 ? "CO-OP INTERCHANGE"
-                        : menuChoice == 3 ? "TRAINING DEPOT" : "CONTROL ROOM",
+        text(canvas, menuChoice == 0 ? ui("checkpoint_title", "SAFE CHECKPOINT") : menuChoice == 1
+                        ? ui("solo_title", "SOLO DEPARTURE") : menuChoice == 2 ? ui("coop_title", "CO-OP INTERCHANGE")
+                        : menuChoice == 3 ? ui("training_title", "TRAINING DEPOT") : ui("control_title", "CONTROL ROOM"),
                 365, 111, 15, Color.WHITE, true, Paint.Align.LEFT);
-        text(canvas, menuChoice == 0 ? (hasCheckpoint ? "CONTINUE FROM A CLEAN ENCOUNTER" : "START A NEW ROUTE FIRST")
-                        : menuChoice == 1 ? "ONE HERO + ONE LINK COMPANION"
-                        : menuChoice == 2 ? "TWO HEROES • TWO COMPANIONS"
-                        : menuChoice == 3 ? "SAFE PRACTICE • ALL COMMANDS"
-                        : "AUDIO • TOUCH • ACCESSIBILITY",
+        text(canvas, menuChoice == 0 ? (hasCheckpoint ? ui("checkpoint_ready", "CONTINUE FROM A CLEAN ENCOUNTER") : ui("checkpoint_missing", "START A NEW ROUTE FIRST"))
+                        : menuChoice == 1 ? ui("solo_detail", "ONE HERO + ONE LINK COMPANION")
+                        : menuChoice == 2 ? ui("coop_detail", "TWO HEROES • TWO COMPANIONS")
+                        : menuChoice == 3 ? ui("training_detail", "SAFE PRACTICE • ALL COMMANDS")
+                        : ui("control_detail", "AUDIO • TOUCH • ACCESSIBILITY"),
                 365, 132, 9, routeColor, true, Paint.Align.LEFT);
         drawStagePreviewRail(canvas, routeColor);
         paint.setColor(Color.argb(210, 16, 31, 65));
         roundRect(canvas, 357, 249, 594, 296, 11, paint);
-        text(canvas, "BEST RUN", 372, 269, 9, Color.rgb(144, 221, 224), true, Paint.Align.LEFT);
+        text(canvas, ui("best_run", "BEST RUN"), 372, 269, 9, Color.rgb(144, 221, 224), true, Paint.Align.LEFT);
         text(canvas, String.format(Locale.US, "%07d", bestScore), 579, 282, 21,
                 Color.WHITE, true, Paint.Align.RIGHT);
         canvas.restore();
-        text(canvas, "D-PAD  NAVIGATE     A / OK  SELECT     B / BACK  RETURN",
+        text(canvas, ui("menu_help", "D-PAD NAVIGATE   A / OK SELECT   B / BACK RETURN"),
                 W / 2f, 341, 9, Color.rgb(190, 207, 222), true, Paint.Align.CENTER);
     }
 
@@ -4518,17 +4560,17 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         drawBackdrop(canvas, 620f);
         paint.setColor(Color.argb(174, 6, 13, 38));
         canvas.drawRect(0, 0, W, H, paint);
-        text(canvas, twoPlayerMode ? "BUILD YOUR CO-OP LINE" : "CHOOSE YOUR HERO",
+        text(canvas, twoPlayerMode ? ui("build_coop", "BUILD YOUR CO-OP LINE") : ui("choose_hero", "CHOOSE YOUR HERO"),
                 24, 31, 19, Color.WHITE, true, Paint.Align.LEFT);
-        text(canvas, twoPlayerMode ? "Both players confirm before departure"
-                        : "Choose a hero and a Link companion",
+        text(canvas, twoPlayerMode ? ui("build_coop_sub", "Both players confirm before departure")
+                        : ui("choose_hero_sub", "Choose a hero and a Link companion"),
                 24, 51, 10, Color.rgb(144, 221, 224), true, Paint.Align.LEFT);
         paint.setColor(Color.argb(220, 19, 31, 64));
         roundRect(canvas, 456, 18, 616, 51, 9, paint);
-        text(canvas, activeSelectionSlot == 0 ? "P1 SELECTING" : "P2 SELECTING",
+        text(canvas, "P" + (activeSelectionSlot + 1) + " " + ui("selecting", "SELECTING"),
                 536, 32, 10, activeSelectionSlot == 0 ? Color.rgb(217, 255, 85)
                         : Color.rgb(255, 192, 65), true, Paint.Align.CENTER);
-        text(canvas, "D-PAD HERO  •  L1/R1 LINK", 536, 44, 7,
+        text(canvas, ui("select_help", "D-PAD HERO • L1/R1 LINK"), 536, 44, 7,
                 Color.rgb(190, 207, 222), true, Paint.Align.CENTER);
         paint.setColor(Color.rgb(46, 65, 102));
         canvas.drawRect(24, 62, 616, 64, paint);
@@ -4558,11 +4600,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         drawPlayerBoard(canvas, 1, 266, 272, selectedCardP2, selectedCompanion2,
                 twoPlayerMode && p2Ready, activeSelectionSlot == 1);
         int readyColor = isBattleReady() ? Color.rgb(217, 255, 85) : Color.rgb(72, 88, 108);
-        button(canvas, 504, 272, 622, 337, isBattleReady() ? "DEPART" : "READY",
+        button(canvas, 504, 272, 622, 337, isBattleReady() ? ui("depart", "DEPART") : ui("ready", "READY"),
                 readyColor, Color.rgb(8, 20, 35));
-        text(canvas, isBattleReady() ? "TEAM LOCKED" : twoPlayerMode
-                        ? (p1Ready ? "WAITING FOR P2" : "CONFIRM P1 FIRST")
-                        : "CONFIRM HERO",
+        text(canvas, isBattleReady() ? ui("team_locked", "TEAM LOCKED") : twoPlayerMode
+                        ? (p1Ready ? ui("waiting_p2", "WAITING FOR P2") : ui("confirm_p1", "CONFIRM P1 FIRST"))
+                        : ui("confirm_hero", "CONFIRM HERO"),
                 563, 356, 9, isBattleReady() ? Color.rgb(217, 255, 85)
                         : Color.rgb(183, 201, 216), true, Paint.Align.CENTER);
     }
@@ -4581,10 +4623,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             canvas.drawCircle(stops[i], y, i == stops.length - 1 ? 3.5f : 2.5f, paint);
         }
         text(canvas, "P1", stops[0], 267, 7, colors[0], true, Paint.Align.CENTER);
-        text(canvas, "LINK", stops[1], 267, 7, colors[1], true, Paint.Align.CENTER);
+        text(canvas, ui("link", "LINK"), stops[1], 267, 7, colors[1], true, Paint.Align.CENTER);
         text(canvas, "P2", stops[2], 267, 7, colors[2], true, Paint.Align.CENTER);
-        text(canvas, "LINK", stops[3], 267, 7, colors[3], true, Paint.Align.CENTER);
-        text(canvas, "GO", stops[4], 267, 7, colors[4], true, Paint.Align.CENTER);
+        text(canvas, ui("link", "LINK"), stops[3], 267, 7, colors[3], true, Paint.Align.CENTER);
+        text(canvas, ui("depart", "GO"), stops[4], 267, 7, colors[4], true, Paint.Align.CENTER);
     }
 
     private void drawPlayerBoard(Canvas canvas, int slot, float left, float top,
@@ -4604,14 +4646,14 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.drawCircle(left + 28, top + 27, 17, paint);
         text(canvas, "P" + (slot + 1), left + 28, top + 32, 11,
                 Color.rgb(8, 20, 35), true, Paint.Align.CENTER);
-        text(canvas, enabled ? safeHeroName(hero) : "OPTIONAL", left + 55, top + 22,
+        text(canvas, enabled ? safeHeroName(hero) : ui("optional", "OPTIONAL"), left + 55, top + 22,
                 13, enabled ? Color.WHITE : Color.rgb(126, 143, 160), true, Paint.Align.LEFT);
-        text(canvas, enabled ? "LINK  " + safeHeroName(companion) : "ENABLE 2 PLAYERS IN MENU",
+        text(canvas, enabled ? ui("link", "LINK") + "  " + safeHeroName(companion) : ui("enable_p2", "ENABLE 2 PLAYERS IN MENU"),
                 left + 55, top + 41, 9, enabled ? color : Color.rgb(100, 117, 136),
                 true, Paint.Align.LEFT);
         paint.setColor(ready ? Color.rgb(80, 220, 135) : Color.rgb(42, 59, 82));
         roundRect(canvas, left + 12, top + 55, left + 218, top + 76, 8, paint);
-        text(canvas, !enabled ? "OFF" : ready ? "READY — PRESS AGAIN TO DEPART" : "L1 / R1 LINK  •  A / OK READY",
+        text(canvas, !enabled ? ui("off_label", "OFF") : ready ? ui("ready_again", "READY — PRESS AGAIN TO DEPART") : ui("ready_help", "L1 / R1 LINK • A / OK READY"),
                 left + 115, top + 70, 8, ready ? Color.rgb(5, 29, 29) : Color.WHITE,
                 true, Paint.Align.CENTER);
     }
@@ -4671,8 +4713,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         float reveal = stateMotion(520);
         paint.setColor(Color.argb(230, 12, 13, 42));
         roundRect(canvas, 54, 40, 586, 322, 20, paint);
-        text(canvas, "STAGE 1 OF 4", W / 2f, 72, 14, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
-        text(canvas, trainingMode ? "TRAINING BLOCK" : "NIGHT MARKET RESCUE", W / 2f, 108, 27,
+        text(canvas, ui("stage_of_four", "STAGE 1 OF 4"), W / 2f, 72, 14, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
+        text(canvas, trainingMode ? ui("training_block", "TRAINING BLOCK") : ui("night_market_rescue", "NIGHT MARKET RESCUE"), W / 2f, 108, 27,
                 Color.WHITE, true, Paint.Align.CENTER);
         paint.setColor(safeHeroColor(hero));
         canvas.drawRect(104, 125, 104 + 432f * reveal, 131, paint);
@@ -4684,15 +4726,18 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.restore();
         text(canvas, safeHeroRole(hero) + "  •  " + safeHeroMove(hero),
                 214, 160, 13, safeHeroColor(hero), true, Paint.Align.LEFT);
-        text(canvas, customerProfile.introMessage, 214, 177, 9,
+        String introMessage = CustomerProfile.DEFAULT_INTRO.equals(customerProfile.introMessage)
+                ? ui("default_intro_message", CustomerProfile.DEFAULT_INTRO)
+                : customerProfile.introMessage;
+        text(canvas, introMessage, 214, 177, 9,
                 customerProfile.theme.accentColor, true, Paint.Align.LEFT);
         text(canvas, trainingMode
-                        ? "Learn movement, combos, items\nand the Family Link assist."
-                        : "The market lights are out. Clear the route,\nhelp the neighbors, and stop the Junk King.",
+                        ? ui("training_intro", "Learn movement, combos, items\nand the Family Link assist.")
+                        : ui("campaign_intro", "The market lights are out. Clear the route,\nhelp the neighbors, and stop Shadow Grid."),
                 214, 190, 13, Color.rgb(195, 215, 226), false, Paint.Align.LEFT);
-        text(canvas, "MARKET  →  PARK  →  ALLEY", 214, 247, 11,
+        text(canvas, ui("market_route", "MARKET → PARK → ALLEY"), 214, 247, 11,
                 Color.rgb(109, 226, 217), true, Paint.Align.LEFT);
-        button(canvas, 222, 276, 418, 311, "BEGIN", Color.rgb(217, 255, 85), Color.rgb(15, 24, 35));
+        button(canvas, 222, 276, 418, 311, ui("begin", "BEGIN"), Color.rgb(217, 255, 85), Color.rgb(15, 24, 35));
     }
 
     private void drawStory(Canvas canvas) {
@@ -4727,7 +4772,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         Paint.Align align = storyContent.isRtl() ? Paint.Align.RIGHT : Paint.Align.LEFT;
         float anchor = storyContent.isRtl() ? textRight : textLeft;
         text(canvas, storySpeakerName(line.speaker), anchor, 126, 18, accent, true, align);
-        text(canvas, line.emotion.toUpperCase(Locale.US), anchor, 145, 8,
+        text(canvas, ui("emotion_" + line.emotion, line.emotion.toUpperCase(Locale.US)), anchor, 145, 8,
                 Color.rgb(145, 175, 198), true, align);
         drawWrappedText(canvas, line.text, textLeft, textRight, 171, 15,
                 Color.WHITE, align, 22);
@@ -4748,7 +4793,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.drawRect(80, 28, 560, 36, paint);
         text(canvas, storyContent.ui("clear", "STAGE CLEAR"), W / 2f, 74,
                 28, accent, true, Paint.Align.CENTER);
-        text(canvas, "STAGE " + (clearedStage + 1) + "  •  " + STAGE_NAMES[clearedStage],
+        text(canvas, storyContent.ui("stage", "STAGE") + " " + (clearedStage + 1) + "  •  " + stageName(clearedStage),
                 W / 2f, 96, 10, Color.WHITE, true, Paint.Align.CENTER);
         // The heroes visibly celebrate instead of freezing on the last KO frame.
         drawPortrait(canvas, safeHeroIndex(selectedHero), 102, 112, 88, 88);
@@ -4758,7 +4803,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         text(canvas, "★", 225, 174, 52, Color.rgb(255, 205, 68), true, Paint.Align.CENTER);
         text(canvas, tallyRank, 320, 183, 76, accent, true, Paint.Align.CENTER);
         text(canvas, "★", 415, 174, 52, Color.rgb(255, 205, 68), true, Paint.Align.CENTER);
-        resultRow(canvas, 146, 211, "COMBAT", String.format(Locale.US, "+%05d", tallyCombatScore));
+        resultRow(canvas, 146, 211, ui("combat", "COMBAT"), String.format(Locale.US, "+%05d", tallyCombatScore));
         resultRow(canvas, 146, 235, storyContent.ui("time", "TIME"),
                 String.format(Locale.US, "+%05d", tallyTimeBonus));
         resultRow(canvas, 146, 259, storyContent.ui("health", "HEALTH"),
@@ -4784,7 +4829,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (storySceneId.equals("prologue")) return storyContent.isRtl() ? "المقدمة" : "PROLOGUE";
         if (storySceneId.equals("ending")) return storyContent.isRtl() ? "النهاية" : "ENDING";
         int stage = storySceneId.length() > 6 ? Character.digit(storySceneId.charAt(6), 10) : 1;
-        return storyContent.ui("stage", "STAGE") + " " + stage + "  •  " + STAGE_NAMES[clampInt(stage - 1, 0, 3)];
+        return storyContent.ui("stage", "STAGE") + " " + stage + "  •  " + stageName(stage - 1);
     }
 
     private int storyHeroIndex(String speaker) {
@@ -4800,6 +4845,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (hero >= 0) return safeHeroName(hero);
         if ("narrator".equals(speaker)) return storyContent.isRtl() ? "الراوي" : "NARRATOR";
         if ("vox".equals(speaker)) return storyContent.isRtl() ? "أدريان فوكس" : "ADRIAN VOX";
+        String localized = ui("speaker_" + speaker, "");
+        if (!localized.isEmpty()) return localized;
         return speaker.replace('_', ' ').toUpperCase(Locale.US);
     }
 
@@ -4873,9 +4920,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             roundRect(canvas, x - 35, 185, x + 40, 215, 5, paint);
             paint.setColor(signAccent);
             canvas.drawRect(x - 35, 185, x + 40, 190, paint);
-            String sign = i == 0 ? "MARKET" : i == 1 ? "PARK" : i == 2 ? "ROOFTOP"
-                    : i == 3 ? "DEPOT" : i == 4 ? "HARBOR" : i == 5 ? "FREEWAY"
-                    : i == 6 ? "DOCK" : i == 7 ? "PALACE" : i == 8 ? "THRONE" : "FINALE";
+            String sign = ui("sign_" + i, i < LOCATION_NAMES.length ? LOCATION_NAMES[i] : "FINALE");
             text(canvas, sign, x + 2, 205,
                     9, Color.WHITE, true, Paint.Align.CENTER);
             text(canvas, "S" + (signStage + 1) + "  ›", x + 34, 214,
@@ -4892,9 +4937,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 canvas.drawRect(gate, 208, gate + 3, 337, paint);
                 paint.setColor(Color.argb(224, 7, 15, 36));
                 roundRect(canvas, gate - 112, 214, gate - 8, 240, 7, paint);
-                text(canvas, "ROUTE LOCKED", gate - 60, 226, 8,
+                text(canvas, ui("route_locked", "ROUTE LOCKED"), gate - 60, 226, 8,
                         gateAccent, true, Paint.Align.CENTER);
-                text(canvas, "CLEAR THE WAVE", gate - 60, 236, 6,
+                text(canvas, ui("clear_wave", "CLEAR THE WAVE"), gate - 60, 236, 6,
                         Color.WHITE, true, Paint.Align.CENTER);
             }
         }
@@ -5186,7 +5231,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     enemy.y - enemy.z - height - 5, paint);
         }
         if (enemy.elite && enemy.alive) {
-            text(canvas, enemy.type == EnemyArchetype.BOSS ? "STAGE BOSS" : "MINI-BOSS",
+            text(canvas, enemy.type == EnemyArchetype.BOSS ? ui("stage_boss", "STAGE BOSS") : ui("mini_boss", "MINI-BOSS"),
                     x, enemy.y - enemy.z - height - (enemy.maxGuard > 0 ? 25f : 14f), 7f,
                     STAGE_ACCENTS[stageForZone(enemy.zone)], true, Paint.Align.CENTER);
         }
@@ -5199,7 +5244,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             canvas.drawRect(x - guardW / 2f, guardY,
                     x - guardW / 2f + guardW * enemy.guard / enemy.maxGuard,
                     guardY + 5f, paint);
-            text(canvas, "GUARD", x, guardY - 2f, 6f,
+            text(canvas, ui("guard", "GUARD"), x, guardY - 2f, 6f,
                     Color.rgb(165, 244, 255), true, Paint.Align.CENTER);
         }
         if (enemy.state == ENEMY_STATE_ATTACK && !enemy.attackHitFired
@@ -5300,7 +5345,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.rgb(255, 202, 75));
         roundRect(canvas, x - 48f, y - 18f, x + 48f, y + 10f, 9f, paint);
         paint.setStyle(Paint.Style.FILL);
-        text(canvas, gamepadUiActive ? "A  PICK UP" : "PICK UP", x, y + 1f, 9,
+        text(canvas, gamepadUiActive ? "A  " + ui("pickup", "PICK UP") : ui("pickup", "PICK UP"), x, y + 1f, 9,
                 Color.WHITE, true, Paint.Align.CENTER);
     }
 
@@ -5368,9 +5413,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         roundRect(canvas, 14, 13, 310, 74, 12, paint);
         drawPortrait(canvas, p1, 20, 18, 48, 48);
         text(canvas, safeHeroName(p1), 77, 31, 12, safeHeroColor(p1), true, Paint.Align.LEFT);
-        bar(canvas, 77, 38, 207, 49, health / (float) maxHealth, Color.rgb(255, 76, 91), "HP");
-        bar(canvas, 77, 54, 207, 63, energy / 100f, Color.rgb(67, 219, 230), "SP");
-        bar(canvas, 216, 38, 292, 49, linkMeter / 100f, Color.rgb(217, 255, 85), "LINK");
+        bar(canvas, 77, 38, 207, 49, health / (float) maxHealth, Color.rgb(255, 76, 91), ui("hp", "HP"));
+        bar(canvas, 77, 54, 207, 63, energy / 100f, Color.rgb(67, 219, 230), ui("sp", "SP"));
+        bar(canvas, 216, 38, 292, 49, linkMeter / 100f, Color.rgb(217, 255, 85), ui("link", "LINK"));
         text(canvas, health + "/" + maxHealth, 204, 47, 7, Color.WHITE, true, Paint.Align.RIGHT);
         text(canvas, energy + "%", 204, 62, 7, Color.WHITE, true, Paint.Align.RIGHT);
         if (linkMeter >= 50) {
@@ -5379,9 +5424,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             paint.setColor(Color.argb(90, 20, 30, 45));
             roundRect(canvas, 217, 37, 291, 58, 4, paint);
             paint.setColor(Color.rgb(8, 14, 24));
-            text(canvas, "LINK READY", 254, 53, 9, Color.WHITE, true, Paint.Align.CENTER);
+            text(canvas, ui("link_ready", "LINK READY"), 254, 53, 9, Color.WHITE, true, Paint.Align.CENTER);
             paint.setColor(Color.rgb(217, 255, 85));
-            if (energy >= 30) text(canvas, "SP READY", 150, 17, 9, Color.WHITE, true, Paint.Align.LEFT);
+            if (energy >= 30) text(canvas, ui("sp_ready", "SP READY"), 150, 17, 9, Color.WHITE, true, Paint.Align.LEFT);
         } else {
             paint.setColor(Color.WHITE);
             text(canvas, linkMeter + "%", 289, 47, 7, Color.WHITE, true, Paint.Align.RIGHT);
@@ -5393,20 +5438,20 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             text(canvas, "P2 " + safeHeroName(p2), 330, 29, 10,
                     p2Color, true, Paint.Align.LEFT);
             bar(canvas, 330, 34, 460, 42, p2Health / (float) Math.max(1, safeHeroMaxHealth(p2)),
-                    p2Color, "HP");
+                    p2Color, ui("hp", "HP"));
             text(canvas, p2Health + "/" + safeHeroMaxHealth(p2), 458, 32, 7,
                     Color.WHITE, true, Paint.Align.RIGHT);
-            bar(canvas, 330, 46, 395, 54, p2Energy / 100f, Color.rgb(67, 219, 230), "SP");
-            bar(canvas, 402, 46, 460, 54, p2Link / 100f, Color.rgb(217, 255, 85), "LINK");
+            bar(canvas, 330, 46, 395, 54, p2Energy / 100f, Color.rgb(67, 219, 230), ui("sp", "SP"));
+            bar(canvas, 402, 46, 460, 54, p2Link / 100f, Color.rgb(217, 255, 85), ui("link", "LINK"));
             if (p2Link >= 50) {
                 paint.setColor(Color.argb(255, 217, 255, 85));
                 roundRect(canvas, 398, 42, 464, 60, 5, paint);
                 paint.setColor(Color.argb(90, 20, 30, 45));
                 roundRect(canvas, 401, 45, 461, 57, 4, paint);
                 paint.setColor(Color.rgb(8, 14, 24));
-                text(canvas, "LINK READY", 429, 55, 8, Color.WHITE, true, Paint.Align.CENTER);
+                text(canvas, ui("link_ready", "LINK READY"), 429, 55, 8, Color.WHITE, true, Paint.Align.CENTER);
                 paint.setColor(Color.rgb(217, 255, 85));
-                if (p2Energy >= 30) text(canvas, "SP READY", 330, 17, 9, Color.WHITE, true, Paint.Align.LEFT);
+                if (p2Energy >= 30) text(canvas, ui("sp_ready", "SP READY"), 330, 17, 9, Color.WHITE, true, Paint.Align.LEFT);
             }
         }
         if (twoPlayerMode && (p1ReviveProgress > 0 || p2ReviveProgress > 0)) {
@@ -5414,8 +5459,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             paint.setColor(Color.argb(235, 8, 9, 31));
             roundRect(canvas, 230, 82, 410, 108, 8, paint);
             bar(canvas, 242, 96, 398, 104, revive / 120f,
-                    Color.rgb(255, 202, 80), "REVIVE");
-            text(canvas, "STAY CLOSE TO REVIVE", 320, 93, 9,
+                    Color.rgb(255, 202, 80), ui("revive", "REVIVE"));
+            text(canvas, ui("stay_close", "STAY CLOSE TO REVIVE"), 320, 93, 9,
                     Color.WHITE, true, Paint.Align.CENTER);
         }
         if (cachedScore != score) {
@@ -5426,19 +5471,19 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.argb(210, 8, 9, 31));
         roundRect(canvas, 480, 13, 626, 61, 10, paint);
         int hudStage = currentStage();
-        text(canvas, zone >= ZONE_TRIGGERS.length ? "ALL STAGES CLEAR"
-                        : "STAGE " + (hudStage + 1) + "  " + STAGE_NAMES[hudStage],
+        text(canvas, zone >= ZONE_TRIGGERS.length ? ui("all_stages_clear", "ALL STAGES CLEAR")
+                        : storyContent.ui("stage", "STAGE") + " " + (hudStage + 1) + "  " + stageName(hudStage),
                 553, 33, zone >= ZONE_TRIGGERS.length ? 10 : 8,
                 STAGE_ACCENTS[hudStage], true, Paint.Align.CENTER);
         text(canvas, zone >= ZONE_TRIGGERS.length ? "4/4"
-                        : "WAVE " + waveInStage(zone) + "/" + wavesInStage(hudStage),
+                        : ui("wave", "WAVE") + " " + waveInStage(zone) + "/" + wavesInStage(hudStage),
                 553, 50, 10, Color.LTGRAY, false, Paint.Align.CENTER);
         if (combo >= 2 && comboWindow > 0) {
-            String rating = combo >= 3 ? "IN SYNC!" : "SPARK!";
+            String rating = combo >= 3 ? ui("in_sync", "IN SYNC!") : ui("spark", "SPARK!");
             text(canvas, rating, 614, 112, 20, Color.rgb(217, 255, 85), true, Paint.Align.RIGHT);
             if (cachedCombo != combo) {
                 cachedCombo = combo;
-                cachedComboText = combo + " HIT";
+                cachedComboText = combo + " " + ui("hit", "HIT");
             }
             text(canvas, cachedComboText, 614, 132, 13, Color.WHITE, true, Paint.Align.RIGHT);
         }
@@ -5448,11 +5493,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             canvas.scale(pulse, pulse, 320f, 143f);
             paint.setColor(Color.argb(220, 8, 9, 31));
             roundRect(canvas, 232, 118, 408, 154, 10, paint);
-            text(canvas, "TEAM COMBO!", 320, 141, 18,
+            text(canvas, ui("team_combo", "TEAM COMBO!"), 320, 141, 18,
                     Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
             canvas.restore();
         } else if (dashAttackActive && attackTimer > 0) {
-            text(canvas, "DASH STRIKE", 320, 140, 13,
+            text(canvas, ui("dash_strike", "DASH STRIKE"), 320, 140, 13,
                     Color.rgb(67, 219, 230), true, Paint.Align.CENTER);
         }
         if (lastHitEnemy != null && lastHitEnemyTicks > 0) {
@@ -5463,7 +5508,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     : lastHitEnemy.type == ENEMY_STRIKER ? Color.rgb(66, 232, 238)
                     : lastHitEnemy.type == 1 ? Color.rgb(120, 200, 255)
                     : Color.rgb(190, 190, 210);
-            String enemyName = EnemyArchetype.of(lastHitEnemy.type).displayName;
+            String enemyName = ui("enemy_" + lastHitEnemy.type,
+                    EnemyArchetype.of(lastHitEnemy.type).displayName);
             text(canvas, enemyName, 22, 93, 10, enemyColor, true, Paint.Align.LEFT);
             bar(canvas, 22, 97, 206, 104,
                     Math.max(0, lastHitEnemy.hp) / (float) Math.max(1, lastHitEnemy.maxHp),
@@ -5545,11 +5591,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     private String weaponName(int type) {
-        if (type == WEAPON_PIPE) return "PIPE";
-        if (type == WEAPON_MALLET) return "MALLET";
-        if (type == WEAPON_SIGN) return "SIGN";
-        if (type == WEAPON_CONE) return "CONE";
-        return "BAT";
+        int index = type == WEAPON_PIPE ? 1 : type == WEAPON_MALLET ? 2
+                : type == WEAPON_SIGN ? 3 : type == WEAPON_CONE ? 4 : 0;
+        String fallback = index == 1 ? "PIPE" : index == 2 ? "MALLET"
+                : index == 3 ? "SIGN" : index == 4 ? "CONE" : "BAT";
+        return ui("weapon_" + index, fallback);
     }
 
     private void drawTouchControls(Canvas canvas) {
@@ -5598,7 +5644,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             pixelPaint.setAlpha(255);
         } else {
             float fontSize = index >= 2 ? 7f : 8f;
-            text(canvas, ACTION_BUTTON_LABELS[index], x, y + 3f,
+            text(canvas, ui("action_" + index, ACTION_BUTTON_LABELS[index]), x, y + 3f,
                     fontSize * controlScale, Color.WHITE, true, Paint.Align.CENTER);
         }
     }
@@ -5610,9 +5656,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             canvas.drawRect(0, top, virtualWidth, virtualHeight, paint);
             paint.setColor(Color.argb(Math.min(210, alpha), 66, 214, 204));
             canvas.drawRect(0, top, virtualWidth, top + 2f, paint);
-            text(canvas, "MOVE", 90f, top + 20f, 9,
+            text(canvas, ui("move", "MOVE"), 90f, top + 20f, 9,
                     Color.argb(Math.min(210, alpha), 130, 233, 226), true, Paint.Align.CENTER);
-            text(canvas, "ACTION DECK", virtualWidth * 0.5f, top + 20f, 9,
+            text(canvas, ui("action_deck", "ACTION DECK"), virtualWidth * 0.5f, top + 20f, 9,
                     Color.argb(Math.min(210, alpha), 217, 255, 85), true, Paint.Align.CENTER);
         } else if (responsiveLayout == LAYOUT_SIDE_GUTTERS) {
             paint.setColor(Color.argb(Math.min(220, alpha + 65), 8, 10, 32));
@@ -5630,15 +5676,15 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         paint.setColor(Color.argb(alpha, 8, 9, 31));
         roundRect(canvas, 154, 102, 486, 163, 12, paint);
         if (zone < ZONE_TRIGGERS.length && zoneActive) {
-            StageCombatRule rule = StageCombatRule.forStage(currentStage());
-            text(canvas, "STAGE " + (currentStage() + 1) + "  •  WAVE "
+            int bannerStage = currentStage();
+            text(canvas, storyContent.ui("stage", "STAGE") + " " + (bannerStage + 1) + "  •  " + ui("wave", "WAVE") + " "
                             + waveInStage(zone) + "/" + wavesInStage(currentStage()),
                     W / 2f, 120, 10, STAGE_ACCENTS[currentStage()], true, Paint.Align.CENTER);
-            text(canvas, rule.objective, W / 2f, 140, 15, Color.WHITE, true, Paint.Align.CENTER);
-            text(canvas, LOCATION_NAMES[zone], W / 2f, 155, 8,
+            text(canvas, stageObjective(bannerStage), W / 2f, 140, 15, Color.WHITE, true, Paint.Align.CENTER);
+            text(canvas, locationName(zone), W / 2f, 155, 8,
                     Color.rgb(194, 218, 229), true, Paint.Align.CENTER);
         } else if (zone < ZONE_TRIGGERS.length) {
-            text(canvas, "ROUTE OPEN", W / 2f, 140, 22, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
+            text(canvas, ui("route_open", "ROUTE OPEN"), W / 2f, 140, 22, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
         }
     }
 
@@ -5676,19 +5722,19 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.drawRect(0, 0, W, H, paint);
         paint.setColor(Color.argb(250, 13, 18, 48));
         roundRect(canvas, 88, 72, 552, 286, 24, paint);
-        text(canvas, showingClear ? "STAGE " + (clearedStage + 1) + " CLEAR"
-                        : "STAGE " + (nextStage + 1),
+        text(canvas, showingClear ? storyContent.ui("stage", "STAGE") + " " + (clearedStage + 1) + " " + storyContent.ui("clear", "CLEAR")
+                        : storyContent.ui("stage", "STAGE") + " " + (nextStage + 1),
                 W / 2f, 128, 31, accent, true, Paint.Align.CENTER);
-        text(canvas, showingClear ? STAGE_NAMES[clearedStage] : STAGE_NAMES[nextStage],
+        text(canvas, showingClear ? stageName(clearedStage) : stageName(nextStage),
                 W / 2f, 170, 22, Color.WHITE, true, Paint.Align.CENTER);
         paint.setColor(accent);
         canvas.drawRect(165, 191, 475, 197, paint);
         StageCombatRule transitionRule = StageCombatRule.forStage(
                 showingClear ? clearedStage : nextStage);
-        text(canvas, showingClear ? "STAGE BONUS  +" + transitionRule.clearBonus
-                        : transitionRule.objective,
+        text(canvas, showingClear ? ui("stage_bonus", "STAGE BONUS") + "  +" + transitionRule.clearBonus
+                        : stageObjective(nextStage),
                 W / 2f, 228, 12, Color.rgb(194, 218, 229), true, Paint.Align.CENTER);
-        text(canvas, showingClear ? "NEXT STAGE" : transitionRule.hint,
+        text(canvas, showingClear ? ui("next_stage", "NEXT STAGE") : stageHint(nextStage),
                 W / 2f, 259, 10, accent, true, Paint.Align.CENTER);
     }
 
@@ -5700,29 +5746,29 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         roundRect(canvas, 154, 40, 486, 326, 18, paint);
         paint.setColor(pauseAccent);
         canvas.drawRect(154, 40, 486, 46, paint);
-        text(canvas, "ROUTE PAUSED", W / 2f, 78, 24, Color.WHITE, true, Paint.Align.CENTER);
-        text(canvas, "STAGE " + (currentStage() + 1) + "  •  " + STAGE_NAMES[currentStage()],
+        text(canvas, ui("route_paused", "ROUTE PAUSED"), W / 2f, 78, 24, Color.WHITE, true, Paint.Align.CENTER);
+        text(canvas, storyContent.ui("stage", "STAGE") + " " + (currentStage() + 1) + "  •  " + stageName(currentStage()),
                 W / 2f, 94, 8, pauseAccent, true, Paint.Align.CENTER);
         String controllerStatus = controllerLabel(primaryControllerId, "P1");
         if (twoPlayerMode) controllerStatus += "  •  " + controllerLabel(secondaryControllerId, "P2");
         text(canvas, controllerStatus, W / 2f, 109, 8,
                 Color.rgb(144, 221, 224), true, Paint.Align.CENTER);
-        button(canvas, 202, 122, 438, 160, "RESUME ROUTE", Color.rgb(217, 255, 85), Color.rgb(14, 24, 34),
+        button(canvas, 202, 122, 438, 160, ui("resume_route", "RESUME ROUTE"), Color.rgb(217, 255, 85), Color.rgb(14, 24, 34),
                 pauseOption == 0);
-        button(canvas, 202, 173, 438, 211, "SETTINGS", Color.rgb(66, 214, 224), Color.rgb(14, 24, 34),
+        button(canvas, 202, 173, 438, 211, ui("settings", "SETTINGS"), Color.rgb(66, 214, 224), Color.rgb(14, 24, 34),
                 pauseOption == 1);
-        button(canvas, 202, 224, 438, 262, "RESTART STAGE", Color.rgb(255, 197, 70), Color.rgb(14, 24, 34),
+        button(canvas, 202, 224, 438, 262, ui("restart_stage", "RESTART STAGE"), Color.rgb(255, 197, 70), Color.rgb(14, 24, 34),
                 pauseOption == 2);
-        button(canvas, 202, 275, 438, 311, "QUIT TO MAP", Color.rgb(255, 85, 94), Color.rgb(255, 255, 255),
+        button(canvas, 202, 275, 438, 311, ui("quit_map", "QUIT TO MAP"), Color.rgb(255, 85, 94), Color.rgb(255, 255, 255),
                 pauseOption == 3);
     }
 
     private String controllerLabel(int deviceId, String player) {
-        if (deviceId < 0) return player + " PRESS ANY BUTTON";
+        if (deviceId < 0) return player + " " + ui("press_any_button", "PRESS ANY BUTTON");
         InputDevice device = InputDevice.getDevice(deviceId);
-        if (device == null) return player + " DISCONNECTED";
+        if (device == null) return player + " " + ui("disconnected", "DISCONNECTED");
         String name = device.getName();
-        if (name == null || name.trim().isEmpty()) name = "CONTROLLER";
+        if (name == null || name.trim().isEmpty()) name = ui("controller", "CONTROLLER");
         name = name.toUpperCase(Locale.US);
         if (name.length() > 14) name = name.substring(0, 14);
         return player + " " + name;
@@ -5730,20 +5776,22 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private void drawSettings(Canvas canvas) {
         drawBackdrop(canvas, 250f);
-        drawTopBrand(canvas, "SETTINGS & ACCESSIBILITY");
+        drawTopBrand(canvas, ui("settings_heading", "SETTINGS & ACCESSIBILITY"));
         paint.setColor(Color.argb(235, 13, 14, 43));
         roundRect(canvas, 76, 70, 564, 318, 18, paint);
-        settingRow(canvas, 104, 80, "MUSIC", musicEnabled ? "ON" : "OFF", musicEnabled, settingsOption == 0);
-        settingRow(canvas, 104, 110, "SOUND EFFECTS", sfxEnabled ? "ON" : "OFF", sfxEnabled, settingsOption == 1);
-        settingRow(canvas, 104, 140, "HAPTICS", hapticsEnabled ? "ON" : "OFF", hapticsEnabled, settingsOption == 2);
-        settingRow(canvas, 104, 170, "SCREEN SHAKE", shakeEnabled ? "ON" : "OFF", shakeEnabled, settingsOption == 3);
-        String diff = difficulty == 0 ? "EASY" : difficulty == 2 ? "HARD" : "NORMAL";
-        settingRow(canvas, 104, 200, "DIFFICULTY", diff, true, settingsOption == 4);
-        settingRow(canvas, 104, 230, "STORY LANGUAGE",
+        String on = ui("on", "ON");
+        String off = ui("off", "OFF");
+        settingRow(canvas, 104, 80, ui("music", "MUSIC"), musicEnabled ? on : off, musicEnabled, settingsOption == 0);
+        settingRow(canvas, 104, 110, ui("sound_effects", "SOUND EFFECTS"), sfxEnabled ? on : off, sfxEnabled, settingsOption == 1);
+        settingRow(canvas, 104, 140, ui("haptics", "HAPTICS"), hapticsEnabled ? on : off, hapticsEnabled, settingsOption == 2);
+        settingRow(canvas, 104, 170, ui("screen_shake", "SCREEN SHAKE"), shakeEnabled ? on : off, shakeEnabled, settingsOption == 3);
+        String diff = difficulty == 0 ? ui("easy", "EASY") : difficulty == 2 ? ui("hard", "HARD") : ui("normal", "NORMAL");
+        settingRow(canvas, 104, 200, ui("difficulty", "DIFFICULTY"), diff, true, settingsOption == 4);
+        settingRow(canvas, 104, 230, ui("language", "INTERFACE LANGUAGE"),
                 "ar".equals(storyContent.language()) ? "العربية" : "ENGLISH", true,
                 settingsOption == 5);
-        settingRow(canvas, 104, 260, "GAME UPDATE", updateStatus, !updateBusy, settingsOption == 6);
-        button(canvas, 445, 316, 555, 346, "BACK", Color.rgb(217, 255, 85), Color.rgb(15, 24, 35),
+        settingRow(canvas, 104, 260, ui("game_update", "GAME UPDATE"), localizedUpdateStatus(), !updateBusy, settingsOption == 6);
+        button(canvas, 445, 316, 555, 346, ui("back", "BACK"), Color.rgb(217, 255, 85), Color.rgb(15, 24, 35),
                 settingsOption == 7);
     }
 
@@ -5751,17 +5799,17 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         drawBackdrop(canvas, WORLD_END);
         paint.setColor(Color.argb(232, 10, 11, 37));
         roundRect(canvas, 65, 36, 575, 326, 22, paint);
-        text(canvas, "ALL 4 STAGES CLEAR!", W / 2f, 79, 30, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
+        text(canvas, ui("campaign_clear", "ALL 4 STAGES CLEAR!"), W / 2f, 79, 30, Color.rgb(217, 255, 85), true, Paint.Align.CENTER);
         text(canvas, customerProfile.outroMessage, W / 2f, 101, 9,
                 customerProfile.theme.accentColor, true, Paint.Align.CENTER);
         int stars = 1 + (damageTaken < maxHealth / 2 ? 1 : 0) + (totalHits >= 10 ? 1 : 0);
         for (int i = 0; i < 3; i++) {
             text(canvas, "★", 260 + i * 60, 133, 42, i < stars ? Color.rgb(255, 199, 72) : Color.rgb(58, 59, 91), true, Paint.Align.CENTER);
         }
-        resultRow(canvas, 104, 161, "SCORE", String.format(Locale.US, "%07d", score));
-        resultRow(canvas, 104, 189, "RANK", overallRank());
-        resultRow(canvas, 104, 217, "BEST", String.format(Locale.US, "%07d", bestScore));
-        text(canvas, "ARCADE TOP 3", 433, 162, 10, Color.rgb(66, 214, 224),
+        resultRow(canvas, 104, 161, storyContent.ui("score", "SCORE"), String.format(Locale.US, "%07d", score));
+        resultRow(canvas, 104, 189, storyContent.ui("rank", "RANK"), overallRank());
+        resultRow(canvas, 104, 217, ui("best", "BEST"), String.format(Locale.US, "%07d", bestScore));
+        text(canvas, ui("arcade_top", "ARCADE TOP 3"), 433, 162, 10, Color.rgb(66, 214, 224),
                 true, Paint.Align.CENTER);
         for (int index = 0; index < 3; index++) {
             String value = index < highScores.length
@@ -5771,11 +5819,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             text(canvas, value, 395, 188 + index * 24, 12, Color.WHITE,
                     true, Paint.Align.LEFT);
         }
-        text(canvas, "HITS " + totalHits + "  •  DAMAGE " + damageTaken,
+        text(canvas, ui("hits", "HITS") + " " + totalHits + "  •  " + ui("damage", "DAMAGE") + " " + damageTaken,
                 252, 255, 9, Color.rgb(183, 202, 219), true, Paint.Align.CENTER);
-        button(canvas, 126, 280, 309, 315, "PLAY AGAIN", Color.rgb(66, 214, 224), Color.rgb(13, 25, 35),
+        button(canvas, 126, 280, 309, 315, ui("play_again", "PLAY AGAIN"), Color.rgb(66, 214, 224), Color.rgb(13, 25, 35),
                 resultsOption == 0);
-        button(canvas, 331, 280, 514, 315, "MAP", Color.rgb(217, 255, 85), Color.rgb(13, 25, 35),
+        button(canvas, 331, 280, 514, 315, ui("map", "MAP"), Color.rgb(217, 255, 85), Color.rgb(13, 25, 35),
                 resultsOption == 1);
     }
 
@@ -5791,29 +5839,29 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         drawBackdrop(canvas, cameraX);
         paint.setColor(Color.argb(225, 10, 8, 30));
         canvas.drawRect(0, 0, W, H, paint);
-        text(canvas, "THE ROUTE NEEDS YOU", W / 2f, 111, 30, Color.rgb(255, 91, 99), true, Paint.Align.CENTER);
-        text(canvas, "Try a new hero, grab the health drops, and watch enemy warnings.", W / 2f, 151, 13,
+        text(canvas, ui("game_over_title", "THE ROUTE NEEDS YOU"), W / 2f, 111, 30, Color.rgb(255, 91, 99), true, Paint.Align.CENTER);
+        text(canvas, ui("game_over_tip", "Try a new hero, grab health drops, and watch enemy warnings."), W / 2f, 151, 13,
                 Color.LTGRAY, false, Paint.Align.CENTER);
-        button(canvas, 153, 202, 313, 247, "RETRY", Color.rgb(217, 255, 85), Color.rgb(14, 24, 34),
+        button(canvas, 153, 202, 313, 247, ui("retry", "RETRY"), Color.rgb(217, 255, 85), Color.rgb(14, 24, 34),
                 gameOverOption == 0);
-        button(canvas, 327, 202, 487, 247, "MAP", Color.rgb(66, 214, 224), Color.rgb(14, 24, 34),
+        button(canvas, 327, 202, 487, 247, ui("map", "MAP"), Color.rgb(66, 214, 224), Color.rgb(14, 24, 34),
                 gameOverOption == 1);
     }
 
     private void drawGallery(Canvas canvas) {
         drawBackdrop(canvas, 700f);
-        drawTopBrand(canvas, "FAMILY HEROES");
-        text(canvas, "Four original heroes, inspired by your family.", W / 2f, 92, 13,
+        drawTopBrand(canvas, ui("gallery_heading", "FAMILY HEROES"));
+        text(canvas, ui("gallery_sub", "Four original heroes, inspired by your family."), W / 2f, 92, 13,
                 Color.LTGRAY, false, Paint.Align.CENTER);
         for (int i = 0; i < 4; i++) {
             float x = 44 + i * 145;
             paint.setColor(Color.argb(225, 17, 18, 52));
             roundRect(canvas, x, 116, x + 126, 276, 12, paint);
             drawPortrait(canvas, i, x + 12, 126, 102, 102);
-            text(canvas, HERO_NAMES[i], x + 63, 250, i == 3 ? 11 : 14, HERO_COLORS[i], true, Paint.Align.CENTER);
-            text(canvas, HERO_MOVES[i], x + 63, 267, 8, Color.LTGRAY, true, Paint.Align.CENTER);
+            text(canvas, safeHeroName(i), x + 63, 250, i == 3 ? 11 : 14, HERO_COLORS[i], true, Paint.Align.CENTER);
+            text(canvas, safeHeroMove(i), x + 63, 267, 8, Color.LTGRAY, true, Paint.Align.CENTER);
         }
-        button(canvas, 493, 314, 606, 345, "BACK", Color.rgb(217, 255, 85), Color.rgb(15, 24, 35),
+        button(canvas, 493, 314, 606, 345, ui("back", "BACK"), Color.rgb(217, 255, 85), Color.rgb(15, 24, 35),
                 false);
     }
 
@@ -7025,6 +7073,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         String next = "ar".equals(storyContent.language()) ? "en" : "ar";
         prefs.edit().putString("story_language", next).apply();
         storyContent = StoryContent.load(getContext());
+        cachedWeaponType = Integer.MIN_VALUE;
+        cachedCombo = Integer.MIN_VALUE;
         audio.play(AudioController.CONFIRM);
     }
 

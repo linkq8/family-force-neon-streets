@@ -26,8 +26,8 @@ checks = {
     "HTTPS host allowlist": 'requireAllowedUrl' in MANAGER and 'githubusercontent.com' in MANAGER,
     "read-only provider": 'MODE_READ_ONLY' in PROVIDER and 'UnsupportedOperationException("Read only")' in PROVIDER,
     "canonical cache boundary": 'getCanonicalFile().getParentFile().equals' in PROVIDER,
-    "controller-selectable row": 'settingsOption == 5' in GAME and 'requestUpdateCheck();' in GAME,
-    "separate back row": 'settingsOption == 6' in GAME and 'clampInt(settingsOption, 0, 6)' in GAME,
+    "controller-selectable row": 'settingsOption == 6' in GAME and 'requestUpdateCheck();' in GAME,
+    "separate back row": 'settingsOption == 7' in GAME and 'clampInt(settingsOption, 0, 7)' in GAME,
 }
 
 failed = [name for name, passed in checks.items() if not passed]

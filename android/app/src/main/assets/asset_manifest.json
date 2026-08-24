@@ -737,13 +737,13 @@
     },
     {
       "path": "story/story_ar.json",
-      "bytes": 8120,
-      "sha256": "df76cbe15c3305cf84f9f2c25c785052a4d379546dc75cd29c589683befa8da1"
+      "bytes": 17061,
+      "sha256": "338fca66fe26e6e59d3cee0148d1bbeb124285683f1b0cd8b4458ccc6a35c9ac"
     },
     {
       "path": "story/story_en.json",
-      "bytes": 6804,
-      "sha256": "3a8bfb6080ca11b4b5ad38513a4ffdefbfd8b43334bd09055246e0b29ec76079"
+      "bytes": 13459,
+      "sha256": "19b175d9be01b3ef29615610ff260186737c60270abae66e11be3725e7cbc66a"
     },
     {
       "path": "tv/backgrounds/panoramas/stage_harbor.png",
