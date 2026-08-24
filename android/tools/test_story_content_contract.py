@@ -8,6 +8,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 STORY = ROOT / "app" / "src" / "main" / "assets" / "story"
+GAME = ROOT / "app" / "src" / "main" / "java" / "com" / "familyforce" / "neonstreets" / "GameView.java"
 REQUIRED = ["prologue", "ending"] + [
     f"stage_{stage}_{part}"
     for stage in range(1, 6)
@@ -56,8 +57,23 @@ def main():
     for token in ("Shadow Code", "Essa", "evidence", "protect"):
         if token.lower() not in joined_en.lower():
             fail(f"canon token missing: {token}")
+    game = GAME.read_text(encoding="utf-8")
+    story_draw = game[game.index("private void drawStory(Canvas canvas)"):
+                      game.index("private void drawStageTally(Canvas canvas)")]
+    if "canvas.drawRect(0, 0, W, H" in story_draw:
+        fail("story must not cover the whole screen")
+    for required in (
+        "roundRect(canvas, 14, 215, 626, 351",
+        "boolean overGameplay",
+        "drawGame(canvas)",
+        "drawPortrait(canvas, hero, portraitLeft, 241, 76, 76)",
+        'storyContent.ui("continue", "CONTINUE") + "  A / OK"',
+    ):
+        if required not in story_draw:
+            fail(f"lower-third story contract missing: {required}")
     print(f"PASS: {len(REQUIRED)} bilingual scenes, "
-          f"{sum(len(lines) for lines in en['scenes'].values())} lines per language")
+          f"{sum(len(lines) for lines in en['scenes'].values())} lines per language, "
+          "lower-third dialogue")
 
 
 if __name__ == "__main__":

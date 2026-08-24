@@ -4880,42 +4880,54 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 ? clampInt(Character.digit(storySceneId.charAt(6), 10) - 1,
                         0, STAGE_NAMES.length - 1)
                 : currentStage();
-        drawBackdrop(canvas, stage == 0 ? 360f : ZONE_TRIGGERS[STAGE_START_ZONE[stage]]);
-        paint.setColor(Color.argb(192, 3, 7, 24));
-        canvas.drawRect(0, 0, W, H, paint);
+        boolean overGameplay = storySceneId.endsWith("_mid")
+                || storySceneId.endsWith("_boss")
+                || storySceneId.endsWith("_outro");
+        if (overGameplay) {
+            // Freeze the actual encounter behind boss/mid-stage dialogue. The
+            // story state still owns input, so nobody can attack off-screen.
+            drawGame(canvas);
+        } else {
+            drawBackdrop(canvas, stage == 0 ? 360f : ZONE_TRIGGERS[STAGE_START_ZONE[stage]]);
+        }
         int accent = STAGE_ACCENTS[stage];
-        text(canvas, storyContent.title(), W / 2f, 35, 15, accent, true, Paint.Align.CENTER);
-        text(canvas, storySceneLabel(), W / 2f, 56, 9, Color.rgb(201, 218, 231),
-                true, Paint.Align.CENTER);
         if (storyLines == null || storyLines.isEmpty()) return;
         StoryContent.Line line = storyLines.get(clampInt(storyLineIndex, 0, storyLines.size() - 1));
         int hero = storyHeroIndex(line.speaker);
-        paint.setColor(Color.argb(246, 9, 16, 42));
-        roundRect(canvas, 40, 76, 600, 314, 22, paint);
+        // A compact lower-third keeps the stage, actors and boss entrance
+        // visible. It replaces the former 560x238 full-screen story card.
+        paint.setColor(Color.argb(110, 0, 0, 12));
+        roundRect(canvas, 10, 211, 630, 355, 19, paint);
+        paint.setColor(Color.argb(242, 9, 16, 42));
+        roundRect(canvas, 14, 215, 626, 351, 17, paint);
         paint.setColor(accent);
-        canvas.drawRect(40, 76, 600, 83, paint);
+        canvas.drawRect(14, 215, 626, 220, paint);
+        text(canvas, storySceneLabel(), W / 2f, 232, 8,
+                Color.rgb(201, 218, 231), true, Paint.Align.CENTER);
+        float portraitLeft = storyContent.isRtl() ? 532 : 28;
         if (hero >= 0) {
-            drawPortrait(canvas, hero, storyContent.isRtl() ? 475 : 67, 103, 96, 96);
+            drawPortrait(canvas, hero, portraitLeft, 241, 76, 76);
         } else {
             paint.setColor(Color.argb(230, 28, 39, 70));
-            roundRect(canvas, storyContent.isRtl() ? 474 : 66, 104,
-                    storyContent.isRtl() ? 570 : 162, 200, 18, paint);
+            roundRect(canvas, portraitLeft, 241, portraitLeft + 76, 317, 14, paint);
             text(canvas, line.speaker.equals("narrator") ? "◆" : "⚙",
-                    storyContent.isRtl() ? 522 : 114, 166, 42, accent, true, Paint.Align.CENTER);
+                    portraitLeft + 38, 291, 34, accent, true, Paint.Align.CENTER);
         }
-        float textLeft = storyContent.isRtl() ? 70 : 190;
-        float textRight = storyContent.isRtl() ? 450 : 570;
+        float textLeft = storyContent.isRtl() ? 28 : 120;
+        float textRight = storyContent.isRtl() ? 520 : 612;
         Paint.Align align = storyContent.isRtl() ? Paint.Align.RIGHT : Paint.Align.LEFT;
         float anchor = storyContent.isRtl() ? textRight : textLeft;
-        text(canvas, storySpeakerName(line.speaker), anchor, 126, 18, accent, true, align);
-        text(canvas, ui("emotion_" + line.emotion, line.emotion.toUpperCase(Locale.US)), anchor, 145, 8,
+        text(canvas, storySpeakerName(line.speaker), anchor, 253, 14, accent, true, align);
+        text(canvas, ui("emotion_" + line.emotion, line.emotion.toUpperCase(Locale.US)), anchor, 267, 7,
                 Color.rgb(145, 175, 198), true, align);
-        drawWrappedText(canvas, line.text, textLeft, textRight, 171, 15,
-                Color.WHITE, align, 22);
-        text(canvas, (storyLineIndex + 1) + " / " + storyLines.size(), W / 2f, 287,
-                8, Color.rgb(148, 170, 193), true, Paint.Align.CENTER);
+        drawWrappedText(canvas, line.text, textLeft, textRight, 284, 12,
+                Color.WHITE, align, 16);
+        text(canvas, (storyLineIndex + 1) + " / " + storyLines.size(),
+                storyContent.isRtl() ? 607 : 33, 341,
+                7, Color.rgb(148, 170, 193), true,
+                storyContent.isRtl() ? Paint.Align.RIGHT : Paint.Align.LEFT);
         text(canvas, storyContent.ui("continue", "CONTINUE") + "  A / OK",
-                W / 2f, 304, 10, accent, true, Paint.Align.CENTER);
+                W / 2f, 341, 9, accent, true, Paint.Align.CENTER);
     }
 
     private void drawStageTally(Canvas canvas) {
