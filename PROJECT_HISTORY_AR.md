@@ -10,30 +10,29 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.43.0-alpha`، `versionCode 52`.
+- النسخة المنشورة: `v0.44.0-alpha`، `versionCode 53`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `8600fa14cb7d11faa04fd953c965d5180633f686`.
+- آخر commit وظيفي: `48b69463bd785a3473b9120dd32c8a7878c72442`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.43.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.43.0-alpha/family-force-family-current.apk
-- SHA-256: `d824ea22a67b4f07a14a571598c32805f42c5cd366aabcdbb4daec5ec57ccccf`.
-- حالة QA: واجهة Canvas والقصة ثنائيتا اللغة عبر 215 مفتاحًا متطابقًا؛ نجح
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.44.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.44.0-alpha/family-force-family-current.apk
+- SHA-256: `6e7db57809ddb6de51f5f91f14b45e6491eb1fa032dbfbe6eef6d5239d0f01da`.
+- حالة QA: واجهة Canvas والقصة ثنائيتا اللغة عبر 241 مفتاحًا متطابقًا؛ نجح
   Build/Release/R8/Lint والتوقيع والتحقق من الأصول والتحكم وعقود الأداء وذاكرة
-  TV. أكمل Android TV Emulator المسار الكامل للمناطق التسع، ونجحت ملفات
+  TV. أكمل Android TV Emulator المسار الكامل للمناطق الـ14 والمراحل الخمس، ونجحت ملفات
   phone/ultrawide/Fold/TV ومسار الريموت دون FATAL/ANR/OOM.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
   استدعاء الشخصيات الإضافية ونظافة الرسومات والحركة.
-- اختبار المناطق: مسار تطويري آلي مرّ بالمناطق 1–9 حتى شاشة النتائج بنجاح.
+- اختبار المناطق: مسار تطويري آلي مرّ بالمناطق 1–14 حتى شاشة النتائج بنجاح.
 - التشخيص: يوجد Flight Recorder محلي خفيف يحفظ آخر منطقة، P1/P2، العدو،
   السلاح، الحركة والذاكرة، ويحفظ تقرير الجلسة السابقة إذا انقطعت.
 - نتيجة اختبار Shield Pro: المناطق 1–9، الموت/الإحياء، الإغلاق/الفتح، فصل اليد،
   الريموت والتقاط الأسلحة تعمل دون خروج غير طبيعي.
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
-- الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: كتابة Campaign Design Spec للمراحل الأربع مستندة إلى
-  دراسة Golden Axe/SOR/TMNT، ثم تنفيذ Stage 1 كنموذج: قصة عربية أقوى، حوار سفلي،
-  5 مواجهات، أنواع أعداء متدرجة، دخول رئيس، وStage Clear احتفالي قبل التعميم.
+- الاختبارات المتبقية: جلسة لعب بشرية كاملة للنسخة الجديدة على Xiaomi Stick وShield.
+- العمل التالي الموصى به: اختبار `v0.44.0-alpha` على Xiaomi Stick وShield بمباراة
+  كاملة، مع مراجعة بصرية لكل الأطالس الجديدة أثناء الحركة وضبط الصعوبة بعد اللعب.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -188,23 +187,50 @@
   والأسلوب، وإنشاء أعداء وMini Boss وBoss مخصصين لكل مرحلة، وإضافة مرحلة ختامية
   تجمع موجات المراحل ورؤساءها؛ يظهر كل رئيس مراقبًا وغير قابل للضرب أثناء موجته،
   ثم تبدأ مواجهته، وتنتهي الحملة برئيس أخير هو الأقوى.
-- الحالة: قيد التنفيذ
+- الحالة: مكتمل ومنشور في `v0.44.0-alpha`.
 - نقطة البداية: `v0.43.0-alpha` / commit `c473b1f` (آخر commit وظيفي
   `8600fa14cb7d11faa04fd953c965d5180633f686`).
 - ما تم:
-  - بدء تدقيق عقود الأطالس، بنية `EnemyArchetype`/`StageRoster`، حدود الذاكرة،
-    والافتراضات الثابتة الخاصة بأربع مراحل.
-  - اعتماد Striker وShield Guard كمرجع جودة لا يُعاد رسمه.
+  - إعادة رسم Grunt وSkater وBrute وJunk King بأطالس موحدة `960×1152`، مع
+    تثبيت المقياس والقدم وهوامش الحركة؛ بقي Striker وShield Guard دون إعادة رسم.
+  - إضافة 16 نوعًا جديدًا: Lantern Courier وMarket Enforcer وKeeper-7 وRail
+    Runner وSignal Warden وRailmaster-9 وCargo Loader وHarpoon Drone وDock
+    Crusher وTidebreaker وScrap Stalker وCore Jammer وFurnace Brawler وPalace
+    Sentinel وVox Avatar وShadow Prime. أصبح الإجمالي 22 نوع عدو.
+  - توزيع أعداء خاصين وMini Boss وBoss على كل مرحلة، وتوسيع العالم إلى خمس
+    مراحل و14 منطقة، مع بانوراما `SHADOW CONVERGENCE` مستقلة للمرحلة الخامسة.
+  - بناء حالة الرئيس المراقب: لا AI أو تصادم أو استهداف أو ضرر أثناء الموجة، ثم
+    يتحول إلى رئيس مقاتل بعد سقوط آخر عدو. المرحلة الأخيرة تعيد أربع موجات
+    ورؤساء المراحل، ثم Vox Avatar وShadow Prime الأقوى (`760 HP`/`27 damage`).
+  - إبقاء كل Encounter عند أربعة أطالس أو أقل، وتحرير جميع أطالس العدو عند
+    تجاوز آخر منطقة. ميزانية الرسوم المتحركة المقاسة `66.04 MiB`.
+  - إضافة 22 مشهدًا ثنائي اللغة و241 مفتاح واجهة، وتصحيح رئيس المرحلة الرابعة
+    إلى Junk King، وإضافة معيار الإنتاج ومولد أطالس قابل لإعادة الاستخدام.
+  - رفع `versionCode 53` و`versionName 0.44.0-alpha`.
 - الملفات المعدلة:
-  - `PROJECT_HISTORY_AR.md`
+  - Runtime: `GameView.java` و`EnemyArchetype.java` و`StageRoster.java`
+    و`StageCombatRule.java` و`app/build.gradle`.
+  - الأصول: `assets/enemies/` و`assets/tv/enemies/` و`backgrounds/panoramas/stage_final.png`
+    ونسخة TV و`asset_manifest.json` وملفا القصة العربية والإنجليزية.
+  - الأدوات: `build_enemy_grid_atlas.py` و`generate_tv_optimized_assets.py`
+    و`test_final_gauntlet_contract.py` وبقية عقود الأصول/الذاكرة/المراحل.
+  - المصادر والتوثيق: `assets/imagegen/android/enemies/` و
+    `android/docs/ENEMY_CAMPAIGN_EXPANSION_AR.md` و`PROJECT_HISTORY_AR.md`.
 - الاختبارات:
-  - لم تبدأ بعد.
-- Release: لا يوجد بعد.
-- ملاحظات/مخاطر: يجب إبقاء عدد الأطالس القتالية المحملة في كل مواجهة محدودًا
-  لأجهزة Xiaomi Stick؛ سيستخدم الرئيس المراقب رسمًا ساكنًا خفيفًا ثم يُحمّل أطلسه
-  القتالي فقط بعد نهاية الموجة.
-- التالي: إعداد مصفوفة محتوى المراحل ومعيار الرسم، ثم إنتاج الأصول وبناء نظام
-  المرحلة الخامسة واختباره قبل Release جديد.
+  - `validate_animation_atlases.py --allow-nonclustered` — PASS: `26/26`.
+  - كل `test_*_contract.py` — PASS، ومنها المرحلة الخامسة وذاكرة TV والتعريب.
+  - `assembleRelease` + R8 + Lint + توقيع والتحقق من الحزمة — PASS.
+  - phone/ultrawide/Fold/Android TV ومسار ريموت لاعبين — PASS دون crash/ANR/OOM.
+  - `test_full_stage_runtime.sh` — PASS للمناطق 1–14 حتى `ALL 5 STAGES CLEAR`.
+- Release: `v0.44.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.44.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.44.0-alpha/family-force-family-current.apk
+- APK SHA-256: `6e7db57809ddb6de51f5f91f14b45e6491eb1fa032dbfbe6eef6d5239d0f01da`.
+- Commit: `48b69463bd785a3473b9120dd32c8a7878c72442`.
+- ملاحظات/مخاطر: اختبار المحاكي يثبت سلامة المنطق والذاكرة، لكن الموازنة
+  والإحساس البصري لكل الأنواع الجديدة يحتاجان جلسة فعلية على Xiaomi Stick وShield.
+- التالي: جلسة لعب كاملة على الجهازين، وتسجيل أي عدو يحتاج ضبط سرعة/حجم/HP بدل
+  إعادة رسم جماعية غير ضرورية.
 
 ### 2026-08-24-58 — دراسة مراجع Golden Axe وStreets of Rage وTMNT
 
@@ -2271,21 +2297,20 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.43.0-alpha` منشور؛ الواجهة والقصة ثنائيتا اللغة عبر 215 مفتاحًا،
-  مع انتقالات قصصية وTally/Rank/Top 10 وموسيقى مستقلة ضمن ميزانية TV الحالية.
-- آخر عمل: استكمال تعريب واجهة Canvas بالكامل، والتحقق البصري من العربية،
-  واختبار المسار الكامل على Android TV، ثم رفع APK الموقع إلى GitHub Releases.
-- آخر قرار: لا Higgsfield ولا فيديو ولا أصول صور جديدة في هذه المرحلة؛ تمت إعادة
-  استخدام الرسومات المعتمدة للحفاظ على الجودة والذاكرة.
+- الحالة: `v0.44.0-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
+  وBoss لكل مرحلة ومرحلة ختامية تعتمد موجات ورؤساء مراقبين ثم Shadow Prime.
+- آخر عمل: توحيد رسومات الأعداء، إنتاج 16 عدوًا جديدًا وبانوراما ختامية، بناء
+  منطق المراقبة/الترقية، ثم اختبار الحملة كاملة ورفع APK الموقع إلى GitHub.
+- آخر قرار: لا Higgsfield ولا فيديو. استخدمت صور ثابتة فقط عبر ImageGen المدمج،
+  مع حد أربعة أطالس لكل Encounter ونسخ TV `840×1008`.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
   3. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
   4. `android/app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java`
   5. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
-  6. `android/docs/STORY_BIBLE_AR_EN.md`
+  6. `android/docs/ENEMY_CAMPAIGN_EXPANSION_AR.md`
   7. `android/app/src/main/assets/story/story_ar.json`
   8. `android/app/src/main/java/com/familyforce/neonstreets/AudioController.java`
-- الإجراء التالي المقترح: إعداد Campaign Design Spec وStory/Visual Bible، ثم
-  تنفيذ Stage 1 كنموذج كامل بالإيقاع الجديد والحوار السفلي ودخول الرئيس والنتائج،
-  وقياسه على Xiaomi قبل تعميم المراحل 2–4.
+- الإجراء التالي المقترح: لعب `v0.44.0-alpha` كاملًا على Xiaomi Stick وShield،
+  ثم ضبط صعوبة وسرعة وأحجام الأنواع الجديدة بناءً على الملاحظة الفعلية.
