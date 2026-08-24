@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.45.0-alpha`، `versionCode 54`.
+- النسخة المنشورة: `v0.45.1-alpha`، `versionCode 55`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `608592b4dbc13850b47cff1046d2f3558ce36064`.
+- آخر commit وظيفي: `d9d52d084dc84de7cd8a126800363f10c3bb518b`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.45.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.45.0-alpha/Family-Force-Neon-Streets-v0.45.0-alpha.apk
-- SHA-256: `88b52e4ed00cdfedd0bea36ba4f09c9d799b027ad666c40d9d5ccfdfd6ce05fb`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.45.1-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.45.1-alpha/Family-Force-Neon-Streets-v0.45.1-alpha.apk
+- SHA-256: `ddc5a7f1d245846bb2da71ca6bbc6080a73f6824e4fd6e8dd2607812f03dfbb3`.
 - حالة QA: واجهة Canvas والقصة ثنائيتا اللغة عبر 241 مفتاحًا متطابقًا؛ نجح
   Build/Release/R8/Lint والتوقيع والتحقق من الأصول والتحكم وعقود الأداء وذاكرة
   TV. أكمل Android TV Emulator المسار الكامل للمناطق الـ14 والمراحل الخمس، ونجحت ملفات
@@ -31,9 +31,9 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: جلسة لعب بشرية كاملة للنسخة الجديدة على Xiaomi Stick وShield.
-- العمل التالي الموصى به: اختبار شخصيات المرحلة الأولى في `v0.45.0-alpha` على
-  Xiaomi Stick وShield أثناء الوقوف والمشي والهجوم والسقوط، واعتماد النتيجة قبل
-  تطبيق خط الجودة الجديد على أي مرحلة لاحقة.
+- العمل التالي الموصى به: اختبار إصلاح `v0.45.1-alpha` بصريًا على Xiaomi Stick
+  وShield أثناء الوقوف والمشي والهجوم والسقوط؛ لا يبدأ إنتاج المرحلة الثانية
+  قبل قبول المستخدم وضوح وثبات الأنواع الخمسة للمرحلة الأولى.
 - أداة الإنتاج: `asset-vault/` متاحة محليًا لفهرسة 84 موردًا و150 ملفًا، مع بحث
   شامل ومقارنة نسخ الأطلس وتصدير JSON وسجل تغييرات، وتشغيل الأطالس الـ26 بقيم
   المحرك الفعلية وتخزين مؤقت للكتالوج والصور.
@@ -183,6 +183,53 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-24-66 — فشل بصري في Pilot أعداء المرحلة الأولى
+
+- المنفذ: Codex
+- طلب المستخدم: النسخة الجديدة تحتوي رسومات لا تظهر نهائيًا ورسومات غير واضحة.
+- الحالة: مكتمل
+- نقطة البداية: `v0.45.0-alpha` / commit وظيفي
+  `608592b4dbc13850b47cff1046d2f3558ce36064`.
+- ما تم:
+  - ثبت أن الأطالس لا تحتوي خلايا فارغة، لكن الأنواع الجديدة لم تكن تملك صورة
+    احتياطية؛ أثناء فك الأطلس غير المتزامن على TV كان يمكن أن يظهر العدو بلا رسم.
+  - أضيف تحميل fallback صغير لكل Enemy Archetype متاح بدل ستة أنواع قديمة فقط.
+  - استبدلت نسبة الرسم الثابتة `160/192` بنسبة خلية الأطلس الحقيقية لمنع ضغط
+    الإطارات العريضة وتشويه الهجمات.
+  - أعيد بناء Grunt وSkater وLantern Courier وMarket Enforcer وKeeper-7 من
+    مصادرهم الحالية فقط، دون توليد جديد أو فيديو، بخلايا عريضة: Base
+    `224×192` وRuntime `336×288` وTV `196×168`.
+  - أصبحت طبقة TV تبنى مباشرة من المصدر بدل تصغير أطلس كامل، مع حد أدنى لحجم
+    كل Action/Hurt/Knockdown، وهوامش آمنة، وصورة fallback `512×512` لكل نوع.
+  - وسعت بوابات الإصدار لتمنع الإطار الفارغ، والتصغير المفرط في كل الصفوف،
+    والمقاسات القديمة، والكتابة فوق أطالس Stage 1 من مولد TV العام.
+- الملفات المعدلة:
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/app/src/main/java/com/familyforce/neonstreets/SpriteAnimator.java`
+  - `android/tools/build_strict_enemy_atlas.py`
+  - `android/tools/generate_tv_optimized_assets.py`
+  - `android/tools/validate_assets.py`
+  - `android/tools/validate_animation_atlases.py`
+  - اختبارات عقود الأطالس/TV/الذاكرة، والأطالس والـfallback للأنواع الخمسة.
+- الاختبارات:
+  - `validate_assets.py` — PASS: 82 PNG و26 Atlas و181 ملف Manifest.
+  - جميع `android/tools/test_*.py` — PASS.
+  - `:app:assembleDebug` — PASS.
+  - `test_full_stage_runtime.sh` — PASS: المناطق 1–14 حتى `STAGE_COMPLETE` دون
+    FATAL/ANR/OOM؛ ذروة صور القتال المحسوبة `71.20 MiB`.
+  - `test_customer_release.sh` — PASS للأصول و26/26 Atlas وBuild/Release/R8/Lint
+    والتوقيع والتحقق؛ جزء المحاكي في الإعادة الأخيرة SKIPPED بعد انقطاع ADB،
+    بينما اختبار المسار الكامل Debug كان قد نجح قبل ذلك على نفس المحاكي.
+- Release: `v0.45.1-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.45.1-alpha
+  — APK مباشر:
+  https://github.com/linkq8/family-force-neon-streets/releases/download/v0.45.1-alpha/Family-Force-Neon-Streets-v0.45.1-alpha.apk
+  — SHA-256 `ddc5a7f1d245846bb2da71ca6bbc6080a73f6824e4fd6e8dd2607812f03dfbb3`
+  — commit `d9d52d084dc84de7cd8a126800363f10c3bb518b`.
+- المخاطر: القبول البصري الحقيقي يبقى مطلوبًا على Xiaomi Stick/Shield؛ لا تطبق
+  هذه المعايير على مراحل أخرى قبل مشاهدة كل حركات المرحلة الأولى على جهاز حقيقي.
+- التالي: اختبار Stage 1 يدويًا ثم اعتماد أو رفض الرسم قبل الانتقال للمرحلة الثانية.
 
 ### 2026-08-24-65 — تطوير خزنة الموارد وتحسين الأداء والقوائم
 
@@ -2554,12 +2601,12 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.45.0-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
+- الحالة: `v0.45.1-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
   وBoss لكل مرحلة ومرحلة ختامية تعتمد موجات ورؤساء مراقبين ثم Shadow Prime.
-- آخر عمل: تطبيق Pilot صارم لرسومات أعداء المرحلة الأولى فقط، مع خمسة أطالس
-  متجانسة وثلاث طبقات دقة وسياسة Encounter موحدة وبوابة جودة تمنع القص والblur.
-- آخر قرار: لا Higgsfield ولا فيديو. استخدمت صور ثابتة فقط عبر ImageGen المدمج،
-  مع حد أربعة أطالس لكل Encounter ونسخ TV `840×1008`.
+- آخر عمل: إصلاح فشل Pilot بصريًا: fallback مضمون أثناء التحميل، احترام نسبة
+  خلية الأطلس، وإعادة بناء الأنواع الخمسة بخلايا عريضة وثابتة الحجم لكل الحركات.
+- آخر قرار: لا Higgsfield ولا فيديو ولا توليد جديد. بنيت الأطالس من المصادر
+  الحالية، مع حد أربعة أطالس لكل Encounter ونسخ Stage 1 TV `1176×1008`.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
@@ -2569,5 +2616,5 @@
   6. `android/docs/ENEMY_CAMPAIGN_EXPANSION_AR.md`
   7. `android/app/src/main/assets/story/story_ar.json`
   8. `android/app/src/main/java/com/familyforce/neonstreets/AudioController.java`
-- الإجراء التالي المقترح: لعب المرحلة الأولى من `v0.45.0-alpha` على Xiaomi Stick
+- الإجراء التالي المقترح: لعب المرحلة الأولى من `v0.45.1-alpha` على Xiaomi Stick
   وShield واعتماد وضوح الشخصيات الخمس أثناء كل الحركات قبل لمس المرحلة الثانية.
