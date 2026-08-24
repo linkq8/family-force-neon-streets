@@ -138,11 +138,23 @@ final class UpdateManager {
 
     private JSONObject findAsset(JSONArray assets, String wantedName) {
         if (assets == null) return null;
+        JSONObject compatibleFallback = null;
         for (int i = 0; i < assets.length(); i++) {
             JSONObject asset = assets.optJSONObject(i);
             if (asset != null && wantedName.equals(asset.optString("name"))) return asset;
+            if (asset != null && compatibleFallback == null
+                    && isCompatibleApkName(asset.optString("name", ""))) {
+                compatibleFallback = asset;
+            }
         }
-        return null;
+        return compatibleFallback;
+    }
+
+    private boolean isCompatibleApkName(String name) {
+        String normalized = name == null ? "" : name.trim().toLowerCase(Locale.US);
+        return normalized.endsWith(".apk")
+                && (normalized.startsWith("family-force-neon-streets-")
+                || normalized.equals("family-force-neon-streets.apk"));
     }
 
     private void requestPermissionOrInstall() {

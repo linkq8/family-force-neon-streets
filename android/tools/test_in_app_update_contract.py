@@ -18,6 +18,8 @@ checks = {
     "content URI grant": 'FLAG_GRANT_READ_URI_PERMISSION' in MANAGER,
     "GitHub HTTPS API": 'https://api.github.com/repos/linkq8/family-force-neon-streets/releases/latest' in MANAGER,
     "GitHub release digest": 'digest.startsWith("sha256:")' in MANAGER,
+    "versioned APK fallback": 'isCompatibleApkName' in MANAGER
+        and 'family-force-neon-streets-' in MANAGER,
     "download size cap": 'MAX_APK_BYTES' in MANAGER and 'total > expectedSize' in MANAGER,
     "package identity": 'activity.getPackageName().equals(archive.packageName)' in MANAGER,
     "upgrade only": 'archiveVersion <= installedVersion' in MANAGER,
