@@ -18,10 +18,10 @@ assert 'loadBitmapSampled("enemies/shield_guard.png"' in game
 assert "enemy.type == ENEMY_SHIELD_GUARD && enemy.guard > 0" in game
 assert "if (hitFromFront)" in game
 assert 'diagnostics.event("GUARD_BREAK z="' in game
-assert 'new EnemyArchetype("shield_guard", "SHIELD GUARD"' in archetypes
-assert "EnemyArchetype.GRUNT, EnemyArchetype.SHIELD_GUARD}" in rosters
+assert 'type("shield_guard", "SHIELD GUARD"' in archetypes
+assert "EnemyArchetype.SHIELD_GUARD" in rosters
 assert "StageRoster.includesZone(requestedZone, type)" in game
-assert "spawnEnemy(8, ENEMY_STRIKER, 5760, 270);" in game
+assert "spawnEnemy(2, EnemyArchetype.SHIELD_GUARD" in game
 assert "component_boxes(foreground_candidates(image))" in builder
 assert "if len(selected) == COLS" in builder
 

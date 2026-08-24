@@ -26,13 +26,14 @@ def main() -> None:
     assert "prepareEnemyAnimationsForZone(zone);" in text
     assert "void trimMemory(int level)" in text
 
-    for name in ("grunt", "skater", "brute", "boss"):
-        path = ASSETS / f"tv/enemies/{name}_anim.png"
-        assert path.is_file(), path
-        with Image.open(path) as image:
-            assert image.size == (720, 864), (path, image.size)
-            assert image.mode == "RGBA", (path, image.mode)
-    for name in ("striker", "shield_guard"):
+    enemy_names = (
+        "grunt", "skater", "brute", "boss", "striker", "shield_guard",
+        "lantern_courier", "market_enforcer", "keeper_7", "rail_runner",
+        "signal_warden", "railmaster_9", "cargo_loader", "harpoon_drone",
+        "dock_crusher", "tidebreaker", "scrap_stalker", "core_jammer",
+        "furnace_brawler", "palace_sentinel", "vox_avatar", "shadow_prime",
+    )
+    for name in enemy_names:
         path = ASSETS / f"tv/enemies/{name}_anim.png"
         assert path.is_file(), path
         with Image.open(path) as image:
@@ -45,10 +46,10 @@ def main() -> None:
             assert image.size == (1152, 1584), (path, image.size)
             assert image.mode == "RGBA", (path, image.mode)
     full_bytes = 4 * 960 * 1152
-    tv_bytes = 4 * 720 * 864
-    assert tv_bytes * 100 // full_bytes == 56
+    tv_bytes = 4 * 840 * 1008
+    assert tv_bytes * 100 // full_bytes == 76
     print("TV first-encounter memory contract: PASS "
-          "(zone roster warmup, maximum four atlases, mixed 56%/77% fallback area)")
+          "(zone roster warmup, maximum four atlases, uniform 77% fallback area)")
 
 
 if __name__ == "__main__":

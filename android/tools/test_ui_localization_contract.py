@@ -22,9 +22,9 @@ required = {
     "route_locked", "clear_wave", "route_paused", "resume_route", "restart_stage",
     "settings_heading", "music", "sound_effects", "difficulty", "language",
     "game_update", "campaign_clear", "arcade_top", "play_again", "game_over_title",
-    "gallery_heading", "stage_0", "stage_1", "stage_2", "stage_3",
+    "gallery_heading", "stage_0", "stage_1", "stage_2", "stage_3", "stage_4",
 }
-required.update({f"location_{index}" for index in range(9)})
+required.update({f"location_{index}" for index in range(14)})
 required.update({f"role_{index}" for index in range(4)})
 required.update({f"move_{index}" for index in range(4)})
 required.update({f"action_{index}" for index in range(8)})

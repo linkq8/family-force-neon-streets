@@ -42,6 +42,7 @@ IMAGE_CONTRACT = {
     "backgrounds/panoramas/stage_transit.png": ((2172, 724), "RGB"),
     "backgrounds/panoramas/stage_harbor.png": ((2172, 724), "RGB"),
     "backgrounds/panoramas/stage_palace.png": ((2172, 724), "RGB"),
+    "backgrounds/panoramas/stage_final.png": ((2172, 724), "RGB"),
     "backgrounds/title.png": ((1376, 768), "RGB"),
     "ui/actors.png": ((128, 512), "RGBA"),
     "ui/portraits.png": ((128, 128), "RGBA"),
@@ -101,7 +102,13 @@ HERO_ANIMATION_CONTRACT = {
 }
 ENEMY_ANIMATION_CONTRACT = {
     f"enemies/{name}_anim.png": (6, 6, 160, 192)
-    for name in ("grunt", "skater", "brute", "boss", "striker", "shield_guard")
+    for name in (
+        "grunt", "skater", "brute", "boss", "striker", "shield_guard",
+        "lantern_courier", "market_enforcer", "keeper_7", "rail_runner",
+        "signal_warden", "railmaster_9", "cargo_loader", "harpoon_drone",
+        "dock_crusher", "tidebreaker", "scrap_stalker", "core_jammer",
+        "furnace_brawler", "palace_sentinel", "vox_avatar", "shadow_prime",
+    )
 }
 
 GRID_SHEET_CONTRACT = {

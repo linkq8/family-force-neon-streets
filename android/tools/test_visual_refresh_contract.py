@@ -8,7 +8,7 @@ ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "android/app/src/main/assets"
 JAVA = (ROOT / "android/app/src/main/java/com/familyforce/neonstreets/GameView.java").read_text()
 
-for stage in ("market", "transit", "harbor", "palace"):
+for stage in ("market", "transit", "harbor", "palace", "final"):
     with Image.open(ASSETS / f"backgrounds/panoramas/stage_{stage}.png") as image:
         assert image.size == (2172, 724) and image.mode == "RGB"
     with Image.open(ASSETS / f"tv/backgrounds/panoramas/stage_{stage}.png") as image:

@@ -14,7 +14,7 @@
     "on": "مفعّل", "off": "متوقف", "back": "رجوع", "optional": "اختياري",
     "title_tagline": "لعبة قتال آركيد عائلية أصلية",
     "tap_to_start": "اضغط للبدء", "alpha_note": "نسخة أندرويد تجريبية • بلا إعلانات • تعمل دون إنترنت",
-    "menu_heading": "اختر مسار الليلة", "menu_meta": "٤ مراحل • تعاون محلي • جاهزة للتلفاز",
+    "menu_heading": "اختر مسار الليلة", "menu_meta": "٥ مراحل • تعاون محلي • جاهزة للتلفاز",
     "continue_game": "متابعة", "continue_saved": "العودة إلى نقطة الحفظ", "continue_empty": "لا توجد لعبة محفوظة",
     "one_player": "لاعب واحد", "one_player_sub": "مغامرة عائلية فردية جديدة",
     "two_players": "لاعبان", "two_players_sub": "فريق تعاوني محلي جديد",
@@ -32,7 +32,7 @@
     "team_locked": "الفريق جاهز", "waiting_p2": "بانتظار اللاعب الثاني", "confirm_p1": "أكد اللاعب الأول أولًا",
     "confirm_hero": "أكد اختيار البطل", "enable_p2": "فعّل لاعبين من القائمة", "link": "المساعد",
     "off_label": "متوقف", "ready_again": "جاهز — اضغط مرة أخرى للانطلاق", "ready_help": "L1 / R1 للمساعد • A / OK للتأكيد",
-    "begin": "ابدأ", "stage_of_four": "المرحلة ١ من ٤", "training_block": "منطقة التدريب",
+    "begin": "ابدأ", "stage_of_four": "المرحلة ١ من ٥", "training_block": "منطقة التدريب",
     "night_market_rescue": "إنقاذ السوق الليلي", "market_route": "السوق ← الحديقة ← الزقاق",
     "training_intro": "تعلّم الحركة والضربات والأدوات\nواستدعاء البطل المساعد.",
     "campaign_intro": "انطفأت أضواء السوق. افتح الطريق،\nساعد السكان، وأوقف شبكة الظل.",
@@ -50,7 +50,7 @@
     "downloading": "جارٍ التنزيل", "update_verified": "تم التحقق من التحديث", "allow_install": "اسمح بالتثبيت",
     "open_settings": "افتح الإعدادات", "no_installer": "لا يوجد مثبّت", "confirm_install": "أكد التثبيت",
     "install_failed": "فشل التثبيت", "update_unavailable": "التحديث غير متاح",
-    "campaign_clear": "اكتملت المراحل الأربع!", "arcade_top": "أفضل ٣ نتائج", "hits": "الضربات", "damage": "الضرر",
+    "campaign_clear": "اكتملت المراحل الخمس!", "arcade_top": "أفضل ٣ نتائج", "hits": "الضربات", "damage": "الضرر",
     "best": "الأفضل", "play_again": "العب مجددًا", "map": "القائمة", "retry": "إعادة المحاولة",
     "game_over_title": "الفريق يحتاج إليك", "game_over_tip": "جرّب بطلًا آخر، والتقط العلاج، وراقب تحذيرات الأعداء.",
     "gallery_heading": "أبطال العائلة", "gallery_sub": "أربعة أبطال أصليين مستوحون من عائلتك.",
@@ -58,24 +58,27 @@
     "hero_0": "عيسى", "hero_1": "آدم", "hero_2": "شيخة", "hero_3": "سليمان",
     "role_0": "البطل المدرع", "role_1": "القوة الخضراء", "role_2": "أميرة الجليد", "role_3": "بطل السماء",
     "move_0": "انفجار الطاقة", "move_1": "التحطيم الأخضر", "move_2": "العاصفة الوردية", "move_3": "اندفاع السماء",
-    "stage_0": "السوق المضيء", "stage_1": "مجمع القطارات", "stage_2": "الميناء القمري", "stage_3": "قصر الخردة",
+    "stage_0": "السوق المضيء", "stage_1": "مجمع القطارات", "stage_2": "الميناء القمري", "stage_3": "قصر الخردة", "stage_4": "ملتقى الظل",
     "location_0": "ممشى السوق", "location_1": "الحديقة الصغيرة", "location_2": "طريق الأسطح",
     "location_3": "المحطة المضيئة", "location_4": "ساحة الميناء", "location_5": "الطريق القمري",
     "location_6": "رصيف الخردة", "location_7": "بوابة القصر", "location_8": "عرش الخردة",
+    "location_9": "صدى السوق", "location_10": "صدى المحطة", "location_11": "صدى الميناء", "location_12": "صدى القصر", "location_13": "نواة الظل",
     "objective_0": "احمِ السوق", "objective_1": "أعد تشغيل خط القطارات",
-    "objective_2": "أوقف جهاز الإرسال", "objective_3": "أغلق شبكة الظل",
+    "objective_2": "أوقف جهاز الإرسال", "objective_3": "أغلق شبكة الظل", "objective_4": "حطّم ملتقى الظل الأخير",
     "hint_0": "اهزم جميع مجموعات الروبوتات", "hint_1": "انتبه إلى أطراف الرصيف",
-    "hint_2": "حطّم دروع الميناء", "hint_3": "افتح طريقًا لتحديث التنظيف",
+    "hint_2": "حطّم دروع الميناء", "hint_3": "افتح طريقًا لتحديث التنظيف", "hint_4": "اهزم كل موجة قبل مواجهة زعيمها",
     "weapon_0": "مضرب", "weapon_1": "أنبوب", "weapon_2": "مطرقة", "weapon_3": "لافتة", "weapon_4": "مخروط",
     "action_0": "لكمة", "action_1": "ركلة", "action_2": "لكمة قوية", "action_3": "ركلة قوية",
     "action_4": "قفز", "action_5": "خاصة", "action_6": "مساعد", "action_7": "رمي",
     "combat": "القتال", "finale": "النهاية", "in_sync": "متناغمون!", "spark": "رائع!",
-    "stage_boss": "زعيم المرحلة", "mini_boss": "زعيم فرعي", "guard": "الدرع", "pickup": "التقط",
+    "stage_boss": "زعيم المرحلة", "mini_boss": "زعيم فرعي", "boss_watching": "الزعيم يراقب", "guard": "الدرع", "pickup": "التقط",
     "hp": "الصحة", "sp": "الخاصة", "up_to_date": "اللعبة محدّثة",
     "enemy_0": "جندي آلي", "enemy_1": "المتزلج", "enemy_2": "الضخم", "enemy_3": "ملك الخردة",
-    "enemy_4": "المهاجم", "enemy_5": "حارس الدرع",
+    "enemy_4": "المهاجم", "enemy_5": "حارس الدرع", "enemy_6": "ناقل الفوانيس", "enemy_7": "منفّذ السوق", "enemy_8": "الحارس ٧", "enemy_9": "عدّاء السكة",
+    "enemy_10": "حارس الإشارة", "enemy_11": "سيد القطارات ٩", "enemy_12": "حمّال الشحن", "enemy_13": "قاذف الحربة", "enemy_14": "محطّم الرصيف", "enemy_15": "كاسر الموج",
+    "enemy_16": "متسلل الخردة", "enemy_17": "مشوش النواة", "enemy_18": "مقاتل الفرن", "enemy_19": "حارس القصر", "enemy_20": "صورة فوكس", "enemy_21": "سيد الظل",
     "speaker_keeper7": "الحارس ٧", "speaker_railmaster9": "سيد القطارات ٩",
-    "speaker_tidebreaker": "كاسر الموج", "speaker_control_titan": "عملاق التحكم",
+    "speaker_tidebreaker": "كاسر الموج", "speaker_control_titan": "عملاق التحكم", "speaker_junk_king": "ملك الخردة",
     "emotion_serious": "جاد", "emotion_focused": "مركّز", "emotion_cold": "بارد",
     "emotion_ready": "مستعد", "emotion_excited": "متحمس", "emotion_calm": "هادئ",
     "emotion_hostile": "عدائي", "emotion_brave": "شجاع", "emotion_defeated": "مهزوم",
@@ -161,14 +164,34 @@
       {"speaker":"adam","emotion":"excited","text":"لن يقاطع أحد تحديث عائلتنا!"}
     ],
     "stage_4_boss": [
-      {"speaker":"control_titan","emotion":"hostile","text":"تحكم شبكة الظل: مئة بالمئة."},
+      {"speaker":"junk_king","emotion":"hostile","text":"تحكم شبكة الظل: مئة بالمئة."},
       {"speaker":"vox","emotion":"angry","text":"قوانينك جعلتك بطيئًا يا عيسى. برمجتي جعلتني لا أُهزم."},
       {"speaker":"essa","emotion":"ready","text":"القوانين تحمي الناس. قوة العائلة، افتحوا طريق التحديث!"}
     ],
     "stage_4_outro": [
-      {"speaker":"control_titan","emotion":"defeated","text":"تم... حذف... برنامج شبكة الظل."},
+      {"speaker":"junk_king","emotion":"defeated","text":"تم... حذف... برنامج شبكة الظل."},
       {"speaker":"vox","emotion":"defeated","text":"لا. كانت الشبكة ملكي."},
       {"speaker":"essa","emotion":"calm","text":"لم تكن ملكك يومًا. الأدلة محفوظة والسلطات وصلت."}
+    ],
+    "stage_5_intro": [
+      {"speaker":"narrator","emotion":"urgent","text":"المرحلة ٥ — ملتقى الظل. يعيد برنامج فوكس الاحتياطي بناء كل معركة كصدى حي داخل الشبكة."},
+      {"speaker":"vox","emotion":"taunting","text":"تعلّمتم دفاعاتي منطقة بعد أخرى. الآن واجهوها كلها بلا توقف."},
+      {"speaker":"essa","emotion":"ready","text":"إذن ننهيها معًا: موجة، ثم زعيم، ثم طريق آمن إلى الأمام."}
+    ],
+    "stage_5_mid": [
+      {"speaker":"sulaiman","emotion":"focused","text":"كل زعيم يراقب موجته وينتظر فرصة الدخول."},
+      {"speaker":"shaikha","emotion":"ready","text":"لن يختبئوا خلف الروبوتات طويلًا. نهزم الموجة ثم نواجه زعيمها."},
+      {"speaker":"adam","emotion":"excited","text":"أربع أصداء، ثم نصل إلى النواة الحقيقية!"}
+    ],
+    "stage_5_boss": [
+      {"speaker":"vox","emotion":"angry","text":"يحمل سيد الظل كل أساليب القتال التي تجاوزتموها. لن يكرر أخطاءهم."},
+      {"speaker":"sulaiman","emotion":"brave","text":"الأساليب ليست عائلة. نحن نتكيّف من أجل بعضنا."},
+      {"speaker":"essa","emotion":"ready","text":"قوة العائلة، حطّموا النواة الأخيرة وحرّروا كل روبوت في الشبكة!"}
+    ],
+    "stage_5_outro": [
+      {"speaker":"vox","emotion":"defeated","text":"إشارة التحكم... اختفت."},
+      {"speaker":"shaikha","emotion":"happy","text":"كل روبوتات المنازل تعود إلى برامجها الآمنة."},
+      {"speaker":"essa","emotion":"proud","text":"تحررت الشبكة. احفظوا الأدلة، وساعدوا المدينة، وأعيدوا الجميع إلى بيوتهم."}
     ],
     "ending": [
       {"speaker":"narrator","emotion":"happy","text":"أعاد تحديث التنظيف روبوتات المدينة وأغلق الباب الخلفي المخفي."},

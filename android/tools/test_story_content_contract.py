@@ -10,7 +10,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 STORY = ROOT / "app" / "src" / "main" / "assets" / "story"
 REQUIRED = ["prologue", "ending"] + [
     f"stage_{stage}_{part}"
-    for stage in range(1, 5)
+    for stage in range(1, 6)
     for part in ("intro", "mid", "boss", "outro")
 ]
 

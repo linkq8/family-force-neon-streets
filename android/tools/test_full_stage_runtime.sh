@@ -1,5 +1,5 @@
 #!/bin/sh
-# Debug-only emulator soak for the complete nine-zone route. The production
+# Debug-only emulator soak for the complete fourteen-zone route. The production
 # APK ignores familyforce.fullStageTest because GameView guards it by
 # BuildConfig.DEBUG.
 set -eu
@@ -39,7 +39,10 @@ adb shell input keyevent 103
 adb shell input keyevent 23
 sleep 1
 adb shell input keyevent 23
-sleep 22
+# Four spectator-boss promotions make the fourteen-zone route longer than the
+# legacy nine-zone soak. Keep this below one minute while allowing every boss
+# to move from WATCHING to FIGHTING before the next zone.
+sleep 48
 
 test -n "$(adb shell pidof "$PACKAGE")"
 adb shell dumpsys meminfo "$PACKAGE" > "$REPORT/meminfo.txt"
@@ -56,9 +59,9 @@ if adb logcat -d -t 5000 | grep -E \
     exit 1
 fi
 if ! grep -q "STAGE_COMPLETE" "$REPORT/runtime-diagnostics.xml"; then
-    echo "FAIL: nine-zone test did not reach results" >&2
+    echo "FAIL: fourteen-zone test did not reach results" >&2
     exit 1
 fi
 adb shell wm size reset >/dev/null
-printf 'status=PASS\nroute=zones-1-through-9\nmode=debug-only\n' > "$REPORT/summary.txt"
-echo "PASS: full nine-zone Android TV route completed ($REPORT)"
+printf 'status=PASS\nroute=zones-1-through-14\nmode=debug-only\n' > "$REPORT/summary.txt"
+echo "PASS: full fourteen-zone Android TV route completed ($REPORT)"

@@ -14,7 +14,7 @@
     "on": "ON", "off": "OFF", "back": "BACK", "optional": "OPTIONAL",
     "title_tagline": "AN ORIGINAL FAMILY ARCADE BRAWLER",
     "tap_to_start": "TAP TO START", "alpha_note": "ANDROID ALPHA • NO ADS • OFFLINE",
-    "menu_heading": "CHOOSE YOUR NIGHT ROUTE", "menu_meta": "04 STAGES • LOCAL CO-OP • TV READY",
+    "menu_heading": "CHOOSE YOUR NIGHT ROUTE", "menu_meta": "05 STAGES • LOCAL CO-OP • TV READY",
     "continue_game": "CONTINUE", "continue_saved": "RESUME SAFE CHECKPOINT", "continue_empty": "NO SAVED ROUTE",
     "one_player": "1 PLAYER", "one_player_sub": "NEW SOLO FAMILY RUN",
     "two_players": "2 PLAYERS", "two_players_sub": "NEW LOCAL CO-OP TEAM",
@@ -32,7 +32,7 @@
     "team_locked": "TEAM LOCKED", "waiting_p2": "WAITING FOR P2", "confirm_p1": "CONFIRM P1 FIRST",
     "confirm_hero": "CONFIRM HERO", "enable_p2": "ENABLE 2 PLAYERS IN MENU", "link": "LINK",
     "off_label": "OFF", "ready_again": "READY — PRESS AGAIN TO DEPART", "ready_help": "L1 / R1 LINK • A / OK READY",
-    "begin": "BEGIN", "stage_of_four": "STAGE 1 OF 4", "training_block": "TRAINING BLOCK",
+    "begin": "BEGIN", "stage_of_four": "STAGE 1 OF 5", "training_block": "TRAINING BLOCK",
     "night_market_rescue": "NIGHT MARKET RESCUE", "market_route": "MARKET → PARK → ALLEY",
     "training_intro": "Learn movement, combos, items\nand the Family Link assist.",
     "campaign_intro": "The market lights are out. Clear the route,\nhelp the neighbors, and stop Shadow Grid.",
@@ -50,7 +50,7 @@
     "downloading": "DOWNLOADING", "update_verified": "UPDATE VERIFIED", "allow_install": "ALLOW INSTALL",
     "open_settings": "OPEN SETTINGS", "no_installer": "NO INSTALLER", "confirm_install": "CONFIRM INSTALL",
     "install_failed": "INSTALL FAILED", "update_unavailable": "UPDATE UNAVAILABLE",
-    "campaign_clear": "ALL 4 STAGES CLEAR!", "arcade_top": "ARCADE TOP 3", "hits": "HITS", "damage": "DAMAGE",
+    "campaign_clear": "ALL 5 STAGES CLEAR!", "arcade_top": "ARCADE TOP 3", "hits": "HITS", "damage": "DAMAGE",
     "best": "BEST", "play_again": "PLAY AGAIN", "map": "MAP", "retry": "RETRY",
     "game_over_title": "THE ROUTE NEEDS YOU", "game_over_tip": "Try a new hero, grab health drops, and watch enemy warnings.",
     "gallery_heading": "FAMILY HEROES", "gallery_sub": "Four original heroes, inspired by your family.",
@@ -58,24 +58,27 @@
     "hero_0": "ESSA", "hero_1": "ADAM", "hero_2": "SHAIKHA", "hero_3": "SULAIMAN",
     "role_0": "ARMORED TITAN", "role_1": "GREEN POWER", "role_2": "ICE PRINCESS", "role_3": "SKY HERO",
     "move_0": "CORE BURST", "move_1": "GREEN SMASH", "move_2": "PINK BLIZZARD", "move_3": "SKY DASH",
-    "stage_0": "NEON MARKET", "stage_1": "TRANSIT TERMINAL", "stage_2": "MOON HARBOR", "stage_3": "JUNK PALACE",
+    "stage_0": "NEON MARKET", "stage_1": "TRANSIT TERMINAL", "stage_2": "MOON HARBOR", "stage_3": "JUNK PALACE", "stage_4": "SHADOW CONVERGENCE",
     "location_0": "MARKET WALK", "location_1": "POCKET PARK", "location_2": "ROOFTOP RUN",
     "location_3": "NEON DEPOT", "location_4": "HARBOR YARD", "location_5": "MOON FREEWAY",
     "location_6": "SCRAP DOCK", "location_7": "PALACE GATE", "location_8": "JUNK THRONE",
+    "location_9": "MARKET ECHO", "location_10": "TERMINAL ECHO", "location_11": "HARBOR ECHO", "location_12": "PALACE ECHO", "location_13": "SHADOW CORE",
     "objective_0": "PROTECT THE MARKET", "objective_1": "RESTORE THE TRANSIT LINE",
-    "objective_2": "STOP THE TRANSMITTER", "objective_3": "SHUT DOWN SHADOW GRID",
+    "objective_2": "STOP THE TRANSMITTER", "objective_3": "SHUT DOWN SHADOW GRID", "objective_4": "BREAK THE FINAL CONVERGENCE",
     "hint_0": "CLEAR EVERY ROBOT WAVE", "hint_1": "WATCH THE PLATFORM EDGES",
-    "hint_2": "BREAK THE HARBOR SHIELDS", "hint_3": "OPEN A PATH FOR THE PATCH",
+    "hint_2": "BREAK THE HARBOR SHIELDS", "hint_3": "OPEN A PATH FOR THE PATCH", "hint_4": "CLEAR EACH WAVE BEFORE ITS BOSS",
     "weapon_0": "BAT", "weapon_1": "PIPE", "weapon_2": "MALLET", "weapon_3": "SIGN", "weapon_4": "CONE",
     "action_0": "PUNCH", "action_1": "KICK", "action_2": "H-P", "action_3": "H-K",
     "action_4": "JUMP", "action_5": "STAR", "action_6": "LINK", "action_7": "THROW",
     "combat": "COMBAT", "finale": "FINALE", "in_sync": "IN SYNC!", "spark": "SPARK!",
-    "stage_boss": "STAGE BOSS", "mini_boss": "MINI-BOSS", "guard": "GUARD", "pickup": "PICK UP",
+    "stage_boss": "STAGE BOSS", "mini_boss": "MINI-BOSS", "boss_watching": "BOSS WATCHING", "guard": "GUARD", "pickup": "PICK UP",
     "hp": "HP", "sp": "SP", "up_to_date": "UP TO DATE",
     "enemy_0": "GRUNT", "enemy_1": "SKATER", "enemy_2": "BRUTE", "enemy_3": "JUNK KING",
-    "enemy_4": "STRIKER", "enemy_5": "SHIELD GUARD",
+    "enemy_4": "STRIKER", "enemy_5": "SHIELD GUARD", "enemy_6": "LANTERN COURIER", "enemy_7": "MARKET ENFORCER", "enemy_8": "KEEPER-7", "enemy_9": "RAIL RUNNER",
+    "enemy_10": "SIGNAL WARDEN", "enemy_11": "RAILMASTER-9", "enemy_12": "CARGO LOADER", "enemy_13": "HARPOON DRONE", "enemy_14": "DOCK CRUSHER", "enemy_15": "TIDEBREAKER",
+    "enemy_16": "SCRAP STALKER", "enemy_17": "CORE JAMMER", "enemy_18": "FURNACE BRAWLER", "enemy_19": "PALACE SENTINEL", "enemy_20": "VOX AVATAR", "enemy_21": "SHADOW PRIME",
     "speaker_keeper7": "KEEPER-7", "speaker_railmaster9": "RAILMASTER-9",
-    "speaker_tidebreaker": "TIDEBREAKER", "speaker_control_titan": "CONTROL TITAN",
+    "speaker_tidebreaker": "TIDEBREAKER", "speaker_control_titan": "CONTROL TITAN", "speaker_junk_king": "JUNK KING",
     "emotion_serious": "SERIOUS", "emotion_focused": "FOCUSED", "emotion_cold": "COLD",
     "emotion_ready": "READY", "emotion_excited": "EXCITED", "emotion_calm": "CALM",
     "emotion_hostile": "HOSTILE", "emotion_brave": "BRAVE", "emotion_defeated": "DEFEATED",
@@ -161,14 +164,34 @@
       {"speaker":"adam","emotion":"excited","text":"Nobody interrupts our family update!"}
     ],
     "stage_4_boss": [
-      {"speaker":"control_titan","emotion":"hostile","text":"SHADOW GRID CONTROL: ONE HUNDRED PERCENT."},
+      {"speaker":"junk_king","emotion":"hostile","text":"SHADOW GRID CONTROL: ONE HUNDRED PERCENT."},
       {"speaker":"vox","emotion":"angry","text":"Your rules made you slow, Essa. My code made me unstoppable."},
       {"speaker":"essa","emotion":"ready","text":"Rules protect people. Family Force—open the path for the patch!"}
     ],
     "stage_4_outro": [
-      {"speaker":"control_titan","emotion":"defeated","text":"SHADOW CODE... REMOVED."},
+      {"speaker":"junk_king","emotion":"defeated","text":"SHADOW CODE... REMOVED."},
       {"speaker":"vox","emotion":"defeated","text":"No. The network was mine."},
       {"speaker":"essa","emotion":"calm","text":"It never was. The evidence is secured and the authorities are here."}
+    ],
+    "stage_5_intro": [
+      {"speaker":"narrator","emotion":"urgent","text":"Stage 5 — Shadow Convergence. Vox's contingency program rebuilds every battle as a live network echo."},
+      {"speaker":"vox","emotion":"taunting","text":"You learned my defenses one district at a time. Now face them all without a pause."},
+      {"speaker":"essa","emotion":"ready","text":"Then we finish this together—one wave, one boss, one clean path forward."}
+    ],
+    "stage_5_mid": [
+      {"speaker":"sulaiman","emotion":"focused","text":"Each boss is watching its own wave and waiting for an opening."},
+      {"speaker":"shaikha","emotion":"ready","text":"They cannot hide behind the robots forever. Clear the wave, then challenge the boss."},
+      {"speaker":"adam","emotion":"excited","text":"Four echoes down, one real core to smash!"}
+    ],
+    "stage_5_boss": [
+      {"speaker":"vox","emotion":"angry","text":"Shadow Prime contains every combat pattern you survived. It will not repeat their mistakes."},
+      {"speaker":"sulaiman","emotion":"brave","text":"Patterns are not a family. We adapt for each other."},
+      {"speaker":"essa","emotion":"ready","text":"Family Force—break the final core and free every robot on the network!"}
+    ],
+    "stage_5_outro": [
+      {"speaker":"vox","emotion":"defeated","text":"The master signal... is gone."},
+      {"speaker":"shaikha","emotion":"happy","text":"All household robots are returning to their safe programs."},
+      {"speaker":"essa","emotion":"proud","text":"The network is free. Save the evidence, help the city, and bring everyone home."}
     ],
     "ending": [
       {"speaker":"narrator","emotion":"happy","text":"The cleanup patch restored the city's robots and closed the hidden backdoor."},

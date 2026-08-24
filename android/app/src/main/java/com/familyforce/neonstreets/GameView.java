@@ -50,7 +50,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private static final String TAG = "FamilyForceGame";
     private static final int W = 640;
     private static final int H = 360;
-    private static final float WORLD_END = 6150f;
+    private static final float WORLD_END = 9600f;
 
     private static final int TITLE = 0;
     private static final int MENU = 1;
@@ -220,38 +220,43 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             Color.rgb(217, 255, 85), Color.rgb(92, 174, 255)
     };
     private static final float[] ZONE_TRIGGERS = {
-            430f, 1080f, 1730f, 2380f, 2980f, 3560f, 4180f, 4820f, 5480f
+            430f, 1080f, 1730f, 2380f, 2980f, 3560f, 4180f, 4820f, 5480f,
+            6200f, 6880f, 7560f, 8240f, 8920f
     };
     private static final float ENCOUNTER_GATE_OFFSET = 425f;
     private static final float ENCOUNTER_GATE_MARGIN = 20f;
     private static final float[] STAGE_SIGN_X = {
-            510f, 1015f, 1665f, 2150f, 2760f, 3300f, 3650f, 4260f, 4900f, 5560f
+            510f, 1015f, 1665f, 2150f, 2760f, 3300f, 3650f, 4260f, 4900f,
+            5560f, 6280f, 6960f, 7640f, 8320f, 9000f
     };
     private static final String[] LOCATION_NAMES = {
             "MARKET WALK", "POCKET PARK", "ROOFTOP RUN", "NEON DEPOT",
             "HARBOR YARD", "MOON FREEWAY", "SCRAP DOCK", "PALACE GATE",
-            "JUNK THRONE"
+            "JUNK THRONE", "MARKET ECHO", "TERMINAL ECHO", "HARBOR ECHO",
+            "PALACE ECHO", "SHADOW CORE"
     };
-    private static final int[] STAGE_START_ZONE = {0, 2, 4, 7};
-    private static final int[] STAGE_END_ZONE = {1, 3, 6, 8};
+    private static final int[] STAGE_START_ZONE = {0, 2, 4, 7, 9};
+    private static final int[] STAGE_END_ZONE = {1, 3, 6, 8, 13};
     private static final String[] ENCOUNTER_NAMES = {
             "ENCOUNTER 1", "ENCOUNTER 2", "ENCOUNTER 3", "ENCOUNTER 4", "ENCOUNTER 5",
-            "ENCOUNTER 6", "ENCOUNTER 7", "ENCOUNTER 8", "ENCOUNTER 9"
+            "ENCOUNTER 6", "ENCOUNTER 7", "ENCOUNTER 8", "ENCOUNTER 9",
+            "ECHO 1", "ECHO 2", "ECHO 3", "ECHO 4", "FINAL CORE"
     };
     private static final String[] STAGE_NAMES = {
-            "NEON MARKET", "TRANSIT TERMINAL", "MOON HARBOR", "JUNK PALACE"
+            "NEON MARKET", "TRANSIT TERMINAL", "MOON HARBOR", "JUNK PALACE",
+            "SHADOW CONVERGENCE"
     };
-    private static final String[] STAGE_CODES = {"MKT", "TRN", "HBR", "JNK"};
+    private static final String[] STAGE_CODES = {"MKT", "TRN", "HBR", "JNK", "FIN"};
     private static final String[] STAGE_DISTRICTS = {
-            "FOOD STREET", "LAST TRAIN", "CARGO MOON", "ROYAL SCRAP"
+            "FOOD STREET", "LAST TRAIN", "CARGO MOON", "ROYAL SCRAP", "FINAL NETWORK"
     };
     private static final int[] STAGE_ACCENTS = {
             Color.rgb(255, 194, 70), Color.rgb(70, 224, 216),
-            Color.rgb(183, 232, 106), Color.rgb(255, 92, 164)
+            Color.rgb(183, 232, 106), Color.rgb(255, 92, 164), Color.rgb(190, 92, 255)
     };
     private static final ColorMatrixColorFilter[] STAGE_ENEMY_FILTERS = {
             null, createStageEnemyFilter(24f, 1.08f),
-            createStageEnemyFilter(-42f, 1.12f), createStageEnemyFilter(78f, 1.18f)
+            createStageEnemyFilter(-42f, 1.12f), createStageEnemyFilter(78f, 1.18f), null
     };
     private static final int[] MAP_ROUTE_COLORS = {
             HERO_COLORS[0], Color.rgb(255, 199, 72), Color.rgb(217, 255, 85)
@@ -261,8 +266,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             Color.rgb(83, 144, 255), Color.rgb(63, 221, 172),
             Color.rgb(255, 192, 65)
     };
-    private static final float[] MAP_ROUTE_X = {382f, 470f, 520f, 577f};
-    private static final float[] MAP_ROUTE_Y = {154f, 154f, 204f, 204f};
+    private static final float[] MAP_ROUTE_X = {370f, 425f, 480f, 535f, 590f};
+    private static final float[] MAP_ROUTE_Y = {154f, 154f, 190f, 214f, 190f};
 
     private final SurfaceHolder holder;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
@@ -297,7 +302,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private final Random random = new Random(0xF4A11L);
 
     private Bitmap background;
-    private final Bitmap[] stageBackgrounds = new Bitmap[4];
+    private final Bitmap[] stageBackgrounds = new Bitmap[5];
     private Bitmap actorAtlas;
     private Bitmap portraits;
     private Bitmap logo;
@@ -360,8 +365,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private String storySceneId = "";
     private int storyLineIndex;
     private int storyNextAction;
-    private final boolean[] midStoryShown = new boolean[4];
-    private final boolean[] bossStoryShown = new boolean[4];
+    private final boolean[] midStoryShown = new boolean[5];
+    private final boolean[] bossStoryShown = new boolean[5];
     private int stageStartFrame;
     private int stageStartScore;
     private int stageStartDamage;
@@ -533,7 +538,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private volatile float stickY;
     private final int[] buttonPointers = {-1, -1, -1, -1, -1, -1, -1, -1};
 
-    private final Enemy[] enemies = new Enemy[40];
+    private final Enemy[] enemies = new Enemy[64];
     private final Item[] items = new Item[12];
     private final Particle[] particles = new Particle[72];
     private final WorldObject[] worldObjects = new WorldObject[WORLD_OBJECT_COUNT];
@@ -668,12 +673,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private String stageObjective(int stage) {
         StageCombatRule rule = StageCombatRule.forStage(stage);
-        return ui("objective_" + clampInt(stage, 0, 3), rule.objective);
+        return ui("objective_" + clampInt(stage, 0, STAGE_NAMES.length - 1), rule.objective);
     }
 
     private String stageHint(int stage) {
         StageCombatRule rule = StageCombatRule.forStage(stage);
-        return ui("hint_" + clampInt(stage, 0, 3), rule.hint);
+        return ui("hint_" + clampInt(stage, 0, STAGE_NAMES.length - 1), rule.hint);
     }
 
     private String localizedUpdateStatus() {
@@ -1444,6 +1449,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (stageBackgrounds[3] == null) {
             stageBackgrounds[3] = loadOpaqueBitmap("tv/backgrounds/stage_palace.png");
         }
+        stageBackgrounds[4] = loadOpaqueBitmap("tv/backgrounds/panoramas/stage_final.png");
+        if (stageBackgrounds[4] == null) {
+            stageBackgrounds[4] = loadOpaqueBitmap("backgrounds/panoramas/stage_final.png");
+        }
+        if (stageBackgrounds[4] == null) stageBackgrounds[4] = stageBackgrounds[3];
         for (int i = 1; i < stageBackgrounds.length; i++) {
             if (stageBackgrounds[i] == null) stageBackgrounds[i] = stageBackgrounds[0];
         }
@@ -2500,36 +2510,58 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         for (WorldObject object : worldObjects) object.active = false;
         for (SpriteEffect effect : spriteEffects) effect.active = false;
         assist.active = false;
-        spawnEnemy(0, 0, 650, 264);
-        spawnEnemy(0, 1, 735, 305);
-        spawnEnemy(0, ENEMY_STRIKER, 800, 238);
-        spawnEnemy(1, 1, 1260, 252);
-        spawnEnemy(1, ENEMY_STRIKER, 1325, 310);
-        spawnEnemy(1, 0, 1410, 278);
-        spawnEnemy(2, 0, 1900, 235);
-        spawnEnemy(2, ENEMY_SHIELD_GUARD, 2010, 278);
-        spawnEnemy(2, 0, 2110, 315);
-        spawnEnemy(3, ENEMY_SHIELD_GUARD, 2480, 258);
-        spawnEnemy(3, 2, 2570, 300);
-        spawnEnemy(3, ENEMY_STRIKER, 2680, 238);
-        spawnEnemy(4, 3, 3070, 278);
-        spawnEnemy(4, ENEMY_SHIELD_GUARD, 3160, 310);
-        spawnEnemy(4, 2, 3260, 250);
-        spawnEnemy(5, ENEMY_SHIELD_GUARD, 3500, 246);
-        spawnEnemy(5, 1, 3610, 305);
-        spawnEnemy(5, 3, 3720, 279);
-        spawnEnemy(6, 1, 4300, 246);
-        spawnEnemy(6, ENEMY_SHIELD_GUARD, 4380, 302);
-        spawnEnemy(6, 2, 4470, 268);
-        spawnEnemy(6, 1, 4550, 315);
-        spawnEnemy(7, 0, 4930, 240);
-        spawnEnemy(7, 2, 5010, 300);
-        spawnEnemy(7, ENEMY_SHIELD_GUARD, 5100, 258);
-        spawnEnemy(7, 2, 5190, 312);
-        spawnEnemy(8, 2, 5600, 250);
-        spawnEnemy(8, 0, 5680, 308);
-        spawnEnemy(8, ENEMY_STRIKER, 5760, 270);
-        spawnEnemy(8, 3, 5850, 285);
+        spawnEnemy(0, EnemyArchetype.GRUNT, 610, 244);
+        spawnEnemy(0, EnemyArchetype.SKATER, 690, 304);
+        spawnEnemy(0, EnemyArchetype.LANTERN_COURIER, 760, 270);
+        spawnEnemy(0, EnemyArchetype.GRUNT, 830, 318);
+        spawnEnemy(1, EnemyArchetype.GRUNT, 1260, 305);
+        spawnEnemy(1, EnemyArchetype.MARKET_ENFORCER, 1360, 270);
+        spawnSpectator(1, EnemyArchetype.KEEPER_7, 1470, 230);
+
+        spawnEnemy(2, EnemyArchetype.STRIKER, 1900, 238);
+        spawnEnemy(2, EnemyArchetype.SHIELD_GUARD, 1980, 302);
+        spawnEnemy(2, EnemyArchetype.RAIL_RUNNER, 2060, 270);
+        spawnEnemy(2, EnemyArchetype.STRIKER, 2140, 318);
+        spawnEnemy(3, EnemyArchetype.STRIKER, 2550, 305);
+        spawnEnemy(3, EnemyArchetype.SIGNAL_WARDEN, 2640, 265);
+        spawnSpectator(3, EnemyArchetype.RAILMASTER_9, 2750, 228);
+
+        spawnEnemy(4, EnemyArchetype.BRUTE, 3160, 250);
+        spawnEnemy(4, EnemyArchetype.CARGO_LOADER, 3240, 310);
+        spawnEnemy(4, EnemyArchetype.HARPOON_DRONE, 3320, 278);
+        spawnEnemy(5, EnemyArchetype.CARGO_LOADER, 3740, 244);
+        spawnEnemy(5, EnemyArchetype.HARPOON_DRONE, 3820, 305);
+        spawnEnemy(5, EnemyArchetype.BRUTE, 3900, 272);
+        spawnEnemy(6, EnemyArchetype.BRUTE, 4380, 308);
+        spawnEnemy(6, EnemyArchetype.DOCK_CRUSHER, 4470, 268);
+        spawnSpectator(6, EnemyArchetype.TIDEBREAKER, 4570, 228);
+
+        spawnEnemy(7, EnemyArchetype.SCRAP_STALKER, 5010, 242);
+        spawnEnemy(7, EnemyArchetype.CORE_JAMMER, 5090, 305);
+        spawnEnemy(7, EnemyArchetype.FURNACE_BRAWLER, 5170, 270);
+        spawnEnemy(7, EnemyArchetype.SCRAP_STALKER, 5250, 318);
+        spawnEnemy(8, EnemyArchetype.FURNACE_BRAWLER, 5660, 305);
+        spawnEnemy(8, EnemyArchetype.PALACE_SENTINEL, 5750, 265);
+        spawnSpectator(8, EnemyArchetype.BOSS, 5860, 228);
+
+        spawnEnemy(9, EnemyArchetype.GRUNT, 6380, 245);
+        spawnEnemy(9, EnemyArchetype.SKATER, 6460, 310);
+        spawnEnemy(9, EnemyArchetype.LANTERN_COURIER, 6540, 275);
+        spawnSpectator(9, EnemyArchetype.KEEPER_7, 6650, 226);
+        spawnEnemy(10, EnemyArchetype.STRIKER, 7060, 245);
+        spawnEnemy(10, EnemyArchetype.SHIELD_GUARD, 7140, 310);
+        spawnEnemy(10, EnemyArchetype.RAIL_RUNNER, 7220, 275);
+        spawnSpectator(10, EnemyArchetype.RAILMASTER_9, 7330, 226);
+        spawnEnemy(11, EnemyArchetype.BRUTE, 7740, 245);
+        spawnEnemy(11, EnemyArchetype.CARGO_LOADER, 7820, 310);
+        spawnEnemy(11, EnemyArchetype.HARPOON_DRONE, 7900, 275);
+        spawnSpectator(11, EnemyArchetype.TIDEBREAKER, 8010, 226);
+        spawnEnemy(12, EnemyArchetype.SCRAP_STALKER, 8420, 245);
+        spawnEnemy(12, EnemyArchetype.CORE_JAMMER, 8500, 310);
+        spawnEnemy(12, EnemyArchetype.FURNACE_BRAWLER, 8580, 275);
+        spawnSpectator(12, EnemyArchetype.BOSS, 8690, 226);
+        spawnEnemy(13, EnemyArchetype.VOX_AVATAR, 9100, 280);
+        spawnSpectator(13, EnemyArchetype.SHADOW_PRIME, 9250, 226);
         spawnWorldObject(WEAPON_BAT, 365, 296);
         spawnWorldObject(PROP_CRATE, 545, 244);
         spawnWorldObject(WEAPON_PIPE, 990, 310);
@@ -2545,7 +2577,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         spawnWorldObject(WEAPON_MALLET, 5520, 296);
     }
 
-    private void spawnEnemy(int enemyZone, int type, float x, float y) {
+    private Enemy spawnEnemy(int enemyZone, int type, float x, float y) {
         for (Enemy enemy : enemies) {
             if (enemy.alive) continue;
             enemy.alive = true;
@@ -2560,7 +2592,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             int hpPercent = stageRule.hpPercent + (enemy.elite ? 35 : 0);
             enemy.hp = Math.max(1, archetype.maxHp * hpPercent / 100);
             enemy.maxHp = enemy.hp;
-            enemy.attackCooldown = type == ENEMY_STRIKER
+            enemy.attackCooldown = archetype.speed >= 1.4f
                     ? 24 + random.nextInt(34) : 30 + random.nextInt(60);
             enemy.attackTimer = 0;
             enemy.stun = 0;
@@ -2577,6 +2609,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             enemy.lastP2HitFrame = -1000;
             enemy.lastTeamComboFrame = -1000;
             enemy.defeated = false;
+            enemy.spectator = false;
             enemy.z = enemy.vx = enemy.vy = enemy.vz = 0f;
             enemy.animator.clear();
             Bitmap atlas = enemyAnimArt[type];
@@ -2586,8 +2619,14 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                         atlas.getHeight() / ENEMY_ANIM_ROWS);
                 enemy.animator.play(ENEMY_IDLE, 6, 8, true, true);
             }
-            return;
+            return enemy;
         }
+        return null;
+    }
+
+    private void spawnSpectator(int enemyZone, int type, float x, float y) {
+        Enemy enemy = spawnEnemy(enemyZone, type, x, y);
+        if (enemy != null) enemy.spectator = true;
     }
 
     private void updateGame() {
@@ -2809,7 +2848,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 Enemy aiTarget = null;
                 float bestDistance = Float.MAX_VALUE;
                 for (Enemy enemy : enemies) {
-                    if (!enemy.alive || !enemy.active || enemy.defeated) continue;
+                    if (!enemy.alive || !enemy.active || enemy.spectator || enemy.defeated) continue;
                     float distance = Math.abs(enemy.x - player2X);
                     if (distance < 300f && distance < bestDistance) {
                         bestDistance = distance;
@@ -2880,11 +2919,22 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     private float enemyHurtHalfWidth(int type) {
-        return type == 3 ? 34f : type == 2 ? 27f : 20f;
+        EnemyArchetype archetype = EnemyArchetype.of(type);
+        return archetype.isBoss() ? 38f : isHeavyEnemy(type) ? 29f : 20f;
     }
 
     private float enemyHurtLaneHalfHeight(int type) {
-        return type == 3 ? 22f : type == 2 ? 19f : 16f;
+        EnemyArchetype archetype = EnemyArchetype.of(type);
+        return archetype.isBoss() ? 24f : isHeavyEnemy(type) ? 20f : 16f;
+    }
+
+    private static boolean isBossEnemy(int type) {
+        return EnemyArchetype.of(type).isBoss();
+    }
+
+    private static boolean isHeavyEnemy(int type) {
+        EnemyArchetype archetype = EnemyArchetype.of(type);
+        return archetype.isMiniBoss() || archetype.isBoss() || archetype.renderHeight >= 138f;
     }
 
     private boolean attackBoxOverlapsEnemy(float attackerX, float attackerY,
@@ -2914,7 +2964,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         }
         boolean hit = false;
         for (Enemy enemy : enemies) {
-            if (!enemy.alive || !enemy.active || enemy.defeated) continue;
+            if (!enemy.alive || !enemy.active || enemy.spectator || enemy.defeated) continue;
             if (!attackBoxOverlapsEnemy(player2X, player2Y, p2FacingRight,
                     p2AttackKind, p2PunchChainStep, enemy)) continue;
             damageEnemy(enemy, Math.round(damage), p2FacingRight ? 1f : -1f,
@@ -3158,7 +3208,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         float best = Float.MAX_VALUE;
         float bestDx = 0f;
         for (Enemy enemy : enemies) {
-            if (!enemy.alive || !enemy.active) continue;
+            if (!enemy.alive || !enemy.active || enemy.spectator) continue;
             float dx = enemy.x - playerX;
             if (Math.abs(dx) <= range + 26f && Math.abs(enemy.y - playerY) <= 48f
                     && Math.abs(dx) < best) {
@@ -3184,7 +3234,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (attackKind != ACTION_SPECIAL) autoFaceNearestEnemy(range);
         boolean hit = false;
         for (Enemy enemy : enemies) {
-            if (!enemy.alive || !enemy.active || enemy.lastHitSerial == attackSerial) continue;
+            if (!enemy.alive || !enemy.active || enemy.spectator
+                    || enemy.lastHitSerial == attackSerial) continue;
             if (attackBoxOverlapsEnemy(playerX, playerY, facingRight,
                     attackKind, punchChainStep, enemy)) {
                 enemy.lastHitSerial = attackSerial;
@@ -3348,9 +3399,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         int reward = EnemyArchetype.of(enemy.type).score;
         score += reward;
         showScorePopup(reward, enemy.x - cameraX, enemy.y - 86f);
-        spawnDust(enemy.x, enemy.y - 24, Color.rgb(217, 255, 85), enemy.type == 3 ? 20 : 10);
+        spawnDust(enemy.x, enemy.y - 24, Color.rgb(217, 255, 85),
+                isBossEnemy(enemy.type) ? 20 : 10);
         spawnBreakEffect(enemy.x, enemy.y - 54f, 0f,
-                enemy.type == 3 ? 1.2f : 0.78f);
+                isBossEnemy(enemy.type) ? 1.2f : 0.78f);
     }
 
     private void updateEncounter() {
@@ -3393,20 +3445,28 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             playerX = Math.min(playerX, playerLimit);
             if (twoPlayerMode) player2X = Math.min(player2X, playerLimit);
             boolean any = false;
+            Enemy watchingBoss = null;
             for (Enemy enemy : enemies) {
                 if (enemy.alive && enemy.zone == zone) {
                     // P2 used to cross the gate and lure an enemy beyond P1's
                     // hard limit, permanently deadlocking the encounter.
                     enemy.x = Math.min(enemy.x, playerLimit - 8f);
-                    any = true;
+                    if (enemy.spectator) watchingBoss = enemy;
+                    else any = true;
                 }
             }
             if (automatedFullStageTest && ++automatedStageTicks >= 90) {
                 for (Enemy enemy : enemies) {
-                    if (enemy.alive && enemy.zone == zone) defeatEnemy(enemy);
+                    if (enemy.alive && enemy.zone == zone && !enemy.spectator) defeatEnemy(enemy);
                 }
                 any = false;
                 diagnostics.event("DEBUG_ZONE_CLEAR " + zone);
+            }
+            if (!any && watchingBoss != null) {
+                promoteSpectatorBoss(watchingBoss, playerLimit);
+                automatedStageTicks = 0;
+                zoneBanner = 100;
+                any = true;
             }
             if (!any) {
                 int finishedZone = zone;
@@ -3458,6 +3518,17 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 }
             }
         }
+    }
+
+    private void promoteSpectatorBoss(Enemy boss, float playerLimit) {
+        boss.spectator = false;
+        boss.active = true;
+        boss.elite = true;
+        boss.x = Math.min(boss.x, playerLimit - 54f);
+        boss.y = clamp(boss.y + 48f, 238f, 304f);
+        boss.attackCooldown = 55;
+        setEnemyState(boss, ENEMY_STATE_IDLE, true);
+        diagnostics.event("BOSS_CHALLENGE z=" + boss.zone + " t=" + boss.type);
     }
 
     private void dropZoneRewards(int clearedZone) {
@@ -3655,7 +3726,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         float speed = Math.abs(object.vx) + Math.abs(object.vy) + Math.abs(object.vz);
         if (speed < 1.1f || object.z > 92f) return;
         for (Enemy enemy : enemies) {
-            if (!enemy.alive || !enemy.active || enemy.lastObjectHitSerial == object.throwSerial) continue;
+            if (!enemy.alive || !enemy.active || enemy.spectator
+                    || enemy.lastObjectHitSerial == object.throwSerial) continue;
             if (Math.abs(enemy.x - object.x) > 32f || Math.abs(enemy.y - object.y) > 28f) continue;
             enemy.lastObjectHitSerial = object.throwSerial;
             int damage = Math.round(13f * weaponDamageMultiplier(object.type)
@@ -3753,6 +3825,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             if (enemy.flash > 0) enemy.flash--;
             enemy.stateTicks++;
             enemy.animator.step();
+            if (enemy.spectator) {
+                setEnemyState(enemy, ENEMY_STATE_IDLE, false);
+                continue;
+            }
             updateEnemyPhysics(enemy);
 
             if (enemy.defeated) {
@@ -3775,9 +3851,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     resolveEnemyAttack(enemy, enemyDamageScale);
                 }
                 if (enemy.animator.isBound() ? enemy.animator.finished() : enemy.stateTicks >= 24) {
-                    enemy.attackCooldown = enemy.type == ENEMY_STRIKER
+                    EnemyArchetype cooldownType = EnemyArchetype.of(enemy.type);
+                    enemy.attackCooldown = cooldownType.speed >= 1.4f
                             ? 42 + random.nextInt(24)
-                            : enemy.type == 1 ? 55 : 80 + random.nextInt(45);
+                            : cooldownType.speed >= 1.1f ? 55 : 80 + random.nextInt(45);
                     setEnemyState(enemy, ENEMY_STATE_IDLE, true);
                 }
                 continue;
@@ -3794,12 +3871,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 int perPlayerAttackLimit = difficulty == 2 ? 2 : 1;
                 boolean visibleThreat = enemy.x >= cameraX + 18f
                         && enemy.x <= cameraX + W - 18f;
-                if (dx < (enemy.type == 3 ? 95f
-                        : enemy.type == ENEMY_STRIKER ? 64f : 57f) && dy < 36f
+                EnemyArchetype attackType = EnemyArchetype.of(enemy.type);
+                if (dx < Math.max(57f, attackType.attackRange) && dy < 36f
                         && visibleThreat && countAttackingEnemies() < stageRule.maxAttackers
                         && countAttackingEnemiesForTarget(targetSlot) < perPlayerAttackLimit) {
-                    enemy.attackVariant = enemy.type == 3
-                            || random.nextInt(enemy.type == ENEMY_STRIKER ? 2 : 4) == 0 ? 1 : 0;
+                    enemy.attackVariant = isBossEnemy(enemy.type)
+                            || random.nextInt(attackType.speed >= 1.4f ? 2 : 4) == 0 ? 1 : 0;
                     enemy.attackHitFired = false;
                     enemy.attackTargetSlot = targetSlot;
                     setEnemyState(enemy, ENEMY_STATE_ATTACK, true);
@@ -3831,7 +3908,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private int countAttackingEnemies() {
         int count = 0;
         for (Enemy enemy : enemies) {
-            if (enemy.alive && enemy.active && enemy.state == ENEMY_STATE_ATTACK) count++;
+            if (enemy.alive && enemy.active && !enemy.spectator
+                    && enemy.state == ENEMY_STATE_ATTACK) count++;
         }
         return count;
     }
@@ -3839,7 +3917,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private int countAttackingEnemiesForTarget(int targetSlot) {
         int count = 0;
         for (Enemy enemy : enemies) {
-            if (enemy.alive && enemy.active && enemy.state == ENEMY_STATE_ATTACK
+            if (enemy.alive && enemy.active && !enemy.spectator
+                    && enemy.state == ENEMY_STATE_ATTACK
                     && enemy.attackTargetSlot == targetSlot) count++;
         }
         return count;
@@ -3894,7 +3973,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         health -= damage;
         damageTaken += damage;
         // Longer window after launches so wakeup isn't an instant re-juggle.
-        boolean launchingAttack = enemy.type == 2 || enemy.type == 3 || enemy.attackVariant == 1;
+        boolean launchingAttack = isHeavyEnemy(enemy.type) || enemy.attackVariant == 1;
         invulnerable = launchingAttack ? 80 : 52;
         hurtTimer = health <= 0 ? 0 : 22;
         if (health <= 0) knockoutTimer = 50;
@@ -3922,7 +4001,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         int damage = Math.max(1, Math.round((EnemyArchetype.of(enemy.type).damage)
                 * damageScale * (enemy.attackVariant == 1 ? 1.18f : 1f)));
         p2Health = Math.max(0, p2Health - damage);
-        boolean launchingAttack = enemy.type == 2 || enemy.type == 3 || enemy.attackVariant == 1;
+        boolean launchingAttack = isHeavyEnemy(enemy.type) || enemy.attackVariant == 1;
         p2Invulnerable = launchingAttack ? 80 : 52;
         p2HurtTimer = p2Health <= 0 ? 0 : 22;
         p2AttackKind = ACTION_NONE;
@@ -3995,7 +4074,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         attackSerial++;
         boolean hit = false;
         for (Enemy enemy : enemies) {
-            if (!enemy.alive || !enemy.active || enemy.lastHitSerial == attackSerial) continue;
+            if (!enemy.alive || !enemy.active || enemy.spectator
+                    || enemy.lastHitSerial == attackSerial) continue;
             float dx = enemy.x - assist.x;
             if (Math.abs(dx) > 126f || Math.abs(enemy.y - assist.y) > 62f) continue;
             if (assist.facingRight ? dx < -18f : dx > 18f) continue;
@@ -4060,11 +4140,13 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private String musicForState() {
         if (state == PLAY || state == PAUSE) {
             int stage = currentStage();
-            if (zone == STAGE_END_ZONE[stage] && bossStoryShown[stage]) {
-                return stage == 3 ? "audio/final_boss.ogg" : "audio/boss.ogg";
+            if (hasActiveBossFight()) {
+                return stage == STAGE_NAMES.length - 1
+                        ? "audio/final_boss.ogg" : "audio/boss.ogg";
             }
             String[] tracks = {"audio/stage_market.ogg", "audio/stage_transit.ogg",
-                    "audio/stage_harbor.ogg", "audio/stage_palace.ogg"};
+                    "audio/stage_harbor.ogg", "audio/stage_palace.ogg",
+                    "audio/final_boss.ogg"};
             String candidate = tracks[currentStage()];
             return candidate;
         }
@@ -4072,6 +4154,14 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (state == TALLY) return "audio/tally.ogg";
         if (state == RESULTS) return "audio/ending.ogg";
         return "audio/menu.ogg";
+    }
+
+    private boolean hasActiveBossFight() {
+        for (Enemy enemy : enemies) {
+            if (enemy.alive && enemy.active && !enemy.spectator
+                    && EnemyArchetype.of(enemy.type).isBoss()) return true;
+        }
+        return false;
     }
 
     private void beginStory(String sceneId, int nextAction) {
@@ -4124,7 +4214,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private int activeEnemyCount() {
         int count = 0;
         for (Enemy enemy : enemies) {
-            if (enemy.alive && enemy.active) count++;
+            if (enemy.alive && enemy.active && !enemy.spectator) count++;
         }
         return count;
     }
@@ -4459,8 +4549,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private void drawStagePreviewRail(Canvas canvas, int routeColor) {
         float left = 357f;
         float top = 148f;
-        float cardWidth = 54f;
-        float gap = 5f;
+        float cardWidth = 46f;
+        float gap = 4f;
         for (int i = 0; i < stageBackgrounds.length; i++) {
             float x = left + i * (cardWidth + gap);
             Bitmap preview = stageBackgrounds[i];
@@ -4484,7 +4574,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         }
         float routeY = top + 81f;
         paint.setColor(Color.rgb(67, 86, 122));
-        canvas.drawRect(left + 8f, routeY - 2f, left + 3f * (cardWidth + gap) + cardWidth - 8f,
+        canvas.drawRect(left + 8f, routeY - 2f,
+                left + (stageBackgrounds.length - 1) * (cardWidth + gap) + cardWidth - 8f,
                 routeY + 2f, paint);
         for (int i = 0; i < stageBackgrounds.length; i++) {
             float x = left + i * (cardWidth + gap) + cardWidth * 0.5f;
@@ -4742,7 +4833,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private void drawStory(Canvas canvas) {
         int stage = storySceneId.startsWith("stage_")
-                ? clampInt(Character.digit(storySceneId.charAt(6), 10) - 1, 0, 3)
+                ? clampInt(Character.digit(storySceneId.charAt(6), 10) - 1,
+                        0, STAGE_NAMES.length - 1)
                 : currentStage();
         drawBackdrop(canvas, stage == 0 ? 360f : ZONE_TRIGGERS[STAGE_START_ZONE[stage]]);
         paint.setColor(Color.argb(192, 3, 7, 24));
@@ -4783,8 +4875,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     private void drawStageTally(Canvas canvas) {
-        int accent = STAGE_ACCENTS[clampInt(clearedStage, 0, 3)];
-        drawBackdrop(canvas, ZONE_TRIGGERS[STAGE_END_ZONE[clampInt(clearedStage, 0, 3)]]);
+        int safeClearedStage = clampInt(clearedStage, 0, STAGE_NAMES.length - 1);
+        int accent = STAGE_ACCENTS[safeClearedStage];
+        drawBackdrop(canvas, ZONE_TRIGGERS[STAGE_END_ZONE[safeClearedStage]]);
         paint.setColor(Color.argb(220, 4, 8, 27));
         canvas.drawRect(0, 0, W, H, paint);
         paint.setColor(Color.argb(248, 12, 20, 48));
@@ -5165,7 +5258,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         float x = enemy.x - cameraX;
         float height = enemyHeight(enemy.type);
         float width = enemy.animator.isBound() ? height * 160f / 192f
-                : height * (enemy.type == 3 ? 0.9f : enemy.type == 2 ? 0.8f : 0.7f);
+                : height * (isBossEnemy(enemy.type) ? 0.9f : isHeavyEnemy(enemy.type) ? 0.8f : 0.7f);
         paint.setColor(Color.argb(100, 0, 0, 0));
         canvas.drawOval(x - width * 0.34f, enemy.y - 6, x + width * 0.34f, enemy.y + 7, paint);
         Bitmap bitmap = enemyArt[enemy.type];
@@ -5175,6 +5268,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         } else {
             enemyPaint.setColorFilter(STAGE_ENEMY_FILTERS[stageForZone(enemy.zone)]);
         }
+        enemyPaint.setAlpha(enemy.spectator ? 155 : 255);
         if (enemy.animator.isBound()) {
             canvas.save();
             if (!enemy.facingRight) canvas.scale(-1f, 1f, x, 0f);
@@ -5193,7 +5287,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 float progress = clamp(enemy.stateTicks / 24f, 0f, 1f);
                 float motion = (float) Math.sin(progress * Math.PI);
                 lunge = (enemy.facingRight ? 1f : -1f)
-                        * (enemy.type == 3 ? 25f : 15f) * motion;
+                        * (isBossEnemy(enemy.type) ? 25f : 15f) * motion;
                 rotation = (enemy.facingRight ? 1f : -1f) * 7f * motion;
                 scaleX += motion * 0.08f;
                 scaleY -= motion * 0.04f;
@@ -5212,7 +5306,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             canvas.drawBitmap(bitmap, null, dest, enemyPaint);
             canvas.restore();
         } else {
-            paint.setColor(enemy.type == 3 ? Color.rgb(166, 83, 224) : Color.rgb(20, 157, 148));
+            paint.setColor(isBossEnemy(enemy.type) ? Color.rgb(166, 83, 224) : Color.rgb(20, 157, 148));
             roundRect(canvas, x - width * 0.42f, enemy.y - enemy.z - height * 0.78f,
                     x + width * 0.42f, enemy.y - enemy.z, 12, paint);
             paint.setColor(Color.rgb(217, 255, 85));
@@ -5220,18 +5314,24 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             canvas.drawCircle(x + 7, enemy.y - enemy.z - height * 0.68f, 3, paint);
         }
         enemyPaint.setColorFilter(null);
-        if (enemy.hp < enemy.maxHp || enemy.type == 3 || enemy.elite) {
-            float barW = enemy.type == 3 ? 92f : 54f;
+        enemyPaint.setAlpha(255);
+        if (!enemy.spectator && (enemy.hp < enemy.maxHp || isBossEnemy(enemy.type) || enemy.elite)) {
+            float barW = isBossEnemy(enemy.type) ? 92f : 54f;
             paint.setColor(Color.argb(190, 10, 10, 25));
             canvas.drawRect(x - barW / 2, enemy.y - enemy.z - height - 10,
                     x + barW / 2, enemy.y - enemy.z - height - 5, paint);
-            paint.setColor(enemy.type == 3 ? Color.rgb(255, 82, 92) : Color.rgb(217, 255, 85));
+            paint.setColor(isBossEnemy(enemy.type) ? Color.rgb(255, 82, 92) : Color.rgb(217, 255, 85));
             canvas.drawRect(x - barW / 2, enemy.y - enemy.z - height - 10,
                     x - barW / 2 + barW * Math.max(0, enemy.hp) / enemy.maxHp,
                     enemy.y - enemy.z - height - 5, paint);
         }
-        if (enemy.elite && enemy.alive) {
-            text(canvas, enemy.type == EnemyArchetype.BOSS ? ui("stage_boss", "STAGE BOSS") : ui("mini_boss", "MINI-BOSS"),
+        if (enemy.spectator && enemy.alive) {
+            text(canvas, ui("boss_watching", "BOSS WATCHING"), x,
+                    enemy.y - enemy.z - height - 14f, 7f,
+                    Color.rgb(126, 238, 255), true, Paint.Align.CENTER);
+        } else if ((enemy.elite || EnemyArchetype.of(enemy.type).isBoss()) && enemy.alive) {
+            text(canvas, EnemyArchetype.of(enemy.type).isBoss()
+                            ? ui("stage_boss", "STAGE BOSS") : ui("mini_boss", "MINI-BOSS"),
                     x, enemy.y - enemy.z - height - (enemy.maxGuard > 0 ? 25f : 14f), 7f,
                     STAGE_ACCENTS[stageForZone(enemy.zone)], true, Paint.Align.CENTER);
         }
@@ -5475,7 +5575,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                         : storyContent.ui("stage", "STAGE") + " " + (hudStage + 1) + "  " + stageName(hudStage),
                 553, 33, zone >= ZONE_TRIGGERS.length ? 10 : 8,
                 STAGE_ACCENTS[hudStage], true, Paint.Align.CENTER);
-        text(canvas, zone >= ZONE_TRIGGERS.length ? "4/4"
+        text(canvas, zone >= ZONE_TRIGGERS.length ? STAGE_NAMES.length + "/" + STAGE_NAMES.length
                         : ui("wave", "WAVE") + " " + waveInStage(zone) + "/" + wavesInStage(hudStage),
                 553, 50, 10, Color.LTGRAY, false, Paint.Align.CENTER);
         if (combo >= 2 && comboWindow > 0) {
@@ -5503,8 +5603,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (lastHitEnemy != null && lastHitEnemyTicks > 0) {
             paint.setColor(Color.argb(210, 8, 9, 31));
             roundRect(canvas, 14, 80, 214, 108, 8, paint);
-            int enemyColor = lastHitEnemy.type == 3 ? Color.rgb(255, 92, 92)
-                    : lastHitEnemy.type == 2 ? Color.rgb(255, 158, 66)
+            int enemyColor = isBossEnemy(lastHitEnemy.type) ? Color.rgb(255, 92, 92)
+                    : isHeavyEnemy(lastHitEnemy.type) ? Color.rgb(255, 158, 66)
                     : lastHitEnemy.type == ENEMY_STRIKER ? Color.rgb(66, 232, 238)
                     : lastHitEnemy.type == 1 ? Color.rgb(120, 200, 255)
                     : Color.rgb(190, 190, 210);
@@ -5554,7 +5654,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         }
         paint.setColor(Color.argb(190, 255, 207, 72));
         for (Enemy enemy : enemies) {
-            if (!enemy.alive || !enemy.active) continue;
+            if (!enemy.alive || !enemy.active || enemy.spectator) continue;
             float enemyX = enemy.x - cameraX;
             canvas.drawRect(enemyX - enemyHurtHalfWidth(enemy.type),
                     enemy.y - enemyHurtLaneHalfHeight(enemy.type),
@@ -5563,11 +5663,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             if (enemy.state == ENEMY_STATE_ATTACK
                     && (enemy.animator.frame() == 3 || !enemy.animator.isBound()
                     && enemy.stateTicks >= 10 && enemy.stateTicks <= 12)) {
-                float range = enemy.type == 3 ? 88f : enemy.type == 2 ? 62f : 48f;
+                float range = isBossEnemy(enemy.type) ? 88f : isHeavyEnemy(enemy.type) ? 62f : 48f;
                 float rear = 10f;
                 float left = enemy.facingRight ? enemyX - rear : enemyX - range;
                 float right = enemy.facingRight ? enemyX + range : enemyX + rear;
-                float lane = enemy.type == 3 ? 34f : 26f;
+                float lane = isBossEnemy(enemy.type) ? 34f : 26f;
                 paint.setColor(Color.argb(225, 255, 70, 82));
                 canvas.drawRect(left, enemy.y - lane, right, enemy.y + lane, paint);
                 paint.setColor(Color.argb(190, 255, 207, 72));
@@ -5689,10 +5789,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     }
 
     private static int stageForZone(int zoneIndex) {
-        if (zoneIndex < STAGE_START_ZONE[1]) return 0;
-        if (zoneIndex < STAGE_START_ZONE[2]) return 1;
-        if (zoneIndex < STAGE_START_ZONE[3]) return 2;
-        return 3;
+        int safeZone = Math.max(0, zoneIndex);
+        for (int stage = STAGE_START_ZONE.length - 1; stage >= 0; stage--) {
+            if (safeZone >= STAGE_START_ZONE[stage]) return stage;
+        }
+        return 0;
     }
 
     private int currentStage() {
@@ -7175,6 +7276,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         boolean attackHitFired;
         boolean defeated;
         boolean elite;
+        boolean spectator;
         float x;
         float y;
         float z;

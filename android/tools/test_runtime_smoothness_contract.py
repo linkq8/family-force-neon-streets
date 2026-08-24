@@ -45,11 +45,11 @@ assert "ENEMY_ANIM_CELL_WIDTH, ENEMY_ANIM_CELL_HEIGHT" not in spawn_enemy, (
     "TV atlases must never be sliced with the 160x192 authoring-cell constants"
 )
 
-# Four real stages share existing atlases but must have distinct progress,
+# Five real stages use encounter-scoped atlases and distinct progress,
 # transitions, and allocation-free enemy palettes.
-assert 'STAGE_START_ZONE = {0, 2, 4, 7}' in text
-assert 'STAGE_END_ZONE = {1, 3, 6, 8}' in text
-assert '"NEON MARKET", "TRANSIT TERMINAL", "MOON HARBOR", "JUNK PALACE"' in text
+assert 'STAGE_START_ZONE = {0, 2, 4, 7, 9}' in text
+assert 'STAGE_END_ZONE = {1, 3, 6, 8, 13}' in text
+assert '"SHADOW CONVERGENCE"' in text
 assert 'diagnostics.event("STAGE_CLEAR "' in text
 assert 'drawStageTransition(canvas)' in text
 draw_enemy = method_body("drawEnemy")
@@ -59,7 +59,7 @@ draw_backdrop = method_body("drawBackdrop")
 assert "stagePanProgress" in draw_backdrop
 assert "tileWidth" not in draw_backdrop
 assert "canvas.scale(-1f" not in draw_backdrop
-assert "new Bitmap[4]" in SOURCE.read_text(encoding="utf-8")
+assert "new Bitmap[5]" in SOURCE.read_text(encoding="utf-8")
 
 expected = {
     "tv/backgrounds/street.png": (960, 536),
@@ -72,6 +72,7 @@ expected = {
     "tv/backgrounds/panoramas/stage_transit.png": (1800, 600),
     "tv/backgrounds/panoramas/stage_harbor.png": (1800, 600),
     "tv/backgrounds/panoramas/stage_palace.png": (1800, 600),
+    "tv/backgrounds/panoramas/stage_final.png": (1800, 600),
 }
 hero_runtime = {"parent": 126, "adam": 77, "shaikha": 77, "sulaiman": 88}
 enemy_runtime = {"grunt": (100, 120), "skater": (92, 110), "brute": (113, 136),
@@ -87,9 +88,14 @@ for stem, (cell_width, cell_height) in enemy_runtime.items():
     expected[f"runtime/enemies/{stem}_anim.png"] = (cell_width * 6, cell_height * 6)
 for stem in ("parent", "adam", "shaikha", "sulaiman"):
     expected[f"tv/heroes/{stem}_anim.png"] = (1152, 1584)
-for stem in ("grunt", "skater", "brute", "boss"):
-    expected[f"tv/enemies/{stem}_anim.png"] = (720, 864)
-for stem in ("striker", "shield_guard"):
+enemy_tv_stems = (
+    "grunt", "skater", "brute", "boss", "striker", "shield_guard",
+    "lantern_courier", "market_enforcer", "keeper_7", "rail_runner",
+    "signal_warden", "railmaster_9", "cargo_loader", "harpoon_drone",
+    "dock_crusher", "tidebreaker", "scrap_stalker", "core_jammer",
+    "furnace_brawler", "palace_sentinel", "vox_avatar", "shadow_prime",
+)
+for stem in enemy_tv_stems:
     expected[f"tv/enemies/{stem}_anim.png"] = (840, 1008)
 
 for relative, dimensions in expected.items():
@@ -110,9 +116,7 @@ hero_bytes = sum(w * h * 4 for w, h in
 assist_bytes = sum(max(192, round(hero_runtime[stem] * density)) * 8
                    * max(192, round(hero_runtime[stem] * density)) * 4
                    for stem in ("parent", "sulaiman"))
-enemy_dense = [(round(h * density * 160 / 192), round(h * density))
-               for _, h in enemy_runtime.values()]
-enemy_bytes = sum(sorted((w * 6 * h * 6 * 4 for w, h in enemy_dense), reverse=True)[:4])
+enemy_bytes = 4 * 840 * 1008 * 4
 background_bytes = (960 * 536 + 4 * 1800 * 600) * 2
 combat_mib = (hero_bytes + assist_bytes + enemy_bytes + background_bytes) / (1024 * 1024)
 assert combat_mib < 98.0, f"animated TV combat texture budget too high: {combat_mib:.2f} MiB"

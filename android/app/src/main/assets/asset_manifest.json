@@ -136,6 +136,14 @@
       "sha256": "7730934f39fe1f0c68caad57879e4c33156774a215ab5bba1a63dac58db06273"
     },
     {
+      "path": "backgrounds/panoramas/stage_final.png",
+      "bytes": 3026972,
+      "sha256": "71d0a61f3423f4776172ff504dc3d863f97c6461a8a3b07f67b4136464b18e5b",
+      "width": 2172,
+      "height": 724,
+      "mode": "RGB"
+    },
+    {
       "path": "backgrounds/panoramas/stage_harbor.png",
       "bytes": 2186910,
       "sha256": "434c7d150a52997244cc63930a3698723733e11d07c61e3b57090aea07598938",
@@ -233,48 +241,152 @@
     },
     {
       "path": "enemies/boss.png",
-      "bytes": 202647,
-      "sha256": "f8a0d793afad2bc32325a40dfdf3a0ced8ae9b8b21a43d4c4c108ffdf0644749",
+      "bytes": 109609,
+      "sha256": "1019559ee9c3ad54e19166ac96bf2b58409ef0c0d775c2854d043ecedab29e9f",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/boss_anim.png",
-      "bytes": 1116544,
-      "sha256": "7abff0ee0fe019cf66e598974025322bc5a6254a6344573a3a56c97630f8f140",
+      "bytes": 912082,
+      "sha256": "5c242eedd5f229d5ce6270e76c6ae8d2b934f0630293059c8a1302e7ee19671c",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
     },
     {
       "path": "enemies/brute.png",
-      "bytes": 209388,
-      "sha256": "06fac65365dbd108581aae44573e47937d49adad6c3a139539064fad8ccb9d20",
+      "bytes": 111056,
+      "sha256": "876b5b929ee4437e39f73c212649eaaeab57d0f1fceeb54cc1489b719a6775ca",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/brute_anim.png",
-      "bytes": 1210099,
-      "sha256": "0cc5c1679afbda6c8f79d8e67f7dce3fb60f41d31257408420d5551de1fff15b",
+      "bytes": 924738,
+      "sha256": "f8ce047d718786668e70e1e146f08d9e6d846fa740514516dc0e3ef2a923a24b",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/cargo_loader_anim.png",
+      "bytes": 752842,
+      "sha256": "f976a08073376a9da3d3a857935cdc7e21d985f782521e98c2323f6e11fa6d69",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/core_jammer_anim.png",
+      "bytes": 777385,
+      "sha256": "f3b75c550008b94b337bce98b34b5dc08db54b4f662cc8c82414e8a2a9abd0b3",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/dock_crusher_anim.png",
+      "bytes": 949664,
+      "sha256": "b094efb3d8163d4cacb3c56bc039177c6af619d2c47819618df939505435cd49",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/furnace_brawler_anim.png",
+      "bytes": 642587,
+      "sha256": "51dcbcfe7ab397e9730f2e0599753261ce2b89ecf8c7199ca7efe5b0b6a38a88",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
     },
     {
       "path": "enemies/grunt.png",
-      "bytes": 233067,
-      "sha256": "9de613f158d55ad575ba75a85272e3bb29d2b4ad23f87c45e8bb20681db31cb2",
+      "bytes": 124878,
+      "sha256": "685e3fa327378868f427f846310de497a20a21f95194de3e2d7e6650fe02485c",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/grunt_anim.png",
-      "bytes": 1216845,
-      "sha256": "86d916dd62aca67a705ad5444ead161d99ef290cf5a0fa4b434dbb2b9a02d7e5",
+      "bytes": 1093244,
+      "sha256": "ee416f7aed01e8f0a4cfee464b6674d82c1f5258fd7dc94649390553cf5a3f37",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/harpoon_drone_anim.png",
+      "bytes": 822974,
+      "sha256": "f1e9954e6151742195c59687ad32b263020620ba19d3fa96d736fd2a555a7186",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/keeper_7_anim.png",
+      "bytes": 981273,
+      "sha256": "56795e94bd7973dfbbd6a5183913222be3bda42a80bca69b2b561dc67738a3a2",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/lantern_courier_anim.png",
+      "bytes": 941065,
+      "sha256": "d109c7c3e053e635682cb96546ad1d4161f3b08218cb6272aa3f6ba8bea0ccf9",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/market_enforcer_anim.png",
+      "bytes": 1147718,
+      "sha256": "c3503db68d5be30248608939cb6dd436b69f5ca18705dc1ae486619b09a77787",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/palace_sentinel_anim.png",
+      "bytes": 1103134,
+      "sha256": "0a1da67f3650db8116f1f5ba3094436e40f6985d96b4a8bbba0900aaacbc84e6",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/rail_runner_anim.png",
+      "bytes": 982974,
+      "sha256": "cdad38be7c1e8cfa7e843bac965ca6047f9c0790eea6d24db6659a73ff06a2e7",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/railmaster_9_anim.png",
+      "bytes": 950459,
+      "sha256": "e582894b3a2c3b12811349f6f41f72346fd7062e0c055142703a285bc4623b5b",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/scrap_stalker_anim.png",
+      "bytes": 833951,
+      "sha256": "4753cc15e069af987b0a3964701f81f09d2294201f34e8d2883b467366f501b5",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/shadow_prime_anim.png",
+      "bytes": 988220,
+      "sha256": "aa3d5a3f147089c21d82e5a825be3a1cde4a15ccb5284b88c0da160e1c2f2b7a",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -296,17 +408,25 @@
       "mode": "RGBA"
     },
     {
+      "path": "enemies/signal_warden_anim.png",
+      "bytes": 1059799,
+      "sha256": "04b82f799e87ea13bc7694fb9ce64af02022e57880d609c9181b7348c7947eeb",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
       "path": "enemies/skater.png",
-      "bytes": 159195,
-      "sha256": "5f2814736037ff343534135c624cebd8b42d29aa1145583b96ecb3d24c4029a9",
+      "bytes": 93340,
+      "sha256": "d163b783f510f6503406c23b5c754b234b2558b26a1f85620d6b7cd773152735",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/skater_anim.png",
-      "bytes": 977753,
-      "sha256": "4cae126924615d05d12e70cade40c2e3f270e4717d2efab5f479c4e0949a1c44",
+      "bytes": 806043,
+      "sha256": "38291b0f4526909be97c10ef191cf7b18fd835968b84ff7fc6fffa102e987b8e",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -323,6 +443,22 @@
       "path": "enemies/striker_anim.png",
       "bytes": 756191,
       "sha256": "4c3c3c38de030689f37a8ee0088d396f240c76c5c357b6f6db4629ca27e971ab",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/tidebreaker_anim.png",
+      "bytes": 917267,
+      "sha256": "ab281d9da9477d8e75e3113d2f6758262b44ff6390a743b58ca498d34992c499",
+      "width": 960,
+      "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/vox_avatar_anim.png",
+      "bytes": 847538,
+      "sha256": "7af950f1682c2248849194a25b60b037295384ae5dfdf9de2851777ee74ec683",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -737,13 +873,21 @@
     },
     {
       "path": "story/story_ar.json",
-      "bytes": 17061,
-      "sha256": "338fca66fe26e6e59d3cee0148d1bbeb124285683f1b0cd8b4458ccc6a35c9ac"
+      "bytes": 20042,
+      "sha256": "61d4fe750cd0e53cae081ccad84e18b795788697ccb1f145b9f3c1974e9a5a4d"
     },
     {
       "path": "story/story_en.json",
-      "bytes": 13459,
-      "sha256": "19b175d9be01b3ef29615610ff260186737c60270abae66e11be3725e7cbc66a"
+      "bytes": 15869,
+      "sha256": "aa799da9885c8c387cb05797b34bc80456f3c137e62a2176ea80fba0eaceca05"
+    },
+    {
+      "path": "tv/backgrounds/panoramas/stage_final.png",
+      "bytes": 2262448,
+      "sha256": "0a7666af22e5f67d925bcd2984088851761cde676db31e1727308f95c5d54d1f",
+      "width": 1800,
+      "height": 600,
+      "mode": "RGB"
     },
     {
       "path": "tv/backgrounds/panoramas/stage_harbor.png",
@@ -827,26 +971,130 @@
     },
     {
       "path": "tv/enemies/boss_anim.png",
-      "bytes": 827205,
-      "sha256": "b16cdd141a2b739e6d229c869820f8a968dca9f74ba5009141e45261fa97a01f",
-      "width": 720,
-      "height": 864,
+      "bytes": 859927,
+      "sha256": "b86d201a65031697e7783f624ff6fa8400e6705d19a618bedacee59dbd98fccb",
+      "width": 840,
+      "height": 1008,
       "mode": "RGBA"
     },
     {
       "path": "tv/enemies/brute_anim.png",
-      "bytes": 885736,
-      "sha256": "e96e6fbf99b3a3bda92919ff52bd891d5ceb4a14a9dc3a013ff17c8d62508215",
-      "width": 720,
-      "height": 864,
+      "bytes": 833955,
+      "sha256": "b0b758b0fb474fe8e6de6cde6056018730819b140a5c038002a48a94de5a9467",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/cargo_loader_anim.png",
+      "bytes": 707541,
+      "sha256": "ef547c728fa41107c26bb63a8ac99c1a1ab16f2333dc09d8cd92ae39de200b48",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/core_jammer_anim.png",
+      "bytes": 736693,
+      "sha256": "8b2df45c79f0538eea7ddc63d5bc5d4309ef366630dcd852ec818978751c4a65",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/dock_crusher_anim.png",
+      "bytes": 877423,
+      "sha256": "6381d3cf75c89c1ceb892ea52d87d14a066b2cfc50ffc1988fa94186f6562c1e",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/furnace_brawler_anim.png",
+      "bytes": 611128,
+      "sha256": "d53116ecb08c545ab9983d4b0edf33acdf52d6c4a3e8823eaf20e8d6721812b3",
+      "width": 840,
+      "height": 1008,
       "mode": "RGBA"
     },
     {
       "path": "tv/enemies/grunt_anim.png",
-      "bytes": 871046,
-      "sha256": "ded9b650a8b32bcf061b179a1e0c1e59d09dc7537f7ed860ed430f768c6dd9d7",
-      "width": 720,
-      "height": 864,
+      "bytes": 1006172,
+      "sha256": "62547a28a8b9131b70e90da87041de99601d7279b7af0c622fee504e78012937",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/harpoon_drone_anim.png",
+      "bytes": 763967,
+      "sha256": "fa4b92382485fed46c95c2db2ed783dcce2b14c40823c2c75379c2434c58c693",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/keeper_7_anim.png",
+      "bytes": 910461,
+      "sha256": "1e3077a36f7b4afa5d422f794b43e074be7d142475a6b12ac8971ed466c56449",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/lantern_courier_anim.png",
+      "bytes": 871784,
+      "sha256": "030f653c51d184ea04c4715c774ea9ed3ec40ca670ff0ab22ecdea5b69e255cb",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/market_enforcer_anim.png",
+      "bytes": 1037996,
+      "sha256": "805709c48201b2b43f27589732b996d5a333bb25696add3a07f4fd4e4fb7cd36",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/palace_sentinel_anim.png",
+      "bytes": 975342,
+      "sha256": "2035adc897e63c13f18e8868320f0bf97fc95bc528efbb2c3f7f4ee50a11cec7",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/rail_runner_anim.png",
+      "bytes": 889431,
+      "sha256": "bdbd21357f85bb9545d89848ca3466cd1fc0f38a0bf4edf23fb80f6dabe12990",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/railmaster_9_anim.png",
+      "bytes": 867965,
+      "sha256": "47338b0f41baaea8e14a52904e605e6ff57841f3f1fc07d358130bdb43341349",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/scrap_stalker_anim.png",
+      "bytes": 789920,
+      "sha256": "48a784955e6f256c61abee399fc728ff70cc24f819c48388ad8c0929b24b36ac",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/shadow_prime_anim.png",
+      "bytes": 917981,
+      "sha256": "58f27203c067af2157cb52e393c6a5dd221dd685c3009519cf3afcda2b48315f",
+      "width": 840,
+      "height": 1008,
       "mode": "RGBA"
     },
     {
@@ -858,33 +1106,57 @@
       "mode": "RGBA"
     },
     {
+      "path": "tv/enemies/signal_warden_anim.png",
+      "bytes": 973603,
+      "sha256": "a65feac35027564c2940fc1df17621f8f05edafa5be8348aa556843ade21495c",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
       "path": "tv/enemies/skater_anim.png",
-      "bytes": 736336,
-      "sha256": "ff1bca0707f8dd64e29f5b5736cf729ad6ad3d9b0c294f34770c1be350338963",
-      "width": 720,
-      "height": 864,
+      "bytes": 758698,
+      "sha256": "16c5a0b6b6db576046ead246f38092323bd06d022b2f89351906a6f90f9e1056",
+      "width": 840,
+      "height": 1008,
       "mode": "RGBA"
     },
     {
       "path": "tv/enemies/striker_anim.png",
-      "bytes": 597152,
-      "sha256": "f5a858c237302dd48a61186110e133b1c632e8f0029a27581fccd775a3c8997b",
+      "bytes": 721228,
+      "sha256": "1c58e5a85607927b816d5c333458beaffaa9d5e66c5f6927e1bb7f1a241a6120",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/tidebreaker_anim.png",
+      "bytes": 850183,
+      "sha256": "97c49e2131d7bf47c8511ee90aa528a5d391791b82ce91ff705d15dbb73e218c",
+      "width": 840,
+      "height": 1008,
+      "mode": "RGBA"
+    },
+    {
+      "path": "tv/enemies/vox_avatar_anim.png",
+      "bytes": 779443,
+      "sha256": "c14da471d44fd603c6db202c77f560f135772efe8794b6564a4d74389ff0b9e6",
       "width": 840,
       "height": 1008,
       "mode": "RGBA"
     },
     {
       "path": "tv/heroes/adam_anim.png",
-      "bytes": 1564218,
-      "sha256": "4509fafb311af89453d3813a68d9d0b99ba97f03385cab6fdcefaec808c4af91",
+      "bytes": 2264881,
+      "sha256": "9b1823ad6284f28226044c8ec4750f7a514b3f2b661453c9c49f5ddb85bc3456",
       "width": 1152,
       "height": 1584,
       "mode": "RGBA"
     },
     {
       "path": "tv/heroes/parent_anim.png",
-      "bytes": 1342537,
-      "sha256": "59ea26f5cb387f0e34474f0b57a2c869fd0c844159ac0a425cb5adc540c5db88",
+      "bytes": 1603926,
+      "sha256": "99c0dff2dd771c327c2313a4dea40ec90336758178d085e74ee80b25aa8af4e4",
       "width": 1152,
       "height": 1584,
       "mode": "RGBA"
@@ -899,16 +1171,16 @@
     },
     {
       "path": "tv/heroes/shaikha_anim.png",
-      "bytes": 1606007,
-      "sha256": "067eebd247858f02b7b3e12f8eb5b706a31b8fb026c9c579be6b4abaa293b811",
+      "bytes": 1986352,
+      "sha256": "8e82a16a379cbedb4289be037c5549e2488cd4c085376aa52da3819e86006865",
       "width": 1152,
       "height": 1584,
       "mode": "RGBA"
     },
     {
       "path": "tv/heroes/sulaiman_anim.png",
-      "bytes": 1530131,
-      "sha256": "c799babaf1fac538c5988de54f9994f8426e1973f01b8f28a36196ba64020e84",
+      "bytes": 1917344,
+      "sha256": "3246232b40bcf2ca4e74ce658589fc296d74817d7655adf383ccbd1033f9e75f",
       "width": 1152,
       "height": 1584,
       "mode": "RGBA"
@@ -1044,5 +1316,5 @@
   ],
   "project": "Family Force: Neon Streets",
   "status": "direct-reference family character pack; likeness quality is provisional until five or more photos per person enable Soul training",
-  "visual_formula": "High-detail retro arcade pixel art rendered at a modern 360p-to-720p game resolution, with fine 2–4 pixel clusters, crisp edges, selective dithering, and no oversized block pixels. Athletic readable silhouettes use dark navy outlines, expressive recognizable faces, dynamic foreshortening, and slightly exaggerated 1990s beat-’em-up proportions. Night streets use indigo, teal, and warm amber; heroes use distinct red-gold, green-purple, pink-ice, and blue-red palettes. Energetic family-friendly lighting and strong foreground contrast maintain a consistent three-quarter side-view belt-brawler perspective."
+  "visual_formula": "High-detail retro arcade pixel art rendered at a modern 360p-to-720p game resolution, with fine 2\u20134 pixel clusters, crisp edges, selective dithering, and no oversized block pixels. Athletic readable silhouettes use dark navy outlines, expressive recognizable faces, dynamic foreshortening, and slightly exaggerated 1990s beat-\u2019em-up proportions. Night streets use indigo, teal, and warm amber; heroes use distinct red-gold, green-purple, pink-ice, and blue-red palettes. Energetic family-friendly lighting and strong foreground contrast maintain a consistent three-quarter side-view belt-brawler perspective."
 }

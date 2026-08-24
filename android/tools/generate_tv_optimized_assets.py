@@ -16,7 +16,7 @@ ASSETS = ROOT / "app/src/main/assets"
 VARIANTS = (
     ("backgrounds/street.png", "tv/backgrounds/street.png", (960, 536), "RGB"),
     ("backgrounds/street_retro.png", "tv/backgrounds/street_retro.png", (960, 540), "RGB"),
-    # Four chapter backgrounds stay resident to make transitions instant. At
+    # Five chapter backgrounds stay resident to make transitions instant. At
     # 800x450 RGB_565 they retain 1.25x logical detail while remaining cheap
     # enough for low-memory Android TV devices.
     ("backgrounds/stage_market.png", "tv/backgrounds/stage_market.png", (800, 450), "RGB"),
@@ -30,6 +30,7 @@ VARIANTS = (
     ("backgrounds/panoramas/stage_transit.png", "tv/backgrounds/panoramas/stage_transit.png", (1800, 600), "RGB"),
     ("backgrounds/panoramas/stage_harbor.png", "tv/backgrounds/panoramas/stage_harbor.png", (1800, 600), "RGB"),
     ("backgrounds/panoramas/stage_palace.png", "tv/backgrounds/panoramas/stage_palace.png", (1800, 600), "RGB"),
+    ("backgrounds/panoramas/stage_final.png", "tv/backgrounds/panoramas/stage_final.png", (1800, 600), "RGB"),
     # The idle master is rendered at at most 192 logical pixels. A 384x576
     # source retains 2x vertical detail without keeping the 10.7 MiB decode.
     ("heroes/parent_hd.png", "tv/heroes/parent_hd.png", (384, 576), "RGBA"),
@@ -39,16 +40,31 @@ VARIANTS = (
     ("heroes/adam_anim.png", "tv/heroes/adam_anim.png", (1152, 1584), "RGBA"),
     ("heroes/shaikha_anim.png", "tv/heroes/shaikha_anim.png", (1152, 1584), "RGBA"),
     ("heroes/sulaiman_anim.png", "tv/heroes/sulaiman_anim.png", (1152, 1584), "RGBA"),
-    # 75% animation atlases preserve every frame and fine pixel cluster while
-    # cutting decoded texture memory by 43.75% on memory-constrained TVs.
-    ("enemies/grunt_anim.png", "tv/enemies/grunt_anim.png", (720, 864), "RGBA"),
-    ("enemies/skater_anim.png", "tv/enemies/skater_anim.png", (720, 864), "RGBA"),
-    ("enemies/brute_anim.png", "tv/enemies/brute_anim.png", (720, 864), "RGBA"),
-    ("enemies/boss_anim.png", "tv/enemies/boss_anim.png", (720, 864), "RGBA"),
-    # Fine-detail newcomers keep 87.5% masters. Their 140x168 cells are close
-    # to their 116/132px render heights and avoid destructive double reduction.
+    # Every approved enemy now uses the same fine-detail 87.5% TV contract.
+    # Their 140x168 cells remain below the four-atlas encounter budget while
+    # avoiding the visibly softer second reduction used by the legacy art.
+    ("enemies/grunt_anim.png", "tv/enemies/grunt_anim.png", (840, 1008), "RGBA"),
+    ("enemies/skater_anim.png", "tv/enemies/skater_anim.png", (840, 1008), "RGBA"),
+    ("enemies/brute_anim.png", "tv/enemies/brute_anim.png", (840, 1008), "RGBA"),
+    ("enemies/boss_anim.png", "tv/enemies/boss_anim.png", (840, 1008), "RGBA"),
     ("enemies/striker_anim.png", "tv/enemies/striker_anim.png", (840, 1008), "RGBA"),
     ("enemies/shield_guard_anim.png", "tv/enemies/shield_guard_anim.png", (840, 1008), "RGBA"),
+    ("enemies/lantern_courier_anim.png", "tv/enemies/lantern_courier_anim.png", (840, 1008), "RGBA"),
+    ("enemies/market_enforcer_anim.png", "tv/enemies/market_enforcer_anim.png", (840, 1008), "RGBA"),
+    ("enemies/keeper_7_anim.png", "tv/enemies/keeper_7_anim.png", (840, 1008), "RGBA"),
+    ("enemies/rail_runner_anim.png", "tv/enemies/rail_runner_anim.png", (840, 1008), "RGBA"),
+    ("enemies/signal_warden_anim.png", "tv/enemies/signal_warden_anim.png", (840, 1008), "RGBA"),
+    ("enemies/railmaster_9_anim.png", "tv/enemies/railmaster_9_anim.png", (840, 1008), "RGBA"),
+    ("enemies/cargo_loader_anim.png", "tv/enemies/cargo_loader_anim.png", (840, 1008), "RGBA"),
+    ("enemies/harpoon_drone_anim.png", "tv/enemies/harpoon_drone_anim.png", (840, 1008), "RGBA"),
+    ("enemies/dock_crusher_anim.png", "tv/enemies/dock_crusher_anim.png", (840, 1008), "RGBA"),
+    ("enemies/tidebreaker_anim.png", "tv/enemies/tidebreaker_anim.png", (840, 1008), "RGBA"),
+    ("enemies/scrap_stalker_anim.png", "tv/enemies/scrap_stalker_anim.png", (840, 1008), "RGBA"),
+    ("enemies/core_jammer_anim.png", "tv/enemies/core_jammer_anim.png", (840, 1008), "RGBA"),
+    ("enemies/furnace_brawler_anim.png", "tv/enemies/furnace_brawler_anim.png", (840, 1008), "RGBA"),
+    ("enemies/palace_sentinel_anim.png", "tv/enemies/palace_sentinel_anim.png", (840, 1008), "RGBA"),
+    ("enemies/vox_avatar_anim.png", "tv/enemies/vox_avatar_anim.png", (840, 1008), "RGBA"),
+    ("enemies/shadow_prime_anim.png", "tv/enemies/shadow_prime_anim.png", (840, 1008), "RGBA"),
 )
 
 

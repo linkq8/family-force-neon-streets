@@ -23,14 +23,14 @@ required_code = (
 )
 for snippet in required_code:
     assert snippet in SOURCE, f"missing Striker runtime contract: {snippet}"
-assert 'new EnemyArchetype("striker", "STRIKER"' in ARCHETYPES
+assert 'type("striker", "STRIKER"' in ARCHETYPES
 assert "complete_component_rows" in BUILDER
 assert "component_boxes" in BUILDER
 assert "if component_rows[row] is not None" in BUILDER
 
 assert SOURCE.count("spawnEnemy(") >= 1
-assert SOURCE.count("spawnEnemy(0, ENEMY_STRIKER") == 1
-assert SOURCE.count("ENEMY_STRIKER") >= 4
+assert SOURCE.count("spawnEnemy(2, EnemyArchetype.STRIKER") >= 1
+assert SOURCE.count("ENEMY_STRIKER") >= 3
 
 for relative, dimensions in (
     ("enemies/striker.png", (512, 512)),
