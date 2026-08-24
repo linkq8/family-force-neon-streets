@@ -4,23 +4,23 @@
 > يجب على كل وكيل قراءته قبل تعديل المشروع، وتحديثه بعد كل طلب أو تعديل أو
 > اختبار أو Release. سجل الأحداث أدناه تراكمي؛ لا تُحذف الإدخالات القديمة.
 
-آخر تحديث: 23 أغسطس 2026 — Codex
+آخر تحديث: 24 أغسطس 2026 — Codex
 
 ## حالة العمل الحالية
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.42.0-alpha`، `versionCode 51`.
+- النسخة المنشورة: `v0.43.0-alpha`، `versionCode 52`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `2f00e35aca72cac5b58d18b6d89d6066cfc1f692`.
+- آخر commit وظيفي: `8600fa14cb7d11faa04fd953c965d5180633f686`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.42.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.42.0-alpha/family-force-family-current.apk
-- SHA-256: `d3c18e5c3c7c820914c67358e870838cf10c77d1b0a5c74e810926d03002a42a`.
-- حالة QA: بناء Release وR8 وLint والتوقيع والأرشيف و10 أطالس عالية الكثافة
-  والتحكم وعقود البانوراما/القص/ذاكرة TV ناجحة؛ الميزانية `97.12 MiB` مع تحميل
-  أربعة أطالس أعداء فقط للمنطقة الحالية. نجح Android TV
-  Emulator في المسار الكامل للمناطق التسع واختبارات phone/Fold/TV/remote.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.43.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.43.0-alpha/family-force-family-current.apk
+- SHA-256: `d824ea22a67b4f07a14a571598c32805f42c5cd366aabcdbb4daec5ec57ccccf`.
+- حالة QA: واجهة Canvas والقصة ثنائيتا اللغة عبر 215 مفتاحًا متطابقًا؛ نجح
+  Build/Release/R8/Lint والتوقيع والتحقق من الأصول والتحكم وعقود الأداء وذاكرة
+  TV. أكمل Android TV Emulator المسار الكامل للمناطق التسع، ونجحت ملفات
+  phone/ultrawide/Fold/TV ومسار الريموت دون FATAL/ANR/OOM.
 - نتيجة Xiaomi Stick الحقيقية لـv0.25: جلسة كاملة بلا تقطيع للاعبين، مع نجاح
   استدعاء الشخصيات الإضافية ونظافة الرسومات والحركة.
 - اختبار المناطق: مسار تطويري آلي مرّ بالمناطق 1–9 حتى شاشة النتائج بنجاح.
@@ -31,8 +31,9 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: Checkpoint/Continue بعد خسارة أو إعادة تشغيل، وXiaomi Stick.
-- العمل التالي الموصى به: لعب الحملة القصصية كاملة في `v0.42.0-alpha` مرة
-  بالعربية ومرة بالإنجليزية على Shield/Xiaomi، والتحقق السمعي من توازن الموسيقى.
+- العمل التالي الموصى به: لعب الحملة القصصية كاملة في `v0.43.0-alpha` مرة
+  بالعربية ومرة بالإنجليزية على Shield/Xiaomi، ومراجعة المصطلحات العربية
+  وتوازن الموسيقى على الأجهزة الحقيقية.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -179,6 +180,56 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-24-54 — استكمال التعريب الشامل لواجهة اللعبة
+
+- المنفذ: Codex
+- طلب المستخدم: "ابدأ إكمال التعريب".
+- الحالة: مكتمل ومنشور.
+- نقطة البداية: `v0.42.0-alpha` / commit `3314531`.
+- ما تم:
+  - توسيع قاموس الواجهة إلى 215 مفتاحًا متطابقًا في العربية والإنجليزية وربطه
+    بالقائمة الرئيسية واختيار الشخصيات وبداية المرحلة والقصة وHUD والأسلحة
+    ورسائل المواجهات والإيقاف والإعدادات والتحديث والنتائج وGame Over/Gallery.
+  - جعل خيار اللغة يغيّر الواجهة والقصة معًا فورًا، مع RTL للنصوص القصصية.
+  - تعريب أسماء الأبطال الافتراضية وأدوارهم وحركاتهم، مع الحفاظ على أي أسماء
+    عملاء مخصصة بدل استبدالها تلقائيًا.
+  - تعريب أسماء المراحل والمواقع والأهداف والتلميحات والأعداء وحالات الحوار،
+    وإضافة معالجة محلية لحالات Game Update.
+  - إضافة عقد آلي يمنع اختلاف مفاتيح العربية والإنجليزية أو سقوط شاشة من التغطية.
+  - رفع `versionCode` إلى 52 و`versionName` إلى `0.43.0-alpha`.
+  - نشر الإصدار كـGitHub Latest غير Pre-release حتى يراه زر Game Update داخل التطبيق.
+- الملفات المعدلة/المضافة:
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/app/src/main/assets/story/story_ar.json`
+  - `android/app/src/main/assets/story/story_en.json`
+  - `android/app/src/main/assets/asset_manifest.json`
+  - `android/app/build.gradle`
+  - `android/tools/test_ui_localization_contract.py`
+  - `android/tools/test_customer_release.sh`
+  - `android/tools/test_encounter_gate_contract.py`
+  - `android/tools/test_in_app_update_contract.py`
+  - `android/tools/test_stage_combat_identity_contract.py`
+- الاختبارات:
+  - `./gradlew --no-daemon :app:assembleDebug :app:lintDebug test` — PASS.
+  - `python3 tools/test_ui_localization_contract.py` — PASS، 215 مفتاحًا.
+  - `python3 tools/test_story_content_contract.py` — PASS، 18 مشهدًا و55 سطرًا لكل لغة.
+  - جميع عقود Python للأداء والذاكرة والأسلحة والقتال والأطالس والتحديث — PASS.
+  - `tools/test_controller_compat.sh` — PASS.
+  - `tools/test_full_stage_runtime.sh` — PASS للمناطق 1–9 دون crash/ANR/OOM.
+  - `tools/test_customer_release.sh` — PASS للبناء والتوقيع والتحقق وملفات
+    phone/ultrawide/Fold/Android TV ومسار الريموت.
+  - فحص بصري بالمحاكي — PASS للقائمة والإعدادات واختيار البطل والقصة وبداية
+    المرحلة وHUD بالعربية، دون قص للنصوص الأساسية.
+- Release: `v0.43.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.43.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.43.0-alpha/family-force-family-current.apk
+- SHA-256: `d824ea22a67b4f07a14a571598c32805f42c5cd366aabcdbb4daec5ec57ccccf`.
+- commit: `8600fa14cb7d11faa04fd953c965d5180633f686`.
+- ملاحظات/مخاطر: الأسماء والعلامة التجارية المخصصة تبقى كما أدخلها العميل؛
+  يلزم اختبار لغوي وسمعي نهائي على Shield وXiaomi Stick الحقيقيين.
+- التالي: لعب الحملة كاملة بالعربية والإنجليزية على الجهازين وتسجيل أي مصطلح
+  يحتاج تحسينًا دون تغيير منطق القتال.
 
 ### 2026-08-23-53 — تنفيذ الحملة القصصية والآركيد بالتتابع محليًا
 
@@ -2062,10 +2113,10 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.42.0-alpha` منشور؛ حملة Shadow Grid ثنائية اللغة، انتقالات قصصية،
-  Tally/Rank/Top 10، وموسيقى مستقلة للمراحل تعمل ضمن ميزانية TV الحالية.
-- آخر عمل: تنفيذ المراحل القصصية والآركيد والصوت محليًا بالكامل، واختبار المسار
-  الكامل على محاكي Android TV، ثم رفع APK الموقع إلى GitHub Releases.
+- الحالة: `v0.43.0-alpha` منشور؛ الواجهة والقصة ثنائيتا اللغة عبر 215 مفتاحًا،
+  مع انتقالات قصصية وTally/Rank/Top 10 وموسيقى مستقلة ضمن ميزانية TV الحالية.
+- آخر عمل: استكمال تعريب واجهة Canvas بالكامل، والتحقق البصري من العربية،
+  واختبار المسار الكامل على Android TV، ثم رفع APK الموقع إلى GitHub Releases.
 - آخر قرار: لا Higgsfield ولا فيديو ولا أصول صور جديدة في هذه المرحلة؛ تمت إعادة
   استخدام الرسومات المعتمدة للحفاظ على الجودة والذاكرة.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
@@ -2077,5 +2128,5 @@
   6. `android/docs/STORY_BIBLE_AR_EN.md`
   7. `android/app/src/main/assets/story/story_ar.json`
   8. `android/app/src/main/java/com/familyforce/neonstreets/AudioController.java`
-- الإجراء التالي المقترح: تثبيت `v0.42.0-alpha` ولعب الحملة كاملة بالعربية
-  والإنجليزية على Shield وXiaomi Stick مع تسجيل أي ملاحظة حوار/صوت محددة.
+- الإجراء التالي المقترح: تثبيت `v0.43.0-alpha` ولعب الحملة كاملة بالعربية
+  والإنجليزية على Shield وXiaomi Stick مع تسجيل أي ملاحظة مصطلح/حوار/صوت محددة.
