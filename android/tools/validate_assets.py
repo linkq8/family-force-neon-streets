@@ -86,12 +86,13 @@ for name, logical_cell in {"parent": 126, "adam": 77, "shaikha": 77, "sulaiman":
     cell = max(192, round(logical_cell * 2.25))
     IMAGE_CONTRACT[f"runtime/heroes/{name}_anim.png"] = ((cell * 8, cell * 11), "RGBA")
 for name, logical_height in {
-    "grunt": 120, "skater": 110, "brute": 136, "boss": 160,
-    "striker": 116, "shield_guard": 132,
+    "brute": 136, "boss": 160, "striker": 116, "shield_guard": 132,
 }.items():
     height = round(logical_height * 2.25)
     width = round(height * 160 / 192)
     IMAGE_CONTRACT[f"runtime/enemies/{name}_anim.png"] = ((width * 6, height * 6), "RGBA")
+for name in ("grunt", "skater", "lantern_courier", "market_enforcer", "keeper_7"):
+    IMAGE_CONTRACT[f"runtime/enemies/{name}_anim.png"] = ((1440, 1728), "RGBA")
 
 WAV_NAMES = ("punch", "damage", "pickup", "confirm", "victory", "jump", "special")
 ICON_DENSITIES = {"mdpi": 1, "hdpi": 1.5, "xhdpi": 2, "xxhdpi": 3, "xxxhdpi": 4}

@@ -11,8 +11,6 @@ ASSETS = ROOT / "android/app/src/main/assets"
 GAME_VIEW = (ROOT / "android/app/src/main/java/com/familyforce/neonstreets/GameView.java").read_text()
 
 UNTOUCHED = {
-    "runtime/enemies/grunt_anim.png": "05e6b13b4c94c106a54fb15b8b9bbd0e016f754a7ef892992b36bfeab4a3126d",
-    "runtime/enemies/skater_anim.png": "ed0aa76495750858b57fc5531c41760bba540c25f543aa01e827b4a2161e3d00",
     "runtime/enemies/brute_anim.png": "dac46363fec96d38e623d7401c2ed5b2b9edc7da1fded53e836e36dde0d9d79f",
     "runtime/enemies/boss_anim.png": "f541d825c75661637d369f089d5d67a1784308ca45e4d0de9b8a79fc9e64c6b8",
     "runtime/enemies/shield_guard_anim.png": "062d40e86ad199fae6f046f4074a708e159341ace85c027b2de5ede90b8cc2d1",
@@ -62,7 +60,8 @@ for relative, dimensions, columns, rows in (
 assert "private boolean useUhdCharacterAssets()" in GAME_VIEW
 assert "manager.getMemoryClass() >= 384" in GAME_VIEW
 assert 'loadBitmap("uhd/heroes/" + stem)' in GAME_VIEW
-assert 'loadBitmap("uhd/enemies/" + stem)' in GAME_VIEW
+assert "enemyAnimationTierForZone" in GAME_VIEW
+assert "requestedTier" in GAME_VIEW
 
 for relative, cell_width, cell_height, maximum_height_delta in (
     ("heroes/parent_anim.png", 192, 192, 2),

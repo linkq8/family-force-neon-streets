@@ -12,8 +12,7 @@ heroes = {"parent": 126, "adam": 77, "shaikha": 77, "sulaiman": 88}
 # Essa V4 keeps 284px cells. Adam V5 deliberately stays at 192px on the
 # low-memory runtime path and receives a separate 384px UHD atlas.
 hero_runtime_cells = {"parent": 284, "adam": 192, "shaikha": 192, "sulaiman": 198}
-enemies = {"grunt": 120, "skater": 110, "brute": 136, "boss": 160,
-           "striker": 116, "shield_guard": 132}
+enemies = {"brute": 136, "boss": 160, "striker": 116, "shield_guard": 132}
 density = 2.25
 
 for name, cell in heroes.items():
@@ -34,8 +33,14 @@ for name, height in enemies.items():
         assert atlas.size == (width * 6, height * 6) and atlas.mode == "RGBA"
         assert min(atlas.getchannel("A").getdata()) == 0
 
+for name in ("grunt", "skater"):
+    path = ASSETS / f"runtime/enemies/{name}_anim.png"
+    with Image.open(path) as atlas:
+        assert atlas.size == (1440, 1728) and atlas.mode == "RGBA"
+        assert min(atlas.getchannel("A").getdata()) == 0
+
 assert 'loadBitmap("runtime/heroes/" + stem)' in JAVA
-assert 'loadBitmap("runtime/enemies/" + stem)' in JAVA
+assert "enemyAnimationTierForZone" in JAVA
 assert 'Paint enemyPaint = crispCharacterPaint' in JAVA
 assert 'Paint.FILTER_BITMAP_FLAG' in JAVA
 animated = JAVA[JAVA.index("private void drawAnimatedHero"):JAVA.index("private void drawHeldWeapon")]

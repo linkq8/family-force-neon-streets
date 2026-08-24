@@ -43,15 +43,15 @@ VARIANTS = (
     # Every approved enemy now uses the same fine-detail 87.5% TV contract.
     # Their 140x168 cells remain below the four-atlas encounter budget while
     # avoiding the visibly softer second reduction used by the legacy art.
-    ("enemies/grunt_anim.png", "tv/enemies/grunt_anim.png", (840, 1008), "RGBA"),
-    ("enemies/skater_anim.png", "tv/enemies/skater_anim.png", (840, 1008), "RGBA"),
+    ("runtime/enemies/grunt_anim.png", "tv/enemies/grunt_anim.png", (840, 1008), "RGBA"),
+    ("runtime/enemies/skater_anim.png", "tv/enemies/skater_anim.png", (840, 1008), "RGBA"),
     ("enemies/brute_anim.png", "tv/enemies/brute_anim.png", (840, 1008), "RGBA"),
     ("enemies/boss_anim.png", "tv/enemies/boss_anim.png", (840, 1008), "RGBA"),
     ("enemies/striker_anim.png", "tv/enemies/striker_anim.png", (840, 1008), "RGBA"),
     ("enemies/shield_guard_anim.png", "tv/enemies/shield_guard_anim.png", (840, 1008), "RGBA"),
-    ("enemies/lantern_courier_anim.png", "tv/enemies/lantern_courier_anim.png", (840, 1008), "RGBA"),
-    ("enemies/market_enforcer_anim.png", "tv/enemies/market_enforcer_anim.png", (840, 1008), "RGBA"),
-    ("enemies/keeper_7_anim.png", "tv/enemies/keeper_7_anim.png", (840, 1008), "RGBA"),
+    ("runtime/enemies/lantern_courier_anim.png", "tv/enemies/lantern_courier_anim.png", (840, 1008), "RGBA"),
+    ("runtime/enemies/market_enforcer_anim.png", "tv/enemies/market_enforcer_anim.png", (840, 1008), "RGBA"),
+    ("runtime/enemies/keeper_7_anim.png", "tv/enemies/keeper_7_anim.png", (840, 1008), "RGBA"),
     ("enemies/rail_runner_anim.png", "tv/enemies/rail_runner_anim.png", (840, 1008), "RGBA"),
     ("enemies/signal_warden_anim.png", "tv/enemies/signal_warden_anim.png", (840, 1008), "RGBA"),
     ("enemies/railmaster_9_anim.png", "tv/enemies/railmaster_9_anim.png", (840, 1008), "RGBA"),
@@ -84,7 +84,10 @@ def generate_variant(source_rel: str, output_rel: str, size: tuple[int, int], mo
             )
             # Do not add a second aggressive sharpen pass to the detailed
             # enemies; it created thick crunchy pixels and uneven outlines.
-            rgb.putalpha(resized.getchannel("A"))
+            alpha = resized.getchannel("A")
+            if source_rel.startswith("runtime/enemies/"):
+                alpha = alpha.point(lambda value: 255 if value >= 72 else 0)
+            rgb.putalpha(alpha)
             resized = rgb
         else:
             resized = resized.filter(ImageFilter.UnsharpMask(radius=0.7, percent=90, threshold=3))

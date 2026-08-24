@@ -313,8 +313,8 @@
     },
     {
       "path": "enemies/grunt_anim.png",
-      "bytes": 1093244,
-      "sha256": "ee416f7aed01e8f0a4cfee464b6674d82c1f5258fd7dc94649390553cf5a3f37",
+      "bytes": 433752,
+      "sha256": "7c58bf7176e59273bfba850f9006bdcbbced3578ab853f0b979d12e2f3b0a1c4",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -329,24 +329,24 @@
     },
     {
       "path": "enemies/keeper_7_anim.png",
-      "bytes": 981273,
-      "sha256": "56795e94bd7973dfbbd6a5183913222be3bda42a80bca69b2b561dc67738a3a2",
+      "bytes": 320205,
+      "sha256": "fb7191c337dd7561dc29e8bc95311cce7a504f2064975d0ed6bd5c6a64acc750",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
     },
     {
       "path": "enemies/lantern_courier_anim.png",
-      "bytes": 941065,
-      "sha256": "d109c7c3e053e635682cb96546ad1d4161f3b08218cb6272aa3f6ba8bea0ccf9",
+      "bytes": 314667,
+      "sha256": "7bcd06c565409cd9c222eeaf250afef628d47cc72c3292529f95868d7f076a9f",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
     },
     {
       "path": "enemies/market_enforcer_anim.png",
-      "bytes": 1147718,
-      "sha256": "c3503db68d5be30248608939cb6dd436b69f5ca18705dc1ae486619b09a77787",
+      "bytes": 371534,
+      "sha256": "c2764bbee665bc0ac599c550687343c9704b869b67050b8c0217419fd5c5734c",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -425,8 +425,8 @@
     },
     {
       "path": "enemies/skater_anim.png",
-      "bytes": 806043,
-      "sha256": "38291b0f4526909be97c10ef191cf7b18fd835968b84ff7fc6fffa102e987b8e",
+      "bytes": 342328,
+      "sha256": "b8e326cec9b9bbf30add205ded9fbb160854a23826b96df6288d226e965e9308",
       "width": 960,
       "height": 1152,
       "mode": "RGBA"
@@ -809,10 +809,34 @@
     },
     {
       "path": "runtime/enemies/grunt_anim.png",
-      "bytes": 2305064,
-      "sha256": "05e6b13b4c94c106a54fb15b8b9bbd0e016f754a7ef892992b36bfeab4a3126d",
-      "width": 1350,
-      "height": 1620,
+      "bytes": 2574708,
+      "sha256": "22d59b4ee8e371acbe7998c6c407b86a21f1c6b26a9824453dfc5ea165a1128b",
+      "width": 1440,
+      "height": 1728,
+      "mode": "RGBA"
+    },
+    {
+      "path": "runtime/enemies/keeper_7_anim.png",
+      "bytes": 1862362,
+      "sha256": "a8d5578c1f7c3063d90730102bdd50858e49dc156d7ac5ee404fbb760410d56c",
+      "width": 1440,
+      "height": 1728,
+      "mode": "RGBA"
+    },
+    {
+      "path": "runtime/enemies/lantern_courier_anim.png",
+      "bytes": 1792420,
+      "sha256": "23d1b23603acb60dc5f00441653965cabea4a962eb8040e468a22402b43d7238",
+      "width": 1440,
+      "height": 1728,
+      "mode": "RGBA"
+    },
+    {
+      "path": "runtime/enemies/market_enforcer_anim.png",
+      "bytes": 2177698,
+      "sha256": "15e2d89bd5080f82db55110eb92c1c99ca6c70b08f69cb6e891fda098a4ca12c",
+      "width": 1440,
+      "height": 1728,
       "mode": "RGBA"
     },
     {
@@ -825,10 +849,10 @@
     },
     {
       "path": "runtime/enemies/skater_anim.png",
-      "bytes": 1566041,
-      "sha256": "ed0aa76495750858b57fc5531c41760bba540c25f543aa01e827b4a2161e3d00",
-      "width": 1242,
-      "height": 1488,
+      "bytes": 1903620,
+      "sha256": "ab67e05274297172e1f80fb23bd3818a324729d07d252e8d6c95032d51c38c5e",
+      "width": 1440,
+      "height": 1728,
       "mode": "RGBA"
     },
     {
@@ -1019,8 +1043,8 @@
     },
     {
       "path": "tv/enemies/grunt_anim.png",
-      "bytes": 1006172,
-      "sha256": "62547a28a8b9131b70e90da87041de99601d7279b7af0c622fee504e78012937",
+      "bytes": 1099306,
+      "sha256": "bbc40816ea7dac4445e71bc8fd24cf60c2db195b969cac583871e4c1a08a4d65",
       "width": 840,
       "height": 1008,
       "mode": "RGBA"
@@ -1035,24 +1059,24 @@
     },
     {
       "path": "tv/enemies/keeper_7_anim.png",
-      "bytes": 910461,
-      "sha256": "1e3077a36f7b4afa5d422f794b43e074be7d142475a6b12ac8971ed466c56449",
+      "bytes": 786099,
+      "sha256": "0d26cc7d41dda97a825bf6f2af1fdd1cf4026a34090f6aba3621f13af979127c",
       "width": 840,
       "height": 1008,
       "mode": "RGBA"
     },
     {
       "path": "tv/enemies/lantern_courier_anim.png",
-      "bytes": 871784,
-      "sha256": "030f653c51d184ea04c4715c774ea9ed3ec40ca670ff0ab22ecdea5b69e255cb",
+      "bytes": 769698,
+      "sha256": "3f2d52e4e4dd1ede79afaf09f7b95e0d72936a067654aedf0257e1a7c2364b65",
       "width": 840,
       "height": 1008,
       "mode": "RGBA"
     },
     {
       "path": "tv/enemies/market_enforcer_anim.png",
-      "bytes": 1037996,
-      "sha256": "805709c48201b2b43f27589732b996d5a333bb25696add3a07f4fd4e4fb7cd36",
+      "bytes": 912203,
+      "sha256": "3f3147c2759e7e29c062ec500b13de1d5a2f94aaa203c67c31c8d244b2e8e29e",
       "width": 840,
       "height": 1008,
       "mode": "RGBA"
@@ -1115,8 +1139,8 @@
     },
     {
       "path": "tv/enemies/skater_anim.png",
-      "bytes": 758698,
-      "sha256": "16c5a0b6b6db576046ead246f38092323bd06d022b2f89351906a6f90f9e1056",
+      "bytes": 841973,
+      "sha256": "8ec5765a046c68054158b25768d524560c33271cb16e3d52e914d34e6de9e2ad",
       "width": 840,
       "height": 1008,
       "mode": "RGBA"

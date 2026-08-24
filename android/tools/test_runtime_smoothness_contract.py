@@ -75,8 +75,7 @@ expected = {
     "tv/backgrounds/panoramas/stage_final.png": (1800, 600),
 }
 hero_runtime = {"parent": 126, "adam": 77, "shaikha": 77, "sulaiman": 88}
-enemy_runtime = {"grunt": (100, 120), "skater": (92, 110), "brute": (113, 136),
-                 "boss": (133, 160), "striker": (97, 116),
+enemy_runtime = {"brute": (113, 136), "boss": (133, 160), "striker": (97, 116),
                  "shield_guard": (110, 132)}
 density = 2.25
 for stem, cell in hero_runtime.items():
@@ -86,6 +85,8 @@ for stem, (cell_width, cell_height) in enemy_runtime.items():
     cell_height = round(cell_height * density)
     cell_width = round(cell_height * 160 / 192)
     expected[f"runtime/enemies/{stem}_anim.png"] = (cell_width * 6, cell_height * 6)
+for stem in ("grunt", "skater"):
+    expected[f"runtime/enemies/{stem}_anim.png"] = (1440, 1728)
 for stem in ("parent", "adam", "shaikha", "sulaiman"):
     expected[f"tv/heroes/{stem}_anim.png"] = (1152, 1584)
 enemy_tv_stems = (

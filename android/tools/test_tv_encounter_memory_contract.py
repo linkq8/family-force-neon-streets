@@ -12,14 +12,15 @@ ASSETS = ROOT / "app/src/main/assets"
 
 def main() -> None:
     text = SOURCE.read_text(encoding="utf-8")
-    assert 'loadBitmap("runtime/enemies/" + stem)' in text
+    assert "enemyAnimationTierForZone" in text
+    assert 'enemyAtlasAssetExists("runtime/enemies/", type)' in text
     assert "private boolean useReducedMemoryAssets()" in text
     assert "smallestScreenWidthDp >= 720" in text
     assert 'loadBitmap("runtime/heroes/" + stem)' in text
     assert "preloadEnemyAnimationsForZoneAsync" in text
     assert '"FamilyForceAssetWarmup"' in text
     assert "loader.setPriority(Thread.MIN_PRIORITY)" in text
-    assert "Bitmap decoded = decodeEnemyAnimationType(type);" in text
+    assert "Bitmap decoded = decodeEnemyAnimationType(type, requestedTier);" in text
     assert "loadedOneAtlasThisTick" not in text
     assert "atlas.getWidth() / ENEMY_ANIM_COLUMNS" in text
     assert "atlas.getHeight() / ENEMY_ANIM_ROWS" in text

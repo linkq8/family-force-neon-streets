@@ -314,6 +314,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private final Bitmap[] itemArt = new Bitmap[4];
     private final Bitmap[] enemyAnimArt = new Bitmap[ENEMY_TYPE_COUNT];
     private volatile int enemyPreloadGeneration;
+    private String loadedEnemyAtlasTier = "";
     private volatile boolean enemyPreloadRunning;
     private final Bitmap[] weaponArt = new Bitmap[5];
     private final Bitmap[] propArt = new Bitmap[2];
@@ -1598,15 +1599,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         return atlas;
     }
 
-    private Bitmap decodeEnemyAnimationType(int type) {
+    private Bitmap decodeEnemyAnimationType(int type, String tier) {
         if (type < 0 || type >= enemyAnimArt.length) return null;
-        boolean reducedMemory = useReducedMemoryAssets();
         String stem = EnemyArchetype.of(type).asset + "_anim.png";
-        Bitmap atlas = useUhdCharacterAssets() ? loadBitmap("uhd/enemies/" + stem) : null;
-        if (atlas == null) atlas = loadBitmap("runtime/enemies/" + stem);
-        if (atlas == null) {
-            atlas = loadBitmap((reducedMemory ? "tv/enemies/" : "enemies/") + stem);
-        }
+        Bitmap atlas = loadBitmap(tier + stem);
         if (atlas != null && atlas.getWidth() % ENEMY_ANIM_COLUMNS == 0
                 && atlas.getHeight() % ENEMY_ANIM_ROWS == 0) {
             return atlas;
@@ -1615,11 +1611,58 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         return null;
     }
 
+    private boolean useRuntimeEnemyAssets() {
+        ActivityManager manager = (ActivityManager) getContext()
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        if (manager == null || manager.isLowRamDevice()) return false;
+        int requiredMemoryMb = isTelevisionDevice() ? 384 : 256;
+        return manager.getMemoryClass() >= requiredMemoryMb;
+    }
+
+    private boolean enemyAtlasAssetExists(String tier, int type) {
+        String stem = EnemyArchetype.of(type).asset + "_anim.png";
+        try (InputStream ignored = getContext().getAssets().open(tier + stem)) {
+            return true;
+        } catch (IOException missing) {
+            return false;
+        }
+    }
+
+    private String enemyAnimationTierForZone(int requestedZone) {
+        // Runtime is selected only when the complete encounter roster exists.
+        // A missing atlas therefore downgrades the whole encounter, never one
+        // character, preserving equal source detail in the same fight.
+        if (useRuntimeEnemyAssets()) {
+            boolean complete = true;
+            for (int type = 0; type < enemyAnimArt.length; type++) {
+                if (StageRoster.includesZone(requestedZone, type)
+                        && !enemyAtlasAssetExists("runtime/enemies/", type)) {
+                    complete = false;
+                    break;
+                }
+            }
+            if (complete) return "runtime/enemies/";
+        }
+        return useReducedMemoryAssets() ? "tv/enemies/" : "enemies/";
+    }
+
     private void preloadEnemyAnimationsForZoneAsync(final int requestedZone) {
         final int generation = ++enemyPreloadGeneration;
+        final String requestedTier = enemyAnimationTierForZone(requestedZone);
         enemyPreloadRunning = true;
         Thread loader = new Thread(() -> {
             try {
+                synchronized (GameView.this) {
+                    if (generation != enemyPreloadGeneration || !appActive) return;
+                    if (!requestedTier.equals(loadedEnemyAtlasTier)) {
+                        for (int type = 0; type < enemyAnimArt.length; type++) {
+                            for (Enemy enemy : enemies) if (enemy.type == type) enemy.animator.clear();
+                            recycleBitmap(enemyAnimArt[type]);
+                            enemyAnimArt[type] = null;
+                        }
+                        loadedEnemyAtlasTier = requestedTier;
+                    }
+                }
                 for (int type = 0; type < enemyAnimArt.length; type++) {
                     synchronized (GameView.this) {
                         if (generation != enemyPreloadGeneration || !appActive) return;
@@ -1632,7 +1675,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                         Bitmap current = enemyAnimArt[type];
                         if (current != null && !current.isRecycled()) continue;
                     }
-                    Bitmap decoded = decodeEnemyAnimationType(type);
+                    Bitmap decoded = decodeEnemyAnimationType(type, requestedTier);
                     synchronized (GameView.this) {
                         if (generation != enemyPreloadGeneration || !appActive) {
                             recycleBitmap(decoded);
