@@ -85,8 +85,9 @@ for stem, (cell_width, cell_height) in enemy_runtime.items():
     cell_height = round(cell_height * density)
     cell_width = round(cell_height * 160 / 192)
     expected[f"runtime/enemies/{stem}_anim.png"] = (cell_width * 6, cell_height * 6)
-for stem in ("grunt", "skater"):
-    expected[f"runtime/enemies/{stem}_anim.png"] = (1440, 1728)
+strict_stage_one = ("grunt", "skater", "lantern_courier", "market_enforcer", "keeper_7")
+for stem in strict_stage_one:
+    expected[f"runtime/enemies/{stem}_anim.png"] = (2016, 1728)
 for stem in ("parent", "adam", "shaikha", "sulaiman"):
     expected[f"tv/heroes/{stem}_anim.png"] = (1152, 1584)
 enemy_tv_stems = (
@@ -97,7 +98,9 @@ enemy_tv_stems = (
     "furnace_brawler", "palace_sentinel", "vox_avatar", "shadow_prime",
 )
 for stem in enemy_tv_stems:
-    expected[f"tv/enemies/{stem}_anim.png"] = (840, 1008)
+    expected[f"tv/enemies/{stem}_anim.png"] = (
+        (1176, 1008) if stem in strict_stage_one else (840, 1008)
+    )
 
 for relative, dimensions in expected.items():
     path = ASSETS / relative
@@ -117,7 +120,8 @@ hero_bytes = sum(w * h * 4 for w, h in
 assist_bytes = sum(max(192, round(hero_runtime[stem] * density)) * 8
                    * max(192, round(hero_runtime[stem] * density)) * 4
                    for stem in ("parent", "sulaiman"))
-enemy_bytes = 4 * 840 * 1008 * 4
+# Stage 1 can hold at most four of its wider strict atlases concurrently.
+enemy_bytes = 4 * 1176 * 1008 * 4
 background_bytes = (960 * 536 + 4 * 1800 * 600) * 2
 combat_mib = (hero_bytes + assist_bytes + enemy_bytes + background_bytes) / (1024 * 1024)
 assert combat_mib < 98.0, f"animated TV combat texture budget too high: {combat_mib:.2f} MiB"

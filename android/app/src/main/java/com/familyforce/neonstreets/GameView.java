@@ -1473,12 +1473,13 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         // 384x576 is still 2x the maximum on-screen idle height. Loading the
         // 1373x2048 authoring master here cost 10.7 MiB for no visible gain.
         heroHdArt[0] = loadBitmap("tv/heroes/parent_hd.png");
-        enemyArt[0] = loadBitmapSampled("enemies/grunt.png", 256, 256);
-        enemyArt[1] = loadBitmapSampled("enemies/skater.png", 256, 256);
-        enemyArt[2] = loadBitmapSampled("enemies/brute.png", 256, 256);
-        enemyArt[3] = loadBitmapSampled("enemies/boss.png", 256, 256);
-        enemyArt[ENEMY_STRIKER] = loadBitmapSampled("enemies/striker.png", 256, 256);
-        enemyArt[ENEMY_SHIELD_GUARD] = loadBitmapSampled("enemies/shield_guard.png", 256, 256);
+        // Every enemy may be drawn while its encounter atlas is decoding on a
+        // low-power TV. Keep one small idle fallback per available archetype so
+        // a slow async decode can never make a newly spawned enemy invisible.
+        for (int type = 0; type < enemyArt.length; type++) {
+            enemyArt[type] = loadBitmapSampled(
+                    "enemies/" + EnemyArchetype.of(type).asset + ".png", 256, 256);
+        }
         // Enemy animation atlases are intentionally loaded when an encounter
         // starts. Keeping every type decoded from boot costs roughly 18 MB and
         // is a common source of low-memory Android TV process deaths.
@@ -5300,7 +5301,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private void drawEnemy(Canvas canvas, Enemy enemy) {
         float x = enemy.x - cameraX;
         float height = enemyHeight(enemy.type);
-        float width = enemy.animator.isBound() ? height * 160f / 192f
+        float width = enemy.animator.isBound() ? height * enemy.animator.cellAspectRatio()
                 : height * (isBossEnemy(enemy.type) ? 0.9f : isHeavyEnemy(enemy.type) ? 0.8f : 0.7f);
         paint.setColor(Color.argb(100, 0, 0, 0));
         canvas.drawOval(x - width * 0.34f, enemy.y - 6, x + width * 0.34f, enemy.y + 7, paint);

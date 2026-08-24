@@ -33,10 +33,10 @@ for name, height in enemies.items():
         assert atlas.size == (width * 6, height * 6) and atlas.mode == "RGBA"
         assert min(atlas.getchannel("A").getdata()) == 0
 
-for name in ("grunt", "skater"):
+for name in ("grunt", "skater", "lantern_courier", "market_enforcer", "keeper_7"):
     path = ASSETS / f"runtime/enemies/{name}_anim.png"
     with Image.open(path) as atlas:
-        assert atlas.size == (1440, 1728) and atlas.mode == "RGBA"
+        assert atlas.size == (2016, 1728) and atlas.mode == "RGBA"
         assert min(atlas.getchannel("A").getdata()) == 0
 
 assert 'loadBitmap("runtime/heroes/" + stem)' in JAVA

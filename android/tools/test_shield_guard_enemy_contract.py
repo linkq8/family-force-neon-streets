@@ -14,7 +14,7 @@ rosters = (JAVA / "StageRoster.java").read_text(encoding="utf-8")
 builder = (ANDROID / "tools/build_shield_guard_enemy.py").read_text(encoding="utf-8")
 
 assert "ENEMY_TYPE_COUNT = EnemyArchetype.COUNT" in game
-assert 'loadBitmapSampled("enemies/shield_guard.png"' in game
+assert '"enemies/" + EnemyArchetype.of(type).asset + ".png"' in game
 assert "enemy.type == ENEMY_SHIELD_GUARD && enemy.guard > 0" in game
 assert "if (hitFromFront)" in game
 assert 'diagnostics.event("GUARD_BREAK z="' in game

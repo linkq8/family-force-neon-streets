@@ -305,17 +305,17 @@
     },
     {
       "path": "enemies/grunt.png",
-      "bytes": 124878,
-      "sha256": "685e3fa327378868f427f846310de497a20a21f95194de3e2d7e6650fe02485c",
+      "bytes": 269741,
+      "sha256": "6fd023ec4378c5f63a2d7f6b45f8b67a3d3ba28b3a0c597764f3c0e9b0976f51",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/grunt_anim.png",
-      "bytes": 433752,
-      "sha256": "7c58bf7176e59273bfba850f9006bdcbbced3578ab853f0b979d12e2f3b0a1c4",
-      "width": 960,
+      "bytes": 545485,
+      "sha256": "a9d592a17b24dffe2c3de2d2902f71e1015a900512c896db3e7163caf8906d88",
+      "width": 1344,
       "height": 1152,
       "mode": "RGBA"
     },
@@ -328,26 +328,50 @@
       "mode": "RGBA"
     },
     {
+      "path": "enemies/keeper_7.png",
+      "bytes": 237535,
+      "sha256": "384ddeb5bcfef6030e139465095fb432e518b1f7fb20e2e144438f28ee430cce",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
       "path": "enemies/keeper_7_anim.png",
-      "bytes": 320205,
-      "sha256": "fb7191c337dd7561dc29e8bc95311cce7a504f2064975d0ed6bd5c6a64acc750",
-      "width": 960,
+      "bytes": 374473,
+      "sha256": "cd48c40176cdeae95640efd006e74a9f2702b262b22be36c9ce1c40bd6afd599",
+      "width": 1344,
       "height": 1152,
+      "mode": "RGBA"
+    },
+    {
+      "path": "enemies/lantern_courier.png",
+      "bytes": 211662,
+      "sha256": "b09160709009e4b833703906f3df428cc8e674cc0077013362a28e44ffca2309",
+      "width": 512,
+      "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/lantern_courier_anim.png",
-      "bytes": 314667,
-      "sha256": "7bcd06c565409cd9c222eeaf250afef628d47cc72c3292529f95868d7f076a9f",
-      "width": 960,
+      "bytes": 368813,
+      "sha256": "e085b8cbc4cb85915e12d2def2050c8a799c2f7ebd11f07b9efa6c41bcb719be",
+      "width": 1344,
       "height": 1152,
       "mode": "RGBA"
     },
     {
+      "path": "enemies/market_enforcer.png",
+      "bytes": 229601,
+      "sha256": "f5051f736d25d16930ec76e9a3485d1e0347e52b417ca8d9fbe0b929392b125b",
+      "width": 512,
+      "height": 512,
+      "mode": "RGBA"
+    },
+    {
       "path": "enemies/market_enforcer_anim.png",
-      "bytes": 371534,
-      "sha256": "c2764bbee665bc0ac599c550687343c9704b869b67050b8c0217419fd5c5734c",
-      "width": 960,
+      "bytes": 398427,
+      "sha256": "e86bf09a0b45d75cc462bc6c0f3b8cb269b084cd266844d8cd250a93f315bd8f",
+      "width": 1344,
       "height": 1152,
       "mode": "RGBA"
     },
@@ -417,17 +441,17 @@
     },
     {
       "path": "enemies/skater.png",
-      "bytes": 93340,
-      "sha256": "d163b783f510f6503406c23b5c754b234b2558b26a1f85620d6b7cd773152735",
+      "bytes": 197720,
+      "sha256": "09e6d4cf8217fe9a2bcaa405c40bbce915011ecbfd217ef7f0283b9a723c1a13",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/skater_anim.png",
-      "bytes": 342328,
-      "sha256": "b8e326cec9b9bbf30add205ded9fbb160854a23826b96df6288d226e965e9308",
-      "width": 960,
+      "bytes": 456326,
+      "sha256": "949e96e8278faf718d76728199815bfab22efd048ea6bd4e255aabc8de9b5dda",
+      "width": 1344,
       "height": 1152,
       "mode": "RGBA"
     },
@@ -809,33 +833,33 @@
     },
     {
       "path": "runtime/enemies/grunt_anim.png",
-      "bytes": 2574708,
-      "sha256": "22d59b4ee8e371acbe7998c6c407b86a21f1c6b26a9824453dfc5ea165a1128b",
-      "width": 1440,
+      "bytes": 3178444,
+      "sha256": "45b6ffbbc6e3f7ba873f753bf53c9037c14752206e7a381ac03ad2973ce331f8",
+      "width": 2016,
       "height": 1728,
       "mode": "RGBA"
     },
     {
       "path": "runtime/enemies/keeper_7_anim.png",
-      "bytes": 1862362,
-      "sha256": "a8d5578c1f7c3063d90730102bdd50858e49dc156d7ac5ee404fbb760410d56c",
-      "width": 1440,
+      "bytes": 2141917,
+      "sha256": "915b7ba911a8f6884a3f170dae2071d5aaa6899cab31a226739f259c73f74677",
+      "width": 2016,
       "height": 1728,
       "mode": "RGBA"
     },
     {
       "path": "runtime/enemies/lantern_courier_anim.png",
-      "bytes": 1792420,
-      "sha256": "23d1b23603acb60dc5f00441653965cabea4a962eb8040e468a22402b43d7238",
-      "width": 1440,
+      "bytes": 2057589,
+      "sha256": "29a765c71e7ec567c4dda599874dd9061b39e606a14268d881472f02a0389f33",
+      "width": 2016,
       "height": 1728,
       "mode": "RGBA"
     },
     {
       "path": "runtime/enemies/market_enforcer_anim.png",
-      "bytes": 2177698,
-      "sha256": "15e2d89bd5080f82db55110eb92c1c99ca6c70b08f69cb6e891fda098a4ca12c",
-      "width": 1440,
+      "bytes": 2290892,
+      "sha256": "9d73ba07a10c82a1ad5b9acb8671f4c14ecb2fad1cd1a74b4a132c22e96e1a2b",
+      "width": 2016,
       "height": 1728,
       "mode": "RGBA"
     },
@@ -849,9 +873,9 @@
     },
     {
       "path": "runtime/enemies/skater_anim.png",
-      "bytes": 1903620,
-      "sha256": "ab67e05274297172e1f80fb23bd3818a324729d07d252e8d6c95032d51c38c5e",
-      "width": 1440,
+      "bytes": 2479813,
+      "sha256": "6028e463120fde9088a22ac17092253b0ec520d519db71cbe057e22cc0eb16c6",
+      "width": 2016,
       "height": 1728,
       "mode": "RGBA"
     },
@@ -1043,9 +1067,9 @@
     },
     {
       "path": "tv/enemies/grunt_anim.png",
-      "bytes": 1099306,
-      "sha256": "bbc40816ea7dac4445e71bc8fd24cf60c2db195b969cac583871e4c1a08a4d65",
-      "width": 840,
+      "bytes": 1252447,
+      "sha256": "092c5faa72f8adea66e28dd84504f7c9a205bf7233eb9fdfbac8067fe75c2126",
+      "width": 1176,
       "height": 1008,
       "mode": "RGBA"
     },
@@ -1059,25 +1083,25 @@
     },
     {
       "path": "tv/enemies/keeper_7_anim.png",
-      "bytes": 786099,
-      "sha256": "0d26cc7d41dda97a825bf6f2af1fdd1cf4026a34090f6aba3621f13af979127c",
-      "width": 840,
+      "bytes": 824594,
+      "sha256": "11ddc0c510d2a74255ba906a81ba6c75ce47f183d311f3e58f061a11e3fce35c",
+      "width": 1176,
       "height": 1008,
       "mode": "RGBA"
     },
     {
       "path": "tv/enemies/lantern_courier_anim.png",
-      "bytes": 769698,
-      "sha256": "3f2d52e4e4dd1ede79afaf09f7b95e0d72936a067654aedf0257e1a7c2364b65",
-      "width": 840,
+      "bytes": 808044,
+      "sha256": "55e4470a8897e854ce80fb2a875ead17bb384327a6a76ac7aec1b195285e379d",
+      "width": 1176,
       "height": 1008,
       "mode": "RGBA"
     },
     {
       "path": "tv/enemies/market_enforcer_anim.png",
-      "bytes": 912203,
-      "sha256": "3f3147c2759e7e29c062ec500b13de1d5a2f94aaa203c67c31c8d244b2e8e29e",
-      "width": 840,
+      "bytes": 885812,
+      "sha256": "d9c7e33934bf30c1b7cd6f74cceda9cdd22aa6ec870a1d6450773f0aa8239507",
+      "width": 1176,
       "height": 1008,
       "mode": "RGBA"
     },
@@ -1139,9 +1163,9 @@
     },
     {
       "path": "tv/enemies/skater_anim.png",
-      "bytes": 841973,
-      "sha256": "8ec5765a046c68054158b25768d524560c33271cb16e3d52e914d34e6de9e2ad",
-      "width": 840,
+      "bytes": 992479,
+      "sha256": "914c8df11ba5a716aa98a00405732ec78c3a3a4d7172930d568889fe3a1cb666",
+      "width": 1176,
       "height": 1008,
       "mode": "RGBA"
     },
@@ -1340,5 +1364,5 @@
   ],
   "project": "Family Force: Neon Streets",
   "status": "direct-reference family character pack; likeness quality is provisional until five or more photos per person enable Soul training",
-  "visual_formula": "High-detail retro arcade pixel art rendered at a modern 360p-to-720p game resolution, with fine 2\u20134 pixel clusters, crisp edges, selective dithering, and no oversized block pixels. Athletic readable silhouettes use dark navy outlines, expressive recognizable faces, dynamic foreshortening, and slightly exaggerated 1990s beat-\u2019em-up proportions. Night streets use indigo, teal, and warm amber; heroes use distinct red-gold, green-purple, pink-ice, and blue-red palettes. Energetic family-friendly lighting and strong foreground contrast maintain a consistent three-quarter side-view belt-brawler perspective."
+  "visual_formula": "High-detail retro arcade pixel art rendered at a modern 360p-to-720p game resolution, with fine 2–4 pixel clusters, crisp edges, selective dithering, and no oversized block pixels. Athletic readable silhouettes use dark navy outlines, expressive recognizable faces, dynamic foreshortening, and slightly exaggerated 1990s beat-’em-up proportions. Night streets use indigo, teal, and warm amber; heroes use distinct red-gold, green-purple, pink-ice, and blue-red palettes. Energetic family-friendly lighting and strong foreground contrast maintain a consistent three-quarter side-view belt-brawler perspective."
 }

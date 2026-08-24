@@ -15,7 +15,7 @@ BUILDER = (ANDROID / "tools/build_striker_enemy.py").read_text()
 required_code = (
     "private static final int ENEMY_STRIKER = EnemyArchetype.STRIKER;",
     "private static final int ENEMY_TYPE_COUNT = EnemyArchetype.COUNT;",
-    'enemyArt[ENEMY_STRIKER] = loadBitmapSampled("enemies/striker.png"',
+    '"enemies/" + EnemyArchetype.of(type).asset + ".png"',
     "EnemyArchetype archetype = EnemyArchetype.of(type);",
     "EnemyArchetype.of(enemy.type).speed",
     "EnemyArchetype archetype = EnemyArchetype.of(enemy.type);",
@@ -30,7 +30,7 @@ assert "if component_rows[row] is not None" in BUILDER
 
 assert SOURCE.count("spawnEnemy(") >= 1
 assert SOURCE.count("spawnEnemy(2, EnemyArchetype.STRIKER") >= 1
-assert SOURCE.count("ENEMY_STRIKER") >= 3
+assert SOURCE.count("ENEMY_STRIKER") >= 2
 
 for relative, dimensions in (
     ("enemies/striker.png", (512, 512)),

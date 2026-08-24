@@ -92,7 +92,8 @@ for name, logical_height in {
     width = round(height * 160 / 192)
     IMAGE_CONTRACT[f"runtime/enemies/{name}_anim.png"] = ((width * 6, height * 6), "RGBA")
 for name in ("grunt", "skater", "lantern_courier", "market_enforcer", "keeper_7"):
-    IMAGE_CONTRACT[f"runtime/enemies/{name}_anim.png"] = ((1440, 1728), "RGBA")
+    IMAGE_CONTRACT[f"runtime/enemies/{name}_anim.png"] = ((2016, 1728), "RGBA")
+    IMAGE_CONTRACT[f"enemies/{name}.png"] = ((512, 512), "RGBA")
 
 WAV_NAMES = ("punch", "damage", "pickup", "confirm", "victory", "jump", "special")
 ICON_DENSITIES = {"mdpi": 1, "hdpi": 1.5, "xhdpi": 2, "xxhdpi": 3, "xxxhdpi": 4}
@@ -111,6 +112,8 @@ ENEMY_ANIMATION_CONTRACT = {
         "furnace_brawler", "palace_sentinel", "vox_avatar", "shadow_prime",
     )
 }
+for name in ("grunt", "skater", "lantern_courier", "market_enforcer", "keeper_7"):
+    ENEMY_ANIMATION_CONTRACT[f"enemies/{name}_anim.png"] = (6, 6, 224, 192)
 
 GRID_SHEET_CONTRACT = {
     "fx/hit_fx.png": (4, 4),

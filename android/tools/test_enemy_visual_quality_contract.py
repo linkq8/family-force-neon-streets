@@ -9,6 +9,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "app/src/main/assets"
 JAVA = (ROOT / "app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java").read_text()
+GAME = (ROOT / "app/src/main/java/com/familyforce/neonstreets/GameView.java").read_text()
 SOURCE = ROOT.parent / "assets/imagegen/android/enemies/quality-v1"
 STRICT = (
     "grunt", "skater", "lantern_courier", "market_enforcer", "keeper_7",
@@ -33,9 +34,9 @@ for enemy in STRICT:
                 path, image.size, "source cell below 240x240"
             )
     tiers = {
-        "base": (ASSETS / f"enemies/{enemy}_anim.png", (960, 1152), 8),
-        "runtime": (ASSETS / f"runtime/enemies/{enemy}_anim.png", (1440, 1728), 12),
-        "tv": (ASSETS / f"tv/enemies/{enemy}_anim.png", (840, 1008), 7),
+        "base": (ASSETS / f"enemies/{enemy}_anim.png", (1344, 1152), 8),
+        "runtime": (ASSETS / f"runtime/enemies/{enemy}_anim.png", (2016, 1728), 12),
+        "tv": (ASSETS / f"tv/enemies/{enemy}_anim.png", (1176, 1008), 7),
     }
     for tier, (path, expected, gutter) in tiers.items():
         with Image.open(path).convert("RGBA") as atlas:
@@ -51,8 +52,19 @@ for enemy in STRICT:
             ratios = [(box[3] - box[1]) / cell_h for box in standing]
             assert statistics.median(ratios) >= .64, (enemy, tier, "too small", statistics.median(ratios))
             assert max(ratios) - min(ratios) <= .13, (enemy, tier, "scale drift", ratios)
+            lengths = [max(box[2] - box[0], box[3] - box[1]) for box in boxes]
+            reference = statistics.median(lengths[:12])
+            assert min(lengths[12:24]) >= reference * .78, (enemy, tier, "small action", lengths)
+            assert min(lengths[24:]) >= reference * .82, (enemy, tier, "small reaction", lengths)
+    fallback = ASSETS / f"enemies/{enemy}.png"
+    with Image.open(fallback).convert("RGBA") as idle:
+        assert idle.size == (512, 512), (enemy, idle.size)
+        assert idle.getchannel("A").getbbox(), (enemy, "empty fallback")
     with Image.open(tiers["base"][0]).convert("RGBA") as base:
-        clustered = base.resize((480, 576), Image.Resampling.NEAREST).resize(base.size, Image.Resampling.NEAREST)
+        clustered = base.resize((672, 576), Image.Resampling.NEAREST).resize(base.size, Image.Resampling.NEAREST)
         assert clustered.tobytes() == base.tobytes(), (enemy, "base lacks controlled 2px clusters")
+
+assert '"enemies/" + EnemyArchetype.of(type).asset + ".png"' in GAME
+assert "height * enemy.animator.cellAspectRatio()" in GAME
 
 print(f"Enemy visual quality contract: PASS ({len(STRICT)} strict enemies, 3 tiers each)")

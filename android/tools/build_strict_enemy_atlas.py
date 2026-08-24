@@ -6,14 +6,18 @@ from __future__ import annotations
 import argparse
 from collections import deque
 from pathlib import Path
+import statistics
 
 from PIL import Image, ImageFilter
 
 COLS, SOURCE_ROWS, OUTPUT_ROWS = 6, 2, 6
 SHEETS = ("idle_walk.png", "attacks.png", "hurt_knockdown.png")
 TIERS = {
-    "base": ((160, 192), (132, 164), 12),
-    "runtime": ((240, 288), (198, 246), 18),
+    # Wide 7:6 cells preserve punches, backpacks, shields, and prone bodies.
+    # The old 5:6 cell forced wide poses to shrink until details disappeared.
+    "base": ((224, 192), (208, 164), 12),
+    "runtime": ((336, 288), (312, 246), 18),
+    "tv": ((196, 168), (182, 144), 10),
 }
 
 
@@ -137,12 +141,19 @@ def split_sheet(path: Path) -> list[Image.Image]:
     return frames
 
 
-def resize_actor(actor: Image.Image, size: tuple[int, int], clustered: bool) -> Image.Image:
-    if clustered:
+def resize_actor(actor: Image.Image, size: tuple[int, int], tier: str) -> Image.Image:
+    if tier == "base":
         half = (max(2, round(size[0] / 2)), max(2, round(size[1] / 2)))
         small = hard_alpha(actor.resize(half, Image.Resampling.LANCZOS))
         return small.resize((half[0] * 2, half[1] * 2), Image.Resampling.NEAREST)
-    return hard_alpha(actor.resize(size, Image.Resampling.LANCZOS), 48)
+    resized = actor.resize(size, Image.Resampling.LANCZOS)
+    if tier == "tv":
+        rgb = resized.convert("RGB").filter(
+            ImageFilter.UnsharpMask(radius=.45, percent=70, threshold=4)
+        )
+        rgb.putalpha(resized.getchannel("A"))
+        resized = rgb
+    return hard_alpha(resized, 48)
 
 
 def build_tier(frames: list[Image.Image], tier: str) -> Image.Image:
@@ -151,25 +162,56 @@ def build_tier(frames: list[Image.Image], tier: str) -> Image.Image:
     # silhouettes are naturally wider and must not shrink every standing pose.
     standing_widths, standing_heights = zip(*(frame.size for frame in frames[:12]))
     scale = min(safe[0] / max(standing_widths), safe[1] / max(standing_heights))
+    reference_length = statistics.median(
+        max(frame.width, frame.height) * scale for frame in frames[:12]
+    )
     atlas = Image.new("RGBA", (cell[0] * COLS, cell[1] * OUTPUT_ROWS), (0, 0, 0, 0))
     for index, frame in enumerate(frames):
         target = (max(2, round(frame.width * scale)), max(2, round(frame.height * scale)))
+        # Generated action/reaction panels sometimes contain the same actor at
+        # a much smaller camera scale. Enforce a minimum visible body length so
+        # punches, hurt frames, and prone frames cannot fade into tiny shapes.
+        minimum_ratio = .82 if index < 24 else .88
+        current_length = max(target)
+        minimum_length = reference_length * minimum_ratio
+        if current_length < minimum_length:
+            boost = minimum_length / current_length
+            target = (max(2, round(target[0] * boost)), max(2, round(target[1] * boost)))
         # Only exceptional wide action/fall poses are reduced enough to retain
         # the mandatory gutter; normal standing scale remains invariant.
         fit = min(1.0, safe[0] / target[0], safe[1] / target[1])
         if fit < 1.0:
             target = (max(2, round(target[0] * fit)), max(2, round(target[1] * fit)))
-        actor = resize_actor(frame, target, tier == "base")
+        actor = resize_actor(frame, target, tier)
         x = (cell[0] - actor.width) // 2
         y = cell[1] - bottom - actor.height
         if tier == "base":
             x &= ~1
             y &= ~1
-        if min(x, y, cell[0] - x - actor.width, cell[1] - y - actor.height) < (8 if tier == "base" else 12):
+        required_gutter = {"base": 8, "runtime": 12, "tv": 7}[tier]
+        if min(x, y, cell[0] - x - actor.width, cell[1] - y - actor.height) < required_gutter:
             raise ValueError(f"unsafe {tier} frame {index}: {actor.size} at {(x, y)}")
         atlas.alpha_composite(actor, ((index % COLS) * cell[0] + x,
                                       (index // COLS) * cell[1] + y))
     return atlas
+
+
+def build_fallback(runtime: Image.Image) -> Image.Image:
+    """Create a guaranteed visible static fallback from the approved idle frame."""
+    cell_width, cell_height = TIERS["runtime"][0]
+    actor = runtime.crop((0, 0, cell_width, cell_height))
+    box = actor.getchannel("A").getbbox()
+    if not box:
+        raise ValueError("empty fallback frame")
+    actor = actor.crop(box)
+    scale = min(440 / actor.width, 464 / actor.height)
+    actor = hard_alpha(actor.resize(
+        (max(2, round(actor.width * scale)), max(2, round(actor.height * scale))),
+        Image.Resampling.LANCZOS,
+    ))
+    fallback = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
+    fallback.alpha_composite(actor, ((512 - actor.width) // 2, 496 - actor.height))
+    return fallback
 
 
 def save_png(image: Image.Image, path: Path) -> None:
@@ -188,13 +230,11 @@ def main() -> None:
     if len(frames) != 36: raise ValueError(len(frames))
     base = build_tier(frames, "base")
     runtime = build_tier(frames, "runtime")
-    tv = runtime.resize((840, 1008), Image.Resampling.LANCZOS)
-    rgb = tv.convert("RGB").filter(ImageFilter.UnsharpMask(radius=.65, percent=85, threshold=3))
-    rgb.putalpha(tv.getchannel("A").point(lambda a: 255 if a >= 72 else 0))
-    tv = rgb
+    tv = build_tier(frames, "tv")
     save_png(base, args.assets / "enemies" / f"{args.enemy}_anim.png")
     save_png(runtime, args.assets / "runtime/enemies" / f"{args.enemy}_anim.png")
     save_png(tv, args.assets / "tv/enemies" / f"{args.enemy}_anim.png")
+    save_png(build_fallback(runtime), args.assets / "enemies" / f"{args.enemy}.png")
     print(f"built strict tiers for {args.enemy}: base={base.size} runtime={runtime.size} tv={tv.size}")
 
 

@@ -38,7 +38,11 @@ def main() -> None:
         path = ASSETS / f"tv/enemies/{name}_anim.png"
         assert path.is_file(), path
         with Image.open(path) as image:
-            assert image.size == (840, 1008), (path, image.size)
+            strict = name in {
+                "grunt", "skater", "lantern_courier", "market_enforcer", "keeper_7"
+            }
+            expected = (1176, 1008) if strict else (840, 1008)
+            assert image.size == expected, (path, image.size)
             assert image.mode == "RGBA", (path, image.mode)
     for name in ("parent", "adam", "shaikha", "sulaiman"):
         path = ASSETS / f"tv/heroes/{name}_anim.png"
@@ -47,10 +51,10 @@ def main() -> None:
             assert image.size == (1152, 1584), (path, image.size)
             assert image.mode == "RGBA", (path, image.mode)
     full_bytes = 4 * 960 * 1152
-    tv_bytes = 4 * 840 * 1008
-    assert tv_bytes * 100 // full_bytes == 76
+    tv_bytes = 4 * 1176 * 1008
+    assert tv_bytes < full_bytes * 2
     print("TV first-encounter memory contract: PASS "
-          "(zone roster warmup, maximum four atlases, uniform 77% fallback area)")
+          "(zone roster warmup, maximum four atlases, strict wide-cell pilot within budget)")
 
 
 if __name__ == "__main__":

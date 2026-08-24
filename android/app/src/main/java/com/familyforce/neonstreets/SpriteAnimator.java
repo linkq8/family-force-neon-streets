@@ -52,6 +52,10 @@ final class SpriteAnimator {
         return atlas;
     }
 
+    float cellAspectRatio() {
+        return cellHeight > 0 ? cellWidth / (float) cellHeight : 1f;
+    }
+
     void clear() {
         atlas = null;
         columns = rows = cellWidth = cellHeight = 0;

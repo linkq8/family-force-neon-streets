@@ -40,18 +40,13 @@ VARIANTS = (
     ("heroes/adam_anim.png", "tv/heroes/adam_anim.png", (1152, 1584), "RGBA"),
     ("heroes/shaikha_anim.png", "tv/heroes/shaikha_anim.png", (1152, 1584), "RGBA"),
     ("heroes/sulaiman_anim.png", "tv/heroes/sulaiman_anim.png", (1152, 1584), "RGBA"),
-    # Every approved enemy now uses the same fine-detail 87.5% TV contract.
-    # Their 140x168 cells remain below the four-atlas encounter budget while
-    # avoiding the visibly softer second reduction used by the legacy art.
-    ("runtime/enemies/grunt_anim.png", "tv/enemies/grunt_anim.png", (840, 1008), "RGBA"),
-    ("runtime/enemies/skater_anim.png", "tv/enemies/skater_anim.png", (840, 1008), "RGBA"),
+    # Stage 1 strict atlases are intentionally absent here. Their dedicated
+    # builder owns wider 196x168 TV cells and must never be overwritten by a
+    # generic whole-atlas resize.
     ("enemies/brute_anim.png", "tv/enemies/brute_anim.png", (840, 1008), "RGBA"),
     ("enemies/boss_anim.png", "tv/enemies/boss_anim.png", (840, 1008), "RGBA"),
     ("enemies/striker_anim.png", "tv/enemies/striker_anim.png", (840, 1008), "RGBA"),
     ("enemies/shield_guard_anim.png", "tv/enemies/shield_guard_anim.png", (840, 1008), "RGBA"),
-    ("runtime/enemies/lantern_courier_anim.png", "tv/enemies/lantern_courier_anim.png", (840, 1008), "RGBA"),
-    ("runtime/enemies/market_enforcer_anim.png", "tv/enemies/market_enforcer_anim.png", (840, 1008), "RGBA"),
-    ("runtime/enemies/keeper_7_anim.png", "tv/enemies/keeper_7_anim.png", (840, 1008), "RGBA"),
     ("enemies/rail_runner_anim.png", "tv/enemies/rail_runner_anim.png", (840, 1008), "RGBA"),
     ("enemies/signal_warden_anim.png", "tv/enemies/signal_warden_anim.png", (840, 1008), "RGBA"),
     ("enemies/railmaster_9_anim.png", "tv/enemies/railmaster_9_anim.png", (840, 1008), "RGBA"),

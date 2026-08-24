@@ -72,6 +72,9 @@ def contracts() -> tuple[AtlasContract, ...]:
         "dock_crusher", "tidebreaker", "scrap_stalker", "core_jammer",
         "furnace_brawler", "palace_sentinel", "vox_avatar", "shadow_prime",
     )
+    strict_stage_one = {
+        "grunt", "skater", "lantern_courier", "market_enforcer", "keeper_7",
+    }
     heroes = tuple(
         AtlasContract(
             relative=f"heroes/{name}_anim.png",
@@ -98,7 +101,7 @@ def contracts() -> tuple[AtlasContract, ...]:
             relative=f"enemies/{name}_anim.png",
             columns=6,
             rows=ENEMY_ROWS,
-            cell_width=160,
+            cell_width=224 if name in strict_stage_one else 160,
             cell_height=192,
             minimum_unique_rgba=ENEMY_UNIQUE_RGBA,
             minimum_unique_silhouettes=ENEMY_UNIQUE_ALPHA,
