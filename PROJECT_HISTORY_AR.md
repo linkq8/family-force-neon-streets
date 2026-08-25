@@ -4,19 +4,19 @@
 > يجب على كل وكيل قراءته قبل تعديل المشروع، وتحديثه بعد كل طلب أو تعديل أو
 > اختبار أو Release. سجل الأحداث أدناه تراكمي؛ لا تُحذف الإدخالات القديمة.
 
-آخر تحديث: 25 أغسطس 2026 — Codex
+آخر تحديث: 26 أغسطس 2026 — Codex
 
 ## حالة العمل الحالية
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.51.0-alpha`، `versionCode 66`.
+- النسخة المنشورة: `v0.52.0-alpha`، `versionCode 67`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `6380832cc476f6304985a64cba58c8c6a0f6d9af`.
+- آخر commit وظيفي: `57826d367a8924ac1c8341c8cba37cde6d510c25`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.51.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.51.0-alpha/family-force-family-current.apk
-- SHA-256: `48d66d02caba0398a61d26f85c1bda0d7175dfb931c7319b1de96fc9c253538e`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.52.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.52.0-alpha/family-force-family-current.apk
+- SHA-256: `f661668b813962c7ebf34d855a504b723c77ebf311687ec2f0e9957284bdca14`.
 - حالة QA: واجهة Canvas والقصة ثنائيتا اللغة عبر 241 مفتاحًا متطابقًا؛ نجح
   Build/Release/R8/Lint والتوقيع والتحقق من الأصول والتحكم وعقود الأداء وذاكرة
   TV. أكمل Android TV Emulator المسار الكامل للمناطق الـ14 والمراحل الخمس، ونجحت ملفات
@@ -39,12 +39,14 @@
   Android TV إلى TV tier؛ Shield يحصل على Runtime وXiaomi المتوسط على Base
   والمنخفض على TV، مع أخذ عينات حادة وحفظ 11 صف حركة. أعيد رسم Market نفسه
   بأسطح أبسط و36 إطارًا، وانخفضت أطلاسه مع تحسن وضوح الحجم الفعلي.
-- الاختبارات المتبقية: قبول بصري بشري لـMarket الجديد وحركة Essa/Adam على
+- أضافت `v0.52.0-alpha` عقد 12 رسمة فريدة للحركة بدل الخلط بينها وبين 12 FPS.
+  أعيد رسم Essa ببدلة أوضح في 11 حركة × 12 رسمة، وأعيدت مشية Market Enforcer
+  في 12 رسمة بتبادل قدمين ودرع/عصا مستقرين مع إبقاء هويته وبقية حركاته.
+- الاختبارات المتبقية: قبول بصري بشري لحركة Essa وMarket الجديدة على
   Xiaomi Stick وShield. كشف تدقيق الرموز `Lantern Courier` و`Palace Sentinel`
   و`Tidebreaker` ووضعت في قائمة إعادة الرسم، ولم يعتمدها السجل بصريًا.
-- العمل التالي الموصى به: اختبار `v0.51.0-alpha` في Stage 1، ثم إعادة رسم
-  `Keeper-7` بالبساطة نفسها إذا نجح Market؛ وبعده إزالة رموز الأعداء الثلاثة
-  واحدًا تلو الآخر وفق معيار Symbol-Neutral.
+- العمل التالي الموصى به: اختبار `v0.52.0-alpha` في Stage 1 على TV حقيقي، ثم
+  تطبيق عقد 12 رسمة على Adam أو إعادة Keeper-7 حسب نتيجة القبول البصري.
 - أداة الإنتاج: `asset-vault/` تفهرس 101 سجل و181 ملفًا (تغطية Manifest كاملة)،
   وتشغّل الأطالس الـ26 بقيم المحرك الفعلية، مع عقود QA لكل العائلات، حجر وفك
   ترميز حقيقي، اعتماد مرتبط بالبصمة والحقوق، وتجهيز آمن يبدأ بمعاينة Dry-run.
@@ -200,20 +202,53 @@
 - المنفذ: Codex
 - طلب المستخدم: تثبيت ملاحظات المشي الطبيعي في قوانين إنشاء الشخصيات، ثم
   تطبيقها على `Market Enforcer` و`Essa`، مع رسومات Essa أوضح وتعديلات على البدلة.
-- الحالة: قيد التنفيذ.
+- الحالة: مكتمل ومنشور في `v0.52.0-alpha`.
 - نقطة البداية: `v0.51.0-alpha` / commit `8f6bf0b`.
 - ما تم:
-  - بدء التنفيذ باستخدام مولد الصور المدمج فقط، دون Higgsfield أو فيديو.
+  - التنفيذ باستخدام مولد الصور المدمج فقط، دون Higgsfield أو فيديو.
   - اعتماد أن معدل التشغيل وحده لا يكفي؛ المطلوب إطارات فريدة بتبادل قدمين
     صحيح ومسار ثابت لليدين والحوض والكتفين.
+  - تثبيت عقد 12 رسمة فريدة لكل حركة، ومراحل contact/down/pass/up للقدمين،
+    والحركة العكسية للذراع، وثبات الرأس والحجم، ومنع انزلاق القدم وقص الأطراف.
+  - إعادة رسم Essa بوجهه ونظارته ولحيته مع بدلة حمراء/ذهبية/كحلية وضوء صدر
+    دائري محايد، ثم إنتاج 11 حركة × 12 رسمة مستقلة في Base/Runtime/TV/UHD.
+  - إعادة مشية Market Enforcer نفسه في 12 رسمة متتابعة؛ تتبادل القدمان، وتتحرك
+    العصا بقوس مضبوط، ويبقى الدرع مستقرًا. لم يستبدل بـShield Guard أو Striker.
+  - توسيع `SpriteAnimator` لعدد إطارات مختلف لكل حركة؛ Market يستخدم 12 للمشي
+    و6 لبقية حركاته الحالية، بينما Essa يستخدم 12 في كل الحركات.
+  - إضافة فصل بالمكوّنات الحقيقية وتنظيف alpha والحواف الفاتحة والشظايا اليتيمة؛
+    منع ظهور أجزاء الدرع/العصا بين الإطارات.
 - الملفات المعدلة:
   - `PROJECT_HISTORY_AR.md`
+  - `android/app/build.gradle`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/app/src/main/java/com/familyforce/neonstreets/SpriteAnimator.java`
+  - `android/app/src/main/assets/{tv/,runtime/,uhd/}clips/heroes/parent/`
+  - `android/app/src/main/assets/{tv/,runtime/}clips/enemies/market_enforcer/`
+  - `assets/imagegen/android/character-redraw-v5/essa/`
+  - `assets/imagegen/android/enemies/quality-v5/market_enforcer/`
+  - `assets/imagegen/android/animation-clips-v2/`
+  - `android/tools/build_twelve_frame_clips.py`
+  - `android/tools/test_separate_animation_clips.py`
+  - `android/tools/test_market_enforcer_walk_contract.py`
+  - `android/docs/CHARACTER_ART_STYLE_GUIDE_AR.md`
+  - `android/docs/SEPARATE_ANIMATION_CLIP_STANDARD_AR.md`
 - الاختبارات:
-  - قيد التنفيذ.
-- Release: لا يوجد بعد.
-- ملاحظات/مخاطر: لا تعتمد ورقة جديدة إذا كررت وضعية القدم نفسها أو أحدثت
-  قفزة في حجم الجسم/البدلة/الوجه بين الإطارات.
-- التالي: تحديث معيار الرسومات وعقد الحركة، ثم إنتاج وقبول Market وEssa منفردين.
+  - `test_separate_animation_clips.py` — PASS؛ 12 صورة فريدة، hard alpha، بلا halo.
+  - `test_market_enforcer_walk_contract.py` — PASS؛ 12 إطارًا وهوية مستقلة.
+  - `:app:testDebugUnitTest :app:assembleDebug` — PASS.
+  - `tools/test_customer_release.sh customers/family-current` — PASS؛ Build/R8/Lint،
+    التوقيع، الأصول، التحكم، ذاكرة TV، الجودة، الحواف، وعقود الحركة.
+  - Emulator/device runtime — SKIPPED؛ لا يوجد جهاز متصل في الجلسة.
+- Release: `v0.52.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.52.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.52.0-alpha/family-force-family-current.apk
+- SHA-256: `f661668b813962c7ebf34d855a504b723c77ebf311687ec2f0e9957284bdca14`.
+- commit: `57826d367a8924ac1c8341c8cba37cde6d510c25`.
+- ملاحظات/مخاطر: الاختبارات تثبت سلامة الملفات والربط، لكن يلزم قبول بصري للحركة
+  بالحجم الفعلي على Shield/Xiaomi. لا تعمم رسومات Essa على بقية الأبطال آليًا.
+- التالي: تجربة Essa وMarket في Stage 1؛ عند القبول يطبق العقد على شخصية واحدة
+  تالية فقط، مع إبقاء Keeper-7 مستقلًا وعدم تبديله بعدو آخر.
 
 ### 2026-08-25-91 — تنفيذ استعادة الوضوح وسياسة الرموز وإعادة Market
 
@@ -3641,13 +3676,13 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.51.0-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
+- الحالة: `v0.52.0-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
   وBoss لكل مرحلة ومرحلة ختامية تعتمد موجات ورؤساء مراقبين ثم Shadow Prime.
-- آخر عمل: أصلح اختيار دقة الأبطال تكيفيًا كي لا يستخدم Shield أطلس TV الصغير،
-  وأضيف رسم حاد مع بقاء الحركات، ثم أعيد Market نفسه بأسلوب أبسط و36 إطارًا.
-  أضيف معيار/بوابة Symbol-Neutral ونشرت `v0.51.0-alpha` بعد Release QA.
-- آخر قرار: إطارات `v0.49.0` الوسيطة المزاحة آليًا مرفوضة؛ لا يطبق شرط 12 صورة
-  مجددًا إلا بصور مستقلة مرسومة فعليًا وبعد قبول عينة واحدة داخل اللعبة.
+- آخر عمل: أعيد Essa ببدلة أوضح و11 حركة × 12 رسمة مستقلة، وأعيدت مشية Market
+  نفسه بـ12 رسمة مع تبادل القدمين وثبات الدرع والعصا. يدعم المحرك الآن عددًا
+  مختلفًا للإطارات لكل حركة، مع تنظيف صارم للحواف والشظايا.
+- آخر قرار: معيار الرسم الجديد 12 صورة فريدة لكل حركة و12 FPS على الأقل؛ يمنع
+  التكرار والإزاحة الوسيطة، وتنفذ الشخصيات واحدة تلو الأخرى بعد اختبار حقيقي.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
@@ -3659,6 +3694,6 @@
   8. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
   9. `android/docs/PIXEL_DENSITY_STANDARD_AR.md`
   10. `android/tools/test_enemy_pixel_density_contract.py`
-- الإجراء التالي المقترح: تثبيت APK `v0.51.0-alpha` وتجربة Essa وAdam وMarket
-  في Stage 1 على Shield/Xiaomi. إذا نجح Market، يعاد Keeper-7 بالطريقة نفسها؛
-  ثم يعاد Lantern Courier وPalace Sentinel وTidebreaker لإزالة الرموز المرفوضة.
+- الإجراء التالي المقترح: تثبيت APK `v0.52.0-alpha` وتجربة Essa وMarket في
+  Stage 1 على Shield/Xiaomi، خصوصًا دورة المشي واتصال الإطار 12 بالأول. بعدها
+  يعاد Adam أو Keeper-7 منفردًا وفق نتيجة الاختبار.
