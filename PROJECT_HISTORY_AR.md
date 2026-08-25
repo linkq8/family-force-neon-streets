@@ -184,6 +184,54 @@
 
 ## سجل الطلبات والتعديلات المشترك
 
+### 2026-08-25-84 — Regression بصري وتحكم DualSense في v0.49
+
+- المنفذ: Codex
+- طلب المستخدم: جميع الشخصيات، خصوصًا Essa وAdam، والأعداء أصبحت أسوأ وأكبر
+  قليلًا في `v0.49`، ويد PS5 لا تستجيب داخل اللعب بينما الريموت يعمل.
+- الحالة: قيد التنفيذ
+- نقطة البداية: `v0.49.0-alpha` / commit
+  `99b3b1a233d3508f4021f570d91361a516550eec`.
+- ما تم:
+  - ثبتت المقارنة أن `v0.49` صنع 12 خلية عبر تكرار الوضعيات وتحريكها بمقدار
+    بكسل واحد، كما فعّل مسار clips جديدًا للأعداء؛ النتيجة كانت اهتزازًا بصريًا
+    وتغيرًا في الحجم/الوضوح، وليست حركة مرسومة حقيقية.
+  - استرجاع أصول Essa وAdam وGrunt وLantern ونسخ Base/Runtime/TV/UHD ومصادر
+    الإنتاج حرفيًا من `v0.48.0-alpha` المقبولة، مع استرجاع محمل الأطالس القديم.
+  - إصلاح توجيه Android TV في اللاعب الواحد: بعض أجهزة TV قد تعرّف الريموت
+    كمصدر Gamepad، فكانت DualSense تُدفع إلى P2 ولا تحرك البطل؛ الآن أحدث يد
+    لعب في PLAY الفردي تملك P1 دائمًا، بينما يبقى فصل P1/P2 في طور لاعبين.
+  - رفع الإصدار محليًا إلى `v0.49.1-alpha` / `versionCode 61`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `android/app/build.gradle`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/app/src/main/java/com/familyforce/neonstreets/SpriteAnimator.java`
+  - `android/app/src/main/assets/{clips,runtime/clips,tv/clips,uhd/clips}/...`
+  - `assets/imagegen/android/animation-clips-v1/...`
+  - `android/app/src/main/assets/asset_manifest.json`
+  - `android/tools/{build_separate_animation_clips.py,test_separate_animation_clips.py,test_tv_encounter_memory_contract.py,test_runtime_smoothness_contract.py,test_single_player_controller_routing_contract.py,test_customer_release.sh}`
+  - `android/docs/SEPARATE_ANIMATION_CLIP_STANDARD_AR.md`
+- الاختبارات:
+  - `./android/tools/test_controller_compat.sh` — PASS.
+  - `python3 android/tools/test_single_player_controller_routing_contract.py` — PASS.
+  - اختبارات separate clips وTV encounter وruntime smoothness — PASS؛ ميزانية
+    الصور المتحركة المحملة `71.20 MiB`.
+  - `./gradlew :app:assembleDebug` — PASS.
+  - `./android/tools/test_customer_release.sh` — PASS كامل: Release/R8/Lint،
+    التوقيع والأصول، phone/ultrawide/Fold/TV، مسار الريموت واللعب حتى المواجهة
+    دون FATAL/ANR/OOM.
+  - `validate_animation_atlases.py` المنفرد — FAIL معروف على شرط محاذاة 2px
+    لـ`parent_anim.png` المستعاد؛ مدقق الإصدار الفعلي قبل الـAPK مرر الأطالس
+    `26/26`. لم نعد تشكيل الصورة بهذا الشرط لأنه يزيد مظهر البكسل الذي رفضه المستخدم.
+- Release: قيد التجهيز كـ`v0.49.1-alpha`؛ APK المبني SHA-256
+  `0eb16fd3fb797fe3c3491573642d58e8f3548f028c319ca731d3d06574f6196c`.
+- ملاحظات/مخاطر: عقد 12 **صورة مرسومة حقيقية** مؤجل؛ لا تُقبل إطارات مكررة
+  أو مزاحة آليًا مرة أخرى. اختبار DualSense الحالي يغطي mapping والتوجيه منطقيًا،
+  ويبقى تأكيد اليد الحقيقية على Shield بعد تنزيل الإصدار.
+- التالي: commit ورفع hotfix إلى GitHub Releases، ثم اختبار Essa وAdam وDualSense
+  على Shield قبل أي محاولة جديدة لزيادة عدد إطارات الحركة.
+
 ### 2026-08-25-83 — تصحيح عقد الحركة إلى 12 إطارًا حقيقيًا لكل حركة
 
 - المنفذ: Codex

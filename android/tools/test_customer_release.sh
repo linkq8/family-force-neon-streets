@@ -12,6 +12,7 @@ export ANDROID_HOME=${ANDROID_HOME:-/Users/essa/Library/Android/sdk}
 export PATH="$ANDROID_HOME/platform-tools:$PATH"
 
 "$SCRIPT_DIR/test_controller_compat.sh"
+python3 "$SCRIPT_DIR/test_single_player_controller_routing_contract.py"
 python3 "$SCRIPT_DIR/test_combat_companion_contract.py"
 python3 "$SCRIPT_DIR/test_story_content_contract.py"
 python3 "$SCRIPT_DIR/test_ui_localization_contract.py"

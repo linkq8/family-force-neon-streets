@@ -113,7 +113,6 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private static final int HERO_HURT = 9;
     private static final int HERO_KNOCKDOWN = 10;
     private static final int HERO_ANIM_COLUMNS = 8;
-    private static final int ACTION_CLIP_FRAMES = 12;
     private static final int HERO_ANIM_ROWS = 11;
     private static final int HERO_ANIM_CELL_WIDTH = 192;
     private static final int HERO_ANIM_CELL_HEIGHT = 192;
@@ -337,15 +336,14 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private Bitmap assistAnimArt;
     private final Bitmap[] assistAnimCache = new Bitmap[2];
     private final Rect[] selectedHeroAnimSources = new Rect[HERO_ANIM_ROWS * HERO_ANIM_COLUMNS];
-    private final Rect[] assistAnimSources = new Rect[ACTION_CLIP_FRAMES];
+    private final Rect[] assistAnimSources = new Rect[HERO_ANIM_COLUMNS];
     private final Rect[][] assistAnimSourceCache = {
-            new Rect[ACTION_CLIP_FRAMES], new Rect[ACTION_CLIP_FRAMES]
+            new Rect[HERO_ANIM_COLUMNS], new Rect[HERO_ANIM_COLUMNS]
     };
     private int loadedHeroAnim = -1;
     private int loadedPlayer2Anim = -1;
     private boolean player2AnimSharesPlayerAnim = false;
     private final int[] loadedAssistHeroes = {-1, -1};
-    private final int[] assistAnimColumns = {0, 0};
     private final SpriteAnimator playerAnimator = new SpriteAnimator();
     private final SpriteAnimator assistAnimator = new SpriteAnimator();
     private final SpriteAnimator player2Animator = new SpriteAnimator();
@@ -1215,6 +1213,16 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private int resolveControllerSlot(int deviceId, int source) {
         if (!isGamepadSource(source) || deviceId < 0) return 0;
+        // A TV remote can be exposed by some Android TV firmwares as a gamepad.
+        // In a one-player battle, always let the most recent real gamepad event
+        // control P1 instead of leaving DualSense input trapped in the P2 slot.
+        if (state == PLAY && !twoPlayerMode) {
+            primaryControllerId = deviceId;
+            lastPrimaryControllerInputMs = SystemClock.uptimeMillis();
+            secondaryControllerId = -1;
+            lastSecondaryControllerInputMs = -1L;
+            return 0;
+        }
         if (primaryControllerId < 0 || !isControllerIdConnected(primaryControllerId)) {
             primaryControllerId = deviceId;
             lastPrimaryControllerInputMs = SystemClock.uptimeMillis();
@@ -1646,33 +1654,29 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private Bitmap[] loadHeroAnimationClips(int hero) {
         String stem = customerProfile.heroAssetStems[safeHeroIndex(hero)];
-        boolean reduced = useReducedMemoryAssets();
-        Bitmap[] clips = reduced
-                ? loadClipSet("tv/clips/heroes/" + stem + "/", HERO_ANIM_CLIP_NAMES,
-                ACTION_CLIP_FRAMES) : null;
-        if (clips == null && !reduced && useUhdCharacterAssets()) {
-            clips = loadClipSet("uhd/clips/heroes/" + stem + "/", HERO_ANIM_CLIP_NAMES,
-                    ACTION_CLIP_FRAMES);
-        }
-        if (clips == null && !reduced) {
+        Bitmap[] clips = useUhdCharacterAssets()
+                ? loadClipSet("uhd/clips/heroes/" + stem + "/", HERO_ANIM_CLIP_NAMES,
+                HERO_ANIM_COLUMNS) : null;
+        if (clips == null) {
             clips = loadClipSet("runtime/clips/heroes/" + stem + "/",
-                    HERO_ANIM_CLIP_NAMES, ACTION_CLIP_FRAMES);
+                    HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS);
+        }
+        if (clips == null && useReducedMemoryAssets()) {
+            clips = loadClipSet("tv/clips/heroes/" + stem + "/",
+                    HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS);
         }
         if (clips == null) {
             clips = loadClipSet("clips/heroes/" + stem + "/",
-                    HERO_ANIM_CLIP_NAMES, ACTION_CLIP_FRAMES);
+                    HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS);
         }
         return clips;
     }
 
-    private Bitmap[] decodeEnemyAnimationClips(int type, String atlasTier) {
+    private Bitmap[] decodeEnemyAnimationClips(int type, String tier) {
         if (type < 0 || type >= enemyAnimArt.length) return null;
         String stem = EnemyArchetype.of(type).asset;
-        String suffix = "enemies/";
-        String tier = atlasTier.endsWith(suffix)
-                ? atlasTier.substring(0, atlasTier.length() - suffix.length()) : atlasTier;
         return loadClipSet(tier + "clips/enemies/" + stem + "/",
-                ENEMY_ANIM_CLIP_NAMES, ACTION_CLIP_FRAMES);
+                ENEMY_ANIM_CLIP_NAMES, ENEMY_ANIM_COLUMNS);
     }
 
     private static void bindClipSet(SpriteAnimator animator, Bitmap[] clips, int columns) {
@@ -1812,7 +1816,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     ? enemyAnimClips[enemy.type] : null;
             if (clips != null && !enemy.animator.isBoundTo(clips)) {
                 enemy.animator.clear();
-                bindClipSet(enemy.animator, clips, ACTION_CLIP_FRAMES);
+                bindClipSet(enemy.animator, clips, ENEMY_ANIM_COLUMNS);
                 enemy.animator.play(ENEMY_IDLE, ENEMY_ANIM_COLUMNS, 12, true, true);
             } else if (atlas != null && !atlas.isRecycled()
                     && enemy.animator.bitmap() != atlas) {
@@ -1851,7 +1855,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             playerAnimator.clear();
         }
         if (selectedHeroAnimClips != null) {
-            bindClipSet(playerAnimator, selectedHeroAnimClips, ACTION_CLIP_FRAMES);
+            bindClipSet(playerAnimator, selectedHeroAnimClips, HERO_ANIM_COLUMNS);
             playerAnimator.play(HERO_IDLE, 8, 12, true, true);
             loaded = true;
         } else if (isValidHeroAtlas(candidate)) {
@@ -1926,7 +1930,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         unloadPlayer2Animation(false);
         if (selectedHero2 == selectedHero && selectedHeroAnimClips != null) {
             player2AnimClips = selectedHeroAnimClips;
-            bindClipSet(player2Animator, player2AnimClips, ACTION_CLIP_FRAMES);
+            bindClipSet(player2Animator, player2AnimClips, HERO_ANIM_COLUMNS);
             player2AnimSharesPlayerAnim = true;
             loadedPlayer2Anim = selectedHero2;
             return;
@@ -1946,7 +1950,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             player2AnimClips = loadHeroAnimationClips(selectedHero2);
             candidate = player2AnimClips == null ? loadHeroAnimationAtlas(selectedHero2) : null;
             if (player2AnimClips != null) {
-                bindClipSet(player2Animator, player2AnimClips, ACTION_CLIP_FRAMES);
+                bindClipSet(player2Animator, player2AnimClips, HERO_ANIM_COLUMNS);
                 player2AnimSharesPlayerAnim = false;
                 loadedPlayer2Anim = selectedHero2;
                 loaded = true;
@@ -2054,24 +2058,15 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         recycleBitmap(cached);
         assistAnimCache[ownerSlot] = null;
         loadedAssistHeroes[ownerSlot] = -1;
-        assistAnimColumns[ownerSlot] = 0;
         Arrays.fill(assistAnimSourceCache[ownerSlot], null);
         BitmapRegionDecoder decoder = null;
         String heroStem = customerProfile.heroAssetStems[hero];
         String stem = heroStem + "_anim.png";
         String path = "runtime/heroes/" + stem;
         try {
-            String clipTier = useReducedMemoryAssets() ? "tv/" : "runtime/";
             assistAnimCache[ownerSlot] = loadBitmap(
-                    clipTier + "clips/heroes/" + heroStem + "/link.png");
-            if (assistAnimCache[ownerSlot] != null
-                    && assistAnimCache[ownerSlot].getWidth() % ACTION_CLIP_FRAMES == 0) {
-                assistAnimCache[ownerSlot].prepareToDraw();
-                assistAnimColumns[ownerSlot] = ACTION_CLIP_FRAMES;
-            } else {
-                recycleBitmap(assistAnimCache[ownerSlot]);
-                assistAnimCache[ownerSlot] = null;
-            }
+                    "runtime/clips/heroes/" + heroStem + "/link.png");
+            if (assistAnimCache[ownerSlot] != null) assistAnimCache[ownerSlot].prepareToDraw();
         } catch (OutOfMemoryError ignored) {
             assistAnimCache[ownerSlot] = null;
         }
@@ -2087,10 +2082,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 Rect row = new Rect(0, HERO_LINK * cellHeight,
                         decoder.getWidth(), (HERO_LINK + 1) * cellHeight);
                 assistAnimCache[ownerSlot] = decoder.decodeRegion(row, null);
-                if (assistAnimCache[ownerSlot] != null) {
-                    assistAnimCache[ownerSlot].prepareToDraw();
-                    assistAnimColumns[ownerSlot] = HERO_ANIM_COLUMNS;
-                }
+                if (assistAnimCache[ownerSlot] != null) assistAnimCache[ownerSlot].prepareToDraw();
             }
             }
         } catch (IOException | IllegalArgumentException ignored) {
@@ -2104,12 +2096,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (rowArt != null) {
             try {
                 cacheHeroAnimSourceRects(rowArt, assistAnimSourceCache[ownerSlot],
-                        1, assistAnimColumns[ownerSlot]);
+                        1, HERO_ANIM_COLUMNS);
             } catch (RuntimeException | OutOfMemoryError loadFailure) {
                 Log.w(TAG, "Companion animation fell back to compact art", loadFailure);
                 recycleBitmap(rowArt);
                 assistAnimCache[ownerSlot] = null;
-                assistAnimColumns[ownerSlot] = 0;
                 Arrays.fill(assistAnimSourceCache[ownerSlot], null);
             }
         }
@@ -2132,14 +2123,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         Arrays.fill(assistAnimSources, null);
         Bitmap cached = assistAnimCache[ownerSlot];
         if (loadedAssistHeroes[ownerSlot] != hero || cached == null || cached.isRecycled()) return;
-        int columns = assistAnimColumns[ownerSlot];
-        if (columns <= 0 || columns > assistAnimSources.length) return;
         assistAnimArt = cached;
         System.arraycopy(assistAnimSourceCache[ownerSlot], 0, assistAnimSources, 0,
-                columns);
-        assistAnimator.bind(cached, columns, 1,
-                cached.getWidth() / columns, cached.getHeight());
-        assistAnimator.play(0, columns, 14, false, true);
+                HERO_ANIM_COLUMNS);
+        assistAnimator.bind(cached, HERO_ANIM_COLUMNS, 1,
+                cached.getWidth() / HERO_ANIM_COLUMNS, cached.getHeight());
+        assistAnimator.play(0, 8, 14, false, true);
     }
 
     private synchronized void releaseAssistAnimationRows() {
@@ -2150,7 +2139,6 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             recycleBitmap(assistAnimCache[slot]);
             assistAnimCache[slot] = null;
             loadedAssistHeroes[slot] = -1;
-            assistAnimColumns[slot] = 0;
             Arrays.fill(assistAnimSourceCache[slot], null);
         }
     }
@@ -2830,7 +2818,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             Bitmap atlas = enemyAnimArt[type];
             Bitmap[] clips = enemyAnimClips[type];
             if (clips != null) {
-                bindClipSet(enemy.animator, clips, ACTION_CLIP_FRAMES);
+                bindClipSet(enemy.animator, clips, ENEMY_ANIM_COLUMNS);
                 enemy.animator.play(ENEMY_IDLE, 6, 12, true, true);
             } else if (atlas != null) {
                 enemy.animator.bind(atlas, ENEMY_ANIM_COLUMNS, ENEMY_ANIM_ROWS,
@@ -4254,7 +4242,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         assist.x = ownerX + (assist.facingRight ? -145f : 145f);
         assist.y = clamp(ownerY + 17f, 222f, 318f);
         assist.targetX = ownerX + (assist.facingRight ? 48f : -48f);
-        assistAnimator.play(0, Math.max(1, assistAnimColumns[ownerSlot]), 14, false, true);
+        assistAnimator.play(0, 8, 14, false, true);
         spawnRing(assist.x, assist.y - 34f, HERO_COLORS[assist.hero]);
     }
 
@@ -4266,8 +4254,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             if (assist.ticks >= 11) {
                 assist.phase = 1;
                 assist.ticks = 0;
-                assistAnimator.play(0, Math.max(1, assistAnimColumns[assist.ownerSlot]),
-                        14, false, true);
+                assistAnimator.play(0, 8, 14, false, true);
             }
             return;
         }
@@ -6725,7 +6712,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     gamepadUiActive = true;
                 }
             }
-            boolean p2ByDevice = hasCompanionController() && controllerSlot == 1;
+            boolean p2ByDevice = twoPlayerMode && hasCompanionController() && controllerSlot == 1;
             if (state == SELECT && (keyCode == KeyEvent.KEYCODE_BUTTON_L1
                     || keyCode == KeyEvent.KEYCODE_BUTTON_R1)) {
                 if (!isMenuActionRepeatAllowed(keyCode, now)) return true;
@@ -6893,7 +6880,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     gamepadUiActive = true;
                 }
             }
-            boolean p2ByDevice = hasCompanionController() && controllerSlot == 1;
+            boolean p2ByDevice = twoPlayerMode && hasCompanionController() && controllerSlot == 1;
             if (state == PLAY && p2ByDevice) {
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_DPAD_LEFT: p2Left = false; break;
@@ -7263,7 +7250,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             return super.onGenericMotionEvent(event);
         }
         boolean isSecond = hasCompanionController()
-                ? (controllerSlot == 1 && isDedicatedCompanion())
+                ? (twoPlayerMode && controllerSlot == 1 && isDedicatedCompanion())
                 : (! (state == PLAY) && activeSelectionSlot == 1);
         if (isSecond) {
             float p2x = readHorizontalAxis(event);
