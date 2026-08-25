@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.50.0-alpha`، `versionCode 63`.
+- النسخة المنشورة: `v0.50.1-alpha`، `versionCode 64`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `f53401034e6eab79f186f5c0d257bf918d5429c3`.
+- آخر commit وظيفي: `2088f0e8ad8b6a671769f4562ce6d68077fe5697`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.50.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.50.0-alpha/family-force-family-current.apk
-- SHA-256: `1799c6c68682eeb1701a0e7be2d35e5e420d2ab0ecaec8f965c3d3a1b1f9f759`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.50.1-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.50.1-alpha/family-force-family-current.apk
+- SHA-256: `09665a92fd30c744214b7c9f9ba8d2e3d6006b35045f1f4d8cd45f8b0b33710d`.
 - حالة QA: واجهة Canvas والقصة ثنائيتا اللغة عبر 241 مفتاحًا متطابقًا؛ نجح
   Build/Release/R8/Lint والتوقيع والتحقق من الأصول والتحكم وعقود الأداء وذاكرة
   TV. أكمل Android TV Emulator المسار الكامل للمناطق الـ14 والمراحل الخمس، ونجحت ملفات
@@ -31,14 +31,15 @@
 - إصلاح DualSense في `v0.49.1` مؤكد ميدانيًا من المستخدم. وفي `v0.49.2` أصلح
   قناع Adam جذريًا بمنع Chroma الأخضر من حذف جسمه الأخضر، مع إعادة بناء Adam
   فقط في Base/Runtime/TV/UHD وترك بقية الرسومات دون تغيير.
-- رفض المستخدم جودة Market Enforcer وKeeper-7 رغم نجاح التدقيق الآلي السابق؛
-  أعيد رسمهما كاملين في `quality-v3` ونشرا في `v0.50.0-alpha`: نموذج هوية وثلاث
-  أوراق UHD و36 إطارًا لكل عدو، ثم Base/Runtime/TV جديدة. نجحت عقود القص والـalpha
-  وثبات الحجم والذاكرة، ومر Android TV QA والبناء الموقع دون crash.
+- صححت `v0.50.1-alpha` السبب الجذري لسوء Market Enforcer وKeeper-7: لم تكن
+  المشكلة دقة PNG أوPPI الفيزيائي، بل انخفاض APGU بسبب تكبير `renderHeight`
+  وشرط قديم يصنع كتل `2×2`. أصبح Market مطابقًا لكثافة Shield Guard وKeeper
+  مطابقًا لكثافة Striker بفارق لا يتجاوز 4% في Base/Runtime/TV، مع إزالة الهالة
+  البيضاء الطرفية ووضع بوابة إصدار رقمية تمنع تكرار الخلل.
 - الاختبارات المتبقية: قبول بصري بشري لـMarket Enforcer وKeeper-7 أثناء كل
   الحركات على Xiaomi Stick أوShield، إضافة إلى تأكيد Adam على العتاد الحقيقي.
-- العمل التالي الموصى به: اختبار `v0.50.0-alpha` في Stage 1 على Shield/Xiaomi؛
-  لا يعاد رسم عدو آخر قبل قبول هذين النموذجين بصريًا داخل اللعبة.
+- العمل التالي الموصى به: اختبار `v0.50.1-alpha` في Stage 1 على Shield/Xiaomi؛
+  لا يعاد بناء عدو آخر قبل قبول معيار APGU بصريًا داخل اللعبة.
 - أداة الإنتاج: `asset-vault/` تفهرس 101 سجل و181 ملفًا (تغطية Manifest كاملة)،
   وتشغّل الأطالس الـ26 بقيم المحرك الفعلية، مع عقود QA لكل العائلات، حجر وفك
   ترميز حقيقي، اعتماد مرتبط بالبصمة والحقوق، وتجهيز آمن يبدأ بمعاينة Dry-run.
@@ -188,6 +189,66 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-25-88 — رفض quality-v3 وإعادة بناء بكسلية مرجعية
+
+- المنفذ: Codex
+- طلب المستخدم: "لا زالوا سيئين" ثم طلب تحديد بنية بكسلية وPPI موحد كي تكون
+  الأشكال متوافقة.
+- الحالة: مكتمل ومنشور في `v0.50.1-alpha`.
+- نقطة البداية: `v0.50.0-alpha` / commit `543b3d8`.
+- ما تم:
+  - تسجيل رفض المستخدم بوصفه فشل قبول بصري لـ`quality-v3` رغم نجاح QA التقني.
+  - إيقاف مسار إعادة التوليد التوضيحي؛ القرار الجديد هو بناء العدوين فوق نفس
+    قواعد البكسل والأشكال المقروءة في Striker وShield Guard، مع اختبار بالحجم
+    الفعلي داخل اللعبة قبل أي Release جديد.
+  - قياس السبب العددي: TV APGU كان `0.865` لـMarket و`0.756` لـKeeper مقابل
+    `1.098` لـShield Guard و`1.052` لـStriker؛ أي أن المحرك كان يكبر تفاصيل
+    المصدر ويجعل البكسل الظاهر أكبر.
+  - توثيق أن PPI الفيزيائي يتبع الشاشة ولا يصلح عقدًا للأصل. اعتماد APGU
+    (Art Pixels Per Game Unit) ككثافة داخلية مرتبطة بمساحة اللعبة `640×360`.
+  - اكتشاف أن شرط QA القديم `2×2` لا يطابق Striker/Guard المعتمدين، بل يضاعف
+    حجم البكسل. عكس الشرط للعدوين الجديدين لمنع الأطالس الخشنة المصنعة.
+  - إعادة بناء Market مباشرة من Shield Guard مع هوية نحاسية، وKeeper مباشرة
+    من Striker مع قلب سماوي وتاج الفوانيس السبعة، دون تكبير أو إعادة ترشيح المصدر.
+  - ضبط `renderHeight`: Market من `148` إلى `132` وKeeper من `164` إلى `128`،
+    مع بقاء HP والضرر والرتبة والذكاء القتالي دون تغيير.
+  - إزالة البكسلات البيضاء/الرمادية الملامسة للشفافية فقط، مع إبقاء اللمعان
+    الداخلي، وتثبيت الهامش والـbaseline لكل إطار.
+  - إضافة عقد إصدار يقيس APGU لكل إطار وقيمة المحرك الفعلية، ويطابق الشخصية
+    المشتقة بمرجعها بفارق أقصى 4% عبر Base/Runtime/TV.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `android/app/build.gradle`
+  - `android/app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java`
+  - `android/app/src/main/assets/asset_manifest.json`
+  - `android/app/src/main/assets/{enemies,runtime/enemies,tv/enemies}/{market_enforcer,keeper_7}*.png`
+  - `android/docs/PIXEL_DENSITY_STANDARD_AR.md`
+  - `android/tools/build_reference_enemy_remix.py`
+  - `android/tools/test_enemy_pixel_density_contract.py`
+  - `android/tools/test_enemy_visual_quality_contract.py`
+- الاختبارات:
+  - `test_enemy_pixel_density_contract.py` — PASS: أربعة أعداء × ثلاث طبقات،
+    مع تطابق المشتقات بمرجعها ضمن 4%.
+  - `test_enemy_visual_quality_contract.py` — PASS: خمسة أعداء × ثلاث طبقات.
+  - عقود Striker وShield Guard — PASS.
+  - `validate_assets.py` — PASS: 82 PNG، 26 أطلسًا، 305 ملفات Manifest.
+  - `testDebugUnitTest lintRelease assembleRelease` — PASS؛ R8/Lint/Release.
+  - `build_customer_apk.sh customers/family-current` — PASS: توقيع، 26/26
+    أطلسًا، والتحقق من الحزمة و12 أصل بطل مطابقًا.
+  - `build_customer_apk.sh ... --delivery` — BLOCKED كما صمم: سجل موافقة
+    الاستخدام التجاري/AI في customer pack ما زال غير granted؛ لم يتم تجاوزه.
+- Release: `v0.50.1-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.50.1-alpha
+  - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.50.1-alpha/family-force-family-current.apk
+  - SHA-256: `09665a92fd30c744214b7c9f9ba8d2e3d6006b35045f1f4d8cd45f8b0b33710d`.
+  - الحجم: `216366286` bytes.
+  - commit: `2088f0e8ad8b6a671769f4562ce6d68077fe5697`.
+- ملاحظات/مخاطر: التطابق الرقمي والبصري الساكن ناجح، لكن القبول النهائي لكل
+  الحركات يحتاج تجربة المستخدم على TV حقيقي. نسخة APK الحالية موقعة ومبنية
+  بوضع الطلب draft لأن بيانات موافقة التسليم التجارية غير مكتملة في customer pack.
+- التالي: تثبيت `v0.50.1-alpha` وتجربة idle/walk/attack/hurt/knockdown للعدوين
+  في Stage 1؛ لا يغير معيار APGU لتجاوز أي فشل، بل يصلح الأصل أوrenderHeight.
 
 ### 2026-08-25-87 — إعادة رسم Market Enforcer وKeeper-7
 
@@ -3415,11 +3476,11 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.50.0-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
+- الحالة: `v0.50.1-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
   وBoss لكل مرحلة ومرحلة ختامية تعتمد موجات ورؤساء مراقبين ثم Shadow Prime.
-- آخر عمل: أعيد رسم Market Enforcer وKeeper-7 كاملين في `quality-v3` مع 36
-  إطارًا وطبقات Base/Runtime/TV جديدة، ونشرا في `v0.50.0-alpha` بعد نجاح بوابة
-  الإصدار وAndroid TV QA.
+- آخر عمل: استبدلت رسومات `quality-v3` المرفوضة لـMarket وKeeper ببناء مباشر
+  من Shield Guard وStriker، وصحح حجم العرض، وأضيف معيار APGU وبوابة منع البكسل
+  الخشن والهالة البيضاء، ثم نشر `v0.50.1-alpha`.
 - آخر قرار: إطارات `v0.49.0` الوسيطة المزاحة آليًا مرفوضة؛ لا يطبق شرط 12 صورة
   مجددًا إلا بصور مستقلة مرسومة فعليًا وبعد قبول عينة واحدة داخل اللعبة.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
@@ -3431,6 +3492,8 @@
   6. `android/tools/test_separate_animation_clips.py`
   7. `android/app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java`
   8. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
-- الإجراء التالي المقترح: تثبيت APK `v0.50.0-alpha` وتجربة Market Enforcer و
-  Keeper-7 في كل حركات Stage 1 على Shield/Xiaomi؛ لا تعمم إعادة رسم جديدة قبل
-  قبولهما بصريًا.
+  9. `android/docs/PIXEL_DENSITY_STANDARD_AR.md`
+  10. `android/tools/test_enemy_pixel_density_contract.py`
+- الإجراء التالي المقترح: تثبيت APK `v0.50.1-alpha` وتجربة Market Enforcer و
+  Keeper-7 في كل حركات Stage 1 على Shield/Xiaomi؛ لا تعمم المعيار على بقية
+  الأعداء قبل قبوله بصريًا.
