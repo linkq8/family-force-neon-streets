@@ -184,6 +184,54 @@
 
 ## سجل الطلبات والتعديلات المشترك
 
+### 2026-08-25-83 — تصحيح عقد الحركة إلى 12 إطارًا حقيقيًا لكل حركة
+
+- المنفذ: Codex
+- طلب المستخدم: "لا زلت تذكر 11 و6 إطارات وأنا طلبت أقل شيء 12"؛ المطلوب أن
+  تحتوي **كل حركة** لـEssa وAdam وGrunt وLantern على 12 إطارًا مختلفًا على الأقل،
+  وليس مجرد تشغيل عدد أقل من الصور بسرعة 12FPS.
+- الحالة: مكتمل برمجيًا ومختبر؛ جارٍ نشر `v0.49.0-alpha`.
+- نقطة البداية: `v0.48.0-alpha` / commit
+  `8e8bc8e5f9641aaf2ef2072f048a20ee04705f90`.
+- ما تم:
+  - تأكيد أن الإصدار السابق خلط بين عدد الإطارات داخل الحركة ومعدل تشغيلها؛
+    الأبطال كانوا 8 إطارات للحركة والأعداء 6 فقط، ولذلك لا يحقق الطلب.
+  - إعادة بناء 34 ملف حركة لتحتوي كل حركة 12 خلية صورة مختلفة: 11 حركة لكل
+    من Essa وAdam، و6 حركات لكل من Grunt وLantern، مع بقاء كل حركة في ملف UHD
+    إنتاج مستقل `3840×2160` ونسخ Base/Runtime/TV مستقلة.
+  - إبقاء الرسومات المقبولة وهوية الوجوه، وإنشاء in-betweens نظيفة من دون
+    cross-fade أو blur؛ المحرك يستخدم كل الخانات الـ12 ولا يقتطعها إلى 8/6.
+  - اكتشاف أن السواد في تجربة Adam كان ثقوب Alpha وكتلًا داكنة داخل الجسم؛
+    حُجرت كل تجارب ImageGen المرفوضة خارج المشروع، وأُغلقت الثقوب الداخلية فقط
+    مع الحفاظ على الوجه والشعر والفراغات الخارجية، فأصبح الجسم أخضر داخل اللعبة.
+  - إصلاح اختيار tier: Android TV يحمل ملفات TV ذات 12 إطارًا بدل Runtime،
+    ومسار الأعداء يحول `tv/enemies/` و`runtime/enemies/` إلى مجلد clips الصحيح.
+  - تصغير clips أعداء TV قليلًا إلى خلية `180×154`، فبلغت ميزانية textures
+    لمسار الـ12 إطارًا `56.27 MiB` بدل تحميل مصادر أعلى من حاجة التلفاز.
+- الملفات المعدلة:
+  - `android/app/src/main/java/com/familyforce/neonstreets/{GameView,SpriteAnimator}.java`.
+  - `android/app/src/main/assets/{clips,runtime/clips,tv/clips,uhd/clips}/`.
+  - `assets/imagegen/android/animation-clips-v1/`.
+  - `android/tools/{build_separate_animation_clips.py,test_separate_animation_clips.py}`.
+  - `android/tools/{test_tv_encounter_memory_contract.py,test_runtime_smoothness_contract.py}`.
+  - `android/docs/SEPARATE_ANIMATION_CLIP_STANDARD_AR.md`.
+  - `android/app/src/main/assets/asset_manifest.json`.
+  - `android/app/build.gradle` و`PROJECT_HISTORY_AR.md`.
+- الاختبارات:
+  - `test_separate_animation_clips.py` — PASS؛ 34 مصدر UHD و12 خلية مختلفة/حركة.
+  - `validate_assets.py` — PASS؛ 305 ملفات Manifest.
+  - `:app:assembleDebug :app:lintDebug` — PASS.
+  - `test_tv_encounter_memory_contract.py` — PASS.
+  - `test_runtime_smoothness_contract.py` — PASS؛ clip budget `56.27 MiB`.
+  - `test_animation_runtime.sh` — PASS على 640×360 وUltrawide وFold؛ كل حركات
+    Essa المختبرة تغيرت بصريًا، وAdam ظهر أخضر في لقطة Runtime.
+  - `test_customer_release.sh` — PASS؛ Release/R8/Lint/توقيع/TV/ريموت/لاعبان
+    والذاكرة والمواجهة والسلاح والـcheckpoint والصوت دون FATAL/ANR/OOM.
+- Release: `v0.49.0-alpha` — جارٍ الرفع.
+- ملاحظات/مخاطر: تجارب ImageGen ذات جسم Adam الأسود لم تدخل الأصول أو APK؛
+  نُقلت النسخ المرفوضة إلى مخزن Codex خارج المشروع ويمكن استعادتها للمراجعة.
+- التالي: نشر APK ثم اختبار بصري بشري للحركات الأربع على Xiaomi Stick وShield.
+
 ### 2026-08-25-82 — دفعة الحركة المنفصلة الأولى: Essa وAdam وGrunt وLantern
 
 - المنفذ: Codex

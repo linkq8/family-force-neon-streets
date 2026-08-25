@@ -22,7 +22,9 @@ def main() -> None:
     assert "loader.setPriority(Thread.MIN_PRIORITY)" in text
     assert "Bitmap[] decodedClips = decodeEnemyAnimationClips(type, requestedTier);" in text
     assert "? decodeEnemyAnimationType(type, requestedTier) : null" in text
-    assert "bindClipSet(enemy.animator, clips, ENEMY_ANIM_COLUMNS)" in text
+    assert "bindClipSet(enemy.animator, clips, ACTION_CLIP_FRAMES)" in text
+    assert 'loadClipSet("tv/clips/heroes/" + stem + "/"' in text
+    assert 'String clipTier = useReducedMemoryAssets() ? "tv/" : "runtime/";' in text
     assert "loadedOneAtlasThisTick" not in text
     assert "atlas.getWidth() / ENEMY_ANIM_COLUMNS" in text
     assert "atlas.getHeight() / ENEMY_ANIM_ROWS" in text
@@ -57,11 +59,11 @@ def main() -> None:
             path = ASSETS / f"tv/clips/enemies/{name}/{action}.png"
             assert path.is_file(), path
             with Image.open(path) as image:
-                assert image.size == (1176, 168), (path, image.size)
+                assert image.size == (2160, 154), (path, image.size)
                 assert image.mode == "RGBA", (path, image.mode)
     full_bytes = 4 * 960 * 1152
-    tv_bytes = 4 * 1176 * 1008
-    assert tv_bytes < full_bytes * 2
+    tv_clip_set_bytes = 6 * 2160 * 154 * 4
+    assert tv_clip_set_bytes < full_bytes * 2.1
     print("TV first-encounter memory contract: PASS "
           "(zone roster warmup, maximum four atlases, strict wide-cell pilot within budget)")
 

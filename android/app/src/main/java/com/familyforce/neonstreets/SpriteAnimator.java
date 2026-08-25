@@ -95,7 +95,10 @@ final class SpriteAnimator {
     void play(int clipRow, int frames, int clipFps, boolean shouldLoop,
               boolean restart) {
         int safeRow = Math.max(0, Math.min(Math.max(0, rows - 1), clipRow));
-        int safeFrames = Math.max(1, Math.min(columns, frames));
+        // Action-only clips own their complete frame sequence. Legacy atlases
+        // may still request fewer authored cells, but a 12-frame clip must not
+        // be silently truncated by the old 8/6-frame call sites.
+        int safeFrames = clips != null ? columns : Math.max(1, Math.min(columns, frames));
         int safeFps = Math.max(MIN_CHARACTER_CLIP_FPS, Math.min(60, clipFps));
         if (!restart && row == safeRow && frameCount == safeFrames
                 && fps == safeFps && loop == shouldLoop && !finished) return;

@@ -126,4 +126,18 @@ background_bytes = (960 * 536 + 4 * 1800 * 600) * 2
 combat_mib = (hero_bytes + assist_bytes + enemy_bytes + background_bytes) / (1024 * 1024)
 assert combat_mib < 98.0, f"animated TV combat texture budget too high: {combat_mib:.2f} MiB"
 
-print(f"Runtime smoothness/TV asset contract: PASS ({combat_mib:.2f} MiB animated budget)")
+# New 12-frame action clips replace, rather than coexist with, the parent/Adam
+# atlases. Worst Stage 1 case: two clip heroes, two compact Link rows, the two
+# clip-based enemies, two remaining strict atlases, and current backgrounds.
+hero_clip_bytes = 2 * 11 * 1728 * 144 * 4
+assist_clip_bytes = 2 * 1728 * 144 * 4
+enemy_clip_bytes = 2 * 6 * 2160 * 154 * 4
+remaining_enemy_atlas_bytes = 2 * 1176 * 1008 * 4
+clip_combat_mib = (hero_clip_bytes + assist_clip_bytes + enemy_clip_bytes
+                   + remaining_enemy_atlas_bytes + background_bytes) / (1024 * 1024)
+assert clip_combat_mib < 72.0, (
+    f"12-frame TV clip combat budget too high: {clip_combat_mib:.2f} MiB"
+)
+
+print(f"Runtime smoothness/TV asset contract: PASS "
+      f"({combat_mib:.2f} MiB atlas / {clip_combat_mib:.2f} MiB clip budget)")
