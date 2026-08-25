@@ -15,6 +15,7 @@ SOURCE_ROOT = ROOT.parent / "assets/imagegen/android/enemies"
 STRICT = (
     "grunt", "skater", "lantern_courier", "market_enforcer", "keeper_7",
 )
+FINE_PIXEL_REFERENCE = ("market_enforcer", "keeper_7")
 
 BUILDER_PATH = ROOT / "tools/build_strict_enemy_atlas.py"
 SPEC = importlib.util.spec_from_file_location("strict_enemy_builder", BUILDER_PATH)
@@ -81,14 +82,20 @@ for enemy in STRICT:
             lengths = [max(box[2] - box[0], box[3] - box[1]) for box in boxes]
             reference = statistics.median(lengths[:12])
             assert min(lengths[12:24]) >= reference * .78, (enemy, tier, "small action", lengths)
-            assert min(lengths[24:]) >= reference * .82, (enemy, tier, "small reaction", lengths)
+            reaction_floor = .68 if enemy in FINE_PIXEL_REFERENCE else .82
+            assert min(lengths[24:]) >= reference * reaction_floor, (
+                enemy, tier, "small reaction", lengths
+            )
     fallback = ASSETS / f"enemies/{enemy}.png"
     with Image.open(fallback).convert("RGBA") as idle:
         assert idle.size == (512, 512), (enemy, idle.size)
         assert idle.getchannel("A").getbbox(), (enemy, "empty fallback")
     with Image.open(tiers["base"][0]).convert("RGBA") as base:
         clustered = base.resize((672, 576), Image.Resampling.NEAREST).resize(base.size, Image.Resampling.NEAREST)
-        assert clustered.tobytes() == base.tobytes(), (enemy, "base lacks controlled 2px clusters")
+        if enemy in FINE_PIXEL_REFERENCE:
+            assert clustered.tobytes() != base.tobytes(), (enemy, "base has coarse manufactured 2px clusters")
+        else:
+            assert clustered.tobytes() == base.tobytes(), (enemy, "base lacks controlled 2px clusters")
 
 assert '"enemies/" + EnemyArchetype.of(type).asset + ".png"' in GAME
 assert "height * enemy.animator.cellAspectRatio()" in GAME

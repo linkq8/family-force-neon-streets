@@ -24,8 +24,11 @@ final class EnemyArchetype {
             type("striker", "STRIKER", 76, 1.48f, 9, 56, 26, 500, 116f, 11, 16, 0, 0),
             type("shield_guard", "SHIELD GUARD", 128, .88f, 11, 58, 29, 800, 132f, 10, 12, 42, 0),
             type("lantern_courier", "LANTERN COURIER", 74, 1.62f, 9, 54, 25, 520, 116f, 14, 15, 0, 0),
-            type("market_enforcer", "MARKET ENFORCER", 210, .82f, 15, 66, 31, 1450, 148f, 10, 12, 55, RANK_MINI_BOSS),
-            type("keeper_7", "KEEPER-7", 430, .75f, 20, 92, 35, 3800, 164f, 10, 12, 0, RANK_BOSS),
+            // These heights are part of the pixel-density contract. Enlarging
+            // the same source figure here would manufacture visibly larger
+            // pixels even when the atlas file itself has high dimensions.
+            type("market_enforcer", "MARKET ENFORCER", 210, .82f, 15, 66, 31, 1450, 132f, 10, 12, 55, RANK_MINI_BOSS),
+            type("keeper_7", "KEEPER-7", 430, .75f, 20, 92, 35, 3800, 128f, 10, 12, 0, RANK_BOSS),
             type("rail_runner", "RAIL RUNNER", 80, 1.82f, 10, 60, 25, 580, 118f, 15, 16, 0, 0),
             type("signal_warden", "SIGNAL WARDEN", 225, .86f, 16, 70, 32, 1550, 150f, 10, 12, 60, RANK_MINI_BOSS),
             type("railmaster_9", "RAILMASTER-9", 470, .74f, 21, 96, 36, 4100, 166f, 10, 12, 0, RANK_BOSS),
