@@ -10,7 +10,7 @@ export ANDROID_HOME=${ANDROID_HOME:-/Users/essa/Library/Android/sdk}
 export PATH="$ANDROID_HOME/platform-tools:$PATH"
 
 APK=${1:-"$WORKSPACE/dist/family-force-neon-streets.apk"}
-PACKAGE=com.familyforce.neonstreets.debug
+PACKAGE=${ANIMATION_QA_PACKAGE:-com.familyforce.neonstreets.familycurrent.debug}
 ACTIVITY=com.familyforce.neonstreets.MainActivity
 REPORT_DIR=${ANIMATION_QA_REPORT_DIR:-"$ANDROID_PROJECT/app/build/reports/animation-runtime"}
 
@@ -53,7 +53,9 @@ wait_for_focus() {
 launch_game() {
     hero_index=$1
     adb shell am force-stop "$PACKAGE"
-    adb shell am start -S -n "$PACKAGE/$ACTIVITY" >/dev/null
+    adb shell pm clear "$PACKAGE" >/dev/null
+    adb shell am start -S -n "$PACKAGE/$ACTIVITY" \
+        --ez familyforce.fullStageTest true >/dev/null
     wait_for_focus
     sleep 0.35
     # TITLE -> MENU -> SELECT, choose hero, SELECT -> INTRO -> PLAY.

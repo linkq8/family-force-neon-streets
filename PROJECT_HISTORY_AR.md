@@ -4,19 +4,19 @@
 > يجب على كل وكيل قراءته قبل تعديل المشروع، وتحديثه بعد كل طلب أو تعديل أو
 > اختبار أو Release. سجل الأحداث أدناه تراكمي؛ لا تُحذف الإدخالات القديمة.
 
-آخر تحديث: 24 أغسطس 2026 — Codex
+آخر تحديث: 25 أغسطس 2026 — Codex
 
 ## حالة العمل الحالية
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.45.1-alpha`، `versionCode 55`.
+- النسخة المنشورة: `v0.47.0-alpha`، `versionCode 58`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `d9d52d084dc84de7cd8a126800363f10c3bb518b`.
+- آخر commit وظيفي: `a558db823fdb15dcabdd46609b1b3b2177067e56`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.45.1-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.45.1-alpha/Family-Force-Neon-Streets-v0.45.1-alpha.apk
-- SHA-256: `ddc5a7f1d245846bb2da71ca6bbc6080a73f6824e4fd6e8dd2607812f03dfbb3`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.47.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.47.0-alpha/family-force-family-current.apk
+- SHA-256: `48ab52bdbca670c93a89c704fe41e71b30909cdc166d3ca680123c5c40249f6e`.
 - حالة QA: واجهة Canvas والقصة ثنائيتا اللغة عبر 241 مفتاحًا متطابقًا؛ نجح
   Build/Release/R8/Lint والتوقيع والتحقق من الأصول والتحكم وعقود الأداء وذاكرة
   TV. أكمل Android TV Emulator المسار الكامل للمناطق الـ14 والمراحل الخمس، ونجحت ملفات
@@ -31,12 +31,12 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: جلسة لعب بشرية كاملة للنسخة الجديدة على Xiaomi Stick وShield.
-- العمل التالي الموصى به: اختبار إصلاح `v0.45.1-alpha` بصريًا على Xiaomi Stick
-  وShield أثناء الوقوف والمشي والهجوم والسقوط؛ لا يبدأ إنتاج المرحلة الثانية
-  قبل قبول المستخدم وضوح وثبات الأنواع الخمسة للمرحلة الأولى.
-- أداة الإنتاج: `asset-vault/` متاحة محليًا لفهرسة 84 موردًا و150 ملفًا، مع بحث
-  شامل ومقارنة نسخ الأطلس وتصدير JSON وسجل تغييرات، وتشغيل الأطالس الـ26 بقيم
-  المحرك الفعلية وتخزين مؤقت للكتالوج والصور.
+- العمل التالي الموصى به: قبول أو رفض أعداء Stage 1 الخمسة بصريًا بالحجم الفعلي
+  على Xiaomi Stick وShield من `v0.47.0-alpha` قبل تطبيق معيار `quality-v2`
+  على أعداء Stage 2.
+- أداة الإنتاج: `asset-vault/` تفهرس 101 سجل و181 ملفًا (تغطية Manifest كاملة)،
+  وتشغّل الأطالس الـ26 بقيم المحرك الفعلية، مع عقود QA لكل العائلات، حجر وفك
+  ترميز حقيقي، اعتماد مرتبط بالبصمة والحقوق، وتجهيز آمن يبدأ بمعاينة Dry-run.
 
 ## بروتوكول التحديث الإلزامي
 
@@ -183,6 +183,564 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-25-82 — دفعة الحركة المنفصلة الأولى: Essa وAdam وGrunt وLantern
+
+- المنفذ: Codex
+- طلب المستخدم: بدء تنفيذ معيار الحركة الجديد على `Essa + Adam + Grunt + Lantern`.
+- الحالة: مكتمل برمجيًا واختباريًا؛ تجهيز Release `v0.48.0-alpha`.
+- نقطة البداية: `v0.47.0-alpha` / commit
+  `a558db823fdb15dcabdd46609b1b3b2177067e56`.
+- ما تم:
+  - تحويل حركات الشخصيات الأربع إلى ملفات مستقلة حسب الحركة بدل أطلس يجمع عدة حركات.
+  - فرض حد أدنى `12 FPS` لكل clip مع بقاء العرض والمحاكاة عند هدف `60 FPS`.
+  - إنشاء 34 مصدر إنتاج مستقلًا بقياس `3840×2160`: 11 حركة لكل من Essa وAdam،
+    و6 حركات لكل من Grunt وLantern، مع ملفات Base/Runtime/TV/UHD منفصلة.
+  - إزالة الـwhite matte المتصل بالشفافية، وتصفير RGB الشفاف وفرض Alpha ثنائي.
+  - إضافة loader يحمّل clip-set مسبقًا، مع fallback آمن للأطلس القديم للشخصيات الأخرى.
+  - إصلاح اختبار الحركة القديم لاسم حزمة العميل وتجاوز القصة في وضع Debug فقط.
+- الملفات المعدلة:
+  - `android/app/src/main/java/com/familyforce/neonstreets/SpriteAnimator.java`.
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`.
+  - `android/app/src/main/assets/{clips,runtime/clips,tv/clips,uhd/clips}/`.
+  - `assets/imagegen/android/animation-clips-v1/`.
+  - `android/tools/build_separate_animation_clips.py`.
+  - `android/tools/test_separate_animation_clips.py`.
+  - `android/tools/test_animation_runtime.sh`.
+  - `android/tools/test_tv_encounter_memory_contract.py`.
+  - `android/docs/SEPARATE_ANIMATION_CLIP_STANDARD_AR.md`.
+  - `android/app/src/main/assets/asset_manifest.json` و`android/app/build.gradle`.
+  - `PROJECT_HISTORY_AR.md`.
+- الاختبارات:
+  - `test_separate_animation_clips.py` — PASS؛ 34 مصدر UHD، بلا حواف بيضاء ملوثة.
+  - `validate_assets.py` — PASS؛ 305 ملفات Manifest.
+  - `validate_animation_atlases.py --allow-nonclustered` — PASS؛ 26/26.
+  - `:app:assembleDebug :app:lintDebug` — PASS.
+  - `test_animation_runtime.sh` — PASS على 640×360 و720×320 وFold 1080×928،
+    مع تغير بصري مثبت لكل حركات Essa المختبرة ولقطات Essa/Adam.
+  - `test_full_stage_runtime.sh` — PASS لكل المناطق الـ14 بلا FATAL/ANR/OOM.
+  - `test_customer_release.sh customers/family-current` — PASS شامل البناء الموقّع،
+    R8/Lint، الأصول، الذاكرة، الهاتف/Fold/Android TV ومسار الريموت للاعبين.
+- Release: قيد رفع `v0.48.0-alpha`؛ تسجل الروابط والبصمة بعد النشر.
+- ملاحظات/مخاطر: لم تولد صور AI جديدة ولم يستخدم Higgsfield أو فيديو؛ فُصلت
+  الرسومات المقبولة نفسها وحُفظت الهوية. الاختبار البشري على Xiaomi/Shield مطلوب
+  للحكم النهائي على الإيقاع البصري، وعداد Actual FPS/P90/P99 داخل اللعبة لم ينفذ بعد.
+- التالي: نشر `v0.48.0-alpha` ثم اختبار Essa/Adam/Grunt/Lantern على الجهازين قبل التعميم.
+
+### 2026-08-25-81 — عقد 12FPS وUHD مستقل لكل حركة
+
+- المنفذ: Codex
+- طلب المستخدم: ألا يقل FPS أي شخصية عن 12، وأن تكون كل حركة في صورة UHD
+  مستقلة دون دمج عدة حركات في صورة واحدة.
+- الحالة: مكتمل — تثبيت متطلبات وخطة فقط؛ بانتظار أمر التنفيذ.
+- نقطة البداية: `v0.47.0-alpha` / commit
+  `a558db823fdb15dcabdd46609b1b3b2177067e56`.
+- ما تم:
+  - اعتماد 60FPS للعرض والمحاكاة، و12FPS كحد أدنى مستقل لكل clip فني، بما فيه
+    idle وwalk وhurt وknockdown.
+  - اعتماد ملف مصدر UHD مستقل لكل حركة؛ يمنع استمرار صيغ مثل
+    `idle_walk.png` و`hurt_knockdown.png` أو ورقة attacks مشتركة.
+  - فصل مصدر الإنتاج عن Runtime: المصدر لا يقل عن `3840×2160`، بينما يشتق منه
+    Runtime/TV بالحجم الآمن دون شحن كل مصادر UHD على أجهزة Xiaomi.
+  - اقتراح بقاء ملفات Runtime مستقلة لكل حركة أيضًا، مع preload لحركات أبطال
+    الجولة وأعداء المواجهة لمنع I/O أو decoding أثناء القتال.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md` فقط.
+- الاختبارات:
+  - مراجعة عقد الحركة والتحميل الحالي — PASS تشخيصيًا؛ يتطلب تغييرًا في
+    `SpriteAnimator` وAsset loading لأن البنية الحالية تجمع الحركات في Atlas واحد.
+- Release: لا يوجد.
+- ملاحظات/مخاطر: رفع clip من 8 إلى 12FPS دون إضافة وضعيات فريدة لا يحسن السلاسة؛
+  يجب أن تفرض البوابة عددًا أدنى من الإطارات المختلفة وعدم التكرار الصوري.
+- التالي: عند أمر التنفيذ، يبدأ Pilot بـAdam وGrunt فقط، ثم مقارنة داخل اللعبة
+  قبل إنتاج بقية الملفات المستقلة.
+
+### 2026-08-25-80 — مقارنة FPS بألعاب beat-'em-up الحديثة
+
+- المنفذ: Codex
+- طلب المستخدم: دراسة FPS في ألعاب أخرى مشابهة وعدم قبول معدل منخفض.
+- الحالة: مكتمل — دراسة وقرار هدف فقط؛ لا تعديل APK.
+- نقطة البداية: `v0.47.0-alpha` / commit
+  `a558db823fdb15dcabdd46609b1b3b2177067e56`.
+- ما تم:
+  - مراجعة وثائق Android الرسمية ومصادر المطورين لـStreets of Rage 4 وRiver
+    City Girls 2، مع فصل FPS العرض عن عدد صور الحركة الفنية.
+  - اعتماد `60 FPS` ثابتًا كهدف إلزامي للعب؛ لا يُستخدم 30FPS كحل على Xiaomi،
+    بل تخفض المؤثرات/كلفة الرسم إذا لزم للحفاظ على 60.
+  - ثبت أن حلقة اللعبة تستهدف 60، لكن `SystemClock.sleep` لا يثبت frame pacing
+    ولا يقيس الناتج، لذلك يلزم قياس Actual/P90/P99 ومزامنة Surface قبل الادعاء.
+  - شخصيات اللعبة الحالية تملك 88 خانة حركة (11×8)، بينما ذكر فريق Streets of
+    Rage 4 قرابة 1000 frame للبطل و300–400 لكل عدو؛ الفرق الأساسي في كثافة
+    الوضعيات الفنية، لا في رفع رقم تشغيل الأطلس إلى 60 آليًا.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md` فقط.
+- الاختبارات:
+  - بحث مصادر رسمية وقراءة عقود التوقيت المحلية — PASS كدراسة.
+  - قياس FPS على عتاد حقيقي — SKIPPED؛ يحتاج instrumentation وجهازًا متصلًا.
+- Release: لا يوجد.
+- ملاحظات/مخاطر: تحويل 8 صور مكررة إلى 60FPS لا يضيف سلاسة؛ تحسين الحركة يتطلب
+  توقيتًا أفضل ووضعيات فنية أكثر، مع بقاء عرض اللعبة نفسه 60FPS.
+- التالي: تنفيذ عداد/P90/P99 وSurface 60Hz أولًا، ثم قياس Xiaomi وShield قبل
+  تقرير عدد الوضعيات الإضافية المطلوبة لكل حركة.
+
+### 2026-08-25-79 — خطة الوضوح وإزالة الحواف وقياس FPS
+
+- المنفذ: Codex
+- طلب المستخدم: مراجعة لقطة Stage 1؛ الرسومات جيدة لكنها تحتاج وضوحًا أعلى،
+  ومعالجة أفضل للحواف البيضاء، ومعرفة FPS الحالي والمعيار، مع التخطيط قبل التنفيذ.
+- الحالة: مكتمل — تشخيص وخطة فقط؛ لم تُعدّل أصول اللعبة أو APK.
+- نقطة البداية: `v0.47.0-alpha` / commit
+  `a558db823fdb15dcabdd46609b1b3b2177067e56`.
+- ما تم:
+  - فُحصت لقطة `Screenshot_20260825_111153.jpg` بالحجم الأصلي وأطلس Adam في
+    Runtime وTV ومسار العرض والفلترة والتوقيت داخل المحرك.
+  - يظهر على Adam حد فاتح/ملون ملتصق بالـsilhouette؛ الاحتمال الأقوى بقايا
+    matte RGB في بكسلات الحد تحولت إلى hard alpha ثم أبرزتها الفلترة الثنائية.
+  - المحاكاة وحلقة الرسم تستهدفان `60Hz`، لكن لا يوجد عداد FPS فعلي أو P90/P99
+    ولا طلب صريح لتردد Surface؛ لذلك لا يمكن اعتبار الهدف قياسًا فعليًا للجهاز.
+  - حركة Sprites منفصلة عن FPS الشاشة: الأبطال `8–18fps` حسب الحركة، وأعداء
+    Stage 1: idle `8`، walk `10–15`، attack `12–15`، hurt `15`، knockdown `10`.
+  - وُضعت خطة تبدأ بقياس Baseline، ثم إصلاح matte على Adam وعدو واحد تجريبيًا،
+    ثم بوابة edge contamination، وبعد القبول تعميمها على أبطال وأعداء Stage 1.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md` فقط.
+- الاختبارات:
+  - مراجعة `GameView.run()` و`SpriteAnimator` وPaint/atlas loading — PASS تشخيصيًا.
+  - فحص بصري للقطة وأطلس Adam Runtime/TV — كشف halo فاتح على الحدود.
+  - قياس FPS فعلي على جهاز — SKIPPED؛ لا يوجد جهاز ADB متصل ولا telemetry حالي.
+- Release: لا يوجد؛ طلب تخطيط فقط.
+- ملاحظات/مخاطر: زيادة الدقة أو sharpen قبل إزالة الـmatte ستجعل الهالة أوضح.
+  يجب فصل FPS الرسم الفعلي عن FPS حركة الـsprite وعدم تحويل كل حركة إلى 60 صورة.
+- التالي: بعد موافقة المستخدم، تنفيذ عداد القياس وبوابة الحواف وPilot Adam + Grunt
+  دون توليد صور جديدة، ثم عرض مقارنة قبل/بعد قبل التعميم.
+
+### 2026-08-25-78 — إعادة بناء أعداء Stage 1 وفق بوابة UHD صارمة
+
+- المنفذ: Codex + ImageGen
+- طلب المستخدم: وضع قوانين صارمة وإعادة بناء جميع أعداء المرحلة الأولى بجودة
+  تضاهي `Striker` و`Shield Guard`.
+- الحالة: مكتمل؛ منشور في `v0.47.0-alpha`.
+- نقطة البداية: `v0.46.1-alpha` / commit
+  `cc156f9605422a50c6bd52e5108e21448b4057f6`.
+- ما تم:
+  - أُعيد إنتاج الأعداء الخمسة عبر ImageGen المدمج فقط، بلا Higgsfield أو فيديو؛
+    لكل عدو Model Sheet وثلاث أوراق `6×2` للحركة والهجوم والضرر/السقوط.
+  - رُفضت ورقة Skater أولى بسبب جزء منفصل، ثم رفضت بوابة القص أوراق هجوم
+    `Grunt` و`Skater` و`Keeper-7` وأُعيدت بهوامش أكبر بدل تخفيف القانون.
+  - أصلحت أداة البناء لتبحث عن الفواصل البيضاء الحقيقية تكيفيًا بدل تقسيم رياضي
+    قد يقطع قبضة أو درعًا، وأزيل القص المسبق الذي كان يأكل حواف الإطار.
+  - فُرض Model Sheet ومصدر `1536×900` على الأقل وخلية `250×450`، Alpha ثنائي،
+    هوامش آمنة، 36 إطارًا حقيقيًا، وثبات الوقوف/المشي ضمن 5%.
+  - بُنيت Base `1344×1152` وRuntime `2016×1728` وTV `1176×1008` مباشرة من
+    المصدر المقبول لكل عدو، مع تحديث Manifest وfallbacks.
+  - فُحصت contact sheets للأعداء الخمسة بصريًا بعد بناء الأطالس؛ الأجسام
+    والمعدات كاملة ولا توجد أجزاء ملتفة بين الخلايا.
+- الملفات المعدلة:
+  - `assets/imagegen/android/enemies/quality-v2/` — 20 مصدرًا معتمدًا.
+  - `android/tools/build_strict_enemy_atlas.py`.
+  - `android/tools/test_enemy_visual_quality_contract.py`.
+  - `android/docs/ENEMY_VISUAL_QUALITY_STANDARD_AR.md`.
+  - `android/app/src/main/assets/enemies/` و`runtime/enemies/` و`tv/enemies/`
+    للأنواع الخمسة، و`asset_manifest.json`.
+  - `android/app/build.gradle` — `versionCode 58` / `0.47.0-alpha`.
+- الاختبارات:
+  - `python3 android/tools/test_enemy_visual_quality_contract.py` — PASS
+    (5 أعداء × 36 إطارًا × 3 طبقات).
+  - `validate_animation_atlases.py --allow-nonclustered` — PASS، 26/26 أطلسًا.
+  - `validate_assets.py` — PASS، 181 ملفًا في Manifest.
+  - عقود Stage combat وRuntime smoothness وTV encounter memory — PASS؛ ميزانية
+    الأطالس المتحركة `71.20 MiB` وحد أقصى أربعة أطالس في المواجهة.
+  - `test_customer_release.sh customers/family-current` — PASS للبناء الموقّع،
+    R8/Lint، التحكم، الأصول، الذاكرة، الأسلحة والقصة؛ Runtime على محاكي/جهاز
+    SKIPPED لعدم اتصال ADB.
+  - الفحص العام من دون `--allow-nonclustered` — FAIL قديم وغير متعلق بأعداء
+    Stage 1 لأن `heroes/parent_anim.png` لا يطابق عقد 2px الصارم.
+- Release: `v0.47.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.47.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.47.0-alpha/family-force-family-current.apk
+- SHA-256: `48ab52bdbca670c93a89c704fe41e71b30909cdc166d3ca680123c5c40249f6e`.
+- commit: `a558db823fdb15dcabdd46609b1b3b2177067e56`.
+- ملاحظات/مخاطر: القياس العالي هنا لمصدر الإنتاج؛ لم تُحمّل اللعبة Texture 4K
+  كاملة على Xiaomi. يبقى القبول البصري الحقيقي مطلوبًا على Xiaomi Stick وShield.
+- التالي: اختبار Stage 1 بالحجم الفعلي على الجهازين، ثم تعميم البوابة على Stage 2
+  عدوًا واحدًا في كل مرة فقط بعد موافقة المستخدم.
+
+### 2026-08-25-77 — تشخيص تفاوت جودة الأعداء وتحديد بوابة UHD
+
+- المنفذ: Codex
+- طلب المستخدم: دراسة سبب تفوق `Striker` و`Guard` بصريًا على بقية الشخصيات
+  الجديدة، واقتراح إعادة توليد UHD وعدم إدخال ما دون المعيار إلى اللعبة.
+- الحالة: مكتمل — تشخيص فقط دون استبدال أصول.
+- نقطة البداية: `v0.46.1-alpha` / commit
+  `cc156f9605422a50c6bd52e5108e21448b4057f6`.
+- ما تم:
+  - قورنت مصادر وmasters وأطالس Base/Runtime/TV/UHD لكل خط الأعداء، مع فحص
+    contact sheets وأبعاد الخلايا وحجم العرض الحقيقي ومسار الاختيار في المحرك.
+  - ثبت أن `Striker` و`Shield Guard` مبنيان من ثلاث أوراق حركة مخصصة عبر
+    builders منفصلين، مع معالجة يدوية للخلايا المعيبة وSafe Remap وهوامش ثابتة
+    ونسخة Runtime كثيفة مبنية مباشرة من المصدر.
+  - بقية `campaign-v1` مبنية غالبًا من ورقة `6×6` واحدة بمولد عام يحتفظ بأكبر
+    component فقط؛ هذا قد يحذف سلاحًا منفصلًا أو يقبل نصف شخصية طالما الخلية
+    غير فارغة. ظهر ذلك بوضوح في `Cargo Loader` و`Furnace Brawler`، كما ظهرت
+    وضعيات مقصوصة في `Market Enforcer` و`Keeper-7` و`Signal Warden` و
+    `Tidebreaker`.
+  - `Shield Guard` لا يملك ملف UHD حاليًا وStriker UHD حجمه `1920×2304` فقط؛
+    لذلك تفوقهما لا ينتج من وسم UHD بل من وضوح silhouette، كتل ألوان كبيرة،
+    خطوط مقروءة، ثبات الهوية، وتنظيف كل إطار على حدة.
+  - الأعداء الأحدث يستخدمون micro-detail وألوانًا أكثر عند ارتفاع عرض فعلي
+    يقارب `78–141px` للجسم؛ فتتحول الخطوط الرفيعة إلى noise/blur بعد التصغير.
+  - لا توجد Runtime atlases للأنواع من Stage 2 المتأخرة حتى Stage 5، لذلك تهبط
+    المواجهة كلها إلى Base/TV عند وجود أحدها. كما تطبق مراحل 2–4 hue filters
+    إضافية تزيد تفاوت اللون ولا تعالج ضعف المصدر.
+  - اعتماد مبدأ البوابة المقترحة: مصدر UHD مولد أصلًا لا upscale، كل وضعية
+    كاملة ومستقلة، ثم اشتقاق Runtime/TV مرة واحدة واختبارها بالحجم الفعلي؛
+    أبعاد الملف وحدها ليست معيار قبول.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md` فقط؛ لم تتغير أصول اللعبة.
+- الاختبارات:
+  - فحص أبعاد جميع مصادر وأطالس الأعداء — PASS تشخيصيًا؛ كشف غياب Runtime/UHD.
+  - مراجعة contact sheets لـ20 نوعًا — FAIL بصري متوقع للخط غير المعتمد؛
+    `Striker` و`Shield Guard` فقط مرجع قبول حاليًا.
+  - تحليل حجم الجسم النهائي والكثافة اللونية/الحواف — كشف أن بعض الرسومات تحمل
+    micro-detail أعلى بكثير من قدرة حجم العرض الفعلي.
+  - Build/Runtime — SKIPPED؛ لم يُغيّر الكود أو الأصول.
+- Release: لا يوجد؛ الدراسة لا تغيّر APK.
+- ملاحظات/مخاطر: رفع الأطالس المشحونة نفسها إلى 4K سيزيد الذاكرة ولا يعيد
+  التفاصيل المفقودة. يجب أن تكون UHD في مصدر الإنتاج، لا Texture محملة كاملة
+  داخل APK على Xiaomi Stick.
+- التالي: حجر جميع الأعداء غير المعتمدين عن الإصدارات الجديدة، ثم إعادة إنتاج
+  عدو Stage 1 واحد فقط كمثال UHD واختباره قبل متابعة النوع التالي.
+
+### 2026-08-25-76 — تنفيذ بوابة إنتاج وفحص جميع الموارد
+
+- المنفذ: Codex + Impeccable
+- طلب المستخدم: تنفيذ خطة تحسينات الإنتاج والفحص لكل الموارد.
+- الحالة: مكتمل
+- نقطة البداية: خطة الإدخال 74 وخزنة الموارد بعد تقرير السلامة وتثبيت المعاينة.
+- المنجز:
+  - إضافة سجل عقود موحد ومحرك QA بملفات تعريف للصور والأطالس والخلفيات والواجهة
+    والمؤثرات والصوت والموسيقى والفيديو وJSON والملفات العامة، مع فك ترميز فعلي
+    وقياسات alpha/crop/duplicate frames وWAV peak/RMS و`ffprobe` عند توفره.
+  - رفع الفهرس إلى 101 سجل و181 ملفًا وتغطية كل Manifest، مع بطاقات للملفات
+    اليتيمة وربط نسخ SOURCE/RUNTIME/TV/UHD وحالة إنتاج لكل سجل.
+  - جعل الاستيراد حجرًا فعليًا: كتابة `.part`، فحص المحتوى، رفض الامتداد الزائف،
+    ثم النقل فقط بعد النجاح؛ مع order ID والحقوق ومسار هدف مقيّد حسب العائلة.
+  - فرض انتقالات validate/request changes/approve/revoke؛ الاعتماد يتطلب حقوقًا
+    مصرحًا بها وفحصًا ناجحًا وبصمة مطابقة، ولا يمكن تجاوزه عبر تعديل metadata.
+  - إضافة Staging allowlist ومعاينة dry-run تعرض المصدر والوجهة وSHA-256 دون
+    كتابة، مع مسار كتابة منفصل داخل `asset-vault/staging/` عند طلبه من API فقط.
+  - تطوير واجهة بوابة الإنتاج وتقرير التغطية (مفحوص/متخطى/غير منطبق)، وتوثيق
+    المكوّن في نظام Impeccable مع تثبيت شاشة المعاينة ونظام RTL المتجاوب.
+- الملفات:
+  - `asset-vault/qa_engine.py`, `asset-vault/data/contracts.json`.
+  - `asset-vault/catalog.py`, `asset-vault/audit.py`, `asset-vault/server.py`.
+  - `asset-vault/index.html`, `asset-vault/app.js`, `asset-vault/styles.css`.
+  - `asset-vault/tests/test_qa_engine.py`, `test_server.py`, `test_catalog.py`,
+    `test_frontend.py`, و`asset-vault/.gitignore`.
+  - `asset-vault/README_AR.md`, `asset-vault/DESIGN.md`,
+    `asset-vault/.impeccable/design.json`.
+  - لقطات QA: `reports/production-gate-desktop.png`,
+    `production-gate-mobile.png`, `production-deep-report.png`.
+- النتائج:
+  - الفحص السريع الحي: 101 سجل/181 ملفًا، 0 أخطاء و0 تحذيرات، 180 مفحوصًا
+    و1 غير منطبق، في نحو 663ms.
+  - الفحص العميق: 0 أخطاء و26 تحذيرًا غير حاجب (24 soft-alpha ومجموعتا gutter
+    ضيقتان في TV)، 180 مفحوصًا و1 غير منطبق؛ أول تشغيل نحو 5.8s ثم 111ms من cache.
+  - `python3 -m unittest discover -s tests -v`: نجاح 29/29.
+  - `node --check app.js`, `python3 -m json.tool .impeccable/design.json`,
+    و`git diff --check`: نجاح.
+  - مدققا Android: نجاح 181 ملف Manifest، ونجاح 26/26 أطلسًا مع hero scale.
+  - فحص Selenium لسطح المكتب والهاتف والتقرير العميق: سليم، بلا أخطاء console
+    مؤثرة وبلا تداخل أو تغيّر في هندسة المعاينة.
+- Release: لا APK ولا GitHub Release؛ التغيير محصور في أداة الإنتاج ولا توجد
+  حزمة موارد محددة للنشر.
+- المخاطر المتبقية:
+  - واجهة المستخدم تعرض Staging dry-run فقط عمدًا؛ لا Publish/rollback إلى Runtime.
+  - تحليل الفيديو المتقدم (black/freeze/contact sheet) وLUFS/loop للموسيقى مرحلة
+    لاحقة؛ الموجود الآن فك ترميز/metadata وقياسات WAV الأساسية.
+  - التحذيرات الـ26 تحتاج مراجعة بصرية بشرية، لكنها ليست أخطاء حاجبة.
+- التالي الموصى به: مراجعة التحذيرات الـ26، ثم إضافة LUFS/loop وتحليل إطارات
+  الفيديو قبل فتح نشر فعلي لحزمة موارد محددة.
+
+### 2026-08-25-75 — تحديد المسار التالي بعد إصلاح التحديث
+
+- المنفذ: Codex
+- طلب المستخدم: ما التالي؟
+- الحالة: مكتمل — توصية وخطة دون تعديل APK.
+- نقطة البداية: `v0.46.1-alpha` / commit
+  `cc156f9605422a50c6bd52e5108e21448b4057f6`.
+- ما تم:
+  - اعتماد اختبار التحديث على TV حقيقي كبوابة قصيرة، ثم إصدار Stability RC قبل
+    إدخال محتوى أو أطالس جديدة.
+  - ترتيب التطوير المرئي التالي: تحسين انتقالات بداية/نهاية المرحلة والنتائج
+    والـScore، ثم Pilot رسومات Stage 2 وفق معيار الأطالس الصارم شخصيةً بعد أخرى.
+  - إبقاء إعادة كتابة القصة والحوارات دفعة مستقلة حتى لا تختلط بأعمال الاستقرار.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md` فقط.
+- الاختبارات: Runtime — SKIPPED؛ هذا طلب تخطيط فقط.
+- Release: لا يوجد؛ آخر نسخة تبقى `v0.46.1-alpha`.
+- ملاحظات/مخاطر: إدخال أطالس متعددة قبل بوابة RC سيصعّب عزل أي تقطيع أو crash.
+- التالي: اعتماد مرحلة Stability RC، ثم تنفيذ حزمة Arcade Flow والنتائج.
+
+### 2026-08-24-74 — تخطيط تحسينات الإنتاج والفحص التالية
+
+- المنفذ: Codex + Impeccable
+- طلب المستخدم: تحديد الخطوة التالية واقتراح تحسينات مفيدة فعلًا للإنتاج والفحص.
+- قرار المستخدم: تشمل الخطة كل الموارد، ويريد خطة الآن دون تنفيذ.
+- الحالة: مكتمل — خطة فقط دون تنفيذ.
+- نقطة البداية: خزنة الموارد بعد تقرير السلامة وتثبيت قياسات المعاينة.
+- ما تم:
+  - تحليل الفجوة بين خزنة العرض الحالية وخط إنتاج محكوم لكل الموارد.
+  - اعتماد مسار: استيراد وحجر، فحص سريع/عميق/Release، مراجعة بشرية، اعتماد مرتبط
+    بالبصمة، توليد في Staging، Release Candidate، نشر وتراجع.
+  - شملت الخطة الأطالس والصور والخلفيات وUI/FX والصوت والفيديو وStory/JSON
+    وموارد Android branding، مع عقد صريح لكل نوع ونسخة.
+  - اعتماد محرك QA مشترك يعيد استخدام `validate_assets.py` و
+    `validate_animation_atlases.py` بدل نسخ القواعد داخل الخزنة.
+  - ترتيب سبع دفعات: Inventory V2، Quarantine، QA المرئي، Audio/Video، Review &
+    Approval، Staged Generation، ثم Publish & Rollback/Hardening.
+  - تثبيت قاعدة الأمان: لا إصلاح تلقائي ولا كتابة داخل Runtime؛ الاقتراح أولًا،
+    وكل تحويل في Staging وبموافقة صريحة.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`.
+- الاختبارات: Runtime — SKIPPED؛ طلب تخطيطي فقط. جرى فحص الأدوات والعقود الحالية
+  قراءةً لتأسيس الخطة، دون تشغيل أو تعديل كود.
+- Release: لا يوجد.
+- ملاحظات/مخاطر: يجب تشغيل المدققات الجديدة في Shadow Mode أولًا لمنع إنذارات
+  كاذبة، وعدم اعتبار `skipped` أو غياب ffmpeg نجاحًا.
+- التالي: عند طلب التنفيذ، تبدأ الدفعة الأولى بـInventory V2 + Quarantine +
+  المحرك المشترك، دون نشر أو تعديل أصول اللعبة.
+
+### 2026-08-24-73 — إصلاح فشل Game Update في الإصدارات الأخيرة
+
+- المنفذ: Codex
+- طلب المستخدم: زر `GAME UPDATE` يعرض `FAILED` في آخر إصدارين أو ثلاثة.
+- الحالة: مكتمل.
+- نقطة البداية: `v0.46.0-alpha` / commit
+  `1df26ecb2d70cf8943e3a390085d779a23de9748`.
+- ما تم:
+  - فُحص مسار GitHub API واختيار أصل APK والتحقق من SHA والتوقيع والمثبت.
+  - ثبت أن أحدث ثلاثة Releases احتوت APK باسم الإصدار فقط، بينما التطبيق يبحث
+    عن الاسم الثابت الخاص بالعميل `family-force-family-current.apk`.
+  - أضيف الاسم الثابت إلى `v0.46.0-alpha` فورًا، فأصبحت النسخ القديمة تجد الأصل
+    الصحيح دون الحاجة إلى تغيير التطبيق أولًا.
+  - أصبح `UpdateManager` يفضّل الاسم الثابت، ثم يقبل اسم
+    `Family-Force-Neon-Streets-vX.apk` كـfallback محصور؛ ويبقى رفض أي APK آخر.
+  - بقيت حماية SHA-256 والحجم واسم الحزمة وارتفاع versionCode وتطابق شهادة
+    التوقيع والـcertificate pin إلزامية قبل فتح مثبت Android.
+- الملفات المعدلة:
+  - `android/app/src/main/java/com/familyforce/neonstreets/UpdateManager.java`.
+  - `android/tools/test_in_app_update_contract.py`.
+  - `android/app/build.gradle` (`versionCode 57` / `0.46.1-alpha`).
+  - `PROJECT_HISTORY_AR.md`.
+- الاختبارات:
+  - `test_in_app_update_contract.py` — PASS (19/19).
+  - `compileDebugJavaWithJavac` — PASS.
+  - `test_customer_release.sh customers/family-current` — PASS كامل؛ Release/R8/
+    Lint/توقيع وفحوص الأصول والتحكم والذاكرة وRuntime QA.
+  - GitHub Latest API — PASS؛ الاسمان الثابت والمرتبط بالإصدار موجودان بنفس SHA.
+  - Runtime فعلي على Android Emulator من `v0.46.0`: PASS؛ ظهر `DOWNLOADING` ثم
+    انتقل إلى شاشة Android الرسمية `Install unknown apps` بعد اكتمال التحقق.
+- Release: `v0.46.1-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.46.1-alpha
+  - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.46.1-alpha/family-force-family-current.apk
+  - SHA-256: `369a6ea4391bc332bd93fb90d971e54579c8da81e3254b739e34219e61c81087`.
+  - commit: `cc156f9605422a50c6bd52e5108e21448b4057f6`.
+- ملاحظات/مخاطر: أول تثبيت من داخل التطبيق يحتاج تفعيل `Allow from this source`
+  مرة واحدة حسب سياسة Android؛ لا يمكن للتطبيق تجاوز شاشة النظام أو التثبيت صامتًا.
+- التالي: اختبار الزر على Xiaomi Stick أو Shield وتأكيد موافقة المثبت النظامي.
+
+### 2026-08-24-72 — الخطوة التالية بعد الشريط الحواري
+
+- المنفذ: Codex
+- طلب المستخدم: ما التالي الآن؟
+- الحالة: مكتمل — توصية وخطة دون تعديل APK.
+- نقطة البداية: `v0.46.0-alpha` / commit
+  `1df26ecb2d70cf8943e3a390085d779a23de9748`.
+- ما تم:
+  - ترتيب العمل التالي: قبول v0.46 على جهاز TV حقيقي، ثم Stability RC، ثم Pilot
+    رسومات Stage 2، ثم تحسين محتوى القصة ودخول الرؤساء.
+  - اعتماد عدم خلط إصلاحات الاستقرار مع إعادة الرسم في Release واحد.
+- الملفات المعدلة: `PROJECT_HISTORY_AR.md` فقط.
+- الاختبارات: Runtime — SKIPPED؛ هذا طلب تخطيط فقط.
+- Release: لا يوجد؛ آخر نسخة تبقى `v0.46.0-alpha`.
+- ملاحظات/مخاطر: لا يبدأ توسيع الرسومات قبل اعتماد الشريط الحواري على Xiaomi/Shield.
+- التالي: تنفيذ Stability RC أولًا بعد اختبار الجهاز الحقيقي.
+
+### 2026-08-24-71 — تحويل الحوارات إلى شريط سفلي
+
+- المنفذ: Codex
+- طلب المستخدم: الحوارات تكون جزءًا أسفل الشاشة وليست بملء الشاشة.
+- الحالة: مكتمل
+- نقطة البداية: `v0.45.1-alpha` / commit وظيفي
+  `d9d52d084dc84de7cd8a126800363f10c3bb518b`.
+- ما تم:
+  - إعادة تصميم عرض STORY كشريط سينمائي سفلي يبقي المشهد والشخصيات ظاهرين.
+  - الحفاظ على العربية/الإنجليزية وصورة المتحدث ومؤشر المتابعة والتحكم الكامل.
+  - فحص حوارات المراحل والرؤساء على الهاتف وFold وAndroid TV.
+  - استبدال البطاقة السابقة `560×238` بشريط سفلي `612×136` دون تعتيم الشاشة.
+  - إظهار ساحة اللعب المجمدة خلف حوارات منتصف المرحلة والرئيس والخاتمة، مع بقاء
+    STORY مالكًا للإدخال لمنع القتال العرضي أثناء الحوار.
+  - عكس الصورة والنص تلقائيًا بين RTL العربية وLTR الإنجليزية.
+- الملفات المعدلة:
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`.
+  - `android/tools/test_story_content_contract.py`.
+  - `android/app/build.gradle` (`versionCode 56` / `0.46.0-alpha`).
+- الاختبارات:
+  - جميع `android/tools/test_*.py` و`validate_assets.py` — PASS.
+  - عقد القصة — PASS: 22 مشهدًا و67 سطرًا لكل لغة وشريط سفلي إلزامي.
+  - لقطتا Runtime بالعربية والإنجليزية على 1280×720 — PASS دون قص أو تداخل.
+  - `test_customer_release.sh` — PASS كامل: Release/R8/Lint/توقيع وphone/
+    ultrawide/Fold/Android TV ومسار remote للاعبين.
+- Release: `v0.46.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.46.0-alpha
+  — APK مباشر:
+  https://github.com/linkq8/family-force-neon-streets/releases/download/v0.46.0-alpha/Family-Force-Neon-Streets-v0.46.0-alpha.apk
+  — SHA-256 `25ac72ef050e4572359b261001b6e3acf8f124d594687f906e37ec266d90fbb5`
+  — commit `1df26ecb2d70cf8943e3a390085d779a23de9748`.
+- ملاحظات/مخاطر: تسلسل القصة والقتال لم يتغير؛ التغيير تخطيط بصري فقط.
+- التالي: اختبار حوار رئيس فعلي على Xiaomi Stick/Shield واعتماد ارتفاع الشريط.
+
+### 2026-08-24-70 — تثبيت قياسات شاشة المعاينة
+
+- المنفذ: Codex + Impeccable
+- طلب المستخدم: تثبيت قياسات شاشة المعاينة حتى لا يتغير شكل المورد عند تغيير
+  حجم النافذة أو الجهاز.
+- الحالة: مكتمل
+- نقطة البداية: خزنة الموارد مع تقرير السلامة في الإدخال 68.
+- ما تم:
+  - تثبيت معاينة الحركة على `720×340` منطقيًا ونسبة `36:17` في كل المقاسات.
+  - تثبيت خريطة الأطلس على عقد `960×420` ونسبة `16:7`.
+  - تثبيت عارض الصور والفيديو على `16:9` مع `object-fit: contain` لمنع القص والتمدد.
+  - إزالة ارتفاعات `vh` وقيود الهاتف التي كانت تغيّر شكل Canvas مستقلًا عن عرضه.
+  - إضافة اختبارات عقد CSS تمنع إعادة إدخال ارتفاعات تشوّه المعاينة.
+  - توثيق عقد القياسات في نظام التصميم واجتياز مراجعة Impeccable بحكم `SHIP`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`.
+  - `asset-vault/styles.css`.
+  - `asset-vault/tests/test_frontend.py`.
+  - `asset-vault/README_AR.md`.
+  - `asset-vault/DESIGN.md`.
+  - `asset-vault/.impeccable/design.json`.
+  - `asset-vault/reports/preview-fixed-desktop.png`.
+  - `asset-vault/reports/preview-fixed-tablet.png`.
+  - `asset-vault/reports/preview-fixed-mobile.png`.
+  - `asset-vault/reports/preview-fixed-mobile-stage.png`.
+- الاختبارات:
+  - `python3 -m unittest discover -s tests -v` — PASS، 19/19.
+  - `node --check app.js` — PASS.
+  - `git diff --check` — PASS.
+  - Selenium عند 1600×1000 و1000×800 و500×900 — PASS؛ نسبة الحركة ضمن
+    `±0.02` من `36:17` ونسبة الأطلس ضمن `±0.02` من `16:7`.
+  - الفحص البصري desktop/tablet/mobile — PASS بلا قص أو تمدد.
+  - Impeccable detector — advisory قديمة فقط.
+  - Impeccable finish review — `SHIP`.
+- Release: لا يوجد؛ تعديل أداة مستقلة عن APK.
+- ملاحظات/مخاطر: على الشاشات الضيقة تصغر المعاينة ككتلة واحدة، لكن شكل المورد
+  ونسبته وموضعه داخل Canvas تبقى ثابتة. لا تغيير في APK أو أصول Android.
+- التالي: استخدام المعاينة أثناء ضبط الأطالس، واعتماد العقد نفسه لأي عارض جديد.
+
+### 2026-08-24-69 — خطة الاستقرار والإتقان البصري التالية
+
+- المنفذ: Codex
+- طلب المستخدم: ما التالي؟ أريد استقرارًا أكثر ورسومات أتقن.
+- الحالة: مكتمل — خطة دون تنفيذ في هذا الطلب.
+- نقطة البداية: `v0.45.1-alpha` بعد نجاح جولة الفحص في الإدخال 67.
+- ما تم:
+  - اعتماد Sprint استقرار مستقل قبل أي توسيع فني، مع Soak واختبارات أجهزة ضعيفة
+    وحدود أداء وذاكرة ورصد تقطيع كل منطقة.
+  - اعتماد Art Bible وعقود عرض موحدة، ثم تحسين مورد واحد في كل مرة وقبوله داخل
+    اللعبة قبل الانتقال لغيره، بدل إعادة رسم جماعية.
+  - ترتيب التطوير: Stability RC، ثم الشخصيات الرئيسية، ثم أعداء المراحل بالتتابع،
+    ثم الخلفيات وUI/VFX مع اختبارات مقارنة بصرية ثابتة.
+- الملفات المعدلة: `PROJECT_HISTORY_AR.md` فقط.
+- الاختبارات: Runtime — SKIPPED؛ هذا طلب تخطيط ولم يتغير APK.
+- Release: لا يوجد؛ توثيق خطة فقط.
+- ملاحظات/مخاطر: زيادة دقة المصدر إلى 4K وحدها لا تحسن العرض؛ المطلوب هو ثبات
+  الحجم والمحور والـoutline والتصفية ونسبة الخلية عند دقة العرض الفعلية.
+- التالي: تنفيذ Sprint الاستقرار أولًا، ثم تقرير قبول قبل بدء Sprint الرسومات.
+
+### 2026-08-24-68 — تقرير فحص الموارد والأخطاء
+
+- المنفذ: Codex + Impeccable
+- طلب المستخدم: إضافة ميزة Report للفحص والأخطاء إلى خزنة الموارد.
+- الحالة: مكتمل
+- نقطة البداية: خزنة الموارد المطورة في الإدخال 65، مع الحفاظ على تغييرات اللعبة
+  والأعداء غير المنشورة خارج `asset-vault/`.
+- ما تم:
+  - إضافة محرك تدقيق للقراءة فقط يفحص وجود الملفات، الحجم، SHA-256 الاختياري،
+    صلاحية شبكة الأطلس، توفر نسخة TV، metadata والعلاقات.
+  - إضافة API للفحص السريع والعميق مع نتيجة موحدة ودرجات `error/warning/info`.
+  - إضافة درج تقرير RTL بملخص، فلاتر، حالات تحميل/خطأ/فراغ، إعادة فحص وتصدير JSON.
+  - ربط كل مشكلة بالمورد المتأثر لفتحه مباشرة من التقرير.
+  - إضافة دلالات dialog وعزل الخلفية وfocus trap دائري واستعادة التركيز.
+  - توثيق مكونات التقرير وتوكناته في نظام تصميم Asset Vault المحلي.
+  - اجتازت مراجعة Impeccable المستقلة بحكم `SHIP`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`.
+  - `asset-vault/audit.py`.
+  - `asset-vault/server.py`.
+  - `asset-vault/index.html`.
+  - `asset-vault/styles.css`.
+  - `asset-vault/app.js`.
+  - `asset-vault/tests/test_audit.py`.
+  - `asset-vault/tests/test_server.py`.
+  - `asset-vault/README_AR.md`.
+  - `asset-vault/DESIGN.md`.
+  - `asset-vault/.impeccable/design.json`.
+  - `asset-vault/reports/report-desktop.png`.
+  - `asset-vault/reports/report-mobile.png`.
+- الاختبارات:
+  - `python3 -m unittest discover -s tests -v` — PASS، 17/17.
+  - `node --check app.js` — PASS.
+  - `git diff --check` — PASS.
+  - API report سريع — PASS: 84 موردًا و153 ملفًا، 24.3ms، 0 أخطاء/تحذيرات.
+  - API report عميق SHA-256 — PASS: 167.6ms، 0 أخطاء/تحذيرات.
+  - Selenium desktop/mobile — PASS للفتح والتحميل والنتيجة السليمة والعزل.
+  - Selenium keyboard — PASS: Tab وShift+Tab محصوران داخل الحوار.
+  - Impeccable detector — advisory توثيقية فقط، ووثقت التوكنات الجديدة.
+  - Impeccable finish review — `SHIP`.
+- Release: لا يوجد؛ الأداة مستقلة ولا تغيّر APK.
+- ملاحظات/مخاطر: الفحص لا يصلح الملفات تلقائيًا عمدًا؛ يعرض الإجراء المقترح ويترك
+  قرار التعديل للمنتج. لا يوجد تغيير في APK أو Release.
+- التالي: تشغيل التقرير قبل كل حزمة أصول أو Release، ثم معالجة أي مورد يظهر
+  بالأحمر قبل اعتماده.
+
+### 2026-08-24-67 — جولة فحص v0.45.1
+
+- المنفذ: Codex
+- طلب المستخدم: "جولة فحص" للنسخة الحالية بعد إصلاح الرسومات.
+- الحالة: مكتمل
+- نقطة البداية: `v0.45.1-alpha` / commit وظيفي
+  `d9d52d084dc84de7cd8a126800363f10c3bb518b`.
+- ما تم:
+  - فحص آلي لكل أطالس وإطارات اللعبة، مع تدقيق خاص للأنواع الخمسة في Stage 1.
+  - تشغيل عقود الأصول والذاكرة والتحكم والبناء والإصدار الموقّع.
+  - تشغيل المسار الكامل على Android TV Emulator وفحص FATAL/ANR/OOM واللقطات.
+  - نجح فحص 26/26 أطلسًا؛ لا توجد خلايا فارغة أو حركات ثابتة.
+  - كل الإطارات الـ36 للأنواع الخمسة موجودة في Base/Runtime/TV، وأقل gutter
+    هو 8px Base و12px Runtime و7px TV وفق العقود.
+  - نجح الفحص البصري داخل Stage 1 على 1920×1080 للموجتين؛ ظهر Grunt وSkater
+    وLantern Courier وMarket Enforcer وKeeper-7 كاملين وواضحين.
+  - ظهور Keeper جزئيًا في لقطة الدخول كان دخوله الطبيعي من حافة الكاميرا؛ ظهر
+    كاملًا بعد تقدمه ولم يكن قصًا داخل الأطلس.
+  - لم يظهر خلل مؤكد يستدعي تعديل الكود أو الرسومات أو Release جديدًا.
+- الملفات المعدلة: `PROJECT_HISTORY_AR.md` فقط (توثيق الجولة).
+- الاختبارات:
+  - `validate_assets.py` — PASS: 82 PNG و181 ملف Manifest.
+  - `validate_animation_atlases.py --allow-nonclustered` — PASS: 26/26؛ هذا
+    عقد الدقة الحديثة نفسه المستخدم في Release.
+  - جميع `android/tools/test_*.py` و`:app:assembleDebug` — PASS.
+  - `test_customer_release.sh` — PASS كامل: Build/Release/R8/Lint/توقيع، phone،
+    ultrawide، Fold، Android TV، ومسار remote للاعبين؛ ملفات failure كلها 0 بايت.
+  - PSS: هاتف 48.1MB، ultrawide 47.9MB، Fold 50.4MB، Android TV 56.8MB،
+    ومسار TV ثنائي اللاعبين 89.6MB.
+  - `test_full_stage_runtime.sh` — PASS: المناطق 1–14 حتى `STAGE_COMPLETE` بلا
+    FATAL/ANR/OOM.
+- Release: لا يوجد؛ `v0.45.1-alpha` بقيت النسخة المنشورة لأن الجولة لم تتطلب تعديلًا.
+- ملاحظات/مخاطر: الفحص الآلي والمحاكي نجحا؛ يبقى القبول البصري البشري على
+  Xiaomi Stick/Shield مطلوبًا قبل تعميم خط Stage 1 على المرحلة التالية.
+- التالي: اختبار المستخدم للمرحلة الأولى على جهاز حقيقي ثم قرار القبول.
 
 ### 2026-08-24-66 — فشل بصري في Pilot أعداء المرحلة الأولى
 
@@ -2601,12 +3159,12 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.45.1-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
+- الحالة: `v0.47.0-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
   وBoss لكل مرحلة ومرحلة ختامية تعتمد موجات ورؤساء مراقبين ثم Shadow Prime.
-- آخر عمل: إصلاح فشل Pilot بصريًا: fallback مضمون أثناء التحميل، احترام نسبة
-  خلية الأطلس، وإعادة بناء الأنواع الخمسة بخلايا عريضة وثابتة الحجم لكل الحركات.
-- آخر قرار: لا Higgsfield ولا فيديو ولا توليد جديد. بنيت الأطالس من المصادر
-  الحالية، مع حد أربعة أطالس لكل Encounter ونسخ Stage 1 TV `1176×1008`.
+- آخر عمل: إعادة بناء أعداء Stage 1 الخمسة من 20 مصدر ImageGen ثابتًا وفق
+  `quality-v2`، وإضافة بوابة تمنع المصدر المقصوص وتثبت مقياس الوقوف/المشي ضمن 5%.
+- آخر قرار: لا Higgsfield ولا فيديو. لا يعمم معيار Stage 1 على مرحلة أخرى قبل
+  اختبار `v0.47.0-alpha` بصريًا على Xiaomi Stick وShield.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
@@ -2616,5 +3174,5 @@
   6. `android/docs/ENEMY_CAMPAIGN_EXPANSION_AR.md`
   7. `android/app/src/main/assets/story/story_ar.json`
   8. `android/app/src/main/java/com/familyforce/neonstreets/AudioController.java`
-- الإجراء التالي المقترح: لعب المرحلة الأولى من `v0.45.1-alpha` على Xiaomi Stick
-  وShield واعتماد وضوح الشخصيات الخمس أثناء كل الحركات قبل لمس المرحلة الثانية.
+- الإجراء التالي المقترح: تثبيت APK `v0.47.0-alpha` وتجربة idle/walk/attack/hurt/
+  knockdown لكل أعداء Stage 1 بالحجم الفعلي؛ عند القبول يبدأ Stage 2 بعدو واحد.

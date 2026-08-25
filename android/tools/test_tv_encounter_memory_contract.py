@@ -20,7 +20,9 @@ def main() -> None:
     assert "preloadEnemyAnimationsForZoneAsync" in text
     assert '"FamilyForceAssetWarmup"' in text
     assert "loader.setPriority(Thread.MIN_PRIORITY)" in text
-    assert "Bitmap decoded = decodeEnemyAnimationType(type, requestedTier);" in text
+    assert "Bitmap[] decodedClips = decodeEnemyAnimationClips(type, requestedTier);" in text
+    assert "? decodeEnemyAnimationType(type, requestedTier) : null" in text
+    assert "bindClipSet(enemy.animator, clips, ENEMY_ANIM_COLUMNS)" in text
     assert "loadedOneAtlasThisTick" not in text
     assert "atlas.getWidth() / ENEMY_ANIM_COLUMNS" in text
     assert "atlas.getHeight() / ENEMY_ANIM_ROWS" in text
@@ -50,6 +52,13 @@ def main() -> None:
         with Image.open(path) as image:
             assert image.size == (1152, 1584), (path, image.size)
             assert image.mode == "RGBA", (path, image.mode)
+    for name in ("grunt", "lantern_courier"):
+        for action in ("idle", "walk", "attack_1", "attack_2", "hurt", "knockdown"):
+            path = ASSETS / f"tv/clips/enemies/{name}/{action}.png"
+            assert path.is_file(), path
+            with Image.open(path) as image:
+                assert image.size == (1176, 168), (path, image.size)
+                assert image.mode == "RGBA", (path, image.mode)
     full_bytes = 4 * 960 * 1152
     tv_bytes = 4 * 1176 * 1008
     assert tv_bytes < full_bytes * 2

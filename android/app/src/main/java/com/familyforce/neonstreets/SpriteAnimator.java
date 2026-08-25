@@ -14,7 +14,9 @@ import android.graphics.RectF;
  * deterministic and independent of render cadence.</p>
  */
 final class SpriteAnimator {
+    static final int MIN_CHARACTER_CLIP_FPS = 12;
     private Bitmap atlas;
+    private Bitmap[] clips;
     private int columns;
     private int rows;
     private int cellWidth;
@@ -31,25 +33,49 @@ final class SpriteAnimator {
     void bind(Bitmap bitmap, int atlasColumns, int atlasRows,
               int atlasCellWidth, int atlasCellHeight) {
         atlas = bitmap;
+        clips = null;
         columns = atlasColumns;
         rows = atlasRows;
         cellWidth = atlasCellWidth;
         cellHeight = atlasCellHeight;
         row = frame = accumulator = 0;
         frameCount = Math.max(1, atlasColumns);
-        fps = 8;
+        fps = MIN_CHARACTER_CLIP_FPS;
+        loop = true;
+        finished = false;
+        frameChanged = true;
+    }
+
+    /** Bind one independently decoded image per action. Every image is one row. */
+    void bindClips(Bitmap[] actionClips, int clipColumns,
+                   int clipCellWidth, int clipCellHeight) {
+        atlas = null;
+        clips = actionClips;
+        columns = clipColumns;
+        rows = actionClips == null ? 0 : actionClips.length;
+        cellWidth = clipCellWidth;
+        cellHeight = clipCellHeight;
+        row = frame = accumulator = 0;
+        frameCount = Math.max(1, clipColumns);
+        fps = MIN_CHARACTER_CLIP_FPS;
         loop = true;
         finished = false;
         frameChanged = true;
     }
 
     boolean isBound() {
-        return atlas != null && !atlas.isRecycled()
+        Bitmap bitmap = bitmap();
+        return bitmap != null && !bitmap.isRecycled()
                 && columns > 0 && rows > 0 && cellWidth > 0 && cellHeight > 0;
     }
 
     Bitmap bitmap() {
-        return atlas;
+        if (clips == null) return atlas;
+        return row >= 0 && row < clips.length ? clips[row] : null;
+    }
+
+    boolean isBoundTo(Bitmap[] actionClips) {
+        return clips == actionClips && isBound();
     }
 
     float cellAspectRatio() {
@@ -58,6 +84,7 @@ final class SpriteAnimator {
 
     void clear() {
         atlas = null;
+        clips = null;
         columns = rows = cellWidth = cellHeight = 0;
         row = frame = accumulator = 0;
         frameCount = 1;
@@ -69,7 +96,7 @@ final class SpriteAnimator {
               boolean restart) {
         int safeRow = Math.max(0, Math.min(Math.max(0, rows - 1), clipRow));
         int safeFrames = Math.max(1, Math.min(columns, frames));
-        int safeFps = Math.max(1, Math.min(60, clipFps));
+        int safeFps = Math.max(MIN_CHARACTER_CLIP_FPS, Math.min(60, clipFps));
         if (!restart && row == safeRow && frameCount == safeFrames
                 && fps == safeFps && loop == shouldLoop && !finished) return;
         row = safeRow;
@@ -123,8 +150,8 @@ final class SpriteAnimator {
     void draw(Canvas canvas, Paint paint, Rect source, RectF destination) {
         if (!isBound()) return;
         int sx = frame * cellWidth;
-        int sy = row * cellHeight;
+        int sy = clips == null ? row * cellHeight : 0;
         source.set(sx, sy, sx + cellWidth, sy + cellHeight);
-        canvas.drawBitmap(atlas, source, destination, paint);
+        canvas.drawBitmap(bitmap(), source, destination, paint);
     }
 }

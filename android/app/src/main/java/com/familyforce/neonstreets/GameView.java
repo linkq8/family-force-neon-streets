@@ -118,6 +118,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private static final int HERO_ANIM_CELL_HEIGHT = 192;
     private static final int HERO_ANIM_ATLAS_WIDTH = HERO_ANIM_COLUMNS * HERO_ANIM_CELL_WIDTH;
     private static final int HERO_ANIM_ATLAS_HEIGHT = HERO_ANIM_ROWS * HERO_ANIM_CELL_HEIGHT;
+    private static final String[] HERO_ANIM_CLIP_NAMES = {
+            "idle", "walk", "punch", "kick", "heavy_punch", "heavy_kick",
+            "jump", "special", "link", "hurt", "knockdown"
+    };
 
     private static final int ENEMY_IDLE = 0;
     private static final int ENEMY_WALK = 1;
@@ -131,6 +135,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private static final int ENEMY_ANIM_CELL_HEIGHT = 192;
     private static final int ENEMY_ANIM_ATLAS_WIDTH = ENEMY_ANIM_COLUMNS * ENEMY_ANIM_CELL_WIDTH;
     private static final int ENEMY_ANIM_ATLAS_HEIGHT = ENEMY_ANIM_ROWS * ENEMY_ANIM_CELL_HEIGHT;
+    private static final String[] ENEMY_ANIM_CLIP_NAMES = {
+            "idle", "walk", "attack_1", "attack_2", "hurt", "knockdown"
+    };
     private static final int ENEMY_STRIKER = EnemyArchetype.STRIKER;
     private static final int ENEMY_SHIELD_GUARD = EnemyArchetype.SHIELD_GUARD;
     private static final int ENEMY_TYPE_COUNT = EnemyArchetype.COUNT;
@@ -313,6 +320,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private final Bitmap[] enemyArt = new Bitmap[ENEMY_TYPE_COUNT];
     private final Bitmap[] itemArt = new Bitmap[4];
     private final Bitmap[] enemyAnimArt = new Bitmap[ENEMY_TYPE_COUNT];
+    private final Bitmap[][] enemyAnimClips = new Bitmap[ENEMY_TYPE_COUNT][];
     private volatile int enemyPreloadGeneration;
     private String loadedEnemyAtlasTier = "";
     private volatile boolean enemyPreloadRunning;
@@ -324,6 +332,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private Bitmap weaponTrailFxArt;
     private Bitmap breakFxArt;
     private Bitmap selectedHeroAnimArt;
+    private Bitmap[] selectedHeroAnimClips;
     private Bitmap assistAnimArt;
     private final Bitmap[] assistAnimCache = new Bitmap[2];
     private final Rect[] selectedHeroAnimSources = new Rect[HERO_ANIM_ROWS * HERO_ANIM_COLUMNS];
@@ -340,6 +349,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private final SpriteAnimator player2Animator = new SpriteAnimator();
     private final Rect[] player2AnimSources = new Rect[HERO_ANIM_ROWS * HERO_ANIM_COLUMNS];
     private Bitmap player2AnimArt;
+    private Bitmap[] player2AnimClips;
 
     private volatile boolean running;
     private volatile boolean appActive = true;
@@ -1600,6 +1610,69 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         return atlas;
     }
 
+    private Bitmap[] loadClipSet(String directory, String[] names, int columns) {
+        Bitmap[] result = new Bitmap[names.length];
+        int cellWidth = -1;
+        int cellHeight = -1;
+        try {
+            for (int i = 0; i < names.length; i++) {
+                Bitmap clip = loadBitmap(directory + names[i] + ".png");
+                if (clip == null || clip.isRecycled() || clip.getWidth() % columns != 0) {
+                    recycleBitmap(clip);
+                    recycleBitmapArray(result);
+                    return null;
+                }
+                int candidateWidth = clip.getWidth() / columns;
+                int candidateHeight = clip.getHeight();
+                if (cellWidth < 0) {
+                    cellWidth = candidateWidth;
+                    cellHeight = candidateHeight;
+                } else if (candidateWidth != cellWidth || candidateHeight != cellHeight) {
+                    recycleBitmap(clip);
+                    recycleBitmapArray(result);
+                    return null;
+                }
+                clip.prepareToDraw();
+                result[i] = clip;
+            }
+            return result;
+        } catch (OutOfMemoryError | RuntimeException failure) {
+            recycleBitmapArray(result);
+            return null;
+        }
+    }
+
+    private Bitmap[] loadHeroAnimationClips(int hero) {
+        String stem = customerProfile.heroAssetStems[safeHeroIndex(hero)];
+        Bitmap[] clips = useUhdCharacterAssets()
+                ? loadClipSet("uhd/clips/heroes/" + stem + "/", HERO_ANIM_CLIP_NAMES,
+                HERO_ANIM_COLUMNS) : null;
+        if (clips == null) {
+            clips = loadClipSet("runtime/clips/heroes/" + stem + "/",
+                    HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS);
+        }
+        if (clips == null && useReducedMemoryAssets()) {
+            clips = loadClipSet("tv/clips/heroes/" + stem + "/",
+                    HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS);
+        }
+        if (clips == null) {
+            clips = loadClipSet("clips/heroes/" + stem + "/",
+                    HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS);
+        }
+        return clips;
+    }
+
+    private Bitmap[] decodeEnemyAnimationClips(int type, String tier) {
+        if (type < 0 || type >= enemyAnimArt.length) return null;
+        String stem = EnemyArchetype.of(type).asset;
+        return loadClipSet(tier + "clips/enemies/" + stem + "/",
+                ENEMY_ANIM_CLIP_NAMES, ENEMY_ANIM_COLUMNS);
+    }
+
+    private static void bindClipSet(SpriteAnimator animator, Bitmap[] clips, int columns) {
+        animator.bindClips(clips, columns, clips[0].getWidth() / columns, clips[0].getHeight());
+    }
+
     private Bitmap decodeEnemyAnimationType(int type, String tier) {
         if (type < 0 || type >= enemyAnimArt.length) return null;
         String stem = EnemyArchetype.of(type).asset + "_anim.png";
@@ -1660,6 +1733,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                             for (Enemy enemy : enemies) if (enemy.type == type) enemy.animator.clear();
                             recycleBitmap(enemyAnimArt[type]);
                             enemyAnimArt[type] = null;
+                            recycleBitmapArray(enemyAnimClips[type]);
+                            enemyAnimClips[type] = null;
                         }
                         loadedEnemyAtlasTier = requestedTier;
                     }
@@ -1671,20 +1746,32 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                             for (Enemy enemy : enemies) if (enemy.type == type) enemy.animator.clear();
                             recycleBitmap(enemyAnimArt[type]);
                             enemyAnimArt[type] = null;
+                            recycleBitmapArray(enemyAnimClips[type]);
+                            enemyAnimClips[type] = null;
                             continue;
                         }
                         Bitmap current = enemyAnimArt[type];
-                        if (current != null && !current.isRecycled()) continue;
+                        Bitmap[] currentClips = enemyAnimClips[type];
+                        if ((current != null && !current.isRecycled()) || currentClips != null) continue;
                     }
-                    Bitmap decoded = decodeEnemyAnimationType(type, requestedTier);
+                    Bitmap[] decodedClips = decodeEnemyAnimationClips(type, requestedTier);
+                    Bitmap decoded = decodedClips == null
+                            ? decodeEnemyAnimationType(type, requestedTier) : null;
                     synchronized (GameView.this) {
                         if (generation != enemyPreloadGeneration || !appActive) {
                             recycleBitmap(decoded);
+                            recycleBitmapArray(decodedClips);
                             return;
                         }
                         Bitmap current = enemyAnimArt[type];
-                        if (current == null || current.isRecycled()) enemyAnimArt[type] = decoded;
-                        else recycleBitmap(decoded);
+                        Bitmap[] currentClips = enemyAnimClips[type];
+                        if ((current == null || current.isRecycled()) && currentClips == null) {
+                            enemyAnimClips[type] = decodedClips;
+                            enemyAnimArt[type] = decoded;
+                        } else {
+                            recycleBitmap(decoded);
+                            recycleBitmapArray(decodedClips);
+                        }
                     }
                 }
             } finally {
@@ -1704,6 +1791,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 for (Enemy enemy : enemies) if (enemy.type == type) enemy.animator.clear();
                 recycleBitmap(enemyAnimArt[type]);
                 enemyAnimArt[type] = null;
+                recycleBitmapArray(enemyAnimClips[type]);
+                enemyAnimClips[type] = null;
             }
             return;
         }
@@ -1713,7 +1802,13 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             if (!enemy.alive || enemy.zone != encounterZone) continue;
             Bitmap atlas = enemy.type >= 0 && enemy.type < enemyAnimArt.length
                     ? enemyAnimArt[enemy.type] : null;
-            if (atlas != null && !atlas.isRecycled()
+            Bitmap[] clips = enemy.type >= 0 && enemy.type < enemyAnimClips.length
+                    ? enemyAnimClips[enemy.type] : null;
+            if (clips != null && !enemy.animator.isBoundTo(clips)) {
+                enemy.animator.clear();
+                bindClipSet(enemy.animator, clips, ENEMY_ANIM_COLUMNS);
+                enemy.animator.play(ENEMY_IDLE, ENEMY_ANIM_COLUMNS, 12, true, true);
+            } else if (atlas != null && !atlas.isRecycled()
                     && enemy.animator.bitmap() != atlas) {
                 enemy.animator.clear();
                 enemy.animator.bind(atlas, ENEMY_ANIM_COLUMNS, ENEMY_ANIM_ROWS,
@@ -1730,6 +1825,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (selectedHeroAnimArt != null && !selectedHeroAnimArt.isRecycled()) {
             selectedHeroAnimArt.recycle();
         }
+        recycleBitmapArray(selectedHeroAnimClips);
+        selectedHeroAnimClips = null;
         if (loadedPlayer2Anim == selectedHero) {
             unloadPlayer2Animation(false);
         }
@@ -1740,13 +1837,18 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         boolean loaded = false;
         Bitmap candidate = null;
         try {
-            candidate = loadHeroAnimationAtlas(selectedHero);
+            selectedHeroAnimClips = loadHeroAnimationClips(selectedHero);
+            if (selectedHeroAnimClips == null) candidate = loadHeroAnimationAtlas(selectedHero);
         } catch (OutOfMemoryError ignored) {
             // Keep game alive on low-memory TV devices. Fallback will use
             // static idle/full-body art for this session.
             playerAnimator.clear();
         }
-        if (isValidHeroAtlas(candidate)) {
+        if (selectedHeroAnimClips != null) {
+            bindClipSet(playerAnimator, selectedHeroAnimClips, HERO_ANIM_COLUMNS);
+            playerAnimator.play(HERO_IDLE, 8, 12, true, true);
+            loaded = true;
+        } else if (isValidHeroAtlas(candidate)) {
             try {
                 selectedHeroAnimArt = candidate;
                 cacheHeroAnimSourceRects(selectedHeroAnimArt, selectedHeroAnimSources,
@@ -1761,6 +1863,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     selectedHeroAnimArt.recycle();
                 }
                 selectedHeroAnimArt = null;
+                recycleBitmapArray(selectedHeroAnimClips);
+                selectedHeroAnimClips = null;
                 playerAnimator.clear();
             }
         } else if (candidate != null) {
@@ -1773,6 +1877,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private synchronized void unloadPlayer2Animation(boolean forceRecycleShared) {
         if (!forceRecycleShared && player2AnimSharesPlayerAnim) {
             player2AnimArt = null;
+            player2AnimClips = null;
             player2Animator.clear();
             loadedPlayer2Anim = selectedHero2;
             return;
@@ -1780,7 +1885,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (player2AnimArt != null && !player2AnimArt.isRecycled()) {
             player2AnimArt.recycle();
         }
+        recycleBitmapArray(player2AnimClips);
         player2AnimArt = null;
+        player2AnimClips = null;
         player2Animator.clear();
         loadedPlayer2Anim = -1;
         Arrays.fill(player2AnimSources, null);
@@ -1795,7 +1902,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (selectedHeroAnimArt != null && !selectedHeroAnimArt.isRecycled()) {
             selectedHeroAnimArt.recycle();
         }
+        recycleBitmapArray(selectedHeroAnimClips);
         selectedHeroAnimArt = null;
+        selectedHeroAnimClips = null;
         playerAnimator.clear();
         loadedHeroAnim = -1;
         Arrays.fill(selectedHeroAnimSources, null);
@@ -1804,11 +1913,18 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private synchronized void loadPlayer2Animations() {
         selectedHero2 = sanitizeHeroIndex(selectedHero2);
         if (loadedPlayer2Anim == selectedHero2
-                && player2AnimArt != null
-                && !player2AnimArt.isRecycled()) {
+                && ((player2AnimArt != null && !player2AnimArt.isRecycled())
+                || player2AnimClips != null)) {
             return;
         }
-        unloadPlayer2Animation(selectedHero2 == selectedHero);
+        unloadPlayer2Animation(false);
+        if (selectedHero2 == selectedHero && selectedHeroAnimClips != null) {
+            player2AnimClips = selectedHeroAnimClips;
+            bindClipSet(player2Animator, player2AnimClips, HERO_ANIM_COLUMNS);
+            player2AnimSharesPlayerAnim = true;
+            loadedPlayer2Anim = selectedHero2;
+            return;
+        }
         if (selectedHero2 == selectedHero && selectedHeroAnimArt != null && !selectedHeroAnimArt.isRecycled()) {
             player2AnimArt = selectedHeroAnimArt;
             player2Animator.bind(player2AnimArt, HERO_ANIM_COLUMNS, HERO_ANIM_ROWS,
@@ -1821,7 +1937,15 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         boolean loaded = false;
         Bitmap candidate;
         try {
-            candidate = loadHeroAnimationAtlas(selectedHero2);
+            player2AnimClips = loadHeroAnimationClips(selectedHero2);
+            candidate = player2AnimClips == null ? loadHeroAnimationAtlas(selectedHero2) : null;
+            if (player2AnimClips != null) {
+                bindClipSet(player2Animator, player2AnimClips, HERO_ANIM_COLUMNS);
+                player2AnimSharesPlayerAnim = false;
+                loadedPlayer2Anim = selectedHero2;
+                loaded = true;
+                return;
+            }
             if (candidate == null) {
                 player2Animator.clear();
                 player2AnimSharesPlayerAnim = false;
@@ -1848,6 +1972,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             // A TV can have a much smaller graphics heap than a phone. Keep
             // the game alive and render P2 from the compact fallback art.
             player2AnimSharesPlayerAnim = false;
+            recycleBitmapArray(player2AnimClips);
+            player2AnimClips = null;
             player2Animator.clear();
             loadedPlayer2Anim = -1;
         }
@@ -1924,9 +2050,21 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         loadedAssistHeroes[ownerSlot] = -1;
         Arrays.fill(assistAnimSourceCache[ownerSlot], null);
         BitmapRegionDecoder decoder = null;
-        String stem = customerProfile.heroAssetStems[hero] + "_anim.png";
+        String heroStem = customerProfile.heroAssetStems[hero];
+        String stem = heroStem + "_anim.png";
         String path = "runtime/heroes/" + stem;
-        try (InputStream input = getContext().getAssets().open(path)) {
+        try {
+            assistAnimCache[ownerSlot] = loadBitmap(
+                    "runtime/clips/heroes/" + heroStem + "/link.png");
+            if (assistAnimCache[ownerSlot] != null) assistAnimCache[ownerSlot].prepareToDraw();
+        } catch (OutOfMemoryError ignored) {
+            assistAnimCache[ownerSlot] = null;
+        }
+        try (InputStream input = assistAnimCache[ownerSlot] == null
+                ? getContext().getAssets().open(path) : null) {
+            if (input == null) {
+                // The action-only clip is already decoded and warmed.
+            } else {
             decoder = BitmapRegionDecoder.newInstance(input, false);
             if (decoder != null && decoder.getWidth() % HERO_ANIM_COLUMNS == 0
                     && decoder.getHeight() % HERO_ANIM_ROWS == 0) {
@@ -1935,6 +2073,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                         decoder.getWidth(), (HERO_LINK + 1) * cellHeight);
                 assistAnimCache[ownerSlot] = decoder.decodeRegion(row, null);
                 if (assistAnimCache[ownerSlot] != null) assistAnimCache[ownerSlot].prepareToDraw();
+            }
             }
         } catch (IOException | IllegalArgumentException ignored) {
             assistAnimCache[ownerSlot] = null;
@@ -2142,6 +2281,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 }
                 recycleBitmap(enemyAnimArt[type]);
                 enemyAnimArt[type] = null;
+                recycleBitmapArray(enemyAnimClips[type]);
+                enemyAnimClips[type] = null;
             }
         }
     }
@@ -2341,6 +2482,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         if (bitmap != null && !bitmap.isRecycled()) bitmap.recycle();
     }
 
+    private static void recycleBitmapArray(Bitmap[] bitmaps) {
+        if (bitmaps == null) return;
+        for (Bitmap bitmap : bitmaps) recycleBitmap(bitmap);
+    }
+
     private void releaseBitmaps() {
         playerAnimator.clear();
         player2Animator.clear();
@@ -2362,6 +2508,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         for (Bitmap bitmap : heroReadyPortraits) recycleBitmap(bitmap);
         for (Bitmap bitmap : enemyArt) recycleBitmap(bitmap);
         for (Bitmap bitmap : enemyAnimArt) recycleBitmap(bitmap);
+        for (Bitmap[] clips : enemyAnimClips) recycleBitmapArray(clips);
         for (Bitmap bitmap : itemArt) recycleBitmap(bitmap);
         for (Bitmap bitmap : weaponArt) recycleBitmap(bitmap);
         for (Bitmap bitmap : propArt) recycleBitmap(bitmap);
@@ -2372,6 +2519,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         recycleBitmap(breakFxArt);
         recycleBitmap(selectedHeroAnimArt);
         recycleBitmap(player2AnimArt);
+        if (!player2AnimSharesPlayerAnim) recycleBitmapArray(player2AnimClips);
+        recycleBitmapArray(selectedHeroAnimClips);
         releaseAssistAnimationRows();
     }
 
@@ -2657,7 +2806,11 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             enemy.z = enemy.vx = enemy.vy = enemy.vz = 0f;
             enemy.animator.clear();
             Bitmap atlas = enemyAnimArt[type];
-            if (atlas != null) {
+            Bitmap[] clips = enemyAnimClips[type];
+            if (clips != null) {
+                bindClipSet(enemy.animator, clips, ENEMY_ANIM_COLUMNS);
+                enemy.animator.play(ENEMY_IDLE, 6, 12, true, true);
+            } else if (atlas != null) {
                 enemy.animator.bind(atlas, ENEMY_ANIM_COLUMNS, ENEMY_ANIM_ROWS,
                         atlas.getWidth() / ENEMY_ANIM_COLUMNS,
                         atlas.getHeight() / ENEMY_ANIM_ROWS);
@@ -5222,23 +5375,14 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private void drawAnimatedHero(Canvas canvas, SpriteAnimator animator, int hero,
                                   float x, float baseY, boolean flip, int alpha) {
         float height = Math.round(HERO_ANIM_RENDER_HEIGHT[hero] * CHARACTER_SCREEN_SCALE);
-        int row = animator.row();
-        int frame = animator.frame();
-        Bitmap sourceBitmap = animator == playerAnimator ? selectedHeroAnimArt
-                : animator == player2Animator ? player2AnimArt : assistAnimArt;
+        Bitmap sourceBitmap = animator.bitmap();
         if (sourceBitmap == null || sourceBitmap.isRecycled()) return;
-        int atlasCellWidth = sourceBitmap.getWidth() / HERO_ANIM_COLUMNS;
-        int atlasCellHeight = animator == assistAnimator ? sourceBitmap.getHeight()
-                : sourceBitmap.getHeight() / HERO_ANIM_ROWS;
-        int sourceRow = animator == assistAnimator ? 0 : row;
-        source.set(frame * atlasCellWidth, sourceRow * atlasCellHeight,
-                (frame + 1) * atlasCellWidth, (sourceRow + 1) * atlasCellHeight);
         canvas.save();
         canvas.translate(x, baseY);
         if (flip) canvas.scale(-1f, 1f);
         dest.set(-height * 0.5f, -height, height * 0.5f, 0f);
         crispCharacterPaint.setAlpha(alpha);
-        canvas.drawBitmap(sourceBitmap, source, dest, crispCharacterPaint);
+        animator.draw(canvas, crispCharacterPaint, source, dest);
         crispCharacterPaint.setAlpha(255);
         canvas.restore();
     }
