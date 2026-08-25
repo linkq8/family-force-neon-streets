@@ -16,7 +16,8 @@ def main() -> None:
     assert 'enemyAtlasAssetExists("runtime/enemies/", type)' in text
     assert "private boolean useReducedMemoryAssets()" in text
     assert "smallestScreenWidthDp >= 720" in text
-    assert 'loadBitmap("runtime/heroes/" + stem)' in text
+    assert "HERO_ATLAS_TIER_DIRS[tier]" in text
+    assert "memoryMb >= 384 ? HERO_TIER_RUNTIME : HERO_TIER_BASE" in text
     assert "preloadEnemyAnimationsForZoneAsync" in text
     assert '"FamilyForceAssetWarmup"' in text
     assert "loader.setPriority(Thread.MIN_PRIORITY)" in text

@@ -26,9 +26,18 @@ def method(name: str) -> str:
 
 atlas_loader = method("loadHeroAnimationAtlas")
 clip_loader = method("loadHeroAnimationClips")
-assert atlas_loader.index('loadBitmap("tv/heroes/"') < atlas_loader.index('loadBitmap("runtime/heroes/"')
-assert clip_loader.index('loadClipSet("tv/clips/heroes/"') < clip_loader.index('loadClipSet("runtime/clips/heroes/"')
-assert "if (atlas == null) atlas = loadBitmap(\"heroes/\" + stem);" in atlas_loader
+tier_selector = method("heroAnimationTier")
+
+# TV is not synonymous with weak hardware. Low-memory sticks retain the compact
+# tier, ordinary TVs receive Base, and Shield-class devices can use Runtime.
+assert "manager.isLowRamDevice() || memoryMb < 192" in tier_selector
+assert "memoryMb >= 384 ? HERO_TIER_RUNTIME : HERO_TIER_BASE" in tier_selector
+assert "memoryMb >= 512" in tier_selector and "HERO_TIER_UHD" in tier_selector
+assert "HERO_ATLAS_TIER_DIRS[tier]" in atlas_loader
+assert "HERO_CLIP_TIER_DIRS[tier]" in clip_loader
+assert "tier >= HERO_TIER_TV" in atlas_loader
+assert "tier >= HERO_TIER_TV" in clip_loader
+assert 'loadBitmap("heroes/" + stem)' in atlas_loader
 assert 'loadClipSet("clips/heroes/"' in clip_loader
 
 for actor in ("parent", "adam", "shaikha", "sulaiman"):
@@ -43,4 +52,4 @@ for actor in ("parent", "adam", "shaikha", "sulaiman"):
             digests = {hashlib.sha256(frame.tobytes()).digest() for frame in frames}
             assert len(digests) >= 3, (actor, row, "static animation row")
 
-print("TV hero animation loading: PASS (TV-first + 4 heroes × 11 moving rows)")
+print("TV hero animation loading: PASS (adaptive tiers + 4 heroes × 11 moving rows)")

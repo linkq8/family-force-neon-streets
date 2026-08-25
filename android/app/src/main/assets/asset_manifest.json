@@ -1,6 +1,11 @@
 {
   "files": [
     {
+      "path": "asset_symbol_audit.json",
+      "bytes": 780,
+      "sha256": "ddbbddac57c6a6f81fde581cd2f0bf098325b8f07c71967382de614a9bda3693"
+    },
+    {
       "path": "audio/LICENSE.txt",
       "bytes": 656,
       "sha256": "d7f44a1bc0cda7186f871f85aa461cf68ae5d9dda2e1056004ed2c1d4315d34e"
@@ -633,16 +638,16 @@
     },
     {
       "path": "enemies/market_enforcer.png",
-      "bytes": 230372,
-      "sha256": "6b525140bedf89ad2227436d22666b5d9ec198b4035f9899c39245cbf19ea3c8",
+      "bytes": 161635,
+      "sha256": "ff5ad1802bf8672aa0b2f250c40a94f6149f667cd2190b99cb40f9ed22fa30bc",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/market_enforcer_anim.png",
-      "bytes": 1147378,
-      "sha256": "fca35b5586719e2c972468ccb92658a0dc3f388a60888c50e4cc7c27a71d50ab",
+      "bytes": 979662,
+      "sha256": "232db514adfe637ddf29c2b5a00edf22f49690cc279cb8ce2748475b25d1178c",
       "width": 1344,
       "height": 1152,
       "mode": "RGBA"
@@ -1401,8 +1406,8 @@
     },
     {
       "path": "runtime/enemies/market_enforcer_anim.png",
-      "bytes": 2368297,
-      "sha256": "7ed91e91521f4786ffa15ef2c2d64ef14019c883ff764bbff150301849973b7a",
+      "bytes": 1970040,
+      "sha256": "98eb203a26c8694a915de2590c54aa5d083e9ea29da31d59acf937b13e2caca0",
       "width": 2016,
       "height": 1728,
       "mode": "RGBA"
@@ -1915,8 +1920,8 @@
     },
     {
       "path": "tv/enemies/market_enforcer_anim.png",
-      "bytes": 915872,
-      "sha256": "06b350b19d0428750052f40a090cf90027f75e1055a641a5598329ec44eaba6c",
+      "bytes": 792303,
+      "sha256": "6f8214cb5f1733f627b60c8b76799bff3879988fdd386f23237bfef2337b91de",
       "width": 1176,
       "height": 1008,
       "mode": "RGBA"

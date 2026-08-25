@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "reviewed_at": "2026-08-25",
+  "review_scope": "all 36 base-atlas frames per enemy",
+  "approved": [
+    "boss", "brute", "cargo_loader", "core_jammer", "dock_crusher",
+    "furnace_brawler", "grunt", "harpoon_drone", "keeper_7",
+    "market_enforcer", "rail_runner", "railmaster_9", "scrap_stalker",
+    "shadow_prime", "shield_guard", "signal_warden", "skater", "striker",
+    "vox_avatar"
+  ],
+  "rejected": {
+    "lantern_courier": "X-shaped face marks and repeated crossing chest lattice",
+    "palace_sentinel": "ornamental crest and heraldic/civilizational shield treatment",
+    "tidebreaker": "cross-like mast/crest silhouette"
+  },
+  "new_source_approvals": {
+    "quality-v4/market_enforcer": "approved after 36-frame and display-size review"
+  }
+}
+

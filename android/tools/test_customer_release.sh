@@ -37,6 +37,10 @@ python3 "$SCRIPT_DIR/test_link_preload_contract.py"
 python3 "$SCRIPT_DIR/test_runtime_smoothness_contract.py"
 python3 "$SCRIPT_DIR/test_shield_guard_enemy_contract.py"
 python3 "$SCRIPT_DIR/test_stage_combat_identity_contract.py"
+python3 "$SCRIPT_DIR/test_tv_hero_animation_loading.py"
+python3 "$SCRIPT_DIR/test_enemy_visual_quality_contract.py"
+python3 "$SCRIPT_DIR/test_enemy_pixel_density_contract.py"
+python3 "$SCRIPT_DIR/test_symbol_neutral_contract.py"
 
 python3 "$SCRIPT_DIR/verify_customer_apk.py" --apk "$APK" --pack "$PACK" \
     --aapt "$ANDROID_HOME/build-tools/34.0.0/aapt" \

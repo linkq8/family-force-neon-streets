@@ -116,6 +116,17 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private static final int HERO_ANIM_ROWS = 11;
     private static final int HERO_ANIM_CELL_WIDTH = 192;
     private static final int HERO_ANIM_CELL_HEIGHT = 192;
+    private static final int HERO_TIER_TV = 0;
+    private static final int HERO_TIER_BASE = 1;
+    private static final int HERO_TIER_RUNTIME = 2;
+    private static final int HERO_TIER_UHD = 3;
+    private static final String[] HERO_ATLAS_TIER_DIRS = {
+            "tv/heroes/", "heroes/", "runtime/heroes/", "uhd/heroes/"
+    };
+    private static final String[] HERO_CLIP_TIER_DIRS = {
+            "tv/clips/heroes/", "clips/heroes/", "runtime/clips/heroes/",
+            "uhd/clips/heroes/"
+    };
     private static final int HERO_ANIM_ATLAS_WIDTH = HERO_ANIM_COLUMNS * HERO_ANIM_CELL_WIDTH;
     private static final int HERO_ANIM_ATLAS_HEIGHT = HERO_ANIM_ROWS * HERO_ANIM_CELL_HEIGHT;
     private static final String[] HERO_ANIM_CLIP_NAMES = {
@@ -293,6 +304,10 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     // of magnifying low-resolution pixels two or three times on a TV.
     private final Paint crispCharacterPaint = new Paint(Paint.ANTI_ALIAS_FLAG
             | Paint.DITHER_FLAG | Paint.FILTER_BITMAP_FLAG);
+    // Dense hero tiers are authored on a true 1px grid. Bilinear filtering
+    // blurred eyes and armor edges after the logical 640x360 canvas was scaled
+    // to 1080p. Heroes use nearest sampling; enemies keep their existing paint.
+    private final Paint sharpHeroCharacterPaint = new Paint(Paint.DITHER_FLAG);
     private final Paint portraitPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG);
     private final Rect source = new Rect();
     private final RectF dest = new RectF();
@@ -1593,14 +1608,21 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                 || !hasLargeBitmapBudget();
     }
 
-    private boolean useUhdCharacterAssets() {
+    private int heroAnimationTier() {
         ActivityManager manager = (ActivityManager) getContext()
                 .getSystemService(Context.ACTIVITY_SERVICE);
-        // A decoded 4K-class hero atlas is roughly 50 MiB. Keep it away from
-        // TV sticks and OEMs with small heaps; Shield-class TVs and modern
-        // phones get the sharper source while all devices retain a safe path.
-        return manager != null && !manager.isLowRamDevice()
-                && manager.getMemoryClass() >= 384;
+        if (manager == null) return HERO_TIER_BASE;
+        int memoryMb = manager.getMemoryClass();
+        if (manager.isLowRamDevice() || memoryMb < 192) return HERO_TIER_TV;
+        // UI_MODE_TELEVISION alone does not mean weak hardware. Xiaomi-class
+        // devices receive the 192px Base art while Shield-class heaps receive
+        // Runtime. UHD remains phone/Fold-only because two decoded UHD heroes
+        // cost about 99 MiB before enemies and backgrounds.
+        if (isTelevisionDevice()) {
+            return memoryMb >= 384 ? HERO_TIER_RUNTIME : HERO_TIER_BASE;
+        }
+        if (memoryMb >= 512) return HERO_TIER_UHD;
+        return memoryMb >= 256 ? HERO_TIER_RUNTIME : HERO_TIER_BASE;
     }
 
     private boolean isValidHeroAtlas(Bitmap bitmap) {
@@ -1613,17 +1635,12 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private Bitmap loadHeroAnimationAtlas(int hero) {
         String stem = customerProfile.heroAssetStems[safeHeroIndex(hero)] + "_anim.png";
-        boolean reduced = useReducedMemoryAssets();
-        // Android TV must not decode the 28–50 MiB Runtime/UHD atlas before
-        // trying its compact animated tier. An OOM here previously left the
-        // actor moving through the world with only its static fallback image.
-        Bitmap atlas = reduced ? loadBitmap("tv/heroes/" + stem) : null;
-        if (atlas == null && !reduced && useUhdCharacterAssets()) {
-            atlas = loadBitmap("uhd/heroes/" + stem);
+        int selectedTier = heroAnimationTier();
+        for (int tier = selectedTier; tier >= HERO_TIER_TV; tier--) {
+            Bitmap atlas = loadBitmap(HERO_ATLAS_TIER_DIRS[tier] + stem);
+            if (atlas != null) return atlas;
         }
-        if (atlas == null && !reduced) atlas = loadBitmap("runtime/heroes/" + stem);
-        if (atlas == null) atlas = loadBitmap("heroes/" + stem);
-        return atlas;
+        return selectedTier == HERO_TIER_TV ? loadBitmap("heroes/" + stem) : null;
     }
 
     private Bitmap[] loadClipSet(String directory, String[] names, int columns) {
@@ -1660,23 +1677,15 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private Bitmap[] loadHeroAnimationClips(int hero) {
         String stem = customerProfile.heroAssetStems[safeHeroIndex(hero)];
-        boolean reduced = useReducedMemoryAssets();
-        Bitmap[] clips = reduced
-                ? loadClipSet("tv/clips/heroes/" + stem + "/",
-                HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS) : null;
-        if (clips == null && !reduced && useUhdCharacterAssets()) {
-            clips = loadClipSet("uhd/clips/heroes/" + stem + "/", HERO_ANIM_CLIP_NAMES,
-                    HERO_ANIM_COLUMNS);
-        }
-        if (clips == null && !reduced) {
-            clips = loadClipSet("runtime/clips/heroes/" + stem + "/",
+        int selectedTier = heroAnimationTier();
+        for (int tier = selectedTier; tier >= HERO_TIER_TV; tier--) {
+            Bitmap[] clips = loadClipSet(HERO_CLIP_TIER_DIRS[tier] + stem + "/",
                     HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS);
+            if (clips != null) return clips;
         }
-        if (clips == null) {
-            clips = loadClipSet("clips/heroes/" + stem + "/",
-                    HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS);
-        }
-        return clips;
+        return selectedTier == HERO_TIER_TV
+                ? loadClipSet("clips/heroes/" + stem + "/", HERO_ANIM_CLIP_NAMES,
+                HERO_ANIM_COLUMNS) : null;
     }
 
     private Bitmap[] decodeEnemyAnimationClips(int type, String tier) {
@@ -5398,9 +5407,9 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         canvas.translate(x, baseY);
         if (flip) canvas.scale(-1f, 1f);
         dest.set(-height * 0.5f, -height, height * 0.5f, 0f);
-        crispCharacterPaint.setAlpha(alpha);
-        animator.draw(canvas, crispCharacterPaint, source, dest);
-        crispCharacterPaint.setAlpha(255);
+        sharpHeroCharacterPaint.setAlpha(alpha);
+        animator.draw(canvas, sharpHeroCharacterPaint, source, dest);
+        sharpHeroCharacterPaint.setAlpha(255);
         canvas.restore();
     }
 
