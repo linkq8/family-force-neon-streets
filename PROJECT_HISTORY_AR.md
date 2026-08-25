@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.47.0-alpha`، `versionCode 58`.
+- النسخة المنشورة: `v0.48.0-alpha`، `versionCode 59`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `a558db823fdb15dcabdd46609b1b3b2177067e56`.
+- آخر commit وظيفي: `8e8bc8e5f9641aaf2ef2072f048a20ee04705f90`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.47.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.47.0-alpha/family-force-family-current.apk
-- SHA-256: `48ab52bdbca670c93a89c704fe41e71b30909cdc166d3ca680123c5c40249f6e`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.48.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.48.0-alpha/family-force-family-current.apk
+- SHA-256: `36122fa577f8abe22b99c81f864142ef4172f00530f651173f69b3d472537dbd`.
 - حالة QA: واجهة Canvas والقصة ثنائيتا اللغة عبر 241 مفتاحًا متطابقًا؛ نجح
   Build/Release/R8/Lint والتوقيع والتحقق من الأصول والتحكم وعقود الأداء وذاكرة
   TV. أكمل Android TV Emulator المسار الكامل للمناطق الـ14 والمراحل الخمس، ونجحت ملفات
@@ -31,9 +31,9 @@
 - إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
   أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
 - الاختبارات المتبقية: جلسة لعب بشرية كاملة للنسخة الجديدة على Xiaomi Stick وShield.
-- العمل التالي الموصى به: قبول أو رفض أعداء Stage 1 الخمسة بصريًا بالحجم الفعلي
-  على Xiaomi Stick وShield من `v0.47.0-alpha` قبل تطبيق معيار `quality-v2`
-  على أعداء Stage 2.
+- العمل التالي الموصى به: اختبار `v0.48.0-alpha` بصريًا على Xiaomi Stick وShield
+  لحركات Essa وAdam وGrunt وLantern، ثم تعميم الحركة المنفصلة على Shaikha وSulaiman
+  وعدو واحد إضافي فقط بعد القبول.
 - أداة الإنتاج: `asset-vault/` تفهرس 101 سجل و181 ملفًا (تغطية Manifest كاملة)،
   وتشغّل الأطالس الـ26 بقيم المحرك الفعلية، مع عقود QA لكل العائلات، حجر وفك
   ترميز حقيقي، اعتماد مرتبط بالبصمة والحقوق، وتجهيز آمن يبدأ بمعاينة Dry-run.
@@ -188,7 +188,7 @@
 
 - المنفذ: Codex
 - طلب المستخدم: بدء تنفيذ معيار الحركة الجديد على `Essa + Adam + Grunt + Lantern`.
-- الحالة: مكتمل برمجيًا واختباريًا؛ تجهيز Release `v0.48.0-alpha`.
+- الحالة: مكتمل ومنشور في `v0.48.0-alpha`.
 - نقطة البداية: `v0.47.0-alpha` / commit
   `a558db823fdb15dcabdd46609b1b3b2177067e56`.
 - ما تم:
@@ -221,7 +221,11 @@
   - `test_full_stage_runtime.sh` — PASS لكل المناطق الـ14 بلا FATAL/ANR/OOM.
   - `test_customer_release.sh customers/family-current` — PASS شامل البناء الموقّع،
     R8/Lint، الأصول، الذاكرة، الهاتف/Fold/Android TV ومسار الريموت للاعبين.
-- Release: قيد رفع `v0.48.0-alpha`؛ تسجل الروابط والبصمة بعد النشر.
+- Release: `v0.48.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.48.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.48.0-alpha/family-force-family-current.apk
+- SHA-256: `36122fa577f8abe22b99c81f864142ef4172f00530f651173f69b3d472537dbd`.
+- commit: `8e8bc8e5f9641aaf2ef2072f048a20ee04705f90`.
 - ملاحظات/مخاطر: لم تولد صور AI جديدة ولم يستخدم Higgsfield أو فيديو؛ فُصلت
   الرسومات المقبولة نفسها وحُفظت الهوية. الاختبار البشري على Xiaomi/Shield مطلوب
   للحكم النهائي على الإيقاع البصري، وعداد Actual FPS/P90/P99 داخل اللعبة لم ينفذ بعد.
@@ -3159,20 +3163,21 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.47.0-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
+- الحالة: `v0.48.0-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
   وBoss لكل مرحلة ومرحلة ختامية تعتمد موجات ورؤساء مراقبين ثم Shadow Prime.
-- آخر عمل: إعادة بناء أعداء Stage 1 الخمسة من 20 مصدر ImageGen ثابتًا وفق
-  `quality-v2`، وإضافة بوابة تمنع المصدر المقصوص وتثبت مقياس الوقوف/المشي ضمن 5%.
-- آخر قرار: لا Higgsfield ولا فيديو. لا يعمم معيار Stage 1 على مرحلة أخرى قبل
-  اختبار `v0.47.0-alpha` بصريًا على Xiaomi Stick وShield.
+- آخر عمل: فصل 34 حركة لـEssa وAdam وGrunt وLantern إلى مصادر UHD وملفات
+  Runtime/TV مستقلة، مع حد 12FPS وتنظيف white matte وتحميل مسبق.
+- آخر قرار: لا Higgsfield ولا فيديو، ولم تولد رسوم AI جديدة في هذه الدفعة؛
+  حُفظت الرسومات المقبولة وفُصلت. لا يعمم العقد قبل اختبار الأجهزة الحقيقية.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
   3. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
-  4. `android/app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java`
-  5. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
-  6. `android/docs/ENEMY_CAMPAIGN_EXPANSION_AR.md`
-  7. `android/app/src/main/assets/story/story_ar.json`
-  8. `android/app/src/main/java/com/familyforce/neonstreets/AudioController.java`
-- الإجراء التالي المقترح: تثبيت APK `v0.47.0-alpha` وتجربة idle/walk/attack/hurt/
-  knockdown لكل أعداء Stage 1 بالحجم الفعلي؛ عند القبول يبدأ Stage 2 بعدو واحد.
+  4. `android/app/src/main/java/com/familyforce/neonstreets/SpriteAnimator.java`
+  5. `android/docs/SEPARATE_ANIMATION_CLIP_STANDARD_AR.md`
+  6. `android/tools/test_separate_animation_clips.py`
+  7. `android/app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java`
+  8. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
+- الإجراء التالي المقترح: تثبيت APK `v0.48.0-alpha` وتجربة كل حركة لـEssa وAdam
+  وidle/walk/attack/hurt/knockdown لـGrunt وLantern على Xiaomi Stick وShield؛
+  عند القبول يبدأ Shaikha ثم Sulaiman، كل شخصية على حدة.
