@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.50.2-alpha`، `versionCode 65`.
+- النسخة المنشورة: `v0.51.0-alpha`، `versionCode 66`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `9100852f7f2e2a969f275788d0bc05b257d0022a`.
+- آخر commit وظيفي: `6380832cc476f6304985a64cba58c8c6a0f6d9af`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.50.2-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.50.2-alpha/family-force-family-current.apk
-- SHA-256: `9bb927e6e9f85b7cd90d627b493f630fb946b98da886af29bfdb7ec4109d188f`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.51.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.51.0-alpha/family-force-family-current.apk
+- SHA-256: `48d66d02caba0398a61d26f85c1bda0d7175dfb931c7319b1de96fc9c253538e`.
 - حالة QA: واجهة Canvas والقصة ثنائيتا اللغة عبر 241 مفتاحًا متطابقًا؛ نجح
   Build/Release/R8/Lint والتوقيع والتحقق من الأصول والتحكم وعقود الأداء وذاكرة
   TV. أكمل Android TV Emulator المسار الكامل للمناطق الـ14 والمراحل الخمس، ونجحت ملفات
@@ -35,10 +35,16 @@
   وKeeper من أوراقهما الأصلية المستقلة مع تفاصيل 1×1، وحذفت أداة المزج السابقة.
   كما أصلحت توقف أجسام الأبطال على TV بجعل طبقة TV المتحركة تسبق Runtime/UHD
   كبيرة الذاكرة بدل السقوط إلى صورة ثابتة عند فشل التحميل.
-- الاختبارات المتبقية: قبول بصري بشري لـMarket Enforcer وKeeper-7 أثناء كل
-  الحركات على Xiaomi Stick أوShield، إضافة إلى تأكيد Adam على العتاد الحقيقي.
-- العمل التالي الموصى به: اختبار `v0.50.2-alpha` في Stage 1 على Shield/Xiaomi؛
-  التحقق من حركة الأبطال وهويتي Market/Keeper في القتال الحقيقي.
+- أضافت `v0.51.0-alpha` اختيار طبقة حركة البطل حسب ذاكرة الجهاز بدل خفض كل
+  Android TV إلى TV tier؛ Shield يحصل على Runtime وXiaomi المتوسط على Base
+  والمنخفض على TV، مع أخذ عينات حادة وحفظ 11 صف حركة. أعيد رسم Market نفسه
+  بأسطح أبسط و36 إطارًا، وانخفضت أطلاسه مع تحسن وضوح الحجم الفعلي.
+- الاختبارات المتبقية: قبول بصري بشري لـMarket الجديد وحركة Essa/Adam على
+  Xiaomi Stick وShield. كشف تدقيق الرموز `Lantern Courier` و`Palace Sentinel`
+  و`Tidebreaker` ووضعت في قائمة إعادة الرسم، ولم يعتمدها السجل بصريًا.
+- العمل التالي الموصى به: اختبار `v0.51.0-alpha` في Stage 1، ثم إعادة رسم
+  `Keeper-7` بالبساطة نفسها إذا نجح Market؛ وبعده إزالة رموز الأعداء الثلاثة
+  واحدًا تلو الآخر وفق معيار Symbol-Neutral.
 - أداة الإنتاج: `asset-vault/` تفهرس 101 سجل و181 ملفًا (تغطية Manifest كاملة)،
   وتشغّل الأطالس الـ26 بقيم المحرك الفعلية، مع عقود QA لكل العائلات، حجر وفك
   ترميز حقيقي، اعتماد مرتبط بالبصمة والحقوق، وتجهيز آمن يبدأ بمعاينة Dry-run.
@@ -194,19 +200,47 @@
 - المنفذ: Codex
 - طلب المستخدم: "نبدأ التنفيذ الآن" للخطة المعتمدة: وضوح Essa/Adam، إعادة
   Market ثم Keeper، وإزالة/منع الرموز الدينية والحضارية.
-- الحالة: قيد التنفيذ.
+- الحالة: مكتمل ومنشور في `v0.51.0-alpha`.
 - نقطة البداية: `v0.50.2-alpha` / commit `b061f96`.
 - ما تم:
-  - بدء التنفيذ على مراحل مع عدم استخدام Higgsfield وعدم إنشاء فيديو.
-  - اعتماد أداة الصور المدمجة لإعادة Market وحده بعد إصلاح نظام الجودة والتدقيق.
+  - لم يستخدم Higgsfield ولم ينشأ فيديو. رفضت محاولتا Market الأوليان آليًا/بصريًا
+    لأن إحداهما احتوت خلفية شفافية مزيفة والأخرى بقيت شديدة التفاصيل.
+  - استبدل التصنيف الثابت لكل Android TV باختيار Adaptive: أقل من 192MiB أو
+    Low-RAM يستخدم TV، وTV المتوسط Base، وShield-class عند 384MiB Runtime؛
+    الهاتف/Fold الكبير فقط يمكنه UHD. بقيت كل حركات الأبطال الـ11 فعالة.
+  - أضيف Paint حاد للأبطال فقط لمنع bilinear blur، مع إبقاء مسار الأعداء مستقلًا.
+  - أعيد رسم Market Enforcer نفسه، لا Shield Guard باسم جديد: نفس الهوية
+    البرتقالية ودرع السوق، لكن بألوان وخطوط أقل و36 إطارًا مستقلًا. انخفض Base
+    من 1,147,378 إلى 979,662 بايت وRuntime من 2,368,297 إلى 1,970,040 بايت.
+  - أضيف معيار Symbol-Neutral وسجل مراجعة كل 36 إطارًا للأعداء الـ22 وبوابة
+    Release. نجح 19، ورفضت/حُجرت Lantern Courier وPalace Sentinel وTidebreaker
+    لإعادة رسم لاحقة بدل إخفاء المشكلة.
+  - أضيفت اختبارات الطبقات والرموز والجودة إلى بوابة إصدار العميل.
 - الملفات المعدلة:
-  - `PROJECT_HISTORY_AR.md`
+  - `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  - `android/app/src/main/assets/enemies/market_enforcer*.png`
+  - `android/app/src/main/assets/runtime/enemies/market_enforcer_anim.png`
+  - `android/app/src/main/assets/tv/enemies/market_enforcer_anim.png`
+  - `assets/imagegen/android/enemies/quality-v4/market_enforcer/`
+  - `android/docs/SYMBOL_NEUTRAL_ART_STANDARD_AR.md`
+  - `android/app/src/main/assets/asset_symbol_audit.json`
+  - `android/tools/test_symbol_neutral_contract.py`
+  - اختبارات TV/الإصدار و`asset_manifest.json` و`build.gradle`.
 - الاختبارات:
-  - قيد التنفيذ.
-- Release: لا يوجد بعد.
-- ملاحظات/مخاطر: Keeper لا يعاد بناؤه قبل نجاح Market بالحجم الفعلي داخل اللعبة.
-- التالي: تطبيق Hero Quality Tier حسب الذاكرة، إضافة Symbol-Neutral gate، ثم
-  إنشاء Market pixel-first واختباره على Android TV emulator.
+  - `android/tools/test_customer_release.sh customers/family-current` — PASS؛
+    Build/Release/R8/Lint والتوقيع والتحكم والأطالس والذاكرة والجودة والرموز.
+  - Java compile — PASS.
+  - Runtime emulator/device — SKIPPED؛ لا يوجد جهاز متصل في الجلسة.
+- Release: `v0.51.0-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.51.0-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.51.0-alpha/family-force-family-current.apk
+- SHA-256: `48d66d02caba0398a61d26f85c1bda0d7175dfb931c7319b1de96fc9c253538e`.
+- commit: `6380832cc476f6304985a64cba58c8c6a0f6d9af`.
+- ملاحظات/مخاطر: قبول Market ووضوح الأبطال على العتاد الحقيقي ما زال مطلوبًا.
+  Keeper لم يعد رسمه عمدًا قبل نتيجة Market. الأعداء الثلاثة المرفوضون ما زالوا
+  في النسخة الحالية وظيفيًا، لكن ممنوع اعتماد مصادرهم لأي نسخة نهائية قبل redraw.
+- التالي: اختبار Stage 1 على Shield/Xiaomi، ثم Keeper-7، ثم الأعداء الثلاثة
+  المرفوضون واحدًا تلو الآخر.
 
 ### 2026-08-25-90 — عودة ضعف الوضوح ومنع الرموز الدينية والحضارية
 
@@ -3587,11 +3621,11 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.50.2-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
+- الحالة: `v0.51.0-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
   وBoss لكل مرحلة ومرحلة ختامية تعتمد موجات ورؤساء مراقبين ثم Shadow Prime.
-- آخر عمل: ألغيت إعادة تلوين Market/Keeper وأعيدا من أوراقهما المستقلة بتفاصيل
-  1×1؛ أصلح ترتيب تحميل حركة الأبطال على TV لمنع fallback الثابت، ثم نشر
-  `v0.50.2-alpha` بعد Runtime QA.
+- آخر عمل: أصلح اختيار دقة الأبطال تكيفيًا كي لا يستخدم Shield أطلس TV الصغير،
+  وأضيف رسم حاد مع بقاء الحركات، ثم أعيد Market نفسه بأسلوب أبسط و36 إطارًا.
+  أضيف معيار/بوابة Symbol-Neutral ونشرت `v0.51.0-alpha` بعد Release QA.
 - آخر قرار: إطارات `v0.49.0` الوسيطة المزاحة آليًا مرفوضة؛ لا يطبق شرط 12 صورة
   مجددًا إلا بصور مستقلة مرسومة فعليًا وبعد قبول عينة واحدة داخل اللعبة.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
@@ -3605,5 +3639,6 @@
   8. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
   9. `android/docs/PIXEL_DENSITY_STANDARD_AR.md`
   10. `android/tools/test_enemy_pixel_density_contract.py`
-- الإجراء التالي المقترح: تثبيت APK `v0.50.2-alpha` وتجربة حركة الأبطال الأربعة
-  وMarket Enforcer وKeeper-7 في Stage 1 على Shield/Xiaomi.
+- الإجراء التالي المقترح: تثبيت APK `v0.51.0-alpha` وتجربة Essa وAdam وMarket
+  في Stage 1 على Shield/Xiaomi. إذا نجح Market، يعاد Keeper-7 بالطريقة نفسها؛
+  ثم يعاد Lantern Courier وPalace Sentinel وTidebreaker لإزالة الرموز المرفوضة.
