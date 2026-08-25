@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "app/src/main/assets"
 JAVA = (ROOT / "app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java").read_text()
 GAME = (ROOT / "app/src/main/java/com/familyforce/neonstreets/GameView.java").read_text()
-SOURCE = ROOT.parent / "assets/imagegen/android/enemies/quality-v2"
+SOURCE_ROOT = ROOT.parent / "assets/imagegen/android/enemies"
 STRICT = (
     "grunt", "skater", "lantern_courier", "market_enforcer", "keeper_7",
 )
@@ -33,14 +33,20 @@ def cells(image: Image.Image):
 
 for enemy in STRICT:
     assert f'type("{enemy}"' in JAVA, enemy
-    model_sheet = SOURCE / enemy / "model_sheet.png"
+    # Individually approved redraws may advance without forcing untouched
+    # enemies onto the same source generation. Prefer the newest available
+    # source pack while retaining the accepted v2 pack for the other actors.
+    source = SOURCE_ROOT / "quality-v3" / enemy
+    if not source.is_dir():
+        source = SOURCE_ROOT / "quality-v2" / enemy
+    model_sheet = source / "model_sheet.png"
     assert model_sheet.is_file(), f"missing identity model sheet: {model_sheet}"
     with Image.open(model_sheet) as model:
         assert model.width >= 1536 and model.height >= 900, (
             model_sheet, model.size, "model sheet below 1536x900"
         )
     for sheet in ("idle_walk.png", "attacks.png", "hurt_knockdown.png"):
-        path = SOURCE / enemy / sheet
+        path = source / sheet
         assert path.is_file(), f"missing high-resolution source: {path}"
         with Image.open(path) as image:
             assert image.width >= 1536 and image.height >= 900, (

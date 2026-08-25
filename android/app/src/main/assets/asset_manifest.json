@@ -601,16 +601,16 @@
     },
     {
       "path": "enemies/keeper_7.png",
-      "bytes": 246098,
-      "sha256": "0b1d83c0757d98993724492fc8ac0c5f7b17a9eaa9c05003eeb51e786b8fd3b1",
+      "bytes": 232634,
+      "sha256": "56b96d30bbda6d30267a5a6acedf8d3b64f1a657e382978b958c3f75a0ef77c7",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/keeper_7_anim.png",
-      "bytes": 380099,
-      "sha256": "491fcc8b475b1284f8ba8fa99e4f18799d3c62b693dc3918d1cd0fa214f8f7ec",
+      "bytes": 386012,
+      "sha256": "19dae3a33e6bbb5c2fcc6e015213e064b98ab54291ada38666a1f44896f0bbce",
       "width": 1344,
       "height": 1152,
       "mode": "RGBA"
@@ -633,16 +633,16 @@
     },
     {
       "path": "enemies/market_enforcer.png",
-      "bytes": 239102,
-      "sha256": "d8e10f66f2b0ef769b435b827fdac88ad099ef6c22edc70d61b3cc18f1de3e90",
+      "bytes": 233852,
+      "sha256": "d09248f1c08e2bc1fc65e933e594e665ff5bdbaf3adfacfd515d91c201e69776",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/market_enforcer_anim.png",
-      "bytes": 429530,
-      "sha256": "beaa4f6df1865e4b2b8b2af75aee1cd18be47334e94d91059701693d7cc6a9ab",
+      "bytes": 416861,
+      "sha256": "c8506f01d506e344cccfd64482818992850c36931cc4bf975df3799f7d07aff9",
       "width": 1344,
       "height": 1152,
       "mode": "RGBA"
@@ -1385,8 +1385,8 @@
     },
     {
       "path": "runtime/enemies/keeper_7_anim.png",
-      "bytes": 2203323,
-      "sha256": "5f958ac579411e3cb0ccb243ea0884c683ec77199a657a43564324a02ac0afdf",
+      "bytes": 2254808,
+      "sha256": "5b40a2c8a47a48414bf8d0111355f2739ddd7c28b6c19d527e2a17321e4342d7",
       "width": 2016,
       "height": 1728,
       "mode": "RGBA"
@@ -1401,8 +1401,8 @@
     },
     {
       "path": "runtime/enemies/market_enforcer_anim.png",
-      "bytes": 2518948,
-      "sha256": "1a4622ea40cd3289ee385d6ebb03413a9a96b60251a70ce4910f39431f600056",
+      "bytes": 2431240,
+      "sha256": "1f107449bb3413aba2af51de24e6d21c858ae9dcd57b98c126927410f0a25301",
       "width": 2016,
       "height": 1728,
       "mode": "RGBA"
@@ -1899,8 +1899,8 @@
     },
     {
       "path": "tv/enemies/keeper_7_anim.png",
-      "bytes": 835625,
-      "sha256": "d8eee1dcd61e74b6c12b07022a02865899bea2ab76e8b07cbb480ddccefd9c32",
+      "bytes": 860912,
+      "sha256": "983d6829d5ba396a621e4f197d9f56afa2a823f678a46ee0c4bf8735d3504ddf",
       "width": 1176,
       "height": 1008,
       "mode": "RGBA"
@@ -1915,8 +1915,8 @@
     },
     {
       "path": "tv/enemies/market_enforcer_anim.png",
-      "bytes": 963481,
-      "sha256": "525a5545dfd0921435b4a9908bb063a7b1d0a79616f42beaabd47b40ca797359",
+      "bytes": 929771,
+      "sha256": "11a25e8bae17336035e060e4257e278141fec6b4dbd108cb11160bd4886c6aa2",
       "width": 1176,
       "height": 1008,
       "mode": "RGBA"
@@ -2356,5 +2356,5 @@
   ],
   "project": "Family Force: Neon Streets",
   "status": "direct-reference family character pack; likeness quality is provisional until five or more photos per person enable Soul training",
-  "visual_formula": "High-detail retro arcade pixel art rendered at a modern 360p-to-720p game resolution, with fine 2\u20134 pixel clusters, crisp edges, selective dithering, and no oversized block pixels. Athletic readable silhouettes use dark navy outlines, expressive recognizable faces, dynamic foreshortening, and slightly exaggerated 1990s beat-\u2019em-up proportions. Night streets use indigo, teal, and warm amber; heroes use distinct red-gold, green-purple, pink-ice, and blue-red palettes. Energetic family-friendly lighting and strong foreground contrast maintain a consistent three-quarter side-view belt-brawler perspective."
+  "visual_formula": "High-detail retro arcade pixel art rendered at a modern 360p-to-720p game resolution, with fine 2–4 pixel clusters, crisp edges, selective dithering, and no oversized block pixels. Athletic readable silhouettes use dark navy outlines, expressive recognizable faces, dynamic foreshortening, and slightly exaggerated 1990s beat-’em-up proportions. Night streets use indigo, teal, and warm amber; heroes use distinct red-gold, green-purple, pink-ice, and blue-red palettes. Energetic family-friendly lighting and strong foreground contrast maintain a consistent three-quarter side-view belt-brawler perspective."
 }
