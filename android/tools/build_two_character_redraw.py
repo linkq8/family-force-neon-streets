@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import math
@@ -44,6 +45,11 @@ def is_chroma(red: int, green: int, blue: int) -> bool:
     return green > 138 and green > red * 1.35 and green > blue * 1.20
 
 
+def is_background_chroma(red: int, green: int, blue: int) -> bool:
+    """Match the neon key, never Adam's authored green skin/shading."""
+    return green >= 220 and red <= 55 and blue <= 65
+
+
 def split_sheet(path: Path, columns: int, rows: int,
                 preserve_canvas: bool = False) -> list[Image.Image]:
     image = Image.open(path).convert("RGB")
@@ -67,10 +73,36 @@ def split_sheet(path: Path, columns: int, rows: int,
                 + [pixels[cell.width - 1, y] for y in range(cell.height)])
         chroma_edge = sum(is_chroma(*color) for color in edge) / max(1, len(edge))
         if chroma_edge >= 0.5:
+            # Never delete every green-looking pixel globally: Adam is green.
+            # Remove the strict neon key everywhere (including enclosed gaps),
+            # then grow through only broad chroma connected to a panel edge so
+            # anti-aliased background fringe disappears without hollowing the
+            # torso, arms, or legs behind their dark outline.
+            background = {
+                (x, y)
+                for y in range(cell.height)
+                for x in range(cell.width)
+                if is_background_chroma(*pixels[x, y])
+            }
+            queue = deque()
+            for x in range(cell.width):
+                queue.extend(((x, 0), (x, cell.height - 1)))
+            for y in range(cell.height):
+                queue.extend(((0, y), (cell.width - 1, y)))
+            edge_chroma = set()
+            while queue:
+                x, y = queue.popleft()
+                if (x, y) in edge_chroma or not is_chroma(*pixels[x, y]):
+                    continue
+                edge_chroma.add((x, y))
+                for nx, ny in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+                    if 0 <= nx < cell.width and 0 <= ny < cell.height:
+                        queue.append((nx, ny))
+            background.update(edge_chroma)
             for y in range(cell.height):
                 for x in range(cell.width):
                     red, green, blue = pixels[x, y]
-                    if not is_chroma(red, green, blue):
+                    if (x, y) not in background:
                         output[x, y] = (red, green, blue, 255)
         else:
             # Some otherwise approved sheets arrive on a smooth dark studio
@@ -416,53 +448,72 @@ def refresh_manifest() -> None:
     path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
 
 
-def main() -> None:
-    build_actor("essa", ESSA_ACTIONS, 8, (
+def build_named_actor(name: str) -> None:
+    if name == "essa":
+        build_actor("essa", ESSA_ACTIONS, 8, (
         (ASSETS / "heroes/parent_anim.png", (192, 192)),
         (ASSETS / "tv/heroes/parent_anim.png", (144, 144)),
         (ASSETS / "runtime/heroes/parent_anim.png", (284, 284)),
         # 3072x4224: UHD/4K-class atlas used only on large-heap devices.
         (ASSETS / "uhd/heroes/parent_anim.png", (384, 384)),
-    ))
-    build_actor("adam", ADAM_ACTIONS, 8, (
+        ))
+    elif name == "adam":
+        build_actor("adam", ADAM_ACTIONS, 8, (
         (ASSETS / "heroes/adam_anim.png", (192, 192)),
         (ASSETS / "tv/heroes/adam_anim.png", (144, 144)),
         # Keep low-memory TV decoded cost unchanged; large-heap devices load
         # the separate 384px UHD atlas below.
         (ASSETS / "runtime/heroes/adam_anim.png", (192, 192)),
         (ASSETS / "uhd/heroes/adam_anim.png", (384, 384)),
-    ))
-    build_actor("shaikha", SHAIKHA_ACTIONS, 8, (
+        ))
+    elif name == "shaikha":
+        build_actor("shaikha", SHAIKHA_ACTIONS, 8, (
         (ASSETS / "heroes/shaikha_anim.png", (192, 192)),
         (ASSETS / "tv/heroes/shaikha_anim.png", (144, 144)),
         (ASSETS / "runtime/heroes/shaikha_anim.png", (192, 192)),
         (ASSETS / "uhd/heroes/shaikha_anim.png", (384, 384)),
-    ))
-    build_actor("sulaiman", SULAIMAN_ACTIONS, 8, (
+        ))
+    elif name == "sulaiman":
+        build_actor("sulaiman", SULAIMAN_ACTIONS, 8, (
         (ASSETS / "heroes/sulaiman_anim.png", (192, 192)),
         (ASSETS / "tv/heroes/sulaiman_anim.png", (144, 144)),
         # Preserve the existing low-memory decoded footprint.
         (ASSETS / "runtime/heroes/sulaiman_anim.png", (198, 198)),
         (ASSETS / "uhd/heroes/sulaiman_anim.png", (384, 384)),
-    ))
-    build_actor("striker", STRIKER_ACTIONS, 6, (
+        ))
+    elif name == "striker":
+        build_actor("striker", STRIKER_ACTIONS, 6, (
         (ASSETS / "enemies/striker_anim.png", (160, 192)),
         (ASSETS / "tv/enemies/striker_anim.png", (140, 168)),
         (ASSETS / "runtime/enemies/striker_anim.png", (218, 261)),
         # 1920x2304 with 2x the authored width for cleaner 4K-TV sampling.
         (ASSETS / "uhd/enemies/striker_anim.png", (320, 384)),
-    ))
-    # Static Striker fallback comes from the new neutral runtime frame.
-    runtime = Image.open(ASSETS / "runtime/enemies/striker_anim.png").convert("RGBA")
-    neutral = runtime.crop((0, 0, 218, 261))
-    master = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
-    scale = min(420 / neutral.width, 440 / neutral.height)
-    neutral = neutral.resize((round(neutral.width * scale), round(neutral.height * scale)),
-                             Image.Resampling.LANCZOS)
-    master.alpha_composite(neutral, ((512 - neutral.width) // 2, 480 - neutral.height))
-    master.save(ASSETS / "enemies/striker.png", optimize=True, compress_level=9)
+        ))
+        # Static Striker fallback comes from the new neutral runtime frame.
+        runtime = Image.open(ASSETS / "runtime/enemies/striker_anim.png").convert("RGBA")
+        neutral = runtime.crop((0, 0, 218, 261))
+        master = Image.new("RGBA", (512, 512), (0, 0, 0, 0))
+        scale = min(420 / neutral.width, 440 / neutral.height)
+        neutral = neutral.resize((round(neutral.width * scale), round(neutral.height * scale)),
+                                 Image.Resampling.LANCZOS)
+        master.alpha_composite(neutral, ((512 - neutral.width) // 2, 480 - neutral.height))
+        master.save(ASSETS / "enemies/striker.png", optimize=True, compress_level=9)
+    else:
+        raise ValueError(f"unknown actor: {name}")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--actor", choices=("essa", "adam", "shaikha", "sulaiman", "striker"),
+        action="append", help="rebuild only the selected actor; repeat as needed",
+    )
+    args = parser.parse_args()
+    selected = args.actor or ["essa", "adam", "shaikha", "sulaiman", "striker"]
+    for name in selected:
+        build_named_actor(name)
     refresh_manifest()
-    print("Built scale-locked redraws for all four heroes and Striker")
+    print("Built scale-locked redraws for " + ", ".join(selected))
 
 
 if __name__ == "__main__":

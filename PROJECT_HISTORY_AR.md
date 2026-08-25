@@ -185,6 +185,54 @@
 
 ## سجل الطلبات والتعديلات المشترك
 
+### 2026-08-25-85 — إصلاح شفافية جسم Adam وتحسين وضوح Essa لاحقًا
+
+- المنفذ: Codex
+- طلب المستخدم: DualSense يعمل الآن، وEssa أوضح لكنه لم يصل إلى الوضوح الممتاز؛
+  أما Adam فتوجد أجزاء شفافة في جسمه ويظهر ما خلفه.
+- الحالة: قيد التنفيذ
+- نقطة البداية: `v0.49.1-alpha` / commit
+  `514f988f3facc6be6165f8cbc5d48c77c7e98e1a`.
+- ما تم:
+  - تثبيت نجاح إصلاح DualSense ميدانيًا حسب اختبار المستخدم.
+  - تحديد السبب الجذري: أوراق Adam الأصلية خضراء على Chroma أخضر، بينما دالة
+    `split_sheet` القديمة حذفت كل بكسل يطابق نطاق الأخضر في كامل الصورة؛ لذلك
+    حذفت تدرجات حقيقية من الصدر والذراعين والساقين وتركت الجسم مجوفًا.
+  - استبدال الحذف العالمي بفصل محافظ: إزالة Neon key الصريح، وتنظيف fringe
+    الأخضر الواصل إلى حواف الخلية فقط؛ الأخضر الموجود خلف الـoutline يبقى جزءًا
+    معتمًا من جسم Adam بتدرجاته الأصلية.
+  - إضافة `--actor` لأداتي بناء الأطلس والـclips حتى يمكن إعادة بناء Adam وحده
+    دون لمس Essa أو Shaikha أو Sulaiman أو الأعداء.
+  - إعادة بناء أطالس Adam في Base/Runtime/TV/UHD، ثم 11 ملف حركة مستقلًا لكل
+    tier ومصادر UHD الإنتاجية، وتحديث Manifest.
+  - إضافة عقد QA يعدّ الجزر الشفافة المغلقة في الحركات الجسدية ويمنع عودة
+    ثقوب الصدر/الأطراف.
+  - رفع النسخة محليًا إلى `v0.49.2-alpha` / `versionCode 62`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `android/app/build.gradle`
+  - `android/tools/build_two_character_redraw.py`
+  - `android/tools/build_separate_animation_clips.py`
+  - `android/tools/test_two_character_redraw_contract.py`
+  - `android/app/src/main/assets/{heroes,runtime/heroes,tv/heroes,uhd/heroes}/adam_anim.png`
+  - `android/app/src/main/assets/{clips,runtime/clips,tv/clips,uhd/clips}/heroes/adam/*.png`
+  - `assets/imagegen/android/animation-clips-v1/heroes/adam/*/source_uhd.png`
+  - `android/app/src/main/assets/asset_manifest.json`
+- الاختبارات:
+  - `test_two_character_redraw_contract.py` — PASS، بما فيه عقد شفافية Adam.
+  - `test_separate_animation_clips.py` — PASS.
+  - `validate_animation_atlases.py --allow-nonclustered` — PASS، الأطالس `26/26`.
+  - `validate_assets.py` — PASS، عدد الملفات المسجلة `305`.
+  - `test_customer_release.sh` — PASS للبناء وR8/Lint والتوقيع وكل العقود؛
+    SHA-256 للـAPK `8ee21c1173aa4b980553714883d9fe732ae1e719ed06ccd791f89a03a20a6ed9`.
+  - تثبيت APK وتشغيل Adam فعليًا على محاكي Android، الوصول إلى PLAY والتقاط
+    صور idle/action، وبقاء العملية حية دون FATAL/ANR/OOM — PASS.
+- Release: قيد الرفع كـ`v0.49.2-alpha`.
+- ملاحظات/مخاطر: لم تتغير رسومات Essa في هذا الإصدار؛ تحسين وضوحها الممتاز
+  يحتاج جولة منفصلة لا تمس إصلاح Adam المستقر.
+- التالي: commit ورفع APK، ثم تأكيد Adam بصريًا على Shield؛ بعدها تحسين Essa
+  من مصدره عالي الدقة على عينة واحدة قبل التعميم.
+
 ### 2026-08-25-84 — Regression بصري وتحكم DualSense في v0.49
 
 - المنفذ: Codex

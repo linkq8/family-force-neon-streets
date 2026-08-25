@@ -2,6 +2,7 @@
 """Validate scale-locked redraws without mutating unrelated fighters."""
 
 import hashlib
+from collections import deque
 from pathlib import Path
 from PIL import Image
 
@@ -16,9 +17,45 @@ UNTOUCHED = {
     "runtime/enemies/shield_guard_anim.png": "062d40e86ad199fae6f046f4074a708e159341ace85c027b2de5ede90b8cc2d1",
 }
 
+
+def enclosed_transparent_pixels(cell: Image.Image) -> int:
+    """Count alpha holes that cannot reach the cell edge."""
+    alpha = cell.getchannel("A")
+    pixels = alpha.load()
+    outside = set()
+    queue = deque()
+    for x in range(cell.width):
+        queue.extend(((x, 0), (x, cell.height - 1)))
+    for y in range(cell.height):
+        queue.extend(((0, y), (cell.width - 1, y)))
+    while queue:
+        x, y = queue.popleft()
+        if (x, y) in outside or pixels[x, y]:
+            continue
+        outside.add((x, y))
+        for nx, ny in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+            if 0 <= nx < cell.width and 0 <= ny < cell.height:
+                queue.append((nx, ny))
+    return sum(
+        1 for y in range(cell.height) for x in range(cell.width)
+        if not pixels[x, y] and (x, y) not in outside
+    )
+
 for relative, expected in UNTOUCHED.items():
     actual = hashlib.sha256((ASSETS / relative).read_bytes()).hexdigest()
     assert actual == expected, (relative, "unexpected redraw", actual)
+
+# Adam's green body must never be removed by the green-screen key. The old
+# global chroma predicate created hundreds of transparent pixels inside every
+# chest/arm/leg. Tiny enclosed facial/outline gaps remain legitimate.
+adam = Image.open(ASSETS / "heroes/adam_anim.png").convert("RGBA")
+for row in (0, 2, 3, 4, 5, 8, 9):
+    holes = []
+    for column in range(8):
+        cell = adam.crop((column * 192, row * 192,
+                          (column + 1) * 192, (row + 1) * 192))
+        holes.append(enclosed_transparent_pixels(cell))
+    assert max(holes) < 100, ("Adam", row, "transparent body holes", holes)
 
 for relative, dimensions, columns, rows in (
     ("heroes/parent_anim.png", (1536, 2112), 8, 11),

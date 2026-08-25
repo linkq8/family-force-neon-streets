@@ -337,88 +337,88 @@
     },
     {
       "path": "clips/heroes/adam/heavy_kick.png",
-      "bytes": 238039,
-      "sha256": "4bd49c56d25ca979b65dfd5291655fa23c1b3f547f9de036fcc2497a63a50d3d",
+      "bytes": 263685,
+      "sha256": "87f0e7d949a5a4a426ba00665436d24cfa2c7ca41b96cf0088a0df1bd303f882",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/adam/heavy_punch.png",
-      "bytes": 239116,
-      "sha256": "e7d1016f4cf1e8d8a5b5b62f8916b08298929c7fc8ad6f2106dd8bc2863b97b7",
+      "bytes": 279581,
+      "sha256": "329906272d97bed6a92d76bd7acfe608b8b0ba99f6591db0ecda9b449a23aaca",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/adam/hurt.png",
-      "bytes": 256920,
-      "sha256": "494c8818cf2a6f314f57ddff5ec9308c00231c40ccc8a752db486c5717f8280b",
+      "bytes": 292721,
+      "sha256": "74db2b1e09834d3a7b1c540087a75efbc5045795a8313cf4a04c30f87587ccc9",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/adam/idle.png",
-      "bytes": 259394,
-      "sha256": "26ff49f40e9b4f98ca56bec8a13da26825de697b1b8d206ac1c34b52269eba64",
+      "bytes": 293761,
+      "sha256": "867ebcde51f1de07af97eda28d200468b2d00a7e82953811adbaf6e0363a9541",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/adam/jump.png",
-      "bytes": 252976,
-      "sha256": "f9985a928dfa32c2a518ce83cc7d11727bb71b40645f278833de0fabd0d1c2c7",
+      "bytes": 297305,
+      "sha256": "e6f25ea7452181acee8d60afd3cc9977677f62b375c8dbc82b5e04eae2f837ca",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/adam/kick.png",
-      "bytes": 216067,
-      "sha256": "621012db45ede0d9b3d93a6ed12a1d6246494120981e00fe9d38ebd1d9a1856c",
+      "bytes": 252519,
+      "sha256": "a1a09942f8322583d4d97708c255fc4820d7a757a7ed384263ee428d88cf3073",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/adam/knockdown.png",
-      "bytes": 220369,
-      "sha256": "4511aa305a5571f55a09c80ae4bf1b49ef5a00e3bc8e9f71ff85f3d0c53c31ed",
+      "bytes": 255518,
+      "sha256": "b942588e81cdf7b3ec2989ab9715b004d25bb3b79c13ca274d69b6d0f9e6f1e1",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/adam/link.png",
-      "bytes": 247786,
-      "sha256": "b91c4ac234ad58714335eb94dafc673e530582a27d6f4f096513e9a1e948eda0",
+      "bytes": 289300,
+      "sha256": "07becf80240e3fb54a59df7072fcf1db20ed2a22269f6e200ee2d52e4ac10819",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/adam/punch.png",
-      "bytes": 246535,
-      "sha256": "3020a4e0ea7bb67c4364546aef748a2a9247084f17fc991c6a07b38d005fa9ab",
+      "bytes": 275497,
+      "sha256": "9bf2e4d9105e17f22779246120af37c1b2e55e8e4cca279cb1b3e3da8805c47f",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/adam/special.png",
-      "bytes": 245820,
-      "sha256": "7a474525cd7bc101590eec03a98f1f1600aea57d29829d2242f9516a06ec5663",
+      "bytes": 281619,
+      "sha256": "79c2d3952b89e09141842af05ed756827783df1435aa2e5f2e68d0218ec964ad",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/adam/walk.png",
-      "bytes": 211795,
-      "sha256": "86c66f87024219352532f9778943f4d21efa163b004db3184ff4acbcc54c6c9a",
+      "bytes": 244618,
+      "sha256": "5174ee767b4422c6871c39487f13e1f6c0d9bba118d3a022d814faaae5fa2c1c",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
@@ -809,8 +809,8 @@
     },
     {
       "path": "heroes/adam_anim.png",
-      "bytes": 2634913,
-      "sha256": "b3c878ffdaea6a1e8428e49ff257953759087b4e7e5f45aa84cfccecf5c352d0",
+      "bytes": 3026477,
+      "sha256": "f91eda3adc44e546e7465107b5aeaf0c05e8ef463cd7cf875e4c0cf82d220bff",
       "width": 1536,
       "height": 2112,
       "mode": "RGBA"
@@ -1185,88 +1185,88 @@
     },
     {
       "path": "runtime/clips/heroes/adam/heavy_kick.png",
-      "bytes": 238039,
-      "sha256": "4bd49c56d25ca979b65dfd5291655fa23c1b3f547f9de036fcc2497a63a50d3d",
+      "bytes": 263685,
+      "sha256": "87f0e7d949a5a4a426ba00665436d24cfa2c7ca41b96cf0088a0df1bd303f882",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/adam/heavy_punch.png",
-      "bytes": 239116,
-      "sha256": "e7d1016f4cf1e8d8a5b5b62f8916b08298929c7fc8ad6f2106dd8bc2863b97b7",
+      "bytes": 279581,
+      "sha256": "329906272d97bed6a92d76bd7acfe608b8b0ba99f6591db0ecda9b449a23aaca",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/adam/hurt.png",
-      "bytes": 256920,
-      "sha256": "494c8818cf2a6f314f57ddff5ec9308c00231c40ccc8a752db486c5717f8280b",
+      "bytes": 292721,
+      "sha256": "74db2b1e09834d3a7b1c540087a75efbc5045795a8313cf4a04c30f87587ccc9",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/adam/idle.png",
-      "bytes": 259394,
-      "sha256": "26ff49f40e9b4f98ca56bec8a13da26825de697b1b8d206ac1c34b52269eba64",
+      "bytes": 293761,
+      "sha256": "867ebcde51f1de07af97eda28d200468b2d00a7e82953811adbaf6e0363a9541",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/adam/jump.png",
-      "bytes": 252976,
-      "sha256": "f9985a928dfa32c2a518ce83cc7d11727bb71b40645f278833de0fabd0d1c2c7",
+      "bytes": 297305,
+      "sha256": "e6f25ea7452181acee8d60afd3cc9977677f62b375c8dbc82b5e04eae2f837ca",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/adam/kick.png",
-      "bytes": 216067,
-      "sha256": "621012db45ede0d9b3d93a6ed12a1d6246494120981e00fe9d38ebd1d9a1856c",
+      "bytes": 252519,
+      "sha256": "a1a09942f8322583d4d97708c255fc4820d7a757a7ed384263ee428d88cf3073",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/adam/knockdown.png",
-      "bytes": 220369,
-      "sha256": "4511aa305a5571f55a09c80ae4bf1b49ef5a00e3bc8e9f71ff85f3d0c53c31ed",
+      "bytes": 255518,
+      "sha256": "b942588e81cdf7b3ec2989ab9715b004d25bb3b79c13ca274d69b6d0f9e6f1e1",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/adam/link.png",
-      "bytes": 247786,
-      "sha256": "b91c4ac234ad58714335eb94dafc673e530582a27d6f4f096513e9a1e948eda0",
+      "bytes": 289300,
+      "sha256": "07becf80240e3fb54a59df7072fcf1db20ed2a22269f6e200ee2d52e4ac10819",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/adam/punch.png",
-      "bytes": 246535,
-      "sha256": "3020a4e0ea7bb67c4364546aef748a2a9247084f17fc991c6a07b38d005fa9ab",
+      "bytes": 275497,
+      "sha256": "9bf2e4d9105e17f22779246120af37c1b2e55e8e4cca279cb1b3e3da8805c47f",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/adam/special.png",
-      "bytes": 245820,
-      "sha256": "7a474525cd7bc101590eec03a98f1f1600aea57d29829d2242f9516a06ec5663",
+      "bytes": 281619,
+      "sha256": "79c2d3952b89e09141842af05ed756827783df1435aa2e5f2e68d0218ec964ad",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/adam/walk.png",
-      "bytes": 211795,
-      "sha256": "86c66f87024219352532f9778943f4d21efa163b004db3184ff4acbcc54c6c9a",
+      "bytes": 244618,
+      "sha256": "5174ee767b4422c6871c39487f13e1f6c0d9bba118d3a022d814faaae5fa2c1c",
       "width": 1536,
       "height": 192,
       "mode": "RGBA"
@@ -1433,8 +1433,8 @@
     },
     {
       "path": "runtime/heroes/adam_anim.png",
-      "bytes": 2634913,
-      "sha256": "b3c878ffdaea6a1e8428e49ff257953759087b4e7e5f45aa84cfccecf5c352d0",
+      "bytes": 3026477,
+      "sha256": "f91eda3adc44e546e7465107b5aeaf0c05e8ef463cd7cf875e4c0cf82d220bff",
       "width": 1536,
       "height": 2112,
       "mode": "RGBA"
@@ -1659,88 +1659,88 @@
     },
     {
       "path": "tv/clips/heroes/adam/heavy_kick.png",
-      "bytes": 158642,
-      "sha256": "f4282906a8fcc008b665d40d25336a38df57dbe940b75d555f07adceb69c6bab",
+      "bytes": 153569,
+      "sha256": "285dd07dc83a82fa114169ea0183e88481f9faec62a0f4e50bfc9eec13da6268",
       "width": 1152,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/adam/heavy_punch.png",
-      "bytes": 161280,
-      "sha256": "8f4bf337994305ec8b921ae1ed0b9f2d5eb48df71a81c959f935f2c93508bf93",
+      "bytes": 164473,
+      "sha256": "d6dcbdbbeb4a914a5fa7bd85746e6f1112f417671fe5509f74ae6b86cb7653a5",
       "width": 1152,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/adam/hurt.png",
-      "bytes": 169869,
-      "sha256": "4b32fbf1c236567d3913616496715bc994705672ef811f52414bfac289e4f63f",
+      "bytes": 169705,
+      "sha256": "61e52ccaf2a71c9b2535930be6e5d034656034590764d0cd5766f7bb64a9c90f",
       "width": 1152,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/adam/idle.png",
-      "bytes": 171851,
-      "sha256": "e66098bb3900c23ef0e324c5fcc5d87ede2c5cfeee2fee32fa6cd3c81b17604b",
+      "bytes": 171983,
+      "sha256": "fe8f094536f5a800c4231ec9140336a1df99d7b2e82cf31ead89560a09bb3a43",
       "width": 1152,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/adam/jump.png",
-      "bytes": 170797,
-      "sha256": "ee47a3f1e3ad99a0ec36170872c41eef9fefe7adcb7df8a032b4522f19e6e493",
+      "bytes": 175055,
+      "sha256": "203fcc899b707b9af89aced23d2223addef4d98268fc92c52a637888dd10d444",
       "width": 1152,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/adam/kick.png",
-      "bytes": 143075,
-      "sha256": "aacca65c71037ea4aa4b4823cae2aebec4093c19d40c835ce653b96b02509fd2",
+      "bytes": 146978,
+      "sha256": "4933661bd0cdd80fe32c355396b083c282d6866086d7b1208106e5a44a3906f4",
       "width": 1152,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/adam/knockdown.png",
-      "bytes": 147110,
-      "sha256": "8851c74afe1595746947767b8a1801c4b15dad2edeb422feca1ae810aec28162",
+      "bytes": 151313,
+      "sha256": "e5531a1c37410fea6f6d8d7a3bfa18ddcd68789fca915439ff39214572aed474",
       "width": 1152,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/adam/link.png",
-      "bytes": 164247,
-      "sha256": "6015657de01a6d472547fa37c86fe058c9651d6393e62fc5ef6c0e95e8d7f2d6",
+      "bytes": 168188,
+      "sha256": "e230f10eda9af6dcb69ed805b28696eb8b4ad2b51b1fa1709ee6a4a1b7afcbca",
       "width": 1152,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/adam/punch.png",
-      "bytes": 163535,
-      "sha256": "609f9fe84652f18834d4a5dffcb7d3538f563d59bc7d73ac46fcc323d1c98784",
+      "bytes": 161339,
+      "sha256": "60795186bc710999f75dab7ebdf7232a1d8f6bb88aca50002e1d4c9484b8c215",
       "width": 1152,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/adam/special.png",
-      "bytes": 164361,
-      "sha256": "f09e3ceb50843bd28903a3717eb0a467e242a4ecef5f0d58d062a432fbb90830",
+      "bytes": 165791,
+      "sha256": "769c044b4f9d6bb043af485a4c2b961819cc6b07737c248c388c8a209d5445ec",
       "width": 1152,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/adam/walk.png",
-      "bytes": 139732,
-      "sha256": "1bc26d076632746ac7dcdeafa1d29573f331a829e548941778c4a3da897b653b",
+      "bytes": 144268,
+      "sha256": "91b7efc488e6a9b39b570e97b26bbc18eb7538b21ca554e800405ecd11b61d40",
       "width": 1152,
       "height": 144,
       "mode": "RGBA"
@@ -2011,8 +2011,8 @@
     },
     {
       "path": "tv/heroes/adam_anim.png",
-      "bytes": 2264881,
-      "sha256": "9b1823ad6284f28226044c8ec4750f7a514b3f2b661453c9c49f5ddb85bc3456",
+      "bytes": 1772500,
+      "sha256": "14df1e4a09039b9dc9f3694c465fdf67cec73a522e394c20cf2ac076f2f8f3e7",
       "width": 1152,
       "height": 1584,
       "mode": "RGBA"
@@ -2051,88 +2051,88 @@
     },
     {
       "path": "uhd/clips/heroes/adam/heavy_kick.png",
-      "bytes": 810763,
-      "sha256": "b8a8bab487d021450383fee85f377bd8d687cf190d4f2f5309d6182f98dd770a",
+      "bytes": 906546,
+      "sha256": "db761495e0a22bd036d4f3beb1d7dcfd8ab6a6a7e6e8ea72f335e888961352a8",
       "width": 3072,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/adam/heavy_punch.png",
-      "bytes": 803226,
-      "sha256": "2bfdfbf169f269647239bbf18bdf2ffcb2250026cfd5e32f679b25876e995317",
+      "bytes": 948453,
+      "sha256": "ce72d8cc672185a7aa36e65d40d0da3d54c7592f62a73818634440c1b680a6b3",
       "width": 3072,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/adam/hurt.png",
-      "bytes": 873992,
-      "sha256": "3e3dc0c53c9dccf4821558070b5e925e99955d9485b7d4ed1a5af21278d1f465",
+      "bytes": 1008668,
+      "sha256": "2f3f8cef8bdabaaff12f42edcccdcf744015f7e1c05bb5eeb675f42da9379981",
       "width": 3072,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/adam/idle.png",
-      "bytes": 871496,
-      "sha256": "634240e1eb092224ea8001833e62172b9f65a5301728b5009dd48df9868e2fb6",
+      "bytes": 997428,
+      "sha256": "ccd4cd27babcecc693ab2d99b29136e305445339212f0978173429e3dcb82075",
       "width": 3072,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/adam/jump.png",
-      "bytes": 826235,
-      "sha256": "e1765c9ff323fa9b19eafbd45dbf43b3be9f447e1da685b24f7aaf425824f287",
+      "bytes": 976408,
+      "sha256": "699121676a581d31891754ac2ee7afe40061e8947402f68632098549d5172952",
       "width": 3072,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/adam/kick.png",
-      "bytes": 732882,
-      "sha256": "51850078167f8c6e55730791b8f191388957a681cd4e1770241ac6609870e1ec",
+      "bytes": 872624,
+      "sha256": "7d149c2a3d1711be37c817cba761dfad9f44c851bfea849ffeefd89990e6a611",
       "width": 3072,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/adam/knockdown.png",
-      "bytes": 738487,
-      "sha256": "ffaacd2c346c6ebd01d39325267527ccd61f6da7ac2a77f5b2088030eb702c85",
+      "bytes": 867365,
+      "sha256": "ddb6b53a0d106115dbe10f950d7fec32da01bf5a9487e350c4379c2474fd5d90",
       "width": 3072,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/adam/link.png",
-      "bytes": 840218,
-      "sha256": "d54cb5ac492515398fe370d68be66dc6f1b5a9f96940d9ee63bf3f0c382e6f94",
+      "bytes": 996016,
+      "sha256": "00fba9c51a68f8cc8b1e516ec455215c0a3431713477a5aba31eaaea09c8609b",
       "width": 3072,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/adam/punch.png",
-      "bytes": 834052,
-      "sha256": "fc63db13cdc51cfc500ff3de3aff327f5cb49f3bb5fe4a3aec8dbead806cb4e2",
+      "bytes": 942247,
+      "sha256": "a9baa5f22af658a02368643ba7e1c6bc92184d78d8fdd0b23cb6e8c1a5e340ac",
       "width": 3072,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/adam/special.png",
-      "bytes": 812077,
-      "sha256": "7a44299776c901578fd8814d9b6f0fa8766f446c10b97baed8f2f7fe6062bc26",
+      "bytes": 936840,
+      "sha256": "60754ecadbe4389cce9a18594faddd41d8ec2854ab33868578d08d0a796838c8",
       "width": 3072,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/adam/walk.png",
-      "bytes": 707655,
-      "sha256": "041137dbb5e2cac64634c95c0e8cc4f9f67e72fbb3b48203c9b670ba0db64a54",
+      "bytes": 830416,
+      "sha256": "c68aea2ef036c4c5ffd483686be497534e0a47fc71b086c1457a17b8e1441b1f",
       "width": 3072,
       "height": 384,
       "mode": "RGBA"
@@ -2235,8 +2235,8 @@
     },
     {
       "path": "uhd/heroes/adam_anim.png",
-      "bytes": 8851399,
-      "sha256": "cfd31152f534a747cd82bdbe480f683251d9543048b298e890db2441a611228f",
+      "bytes": 10284633,
+      "sha256": "9b3f6108c4384b0c84fbc111190f288f8c92a80548847e41c989f8b771f3535f",
       "width": 3072,
       "height": 4224,
       "mode": "RGBA"
@@ -2356,5 +2356,5 @@
   ],
   "project": "Family Force: Neon Streets",
   "status": "direct-reference family character pack; likeness quality is provisional until five or more photos per person enable Soul training",
-  "visual_formula": "High-detail retro arcade pixel art rendered at a modern 360p-to-720p game resolution, with fine 2–4 pixel clusters, crisp edges, selective dithering, and no oversized block pixels. Athletic readable silhouettes use dark navy outlines, expressive recognizable faces, dynamic foreshortening, and slightly exaggerated 1990s beat-’em-up proportions. Night streets use indigo, teal, and warm amber; heroes use distinct red-gold, green-purple, pink-ice, and blue-red palettes. Energetic family-friendly lighting and strong foreground contrast maintain a consistent three-quarter side-view belt-brawler perspective."
+  "visual_formula": "High-detail retro arcade pixel art rendered at a modern 360p-to-720p game resolution, with fine 2\u20134 pixel clusters, crisp edges, selective dithering, and no oversized block pixels. Athletic readable silhouettes use dark navy outlines, expressive recognizable faces, dynamic foreshortening, and slightly exaggerated 1990s beat-\u2019em-up proportions. Night streets use indigo, teal, and warm amber; heroes use distinct red-gold, green-purple, pink-ice, and blue-red palettes. Energetic family-friendly lighting and strong foreground contrast maintain a consistent three-quarter side-view belt-brawler perspective."
 }

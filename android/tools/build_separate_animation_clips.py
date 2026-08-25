@@ -3,7 +3,10 @@
 
 from __future__ import annotations
 
+import argparse
 from collections import deque
+import hashlib
+import json
 from pathlib import Path
 from PIL import Image
 
@@ -98,12 +101,48 @@ def build_actor(kind: str, name: str, actions: tuple[str, ...], rows: int) -> No
     save_uhd_action_canvases(best, actions, PRODUCTION / kind / name)
 
 
+def refresh_manifest() -> None:
+    path = ASSETS / "asset_manifest.json"
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    records = []
+    for asset in sorted(ASSETS.rglob("*")):
+        if not asset.is_file() or asset == path:
+            continue
+        data = asset.read_bytes()
+        record = {
+            "path": asset.relative_to(ASSETS).as_posix(),
+            "bytes": len(data),
+            "sha256": hashlib.sha256(data).hexdigest(),
+        }
+        try:
+            with Image.open(asset) as image:
+                record.update(width=image.width, height=image.height, mode=image.mode)
+        except (OSError, ValueError):
+            pass
+        records.append(record)
+    payload["files"] = records
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+
+
 def main() -> None:
-    for hero in ("parent", "adam"):
-        build_actor("heroes", hero, HERO_ACTIONS, len(HERO_ACTIONS))
-    for enemy in ("grunt", "lantern_courier"):
-        build_actor("enemies", enemy, ENEMY_ACTIONS, len(ENEMY_ACTIONS))
-    print("Built separate clips for Essa, Adam, Grunt, and Lantern Courier")
+    actors = {
+        "parent": ("heroes", HERO_ACTIONS),
+        "adam": ("heroes", HERO_ACTIONS),
+        "grunt": ("enemies", ENEMY_ACTIONS),
+        "lantern_courier": ("enemies", ENEMY_ACTIONS),
+    }
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--actor", choices=tuple(actors), action="append",
+        help="rebuild only the selected actor; repeat as needed",
+    )
+    args = parser.parse_args()
+    selected = args.actor or list(actors)
+    for name in selected:
+        kind, actions = actors[name]
+        build_actor(kind, name, actions, len(actions))
+    refresh_manifest()
+    print("Built separate clips for " + ", ".join(selected))
 
 
 if __name__ == "__main__":
