@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Release-blocking visual parity contract for the approved Stage 1 pilot."""
+"""Release-blocking visual parity contract for every Stage 1 enemy."""
 
 from pathlib import Path
+import importlib.util
 import statistics
 
 from PIL import Image
@@ -10,10 +11,16 @@ ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "app/src/main/assets"
 JAVA = (ROOT / "app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java").read_text()
 GAME = (ROOT / "app/src/main/java/com/familyforce/neonstreets/GameView.java").read_text()
-SOURCE = ROOT.parent / "assets/imagegen/android/enemies/quality-v1"
+SOURCE = ROOT.parent / "assets/imagegen/android/enemies/quality-v2"
 STRICT = (
     "grunt", "skater", "lantern_courier", "market_enforcer", "keeper_7",
 )
+
+BUILDER_PATH = ROOT / "tools/build_strict_enemy_atlas.py"
+SPEC = importlib.util.spec_from_file_location("strict_enemy_builder", BUILDER_PATH)
+assert SPEC and SPEC.loader
+BUILDER = importlib.util.module_from_spec(SPEC)
+SPEC.loader.exec_module(BUILDER)
 
 
 def cells(image: Image.Image):
@@ -26,13 +33,26 @@ def cells(image: Image.Image):
 
 for enemy in STRICT:
     assert f'type("{enemy}"' in JAVA, enemy
+    model_sheet = SOURCE / enemy / "model_sheet.png"
+    assert model_sheet.is_file(), f"missing identity model sheet: {model_sheet}"
+    with Image.open(model_sheet) as model:
+        assert model.width >= 1536 and model.height >= 900, (
+            model_sheet, model.size, "model sheet below 1536x900"
+        )
     for sheet in ("idle_walk.png", "attacks.png", "hurt_knockdown.png"):
         path = SOURCE / enemy / sheet
         assert path.is_file(), f"missing high-resolution source: {path}"
         with Image.open(path) as image:
-            assert image.width / 6 >= 240 and image.height / 2 >= 240, (
-                path, image.size, "source cell below 240x240"
+            assert image.width >= 1536 and image.height >= 900, (
+                path, image.size, "source sheet below 1536x900"
             )
+            assert image.width / 6 >= 250 and image.height / 2 >= 450, (
+                path, image.size, "source cell below 250x450"
+            )
+        # Runs the same adaptive split and crop guard used by production. A
+        # visually attractive sheet cannot pass if any actor/effect touches
+        # the real gutter or would wrap into the neighbouring game frame.
+        assert len(BUILDER.split_sheet(path)) == 12, path
     tiers = {
         "base": (ASSETS / f"enemies/{enemy}_anim.png", (1344, 1152), 8),
         "runtime": (ASSETS / f"runtime/enemies/{enemy}_anim.png", (2016, 1728), 12),
@@ -51,7 +71,7 @@ for enemy in STRICT:
             standing = boxes[:12]
             ratios = [(box[3] - box[1]) / cell_h for box in standing]
             assert statistics.median(ratios) >= .64, (enemy, tier, "too small", statistics.median(ratios))
-            assert max(ratios) - min(ratios) <= .13, (enemy, tier, "scale drift", ratios)
+            assert max(ratios) - min(ratios) <= .05, (enemy, tier, "scale drift", ratios)
             lengths = [max(box[2] - box[0], box[3] - box[1]) for box in boxes]
             reference = statistics.median(lengths[:12])
             assert min(lengths[12:24]) >= reference * .78, (enemy, tier, "small action", lengths)

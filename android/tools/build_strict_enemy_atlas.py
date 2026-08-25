@@ -12,6 +12,8 @@ from PIL import Image, ImageFilter
 
 COLS, SOURCE_ROWS, OUTPUT_ROWS = 6, 2, 6
 SHEETS = ("idle_walk.png", "attacks.png", "hurt_knockdown.png")
+MIN_SOURCE_SIZE = (1536, 900)
+MIN_SOURCE_CELL = (250, 450)
 TIERS = {
     # Wide 7:6 cells preserve punches, backpacks, shields, and prone bodies.
     # The old 5:6 cell forced wide poses to shrink until details disappeared.
@@ -114,29 +116,67 @@ def keep_character_and_effects(image: Image.Image) -> Image.Image:
     return result
 
 
+def adaptive_column_bounds(clean_row: Image.Image) -> list[int]:
+    """Split on real empty gutters instead of assuming perfectly equal cells."""
+    alpha = clean_row.getchannel("A")
+    # BOX reduction gives the per-column foreground density in native code.
+    projection = list(alpha.resize((alpha.width, 1), Image.Resampling.BOX).getdata())
+    nominal = alpha.width / COLS
+    bounds = [0]
+    # Generators distribute poses visually, not with exact mathematical cell
+    # widths. A one-third-cell search still cannot skip a pose, but it can find
+    # the real white gutter after a long punch or wide grounded silhouette.
+    radius = max(12, round(nominal * .33))
+    half_window = 3
+    for index in range(1, COLS):
+        target = round(index * nominal)
+        start = max(bounds[-1] + 24, target - radius)
+        end = min(alpha.width - 24, target + radius)
+        cut = min(
+            range(start, end + 1),
+            key=lambda x: (
+                sum(projection[max(0, x-half_window):min(alpha.width, x+half_window+1)]),
+                abs(x - target),
+            ),
+        )
+        bounds.append(cut)
+    bounds.append(alpha.width)
+    return bounds
+
+
 def split_sheet(path: Path) -> list[Image.Image]:
     image = Image.open(path).convert("RGB")
-    # Image generators may return a wide 3:1 sheet or a taller 3:2 sheet.
-    # Judge source detail per panel, not by one fixed canvas aspect ratio.
     panel_width = image.width / COLS
     panel_height = image.height / SOURCE_ROWS
-    if panel_width < 240 or panel_height < 240:
+    if image.width < MIN_SOURCE_SIZE[0] or image.height < MIN_SOURCE_SIZE[1]:
+        raise ValueError(f"source sheet below {MIN_SOURCE_SIZE}: {path} {image.size}")
+    if panel_width < MIN_SOURCE_CELL[0] or panel_height < MIN_SOURCE_CELL[1]:
         raise ValueError(
-            f"source cells are below 240x240: {path} {image.size} "
+            f"source cells are below {MIN_SOURCE_CELL}: {path} {image.size} "
             f"cell={panel_width:.0f}x{panel_height:.0f}"
         )
     frames = []
     for row in range(SOURCE_ROWS):
         top, bottom = round(image.height * row / 2), round(image.height * (row + 1) / 2)
+        clean_row = hard_alpha(remove_edge_background(image.crop((0, top, image.width, bottom))))
+        bounds = adaptive_column_bounds(clean_row)
         for column in range(COLS):
-            left, right = round(image.width * column / 6), round(image.width * (column + 1) / 6)
-            inset_x, inset_y = max(4, (right - left) // 45), max(4, (bottom - top) // 70)
-            panel = image.crop((left + inset_x, top + inset_y,
-                                right - inset_x, bottom - inset_y))
-            clean = keep_character_and_effects(hard_alpha(remove_edge_background(panel)))
+            left, right = bounds[column], bounds[column + 1]
+            # Never pre-trim a generated cell: the old inset could eat a fist,
+            # backpack, shield, or prone foot before validation saw it.
+            panel = clean_row.crop((left, 0, right, clean_row.height))
+            clean = keep_character_and_effects(panel)
             box = clean.getchannel("A").getbbox()
             if not box:
                 raise ValueError(f"empty source frame: {path.name} r{row} c{column}")
+            # Reject a cropped source instead of hiding the defect by deleting
+            # edge pixels. This is the principal guard against wrapped limbs.
+            source_gutter = max(3, min(panel.size) // 100)
+            if min(box[0], box[1], panel.width - box[2], panel.height - box[3]) < source_gutter:
+                raise ValueError(
+                    f"cropped source frame: {path.name} r{row} c{column} "
+                    f"box={box} panel={panel.size}"
+                )
             frames.append(clean.crop(box))
     return frames
 
@@ -165,9 +205,18 @@ def build_tier(frames: list[Image.Image], tier: str) -> Image.Image:
     reference_length = statistics.median(
         max(frame.width, frame.height) * scale for frame in frames[:12]
     )
+    reference_standing_height = statistics.median(
+        frame.height * scale for frame in frames[:12]
+    )
     atlas = Image.new("RGBA", (cell[0] * COLS, cell[1] * OUTPUT_ROWS), (0, 0, 0, 0))
     for index, frame in enumerate(frames):
         target = (max(2, round(frame.width * scale)), max(2, round(frame.height * scale)))
+        # Idle/walk must never breathe in size. Normalize their body height
+        # before fitting the exceptional wide poses into the safety area.
+        if index < 12:
+            stable = reference_standing_height / target[1]
+            target = (max(2, round(target[0] * stable)),
+                      max(2, round(target[1] * stable)))
         # Generated action/reaction panels sometimes contain the same actor at
         # a much smaller camera scale. Enforce a minimum visible body length so
         # punches, hurt frames, and prone frames cannot fade into tiny shapes.
@@ -225,6 +274,12 @@ def main() -> None:
     parser.add_argument("source_dir", type=Path)
     parser.add_argument("assets", type=Path)
     args = parser.parse_args()
+    model_sheet = args.source_dir / "model_sheet.png"
+    if not model_sheet.is_file():
+        raise ValueError(f"missing identity model sheet: {model_sheet}")
+    with Image.open(model_sheet) as model:
+        if model.width < MIN_SOURCE_SIZE[0] or model.height < MIN_SOURCE_SIZE[1]:
+            raise ValueError(f"model sheet below {MIN_SOURCE_SIZE}: {model_sheet} {model.size}")
     frames = []
     for sheet in SHEETS: frames.extend(split_sheet(args.source_dir / sheet))
     if len(frames) != 36: raise ValueError(len(frames))
