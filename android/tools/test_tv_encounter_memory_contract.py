@@ -23,7 +23,7 @@ def main() -> None:
     assert "loader.setPriority(Thread.MIN_PRIORITY)" in text
     assert "Bitmap[] decodedClips = decodeEnemyAnimationClips(type, requestedTier);" in text
     assert "? decodeEnemyAnimationType(type, requestedTier) : null" in text
-    assert "bindClipSet(enemy.animator, clips, ENEMY_ANIM_COLUMNS)" in text
+    assert "bindEnemyClipSet(enemy.animator, clips, enemy.type)" in text
     assert "loadedOneAtlasThisTick" not in text
     assert "atlas.getWidth() / ENEMY_ANIM_COLUMNS" in text
     assert "atlas.getHeight() / ENEMY_ANIM_ROWS" in text

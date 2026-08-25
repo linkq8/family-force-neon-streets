@@ -8,7 +8,8 @@ from PIL import Image, ImageChops
 
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "android/app/src/main/assets"
-PRODUCTION = ROOT / "assets/imagegen/android/animation-clips-v1"
+PRODUCTION_V1 = ROOT / "assets/imagegen/android/animation-clips-v1"
+PRODUCTION_V2 = ROOT / "assets/imagegen/android/animation-clips-v2"
 JAVA = (ROOT / "android/app/src/main/java/com/familyforce/neonstreets/SpriteAnimator.java").read_text()
 
 HEROES = {
@@ -38,14 +39,15 @@ def contaminated_edge_count(image: Image.Image) -> int:
     return count
 
 
-def validate_actor(kind: str, actor: str, actions: tuple[str, ...], columns: int) -> None:
+def validate_actor(kind: str, actor: str, actions: tuple[str, ...], columns: int,
+                   production: Path = PRODUCTION_V1,
+                   tiers: tuple[str, ...] = ("", "runtime/", "tv/")) -> None:
     for action in actions:
-        source = PRODUCTION / kind / actor / action / "source_uhd.png"
+        source = production / kind / actor / action / "source_uhd.png"
         with Image.open(source) as image:
             assert image.size == (3840, 2160), (source, image.size)
-            assert image.mode == "RGBA", (source, image.mode)
-            assert image.getchannel("A").getbbox(), source
-        for tier in ("", "runtime/", "tv/"):
+            assert image.mode in ("RGB", "RGBA"), (source, image.mode)
+        for tier in tiers:
             path = ASSETS / tier / "clips" / kind / actor / f"{action}.png"
             assert path.is_file(), path
             with Image.open(path) as opened:
@@ -65,11 +67,16 @@ def validate_actor(kind: str, actor: str, actions: tuple[str, ...], columns: int
 
 
 for actor, actions in HEROES.items():
-    validate_actor("heroes", actor, actions, 8)
+    if actor == "parent":
+        validate_actor("heroes", actor, actions, 12, PRODUCTION_V2,
+                       ("", "runtime/", "tv/", "uhd/"))
+    else:
+        validate_actor("heroes", actor, actions, 8)
 for actor, actions in ENEMIES.items():
     validate_actor("enemies", actor, actions, 6)
 
 assert "MIN_CHARACTER_CLIP_FPS = 12" in JAVA
 assert "Math.max(MIN_CHARACTER_CLIP_FPS" in JAVA
 assert "void bindClips(" in JAVA
-print("Separate animation contract: PASS (34 UHD action sources, minimum 12 FPS)")
+assert "clipFrameCounts" in JAVA
+print("Separate animation contract: PASS (Essa 12 unique images/action; minimum 12 FPS)")

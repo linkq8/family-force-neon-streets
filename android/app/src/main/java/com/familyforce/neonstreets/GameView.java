@@ -113,6 +113,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
     private static final int HERO_HURT = 9;
     private static final int HERO_KNOCKDOWN = 10;
     private static final int HERO_ANIM_COLUMNS = 8;
+    private static final int STRICT_ANIM_COLUMNS = 12;
     private static final int HERO_ANIM_ROWS = 11;
     private static final int HERO_ANIM_CELL_WIDTH = 192;
     private static final int HERO_ANIM_CELL_HEIGHT = 192;
@@ -1677,26 +1678,80 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private Bitmap[] loadHeroAnimationClips(int hero) {
         String stem = customerProfile.heroAssetStems[safeHeroIndex(hero)];
+        int columns = heroClipColumns(hero);
         int selectedTier = heroAnimationTier();
         for (int tier = selectedTier; tier >= HERO_TIER_TV; tier--) {
             Bitmap[] clips = loadClipSet(HERO_CLIP_TIER_DIRS[tier] + stem + "/",
-                    HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS);
+                    HERO_ANIM_CLIP_NAMES, columns);
             if (clips != null) return clips;
         }
         return selectedTier == HERO_TIER_TV
                 ? loadClipSet("clips/heroes/" + stem + "/", HERO_ANIM_CLIP_NAMES,
-                HERO_ANIM_COLUMNS) : null;
+                columns) : null;
+    }
+
+    private int heroClipColumns(int hero) {
+        String stem = customerProfile.heroAssetStems[safeHeroIndex(hero)];
+        return "parent".equals(stem) ? STRICT_ANIM_COLUMNS : HERO_ANIM_COLUMNS;
     }
 
     private Bitmap[] decodeEnemyAnimationClips(int type, String tier) {
         if (type < 0 || type >= enemyAnimArt.length) return null;
         String stem = EnemyArchetype.of(type).asset;
+        if (type == EnemyArchetype.MARKET_ENFORCER) {
+            return loadVariableClipSet(tier + "clips/enemies/" + stem + "/",
+                    ENEMY_ANIM_CLIP_NAMES, marketEnforcerFrameCounts());
+        }
         return loadClipSet(tier + "clips/enemies/" + stem + "/",
                 ENEMY_ANIM_CLIP_NAMES, ENEMY_ANIM_COLUMNS);
     }
 
+    private Bitmap[] loadVariableClipSet(String directory, String[] names, int[] counts) {
+        if (names.length != counts.length) return null;
+        Bitmap[] result = new Bitmap[names.length];
+        int cellWidth = -1;
+        int cellHeight = -1;
+        try {
+            for (int i = 0; i < names.length; i++) {
+                Bitmap clip = loadBitmap(directory + names[i] + ".png");
+                if (clip == null || clip.isRecycled() || clip.getWidth() % counts[i] != 0) {
+                    recycleBitmap(clip);
+                    recycleBitmapArray(result);
+                    return null;
+                }
+                int candidateWidth = clip.getWidth() / counts[i];
+                if (cellWidth < 0) {
+                    cellWidth = candidateWidth;
+                    cellHeight = clip.getHeight();
+                } else if (candidateWidth != cellWidth || clip.getHeight() != cellHeight) {
+                    recycleBitmap(clip);
+                    recycleBitmapArray(result);
+                    return null;
+                }
+                clip.prepareToDraw();
+                result[i] = clip;
+            }
+            return result;
+        } catch (OutOfMemoryError | RuntimeException failure) {
+            recycleBitmapArray(result);
+            return null;
+        }
+    }
+
+    private static int[] marketEnforcerFrameCounts() {
+        return new int[]{6, STRICT_ANIM_COLUMNS, 6, 6, 6, 6};
+    }
+
     private static void bindClipSet(SpriteAnimator animator, Bitmap[] clips, int columns) {
         animator.bindClips(clips, columns, clips[0].getWidth() / columns, clips[0].getHeight());
+    }
+
+    private static void bindEnemyClipSet(SpriteAnimator animator, Bitmap[] clips, int type) {
+        if (type == EnemyArchetype.MARKET_ENFORCER) {
+            animator.bindClips(clips, marketEnforcerFrameCounts(), clips[0].getHeight());
+        } else {
+            bindClipSet(animator, clips, ENEMY_ANIM_COLUMNS);
+        }
     }
 
     private Bitmap decodeEnemyAnimationType(int type, String tier) {
@@ -1832,7 +1887,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
                     ? enemyAnimClips[enemy.type] : null;
             if (clips != null && !enemy.animator.isBoundTo(clips)) {
                 enemy.animator.clear();
-                bindClipSet(enemy.animator, clips, ENEMY_ANIM_COLUMNS);
+                bindEnemyClipSet(enemy.animator, clips, enemy.type);
                 enemy.animator.play(ENEMY_IDLE, ENEMY_ANIM_COLUMNS, 12, true, true);
             } else if (atlas != null && !atlas.isRecycled()
                     && enemy.animator.bitmap() != atlas) {
@@ -1871,7 +1926,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             playerAnimator.clear();
         }
         if (selectedHeroAnimClips != null) {
-            bindClipSet(playerAnimator, selectedHeroAnimClips, HERO_ANIM_COLUMNS);
+            bindClipSet(playerAnimator, selectedHeroAnimClips,
+                    heroClipColumns(selectedHero));
             playerAnimator.play(HERO_IDLE, 8, 12, true, true);
             loaded = true;
         } else if (isValidHeroAtlas(candidate)) {
@@ -1946,7 +2002,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
         unloadPlayer2Animation(false);
         if (selectedHero2 == selectedHero && selectedHeroAnimClips != null) {
             player2AnimClips = selectedHeroAnimClips;
-            bindClipSet(player2Animator, player2AnimClips, HERO_ANIM_COLUMNS);
+            bindClipSet(player2Animator, player2AnimClips,
+                    heroClipColumns(selectedHero2));
             player2AnimSharesPlayerAnim = true;
             loadedPlayer2Anim = selectedHero2;
             return;
@@ -1966,7 +2023,8 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             player2AnimClips = loadHeroAnimationClips(selectedHero2);
             candidate = player2AnimClips == null ? loadHeroAnimationAtlas(selectedHero2) : null;
             if (player2AnimClips != null) {
-                bindClipSet(player2Animator, player2AnimClips, HERO_ANIM_COLUMNS);
+                bindClipSet(player2Animator, player2AnimClips,
+                        heroClipColumns(selectedHero2));
                 player2AnimSharesPlayerAnim = false;
                 loadedPlayer2Anim = selectedHero2;
                 loaded = true;
@@ -2834,7 +2892,7 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
             Bitmap atlas = enemyAnimArt[type];
             Bitmap[] clips = enemyAnimClips[type];
             if (clips != null) {
-                bindClipSet(enemy.animator, clips, ENEMY_ANIM_COLUMNS);
+                bindEnemyClipSet(enemy.animator, clips, enemy.type);
                 enemy.animator.play(ENEMY_IDLE, 6, 12, true, true);
             } else if (atlas != null) {
                 enemy.animator.bind(atlas, ENEMY_ANIM_COLUMNS, ENEMY_ANIM_ROWS,

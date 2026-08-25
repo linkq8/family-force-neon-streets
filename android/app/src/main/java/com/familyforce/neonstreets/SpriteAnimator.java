@@ -17,6 +17,7 @@ final class SpriteAnimator {
     static final int MIN_CHARACTER_CLIP_FPS = 12;
     private Bitmap atlas;
     private Bitmap[] clips;
+    private int[] clipFrameCounts;
     private int columns;
     private int rows;
     private int cellWidth;
@@ -34,6 +35,7 @@ final class SpriteAnimator {
               int atlasCellWidth, int atlasCellHeight) {
         atlas = bitmap;
         clips = null;
+        clipFrameCounts = null;
         columns = atlasColumns;
         rows = atlasRows;
         cellWidth = atlasCellWidth;
@@ -49,14 +51,22 @@ final class SpriteAnimator {
     /** Bind one independently decoded image per action. Every image is one row. */
     void bindClips(Bitmap[] actionClips, int clipColumns,
                    int clipCellWidth, int clipCellHeight) {
+        int[] frameCounts = new int[actionClips == null ? 0 : actionClips.length];
+        for (int i = 0; i < frameCounts.length; i++) frameCounts[i] = clipColumns;
+        bindClips(actionClips, frameCounts, clipCellHeight);
+    }
+
+    /** Bind action rows that may carry different authored frame counts. */
+    void bindClips(Bitmap[] actionClips, int[] actionFrameCounts, int clipCellHeight) {
         atlas = null;
         clips = actionClips;
-        columns = clipColumns;
+        clipFrameCounts = actionFrameCounts;
         rows = actionClips == null ? 0 : actionClips.length;
-        cellWidth = clipCellWidth;
+        columns = rows > 0 ? Math.max(1, actionFrameCounts[0]) : 0;
+        cellWidth = rows > 0 ? actionClips[0].getWidth() / columns : 0;
         cellHeight = clipCellHeight;
         row = frame = accumulator = 0;
-        frameCount = Math.max(1, clipColumns);
+        frameCount = Math.max(1, columns);
         fps = MIN_CHARACTER_CLIP_FPS;
         loop = true;
         finished = false;
@@ -85,6 +95,7 @@ final class SpriteAnimator {
     void clear() {
         atlas = null;
         clips = null;
+        clipFrameCounts = null;
         columns = rows = cellWidth = cellHeight = 0;
         row = frame = accumulator = 0;
         frameCount = 1;
@@ -95,7 +106,13 @@ final class SpriteAnimator {
     void play(int clipRow, int frames, int clipFps, boolean shouldLoop,
               boolean restart) {
         int safeRow = Math.max(0, Math.min(Math.max(0, rows - 1), clipRow));
-        int safeFrames = Math.max(1, Math.min(columns, frames));
+        if (clips != null && clipFrameCounts != null) {
+            columns = Math.max(1, clipFrameCounts[safeRow]);
+            cellWidth = clips[safeRow].getWidth() / columns;
+        }
+        // A separate action image is an authored clip, so play every image in
+        // that clip. Legacy atlas callers may still request a shorter range.
+        int safeFrames = clips != null ? columns : Math.max(1, Math.min(columns, frames));
         int safeFps = Math.max(MIN_CHARACTER_CLIP_FPS, Math.min(60, clipFps));
         if (!restart && row == safeRow && frameCount == safeFrames
                 && fps == safeFps && loop == shouldLoop && !finished) return;
