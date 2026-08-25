@@ -10,13 +10,13 @@
 
 - المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
-- النسخة المنشورة: `v0.49.0-alpha`، `versionCode 60`.
+- النسخة المنشورة: `v0.49.1-alpha`، `versionCode 61`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `99b3b1a233d3508f4021f570d91361a516550eec`.
+- آخر commit وظيفي: `514f988f3facc6be6165f8cbc5d48c77c7e98e1a`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
-- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.49.0-alpha
-- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.49.0-alpha/family-force-family-current.apk
-- SHA-256: `0d15eb8566feaa9025ef70c2879619540ed502e92f2289a19f2ce68c452c63d0`.
+- Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.49.1-alpha
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.49.1-alpha/family-force-family-current.apk
+- SHA-256: `0eb16fd3fb797fe3c3491573642d58e8f3548f028c319ca731d3d06574f6196c`.
 - حالة QA: واجهة Canvas والقصة ثنائيتا اللغة عبر 241 مفتاحًا متطابقًا؛ نجح
   Build/Release/R8/Lint والتوقيع والتحقق من الأصول والتحكم وعقود الأداء وذاكرة
   TV. أكمل Android TV Emulator المسار الكامل للمناطق الـ14 والمراحل الخمس، ونجحت ملفات
@@ -28,12 +28,13 @@
   السلاح، الحركة والذاكرة، ويحفظ تقرير الجلسة السابقة إذا انقطعت.
 - نتيجة اختبار Shield Pro: المناطق 1–9، الموت/الإحياء، الإغلاق/الفتح، فصل اليد،
   الريموت والتقاط الأسلحة تعمل دون خروج غير طبيعي.
-- إصلاح قيد تحقق المستخدم: DualSense على Shield أصبح يُكتشف بمعرّف Sony ويقبل
-  أحداث الأزرار التي يعلنها OEM كمصدر Keyboard، مع إبقاء fallback الخاص بـXiaomi.
+- إصلاح قيد تحقق المستخدم: أعيدت رسومات `v0.48` المقبولة وأُلغي توليد الإطارات
+  المزاحة؛ وفي اللعب الفردي أصبحت أحدث يد Gamepad تملك P1 حتى لو عرّف الجهاز
+  ريموت TV كمصدر Gamepad، مع إبقاء فصل اليدين في طور لاعبين.
 - الاختبارات المتبقية: جلسة لعب بشرية كاملة للنسخة الجديدة على Xiaomi Stick وShield.
-- العمل التالي الموصى به: اختبار `v0.49.0-alpha` بصريًا على Xiaomi Stick وShield
-  لحركات Essa وAdam وGrunt وLantern، ثم تعميم الحركة المنفصلة على Shaikha وSulaiman
-  وعدو واحد إضافي فقط بعد القبول.
+- العمل التالي الموصى به: اختبار `v0.49.1-alpha` بصريًا على Shield لحركات Essa
+  وAdam والأعداء، واختبار DualSense داخل PLAY الفردي ولاعبين. لا يعاد شرط 12
+  صورة إلا بعد إنتاج 12 رسمة حقيقية مستقلة لكل حركة وقبول عينة شخصية واحدة.
 - أداة الإنتاج: `asset-vault/` تفهرس 101 سجل و181 ملفًا (تغطية Manifest كاملة)،
   وتشغّل الأطالس الـ26 بقيم المحرك الفعلية، مع عقود QA لكل العائلات، حجر وفك
   ترميز حقيقي، اعتماد مرتبط بالبصمة والحقوق، وتجهيز آمن يبدأ بمعاينة Dry-run.
@@ -189,7 +190,7 @@
 - المنفذ: Codex
 - طلب المستخدم: جميع الشخصيات، خصوصًا Essa وAdam، والأعداء أصبحت أسوأ وأكبر
   قليلًا في `v0.49`، ويد PS5 لا تستجيب داخل اللعب بينما الريموت يعمل.
-- الحالة: قيد التنفيذ
+- الحالة: مكتمل ومنشور في `v0.49.1-alpha`.
 - نقطة البداية: `v0.49.0-alpha` / commit
   `99b3b1a233d3508f4021f570d91361a516550eec`.
 - ما تم:
@@ -224,13 +225,16 @@
   - `validate_animation_atlases.py` المنفرد — FAIL معروف على شرط محاذاة 2px
     لـ`parent_anim.png` المستعاد؛ مدقق الإصدار الفعلي قبل الـAPK مرر الأطالس
     `26/26`. لم نعد تشكيل الصورة بهذا الشرط لأنه يزيد مظهر البكسل الذي رفضه المستخدم.
-- Release: قيد التجهيز كـ`v0.49.1-alpha`؛ APK المبني SHA-256
-  `0eb16fd3fb797fe3c3491573642d58e8f3548f028c319ca731d3d06574f6196c`.
+- Release: `v0.49.1-alpha` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.49.1-alpha
+  - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.49.1-alpha/family-force-family-current.apk
+  - SHA-256: `0eb16fd3fb797fe3c3491573642d58e8f3548f028c319ca731d3d06574f6196c`.
+  - commit: `514f988f3facc6be6165f8cbc5d48c77c7e98e1a`.
 - ملاحظات/مخاطر: عقد 12 **صورة مرسومة حقيقية** مؤجل؛ لا تُقبل إطارات مكررة
   أو مزاحة آليًا مرة أخرى. اختبار DualSense الحالي يغطي mapping والتوجيه منطقيًا،
   ويبقى تأكيد اليد الحقيقية على Shield بعد تنزيل الإصدار.
-- التالي: commit ورفع hotfix إلى GitHub Releases، ثم اختبار Essa وAdam وDualSense
-  على Shield قبل أي محاولة جديدة لزيادة عدد إطارات الحركة.
+- التالي: اختبار Essa وAdam وDualSense على Shield قبل أي محاولة جديدة لزيادة
+  عدد إطارات الحركة.
 
 ### 2026-08-25-83 — تصحيح عقد الحركة إلى 12 إطارًا حقيقيًا لكل حركة
 
@@ -3263,13 +3267,12 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.49.0-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
+- الحالة: `v0.49.1-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
   وBoss لكل مرحلة ومرحلة ختامية تعتمد موجات ورؤساء مراقبين ثم Shadow Prime.
-- آخر عمل: تصحيح الـ34 حركة لـEssa وAdam وGrunt وLantern إلى 12 خلية صورة
-  لكل حركة مع 12FPS على الأقل، وإصلاح ثقوب Alpha السوداء في جسم Adam، وتحميل
-  TV tier فعليًا بميزانية clip textures قدرها `56.27 MiB`.
-- آخر قرار: تجارب ImageGen التي حولت جسم Adam إلى الأسود مرفوضة ولم تدخل APK؛
-  النسخة تستخدم الرسومات المقبولة مع in-betweens نظيفة ومن دون فيديو أو Higgsfield.
+- آخر عمل: hotfix أعاد أصول Essa وAdam وGrunt وLantern ومحمل الحركة إلى نسخة
+  `v0.48` المقبولة، وأصلح استحواذ DualSense على P1 داخل اللعب الفردي بعد الريموت.
+- آخر قرار: إطارات `v0.49.0` الوسيطة المزاحة آليًا مرفوضة؛ لا يطبق شرط 12 صورة
+  مجددًا إلا بصور مستقلة مرسومة فعليًا وبعد قبول عينة واحدة داخل اللعبة.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
   2. `android/README.md`
@@ -3279,6 +3282,6 @@
   6. `android/tools/test_separate_animation_clips.py`
   7. `android/app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java`
   8. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
-- الإجراء التالي المقترح: تثبيت APK `v0.49.0-alpha` وتجربة كل حركة لـEssa وAdam
-  وidle/walk/attack/hurt/knockdown لـGrunt وLantern على Xiaomi Stick وShield؛
-  عند القبول يبدأ Shaikha ثم Sulaiman، كل شخصية على حدة.
+- الإجراء التالي المقترح: تثبيت APK `v0.49.1-alpha` وتجربة Essa وAdam والأعداء
+  بصريًا، ثم DualSense داخل PLAY فردي ولاعبين على Shield. لا يبدأ أي redraw شامل
+  قبل قبول هذه نقطة الرجوع المستقرة.
