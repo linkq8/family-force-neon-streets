@@ -601,16 +601,16 @@
     },
     {
       "path": "enemies/keeper_7.png",
-      "bytes": 52560,
-      "sha256": "5cc9671d1b6766306e7db880f6da98a67b2913d50f3c3c4e771733c7c3142ec4",
+      "bytes": 228376,
+      "sha256": "1308ddad6b37aa0cfbe2c49eab80cebad0d075d5dce861806a11834ef29ecba1",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/keeper_7_anim.png",
-      "bytes": 749474,
-      "sha256": "a9db65e81fd435b4158012bfe57135eca315441b62267d3897167ad88505144e",
+      "bytes": 1058575,
+      "sha256": "ed8a127df28bed886af7990db0b4abbb4004d758a94c94a54f3f40d6b6c4ef8a",
       "width": 1344,
       "height": 1152,
       "mode": "RGBA"
@@ -633,16 +633,16 @@
     },
     {
       "path": "enemies/market_enforcer.png",
-      "bytes": 89072,
-      "sha256": "0f058e0b4370f0113e17304069af8efadf332759e1c8a841a3772d2cdf49b757",
+      "bytes": 230372,
+      "sha256": "6b525140bedf89ad2227436d22666b5d9ec198b4035f9899c39245cbf19ea3c8",
       "width": 512,
       "height": 512,
       "mode": "RGBA"
     },
     {
       "path": "enemies/market_enforcer_anim.png",
-      "bytes": 1114916,
-      "sha256": "b3bcebaf4c15091b54620c2ea771b1a67736e36c99f4f950537d6d369f8695b2",
+      "bytes": 1147378,
+      "sha256": "fca35b5586719e2c972468ccb92658a0dc3f388a60888c50e4cc7c27a71d50ab",
       "width": 1344,
       "height": 1152,
       "mode": "RGBA"
@@ -1385,8 +1385,8 @@
     },
     {
       "path": "runtime/enemies/keeper_7_anim.png",
-      "bytes": 1304551,
-      "sha256": "8ab31bb93fed434daba2104fc1ed0e72e4c871261e0a95b55984a09686235837",
+      "bytes": 2198690,
+      "sha256": "8414144dce13c4081f4a2daaf302d7c40ce5531dd9c5141178b1c2cdce36518f",
       "width": 2016,
       "height": 1728,
       "mode": "RGBA"
@@ -1401,8 +1401,8 @@
     },
     {
       "path": "runtime/enemies/market_enforcer_anim.png",
-      "bytes": 2108473,
-      "sha256": "841a4d473d93eebb9d415e57ebd50ddb675cee178abfcaab6ae22f1180f043a6",
+      "bytes": 2368297,
+      "sha256": "7ed91e91521f4786ffa15ef2c2d64ef14019c883ff764bbff150301849973b7a",
       "width": 2016,
       "height": 1728,
       "mode": "RGBA"
@@ -1899,8 +1899,8 @@
     },
     {
       "path": "tv/enemies/keeper_7_anim.png",
-      "bytes": 666143,
-      "sha256": "6df30a9944a03261f4815f582dc6d550f7918ccf2f7d45382116dcf44f36f3f4",
+      "bytes": 846961,
+      "sha256": "5c896b735264e7a8056b4bbab751af630d13a47dc474e1375748e0fe816d24f5",
       "width": 1176,
       "height": 1008,
       "mode": "RGBA"
@@ -1915,8 +1915,8 @@
     },
     {
       "path": "tv/enemies/market_enforcer_anim.png",
-      "bytes": 949824,
-      "sha256": "2255864d10ce4f1206468d138cc795b7c77eb7e3e752fed7bb78c5d8ed1eb105",
+      "bytes": 915872,
+      "sha256": "06b350b19d0428750052f40a090cf90027f75e1055a641a5598329ec44eaba6c",
       "width": 1176,
       "height": 1008,
       "mode": "RGBA"

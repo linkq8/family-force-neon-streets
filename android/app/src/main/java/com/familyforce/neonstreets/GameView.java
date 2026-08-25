@@ -1613,9 +1613,15 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private Bitmap loadHeroAnimationAtlas(int hero) {
         String stem = customerProfile.heroAssetStems[safeHeroIndex(hero)] + "_anim.png";
-        Bitmap atlas = useUhdCharacterAssets() ? loadBitmap("uhd/heroes/" + stem) : null;
-        if (atlas == null) atlas = loadBitmap("runtime/heroes/" + stem);
-        if (atlas == null && useReducedMemoryAssets()) atlas = loadBitmap("tv/heroes/" + stem);
+        boolean reduced = useReducedMemoryAssets();
+        // Android TV must not decode the 28–50 MiB Runtime/UHD atlas before
+        // trying its compact animated tier. An OOM here previously left the
+        // actor moving through the world with only its static fallback image.
+        Bitmap atlas = reduced ? loadBitmap("tv/heroes/" + stem) : null;
+        if (atlas == null && !reduced && useUhdCharacterAssets()) {
+            atlas = loadBitmap("uhd/heroes/" + stem);
+        }
+        if (atlas == null && !reduced) atlas = loadBitmap("runtime/heroes/" + stem);
         if (atlas == null) atlas = loadBitmap("heroes/" + stem);
         return atlas;
     }
@@ -1654,15 +1660,16 @@ public final class GameView extends SurfaceView implements SurfaceHolder.Callbac
 
     private Bitmap[] loadHeroAnimationClips(int hero) {
         String stem = customerProfile.heroAssetStems[safeHeroIndex(hero)];
-        Bitmap[] clips = useUhdCharacterAssets()
-                ? loadClipSet("uhd/clips/heroes/" + stem + "/", HERO_ANIM_CLIP_NAMES,
-                HERO_ANIM_COLUMNS) : null;
-        if (clips == null) {
-            clips = loadClipSet("runtime/clips/heroes/" + stem + "/",
-                    HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS);
+        boolean reduced = useReducedMemoryAssets();
+        Bitmap[] clips = reduced
+                ? loadClipSet("tv/clips/heroes/" + stem + "/",
+                HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS) : null;
+        if (clips == null && !reduced && useUhdCharacterAssets()) {
+            clips = loadClipSet("uhd/clips/heroes/" + stem + "/", HERO_ANIM_CLIP_NAMES,
+                    HERO_ANIM_COLUMNS);
         }
-        if (clips == null && useReducedMemoryAssets()) {
-            clips = loadClipSet("tv/clips/heroes/" + stem + "/",
+        if (clips == null && !reduced) {
+            clips = loadClipSet("runtime/clips/heroes/" + stem + "/",
                     HERO_ANIM_CLIP_NAMES, HERO_ANIM_COLUMNS);
         }
         if (clips == null) {

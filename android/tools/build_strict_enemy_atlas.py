@@ -181,8 +181,27 @@ def split_sheet(path: Path) -> list[Image.Image]:
     return frames
 
 
-def resize_actor(actor: Image.Image, size: tuple[int, int], tier: str) -> Image.Image:
-    if tier == "base":
+def remove_neutral_edge_halo(image: Image.Image) -> Image.Image:
+    """Darken only grey/white silhouette pixels that touch transparency."""
+    result = image.copy()
+    source = image.load()
+    target = result.load()
+    for y in range(image.height):
+        for x in range(image.width):
+            red, green, blue, alpha = source[x, y]
+            if not alpha or min(red, green, blue) < 96 \
+                    or max(red, green, blue) - min(red, green, blue) > 28:
+                continue
+            if any(nx < 0 or ny < 0 or nx >= image.width or ny >= image.height
+                   or source[nx, ny][3] == 0
+                   for nx, ny in ((x-1, y), (x+1, y), (x, y-1), (x, y+1))):
+                target[x, y] = (18, 20, 31, 255)
+    return result
+
+
+def resize_actor(actor: Image.Image, size: tuple[int, int], tier: str,
+                 fine_pixels: bool = False) -> Image.Image:
+    if tier == "base" and not fine_pixels:
         half = (max(2, round(size[0] / 2)), max(2, round(size[1] / 2)))
         small = hard_alpha(actor.resize(half, Image.Resampling.LANCZOS))
         return small.resize((half[0] * 2, half[1] * 2), Image.Resampling.NEAREST)
@@ -193,10 +212,12 @@ def resize_actor(actor: Image.Image, size: tuple[int, int], tier: str) -> Image.
         )
         rgb.putalpha(resized.getchannel("A"))
         resized = rgb
-    return hard_alpha(resized, 48)
+    resized = hard_alpha(resized, 48)
+    return remove_neutral_edge_halo(resized) if fine_pixels else resized
 
 
-def build_tier(frames: list[Image.Image], tier: str) -> Image.Image:
+def build_tier(frames: list[Image.Image], tier: str,
+               fine_pixels: bool = False) -> Image.Image:
     cell, safe, bottom = TIERS[tier]
     # Calibrate the actor scale from idle/walk only. Attack effects and prone
     # silhouettes are naturally wider and must not shrink every standing pose.
@@ -231,7 +252,7 @@ def build_tier(frames: list[Image.Image], tier: str) -> Image.Image:
         fit = min(1.0, safe[0] / target[0], safe[1] / target[1])
         if fit < 1.0:
             target = (max(2, round(target[0] * fit)), max(2, round(target[1] * fit)))
-        actor = resize_actor(frame, target, tier)
+        actor = resize_actor(frame, target, tier, fine_pixels)
         x = (cell[0] - actor.width) // 2
         y = cell[1] - bottom - actor.height
         if tier == "base":
@@ -273,6 +294,8 @@ def main() -> None:
     parser.add_argument("enemy")
     parser.add_argument("source_dir", type=Path)
     parser.add_argument("assets", type=Path)
+    parser.add_argument("--fine-pixels", action="store_true",
+                        help="preserve independent 1x detail instead of manufacturing 2x blocks")
     args = parser.parse_args()
     model_sheet = args.source_dir / "model_sheet.png"
     if not model_sheet.is_file():
@@ -283,9 +306,9 @@ def main() -> None:
     frames = []
     for sheet in SHEETS: frames.extend(split_sheet(args.source_dir / sheet))
     if len(frames) != 36: raise ValueError(len(frames))
-    base = build_tier(frames, "base")
-    runtime = build_tier(frames, "runtime")
-    tv = build_tier(frames, "tv")
+    base = build_tier(frames, "base", args.fine_pixels)
+    runtime = build_tier(frames, "runtime", args.fine_pixels)
+    tv = build_tier(frames, "tv", args.fine_pixels)
     save_png(base, args.assets / "enemies" / f"{args.enemy}_anim.png")
     save_png(runtime, args.assets / "runtime/enemies" / f"{args.enemy}_anim.png")
     save_png(tv, args.assets / "tv/enemies" / f"{args.enemy}_anim.png")

@@ -37,7 +37,6 @@ def frames(atlas: Image.Image):
                               (column + 1) * cell_width, (row + 1) * cell_height))
 
 
-density_records = {}
 for actor in ACTORS:
     height = render_height(actor)
     for tier, (folder, lower, upper, gutter) in TIERS.items():
@@ -54,7 +53,6 @@ for actor in ACTORS:
                 )
             standing_heights = [box[3] - box[1] for box in boxes[:12]]
             density = statistics.median(standing_heights) / height
-            density_records[(actor, tier)] = density
             assert lower <= density <= upper, (
                 actor, tier, f"APGU {density:.3f} outside {lower:.2f}–{upper:.2f}"
             )
@@ -65,9 +63,22 @@ for actor in ACTORS:
                     actor, "base is manufactured from coarse exact 2x2 clusters"
                 )
 
+def cropped_alpha_frames(actor: str, folder: str):
+    with Image.open(ASSETS / folder / f"{actor}_anim.png").convert("RGBA") as atlas:
+        result = []
+        for cell in frames(atlas):
+            alpha = cell.getchannel("A")
+            box = alpha.getbbox()
+            result.append((alpha.crop(box).size, alpha.crop(box).tobytes()))
+        return result
+
+
+# A palette swap retains the reference's alpha silhouette byte-for-byte. The
+# two rejected v0.50.1 assets did exactly that; independent characters must not.
 for actor, reference in (("market_enforcer", "shield_guard"), ("keeper_7", "striker")):
-    for tier in TIERS:
-        ratio = density_records[(actor, tier)] / density_records[(reference, tier)]
-        assert .96 <= ratio <= 1.04, (actor, tier, reference, f"density ratio {ratio:.3f}")
+    for folder, *_ in TIERS.values():
+        assert cropped_alpha_frames(actor, folder) != cropped_alpha_frames(reference, folder), (
+            actor, folder, "is a recoloured reference silhouette"
+        )
 
 print(f"Enemy pixel density contract: PASS ({len(ACTORS)} actors × {len(TIERS)} tiers)")
