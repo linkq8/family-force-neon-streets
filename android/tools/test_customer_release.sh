@@ -43,6 +43,7 @@ python3 "$SCRIPT_DIR/test_enemy_pixel_density_contract.py"
 python3 "$SCRIPT_DIR/test_symbol_neutral_contract.py"
 python3 "$SCRIPT_DIR/test_separate_animation_clips.py"
 python3 "$SCRIPT_DIR/test_market_enforcer_walk_contract.py"
+python3 "$SCRIPT_DIR/test_essa_cyborg_contract.py"
 
 python3 "$SCRIPT_DIR/verify_customer_apk.py" --apk "$APK" --pack "$PACK" \
     --aapt "$ANDROID_HOME/build-tools/34.0.0/aapt" \

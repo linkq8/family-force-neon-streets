@@ -9,7 +9,7 @@ from PIL import Image, ImageChops
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "android/app/src/main/assets"
 PRODUCTION_V1 = ROOT / "assets/imagegen/android/animation-clips-v1"
-PRODUCTION_V2 = ROOT / "assets/imagegen/android/animation-clips-v2"
+PRODUCTION_V3 = ROOT / "assets/imagegen/android/animation-clips-v3"
 JAVA = (ROOT / "android/app/src/main/java/com/familyforce/neonstreets/SpriteAnimator.java").read_text()
 
 HEROES = {
@@ -68,7 +68,7 @@ def validate_actor(kind: str, actor: str, actions: tuple[str, ...], columns: int
 
 for actor, actions in HEROES.items():
     if actor == "parent":
-        validate_actor("heroes", actor, actions, 12, PRODUCTION_V2,
+        validate_actor("heroes", actor, actions, 12, PRODUCTION_V3,
                        ("", "runtime/", "tv/", "uhd/"))
     else:
         validate_actor("heroes", actor, actions, 8)

@@ -13,9 +13,10 @@ from PIL import Image
 
 ROOT = Path(__file__).resolve().parents[2]
 ASSETS = ROOT / "android/app/src/main/assets"
-ESSA_SOURCE = ROOT / "assets/imagegen/android/character-redraw-v5/essa/actions"
+ESSA_ROOT = ROOT / "assets/imagegen/android/character-redraw-v6/essa"
+ESSA_SOURCE = ESSA_ROOT / "actions"
 MARKET_SOURCE = ROOT / "assets/imagegen/android/enemies/quality-v5/market_enforcer/actions"
-PRODUCTION = ROOT / "assets/imagegen/android/animation-clips-v2"
+PRODUCTION = ROOT / "assets/imagegen/android/animation-clips-v3"
 COLS, ROWS = 6, 2
 ESSA_ACTIONS = (
     "idle", "walk", "punch", "kick", "heavy_punch", "heavy_kick",
@@ -104,13 +105,17 @@ def strip_light_matte(image: Image.Image) -> Image.Image:
     return result
 
 
-def authored_column_bounds(row_image: Image.Image) -> list[int]:
+def authored_column_bounds(row_image: Image.Image) -> tuple[list[int], bool]:
     """Use real generated grid rules when present; otherwise equal 6 columns."""
     rgb = row_image.convert("RGB")
     candidates = []
     for x in range(rgb.width):
-        dark = sum(1 for y in range(rgb.height) if max(rgb.getpixel((x, y))) < 72)
-        if dark >= rgb.height * .80:
+        rule = 0
+        for y in range(rgb.height):
+            r, g, b = rgb.getpixel((x, y))
+            if max(r, g, b) < 210 and max(r, g, b) - min(r, g, b) <= 14:
+                rule += 1
+        if rule >= rgb.height * .80:
             candidates.append(x)
     clusters: list[list[int]] = []
     for x in candidates:
@@ -121,21 +126,22 @@ def authored_column_bounds(row_image: Image.Image) -> list[int]:
     internal = [round(sum(cluster) / len(cluster)) for cluster in clusters
                 if 12 < cluster[0] < rgb.width - 12]
     if len(internal) == COLS - 1:
-        return [0, *internal, rgb.width]
-    return [round(index * rgb.width / COLS) for index in range(COLS + 1)]
+        return [0, *internal, rgb.width], True
+    return [round(index * rgb.width / COLS) for index in range(COLS + 1)], False
 
 
-def split_actor_components(row_image: Image.Image, bounds: list[int]) -> list[Image.Image]:
+def split_actor_components(row_image: Image.Image, bounds: list[int], has_grid: bool) -> list[Image.Image]:
     """Assign disconnected limbs/effects to the nearest authored frame center."""
     work = row_image.convert("RGB")
     px = work.load()
     # Open all generated grid rules to the outside background before flood fill.
-    for boundary in bounds[1:-1]:
-        for x in range(max(0, boundary - 4), min(work.width, boundary + 5)):
-            for y in range(work.height):
-                px[x, y] = (235, 235, 235)
+    if has_grid:
+        for boundary in bounds[1:-1]:
+            for x in range(max(0, boundary - 4), min(work.width, boundary + 5)):
+                for y in range(work.height):
+                    px[x, y] = (235, 235, 235)
     for x in range(work.width):
-        for y in range(3):
+        for y in range(8):
             px[x, y] = px[x, work.height - 1 - y] = (235, 235, 235)
     clean = hard_alpha(remove_edge_background(work))
     alpha = clean.getchannel("A")
@@ -161,20 +167,35 @@ def split_actor_components(row_image: Image.Image, bounds: list[int]) -> list[Im
                             seen[ni] = 1
                             queue.append((nx, ny))
             if len(component) >= 6:
-                components_found.append(component)
+                c_width = max(x for x, _ in component) - min(x for x, _ in component) + 1
+                c_height = max(y for _, y in component) - min(y for _, y in component) + 1
+                grid_rule = ((c_width > clean.width * .75 and c_height < 20)
+                             or (c_height > clean.height * .75 and c_width < 20))
+                if not grid_rule:
+                    components_found.append(component)
     if not components_found:
         raise ValueError("row contains no actor components")
     # Generated sheets occasionally contain thin orphaned slivers between
     # panels. Real limbs, shields and authored effects are substantial parts
     # of the actor silhouette; discard only components below 3% of a body.
     minimum_component = max(6, round(max(map(len, components_found)) * .03))
-    groups: list[list[list[tuple[int, int]]]] = [[] for _ in range(COLS)]
-    for component in components_found:
-            if len(component) < minimum_component:
-                continue
-            centroid = sum(x for x, _ in component) / len(component)
-            owner = min(range(COLS), key=lambda i: abs(centroid - centers[i]))
-            groups[owner].append(component)
+    substantial = [component for component in components_found
+                   if len(component) >= minimum_component]
+    if len(components_found) < COLS:
+        raise ValueError(f"expected {COLS} actor bodies, found {len(components_found)}")
+    # The six largest connected silhouettes are the six authored actors. Sort
+    # those by horizontal order instead of nominal column centers: prone and
+    # jumping poses can legitimately move their centroid across a cell line.
+    bodies = sorted(sorted(components_found, key=len, reverse=True)[:COLS],
+                    key=lambda component: sum(x for x, _ in component) / len(component))
+    groups: list[list[list[tuple[int, int]]]] = [[body] for body in bodies]
+    body_centers = [sum(x for x, _ in body) / len(body) for body in bodies]
+    for component in substantial:
+        if any(component is body for body in bodies):
+            continue
+        centroid = sum(x for x, _ in component) / len(component)
+        owner = min(range(COLS), key=lambda i: abs(centroid - body_centers[i]))
+        groups[owner].append(component)
 
     frames = []
     source_px = clean.load()
@@ -267,8 +288,8 @@ def split_sheet(path: Path) -> list[Image.Image]:
     for row in range(ROWS):
         top, bottom = round(row * image.height / ROWS), round((row + 1) * image.height / ROWS)
         row_image = image.crop((0, top, image.width, bottom))
-        bounds = authored_column_bounds(row_image)
-        frames.extend(split_actor_components(row_image, bounds))
+        bounds, has_grid = authored_column_bounds(row_image)
+        frames.extend(split_actor_components(row_image, bounds, has_grid))
     if len(frames) != 12:
         raise ValueError((path, len(frames)))
     return frames
@@ -303,6 +324,43 @@ def build_clip(frames: list[Image.Image], cell: tuple[int, int], target_height: 
     return strip_light_matte(output)
 
 
+def build_single_actor(frame: Image.Image, cell: tuple[int, int], target_height: int) -> Image.Image:
+    scale = target_height / frame.height
+    target = (max(2, round(frame.width * scale)), target_height)
+    fit = min(1.0, (cell[0] - 16) / target[0], (cell[1] - 16) / target[1])
+    target = (max(2, round(target[0] * fit)), max(2, round(target[1] * fit)))
+    actor = strip_light_matte(hard_alpha(frame.resize(target, Image.Resampling.LANCZOS), 48))
+    output = Image.new("RGBA", cell, (0, 0, 0, 0))
+    output.alpha_composite(actor, ((cell[0] - actor.width) // 2, cell[1] - 8 - actor.height))
+    return strip_light_matte(output)
+
+
+def build_portrait(source: Path) -> Image.Image:
+    image = Image.open(source).convert("RGBA")
+    image.thumbnail((236, 236), Image.Resampling.LANCZOS)
+    image = strip_light_matte(hard_alpha(image, 48))
+    output = Image.new("RGBA", (256, 256), (0, 0, 0, 0))
+    output.alpha_composite(image, ((256 - image.width) // 2, (256 - image.height) // 2))
+    return strip_light_matte(output)
+
+
+def cluster_2x(image: Image.Image) -> Image.Image:
+    """Legacy low-memory fallback contract; animation clips stay full detail."""
+    half = image.resize((image.width // 2, image.height // 2), Image.Resampling.NEAREST)
+    return half.resize(image.size, Image.Resampling.NEAREST)
+
+
+def quantize_rgba(image: Image.Image, colors: int) -> Image.Image:
+    rgba = image.convert("RGBA")
+    alpha = rgba.getchannel("A")
+    rgb = Image.new("RGB", rgba.size, (0, 0, 0))
+    rgb.paste(rgba.convert("RGB"), mask=alpha)
+    result = rgb.quantize(colors=colors, method=Image.Quantize.MEDIANCUT,
+                          dither=Image.Dither.NONE).convert("RGBA")
+    result.putalpha(alpha)
+    return hard_alpha(result)
+
+
 def save(image: Image.Image, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     image.save(path, optimize=True, compress_level=9)
@@ -318,6 +376,7 @@ def save_source_uhd(path: Path, destination: Path) -> None:
 
 
 def build_essa() -> None:
+    idle_frames = split_sheet(ESSA_SOURCE / "idle.png")
     for action in ESSA_ACTIONS:
         source = ESSA_SOURCE / f"{action}.png"
         frames = split_sheet(source)
@@ -325,6 +384,15 @@ def build_essa() -> None:
             save(build_clip(frames, cell, height),
                  ASSETS / tier / "clips/heroes/parent" / f"{action}.png")
         save_source_uhd(source, PRODUCTION / "heroes/parent" / action / "source_uhd.png")
+    save(quantize_rgba(cluster_2x(
+        build_single_actor(idle_frames[0], (256, 384), 340)), 96),
+         ASSETS / "heroes/parent.png")
+    save(build_single_actor(idle_frames[0], (384, 576), 510),
+         ASSETS / "tv/heroes/parent_hd.png")
+    save(quantize_rgba(build_portrait(ESSA_ROOT / "portrait.png"), 192),
+         ASSETS / "heroes/parent_portrait.png")
+    save(quantize_rgba(build_portrait(ESSA_ROOT / "portrait_ready.png"), 192),
+         ASSETS / "heroes/parent_portrait_ready.png")
 
 
 def build_market() -> None:

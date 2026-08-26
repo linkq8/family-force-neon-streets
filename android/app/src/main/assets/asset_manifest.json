@@ -382,8 +382,8 @@
     },
     {
       "path": "clips/enemies/market_enforcer/walk.png",
-      "bytes": 325295,
-      "sha256": "556905c58c1dc86d3b7164a477f0d6d86ee78bf6fb9343da4a1839b8d8f9b7d7",
+      "bytes": 328390,
+      "sha256": "1cb3a9e70ff6820a824deb36c8afa96b7e1bd9d41e1621ca847f7e10c71fce39",
       "width": 2688,
       "height": 192,
       "mode": "RGBA"
@@ -478,88 +478,88 @@
     },
     {
       "path": "clips/heroes/parent/heavy_kick.png",
-      "bytes": 105594,
-      "sha256": "d733be3fd546b48666752ba7e1f5193be902d738eaf40baa585320e405f12b24",
+      "bytes": 336065,
+      "sha256": "b77bf9b89e73cd61f089fc16e0a9adfb0018dfec68ab8d467f11e4b7e400bde9",
       "width": 2304,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/parent/heavy_punch.png",
-      "bytes": 79478,
-      "sha256": "60b678325753d0531c27a804052253fc06882793ea293da61e67d8717ba25151",
+      "bytes": 365657,
+      "sha256": "03a9d5ab2c1aee948445bf7538ba69a40018418386c86c5d56edef000b946093",
       "width": 2304,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/parent/hurt.png",
-      "bytes": 278717,
-      "sha256": "e8a47c54c09d808fa019c78932b0ebce6368fb066a2d5fa30dd23c82cadbeeab",
+      "bytes": 361319,
+      "sha256": "041d65efe592e7f0411c32896f209dde4b0f0bb91ec516f9b09f4f354b310e1f",
       "width": 2304,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/parent/idle.png",
-      "bytes": 237451,
-      "sha256": "d43c63542e21715754c2ccf1cc5014310c57502cedb7ab043fd1130dee46072c",
+      "bytes": 321728,
+      "sha256": "54ddaa6fe7bd0012f4959b9f6bab3140f319734bed41a81d1c0c9f5fa5865e26",
       "width": 2304,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/parent/jump.png",
-      "bytes": 104660,
-      "sha256": "bafa9e4c0af1a9ead45780eada1ab31c44a1afbea77a833d5c2b308a5e859c53",
+      "bytes": 304773,
+      "sha256": "414f8c90ca6fb508a0b5e77e2de5e7028f115f5b46cafce679db57fd9c92ea04",
       "width": 2304,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/parent/kick.png",
-      "bytes": 119939,
-      "sha256": "ff665b62cf02b7e828f2fbfef8836fdaa4147dc3d8b18c858cb6d286da933187",
+      "bytes": 324762,
+      "sha256": "75bbac238e46ea0af381e04e2c11670ab76889baef4e8a222bacbb02485e9d3a",
       "width": 2304,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/parent/knockdown.png",
-      "bytes": 360365,
-      "sha256": "0de866da1cb20b9b60718620fe91482d5e9828934b033869364ae2a96fba950d",
+      "bytes": 273374,
+      "sha256": "42c9f87e2d9a97a916817a085e645897e11620165861619f7a6c23aaac8f19d8",
       "width": 2304,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/parent/link.png",
-      "bytes": 160059,
-      "sha256": "d69a873516b337bd111ccbd938380bd5fd1ffd1bd0e029b01c8f74d57056a2b3",
+      "bytes": 353974,
+      "sha256": "36c2fd6be38cb0a6e2d13160fdb11fb897caee90f34288eaf4f00338b30a3b52",
       "width": 2304,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/parent/punch.png",
-      "bytes": 242528,
-      "sha256": "6575184a9e1a2a16b57252883821215a437854d5e4a7c8f2a491ad52b2e1c92d",
+      "bytes": 336072,
+      "sha256": "9e0719b4e874f1029ceeb572d6029d34e4b94957b7c157e8b01c614d14acd7d8",
       "width": 2304,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/parent/special.png",
-      "bytes": 239047,
-      "sha256": "63eedfbc77a41b10b729276fff1bb00fa26b0a42c33b16c7396c5b901cbdb208",
+      "bytes": 335140,
+      "sha256": "d5609f987b5f5802ed6dc3c4081b37774e122b6912b1c74dbb69f77e61c62de3",
       "width": 2304,
       "height": 192,
       "mode": "RGBA"
     },
     {
       "path": "clips/heroes/parent/walk.png",
-      "bytes": 197327,
-      "sha256": "02c4756d50fe0e2b6038ab8e9e08c9f7e6c6985f3acc00f04ba951153c4c8943",
+      "bytes": 304557,
+      "sha256": "cdf2787399e47368ac9139a0f6188d9e1529480b003c6b1bc39e90ea16748edb",
       "width": 2304,
       "height": 192,
       "mode": "RGBA"
@@ -982,8 +982,8 @@
     },
     {
       "path": "heroes/parent.png",
-      "bytes": 28058,
-      "sha256": "ebb667460fd255fcbb13688608c6419c0dc9dfca0ca52b41a787c79568d8fabf",
+      "bytes": 32407,
+      "sha256": "b0d50032250869ee39e8820d6e3e2f0dd7c205a0056113787ade0e144e0dd1ef",
       "width": 256,
       "height": 384,
       "mode": "RGBA"
@@ -1006,16 +1006,16 @@
     },
     {
       "path": "heroes/parent_portrait.png",
-      "bytes": 80395,
-      "sha256": "bb562a72e7c05e209bac60e164b69fd6d4a8b5281cbbcdd0364f3ead1ee75f52",
+      "bytes": 80534,
+      "sha256": "f90db1895dd18361c566523cb6cd16c055434ad4743091046a28f72e22813a5e",
       "width": 256,
       "height": 256,
       "mode": "RGBA"
     },
     {
       "path": "heroes/parent_portrait_ready.png",
-      "bytes": 83623,
-      "sha256": "82315d2ae7e1a0130ea19b88efacd83582720357724728ba6874e0f593a7eea1",
+      "bytes": 90819,
+      "sha256": "b045f38de11027d0518f674cca637335a28dc15886789afd2d78d64e53b29bc8",
       "width": 256,
       "height": 256,
       "mode": "RGBA"
@@ -1278,8 +1278,8 @@
     },
     {
       "path": "runtime/clips/enemies/market_enforcer/walk.png",
-      "bytes": 658533,
-      "sha256": "aceee1860c3e968ff79f9d14d3e232731d2e4c353a655eaa59d6018defe4d5dd",
+      "bytes": 664797,
+      "sha256": "d5dd4cf8b59915eed49b01bf04ba2e8a59b33f474a5e75565c8b6c6d099c9696",
       "width": 4032,
       "height": 288,
       "mode": "RGBA"
@@ -1374,88 +1374,88 @@
     },
     {
       "path": "runtime/clips/heroes/parent/heavy_kick.png",
-      "bytes": 216900,
-      "sha256": "5dc86513a15e06c4ce286cdbc4a9fc79f6bf4adeaddf21c9ab23135adc4f93a6",
+      "bytes": 705913,
+      "sha256": "f0430d72aa8f9ce907b54a1366f44d9ece6d75e1387d71a410c4d32996659839",
       "width": 3408,
       "height": 284,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/parent/heavy_punch.png",
-      "bytes": 162012,
-      "sha256": "60a87687b91500f96e4f2fa295dfcb6254992e8946c1f585f9834e8254327ef9",
+      "bytes": 762072,
+      "sha256": "eb9b4d5c889a0c953f03931840a3a126c7b255494bf1d77b922f38b4553a6dce",
       "width": 3408,
       "height": 284,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/parent/hurt.png",
-      "bytes": 566578,
-      "sha256": "a7085164ce45fef596a1261b88620a6e91dddedf0c3f6f3b23e554dcbcb446d1",
+      "bytes": 753894,
+      "sha256": "b7aebcb6c108fea782746c8c3fb80ea3441ee08b4a6454de2a6398bc55152c82",
       "width": 3408,
       "height": 284,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/parent/idle.png",
-      "bytes": 476316,
-      "sha256": "61cbb2c0cb3234d2dcf92e3bca7f325960ae5095c8faead377e78fee018a7e44",
+      "bytes": 670727,
+      "sha256": "1ae08bf86ca5d08c34f8034563b1fb5a1254171c2bf83d4fdcc25f2f8e4fde6d",
       "width": 3408,
       "height": 284,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/parent/jump.png",
-      "bytes": 213639,
-      "sha256": "0e9e999525cc15d50072286dff1a53737763e4bb0146dc23185e4ca2d99425b6",
+      "bytes": 649117,
+      "sha256": "525b8e005c25a2a63f91f0846395d9d22ddaadbaa1f8cdc42e390c6a60bda31d",
       "width": 3408,
       "height": 284,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/parent/kick.png",
-      "bytes": 242140,
-      "sha256": "4407b61103f4235884f62c133c3da98a6b17972fb7bab67e7bb1fff044edffd1",
+      "bytes": 674835,
+      "sha256": "255a3c03b9697b379ac312bf8877de342dda82384ff5df87e18ac9e986fe1739",
       "width": 3408,
       "height": 284,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/parent/knockdown.png",
-      "bytes": 730124,
-      "sha256": "84128eac65a473a9a20e55ab0556fbca1dfe8add8112884ce526472aa7e117ef",
+      "bytes": 570501,
+      "sha256": "44f91e1c460fed517a10946ef9d3e53b5e08bbd635ac00340bfe6b684919a014",
       "width": 3408,
       "height": 284,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/parent/link.png",
-      "bytes": 326800,
-      "sha256": "239e50fdf47aff4a1ac977e5f67d2408608f4bbee8f74c5519eb29e2280bc20c",
+      "bytes": 738599,
+      "sha256": "603d9aa14f67a469c5ad7b6f72f21d0094357f68fe227e01e286db4cda0955bc",
       "width": 3408,
       "height": 284,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/parent/punch.png",
-      "bytes": 490623,
-      "sha256": "3b069ce14e92d79d21ea60240f2f992f58f8c27d0ffcae9d8c247427c2151dba",
+      "bytes": 696811,
+      "sha256": "85581d0074e989dd2aa54383d18a78d866e5a393dd75ebe99b52689927eab8e6",
       "width": 3408,
       "height": 284,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/parent/special.png",
-      "bytes": 481684,
-      "sha256": "5d78a4feb31a8900da2dfa48127c548066915f4547032a997cd08e98920a2205",
+      "bytes": 699792,
+      "sha256": "6d7a8cbe593adfae0f9cd54926a1074c8aad756974961886af6bd878edcf2dc8",
       "width": 3408,
       "height": 284,
       "mode": "RGBA"
     },
     {
       "path": "runtime/clips/heroes/parent/walk.png",
-      "bytes": 396407,
-      "sha256": "2b63539cd4c03eccedcf0e4520b008acd0284a2b8e3abf65b43593f673ff9121",
+      "bytes": 636499,
+      "sha256": "68b8f68229042ae0b5f49428e3bbee7c18ce4039f61978e5826d9b04981f9758",
       "width": 3408,
       "height": 284,
       "mode": "RGBA"
@@ -1800,8 +1800,8 @@
     },
     {
       "path": "tv/clips/enemies/market_enforcer/walk.png",
-      "bytes": 261173,
-      "sha256": "84dc3bdc450d53102a32dd7322347dc5bcdd121d5f63aa231f2e6f1a18881526",
+      "bytes": 263394,
+      "sha256": "92f2e10569442505f90f0beff9b2e433fb78b62b3734683510ab829a1a9defce",
       "width": 2352,
       "height": 168,
       "mode": "RGBA"
@@ -1896,88 +1896,88 @@
     },
     {
       "path": "tv/clips/heroes/parent/heavy_kick.png",
-      "bytes": 64010,
-      "sha256": "04dc3db20e179729519fce78dfd420e30353d45b239e82041157a01d327f3173",
+      "bytes": 198709,
+      "sha256": "b8b2c6fbbc35d0c01b5ba744fee74465617847607bf71ab03a8ed96993f5a544",
       "width": 1728,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/parent/heavy_punch.png",
-      "bytes": 48509,
-      "sha256": "64bd31ebdc1a6a26ef4e3fd97b1bdffdcc5a0ee6a57c7336a695d0afe35ccd56",
+      "bytes": 217018,
+      "sha256": "330694a0c95fe60df70bb790d3469833a422bcf2ed97d1a5b3be874a615b748c",
       "width": 1728,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/parent/hurt.png",
-      "bytes": 168671,
-      "sha256": "d4b13a6b5e03b18c433680f4e5095e36e7dac6424df3cafac30f2f8a67bd120f",
+      "bytes": 212516,
+      "sha256": "97fcca17e0dd51e3656c04c245dc046dd1ac38b39e5ccbf36cbccca4c0dfbaee",
       "width": 1728,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/parent/idle.png",
-      "bytes": 143973,
-      "sha256": "9228c82d8c0f119647c4ffdce2f884d0430d7030181565f36fbc62cecf651268",
+      "bytes": 191255,
+      "sha256": "347c91a842d5b1268b6ce1fdecc69d885d919cd556e8c4143b45f00600a1726b",
       "width": 1728,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/parent/jump.png",
-      "bytes": 63794,
-      "sha256": "501a5e775c8045fcbc99f937e458f4f85cb1a38a10623bc73ed303431b8df6ca",
+      "bytes": 176334,
+      "sha256": "cc0866f0ee598b55e2f7516f62aa1aefebf1ad45955b9c030c0d453fb15b77c7",
       "width": 1728,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/parent/kick.png",
-      "bytes": 72560,
-      "sha256": "52e4b4c66f7954ac6aee06fdedce857c9c56755da9027827d0169d1ed5e14983",
+      "bytes": 192704,
+      "sha256": "bfcd93e974af90d0519f212bd5c98cdce978d91a5d7aa03d7af2f18a60f5343e",
       "width": 1728,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/parent/knockdown.png",
-      "bytes": 213537,
-      "sha256": "0476799cce5571b585cd6d60ad7c6afe5d29999c55f5a523117954a26f07e9f0",
+      "bytes": 162944,
+      "sha256": "1d1cf3fd4603bdf2fe97a2252b505225be25be63bf1f6cfeb253d9d716f63dd5",
       "width": 1728,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/parent/link.png",
-      "bytes": 97034,
-      "sha256": "f6c173c68b5539ea8dd20120ad11b1a15114e3957c0671bd5b5f087bc6724186",
+      "bytes": 210621,
+      "sha256": "0f38f9247e98ba86c230ad0d79152a9de65e5d647eb70b902b0dbd47df67cb88",
       "width": 1728,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/parent/punch.png",
-      "bytes": 146799,
-      "sha256": "c52f3586079de46a8ef565d120eaedd6f84a6a7656c72e674a8aad2295c30f4e",
+      "bytes": 200039,
+      "sha256": "4d3f09be111d9148f67afaa118c62ea11de91b1d4c2500df836b9bc5dca0b4aa",
       "width": 1728,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/parent/special.png",
-      "bytes": 145357,
-      "sha256": "4d25b5c38c0f37637f80233e89943731728743460fbf53d56e13b7f6ef49be2e",
+      "bytes": 199669,
+      "sha256": "3f0aa7e245841cd273b14f7547a0a0f89c725f869e8dc34ab51a567eca9b1269",
       "width": 1728,
       "height": 144,
       "mode": "RGBA"
     },
     {
       "path": "tv/clips/heroes/parent/walk.png",
-      "bytes": 119587,
-      "sha256": "d8e9fa7da5f7f44127c844361362d46942710d5d90225df590e7f889dad1302e",
+      "bytes": 181740,
+      "sha256": "dc1f670916aa774a59f419067d5f6a4354cd7f74d80c168463641009478d1381",
       "width": 1728,
       "height": 144,
       "mode": "RGBA"
@@ -2176,8 +2176,8 @@
     },
     {
       "path": "tv/heroes/parent_hd.png",
-      "bytes": 203675,
-      "sha256": "a4472534fa905413919f6d9227ce705f940c45d426b008f0249b4c618475041c",
+      "bytes": 212534,
+      "sha256": "951fc438db21a11ea822989c37dcc84bdede91d831814a79725599ec3b8eb62b",
       "width": 384,
       "height": 576,
       "mode": "RGBA"
@@ -2288,88 +2288,88 @@
     },
     {
       "path": "uhd/clips/heroes/parent/heavy_kick.png",
-      "bytes": 373259,
-      "sha256": "8fdda72ac6e97a7e595e8fa07c681533e722daf371d58e3eacf13f8425f7292b",
+      "bytes": 1216608,
+      "sha256": "8652ea463be238497a348ad0b4e2c2b8f46a90b8513c7d1387961a377c9c3e5b",
       "width": 4608,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/parent/heavy_punch.png",
-      "bytes": 277556,
-      "sha256": "fbf3d99553ec0810a06da9a49df5b5ec3a79832c0559f8b535e56faed0dc95a8",
+      "bytes": 1312317,
+      "sha256": "1001125f2a353fd34eb307da8efc400b7d12735e8fdf6aa435f9c037d44b39f2",
       "width": 4608,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/parent/hurt.png",
-      "bytes": 965783,
-      "sha256": "f629823f83680c9977a3b517689ccaa40d37315e8fe4c6a7f80653c216dd083c",
+      "bytes": 1296834,
+      "sha256": "893dfb8012e6ea9b16502227e6da9e4ea402fb2065dfb8c4010120660a30132e",
       "width": 4608,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/parent/idle.png",
-      "bytes": 806771,
-      "sha256": "5f3aa090b2a797a67df93426d548394440766928c07da7e89c2d87c5c70fb239",
+      "bytes": 1162266,
+      "sha256": "9d32d28681d4dfd4b081959431204059502a90a8c138303eeb8205a501b78211",
       "width": 4608,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/parent/jump.png",
-      "bytes": 366193,
-      "sha256": "be2eecba12fe7940d95dd16d728325dc56f7d04ceb2c8ab0df0c65285edbfa61",
+      "bytes": 1137112,
+      "sha256": "5e633edcbd987f5e6713867f8fff471573b5f3a467e6e2c00efe32145b5ff76b",
       "width": 4608,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/parent/kick.png",
-      "bytes": 417238,
-      "sha256": "55878543aa81f3a78f2b07f006808306343e2fec3a4209d055a58ee51d0dc2e9",
+      "bytes": 1159162,
+      "sha256": "6bc30ad8a98348687ead4a78f9b65afcd419a402436033bb8d2ee320068758be",
       "width": 4608,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/parent/knockdown.png",
-      "bytes": 1231693,
-      "sha256": "e2ff5fafc7902c81f2ce704f446a311b5c3d4a14ec8ffacd352bd3b85ddc1829",
+      "bytes": 980149,
+      "sha256": "7d86a70abe34fac0f0ab4fb85976a84ddfb0326a86074825fdac88e0a6b65fc7",
       "width": 4608,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/parent/link.png",
-      "bytes": 555717,
-      "sha256": "d2f37009ee0ab0ddfc9806c92887b0c240aefb4bfe08bce26ee708bcf28ef611",
+      "bytes": 1275377,
+      "sha256": "3f5cc5ef27bac57aa45723fdede7483eefb625e8eaa0cf973113587fce0210f5",
       "width": 4608,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/parent/punch.png",
-      "bytes": 833791,
-      "sha256": "a9515c3ca00ec95a7fed68fa48cba61f7fc006cb53387d7190537e4415a6c210",
+      "bytes": 1195820,
+      "sha256": "801df71eb1533dfe53d2b8b42c90231a62ffe02aa79545d92955edc675e8b528",
       "width": 4608,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/parent/special.png",
-      "bytes": 819585,
-      "sha256": "3fcdea133ab37f4e52ea396ac1681cece77e5ed2a41f0b5d0a3e68eb814297dd",
+      "bytes": 1212431,
+      "sha256": "2ac2f9185cb65312cc38745366e322d46bb89f7f4f0ec51215562325361398ec",
       "width": 4608,
       "height": 384,
       "mode": "RGBA"
     },
     {
       "path": "uhd/clips/heroes/parent/walk.png",
-      "bytes": 674531,
-      "sha256": "022f44f147815f966c0d101661fd588f76c86dd8373f6d95ace5bc8675400aac",
+      "bytes": 1103148,
+      "sha256": "ef9910a1ba71d7e515c2905f8bdf4f5c11d63747724917c2927d64548aec31b4",
       "width": 4608,
       "height": 384,
       "mode": "RGBA"
