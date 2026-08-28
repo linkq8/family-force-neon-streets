@@ -16,7 +16,7 @@
 - النسخة المنشورة: `v0.53.0-alpha`، `versionCode 68`.
 - الفرع المشترك: `main`.
 - آخر commit وظيفي منشور: `d6c317d05eb35a8135a3952a0a18b4d1a96ebbf4`.
-- آخر commit وظيفي لـUnity غير منشور: `ad5f0c2`؛ تأسيس المحرك بدأ في `03b286a`.
+- آخر commit وظيفي لـUnity غير منشور: `a8661ec`؛ تأسيس المحرك بدأ في `03b286a`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
 - Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.53.0-alpha
 - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.53.0-alpha/family-force-family-current.apk
@@ -269,6 +269,7 @@
 - APK: `unity/Builds/Android/FamilyForceUnityAtlasPrototype.apk`، الإصدار
   `0.4.0-two-player`، الحجم 56,589,033 بايت، SHA-256
   `d5501653e1b920fa618e59b9002221c5cfa142a6dcc89b7eddf0f514ee292835`.
+- commit الوظيفي: `a8661ec`.
 - ملاحظات/مخاطر: Gamepad 0/1 وفصل الإدخال جرى تجميعهما والتحقق من عقدهما، لكن
   المحاكي لا يوفر DualSense فعليتين؛ يلزم اختبار يدين على Shield/Xiaomi. شاشة
   اختيار الشخصيات الكاملة ليست ضمن نموذج الهجرة بعد؛ الشخصيتان ثابتتان Essa/Adam.
