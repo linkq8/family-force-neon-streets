@@ -2,12 +2,9 @@ using UnityEngine;
 
 namespace FamilyForce.Unity
 {
-    [RequireComponent(typeof(SpriteRenderer), typeof(SpriteStripAnimator))]
+    [RequireComponent(typeof(SpriteRenderer), typeof(SpriteStripAnimator), typeof(CombatHurtbox))]
     public sealed class EnemyCombatant : MonoBehaviour
     {
-        public const int MaxHealth = 100;
-        private const float MoveSpeed = 1.45f;
-
         private CombatDirector director;
         private SpriteRenderer spriteRenderer;
         private SpriteStripAnimator animator;
@@ -17,39 +14,51 @@ namespace FamilyForce.Unity
         private float nextAttackTime;
         private float hurtLock;
         private float grabbedUntil;
+        private float moveSpeed;
+        private int attackDamage;
         private bool defeated;
 
-        public int Health { get; private set; } = MaxHealth;
+        public string DisplayName { get; private set; } = "GRUNT";
+        public int MaxHealth { get; private set; } = 100;
+        public int Health { get; private set; } = 100;
         public bool IsGrabbed => !defeated && grabbedUntil > Time.time;
         public bool IsAlive => !defeated;
         public PlayerMotor Grabber { get; private set; }
+        public CombatHurtbox Hurtbox { get; private set; }
 
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<SpriteStripAnimator>();
+            Hurtbox = GetComponent<CombatHurtbox>();
         }
 
-        public void Initialize(string actor, CombatDirector combatDirector)
+        public void Initialize(CombatDirector combatDirector)
         {
             director = combatDirector;
+            gameObject.SetActive(false);
+        }
+
+        public void Spawn(string actor, string displayName, int maxHealth, float speed,
+            int damage, Vector3 position, float scale)
+        {
+            DisplayName = displayName;
+            MaxHealth = maxHealth;
+            moveSpeed = speed;
+            attackDamage = damage;
+            transform.localScale = Vector3.one * scale;
             animator.Initialize(CharacterAtlasCatalog.LoadClip(actor, "idle"),
                 CharacterAtlasCatalog.LoadClip(actor, "walk"));
             attackFrames = CharacterAtlasCatalog.LoadClip(actor, "attack_1");
             hurtFrames = CharacterAtlasCatalog.LoadClip(actor, "hurt");
             knockdownFrames = CharacterAtlasCatalog.LoadClip(actor, "knockdown");
-            ResetEncounter();
-        }
-
-        public void ResetEncounter()
-        {
             Health = MaxHealth;
             defeated = false;
             Grabber = null;
             grabbedUntil = 0f;
-            hurtLock = 0f;
-            nextAttackTime = Time.time + 1.2f;
-            transform.position = new Vector3(2.6f, -2.15f, 0f);
+            hurtLock = Time.time + 0.45f;
+            nextAttackTime = Time.time + 1.15f;
+            transform.position = position;
             spriteRenderer.color = Color.white;
             gameObject.SetActive(true);
             TouchInputOverlay.SetTeamReady(false);
@@ -57,7 +66,7 @@ namespace FamilyForce.Unity
 
         public bool TryGrab(PlayerMotor player)
         {
-            if (!IsAlive || player == null
+            if (!IsAlive || player == null || DisplayName == "MARKET ENFORCER"
                 || Vector2.Distance(transform.position, player.transform.position) > 1.55f)
                 return false;
             Grabber = player;
@@ -83,7 +92,6 @@ namespace FamilyForce.Unity
                 director.EnemyDefeated();
                 return;
             }
-
             animator.PlayOnce(hurtFrames);
             hurtLock = Time.time + 0.25f;
             float direction = Mathf.Sign(transform.position.x - attacker.position.x);
@@ -104,14 +112,11 @@ namespace FamilyForce.Unity
         {
             if (director == null || !director.CombatActive || defeated)
                 return;
-
             PlayerMotor target = director.ClosestActivePlayer(transform.position);
             if (target == null)
                 return;
-
             if (IsGrabbed)
             {
-                float side = spriteRenderer.flipX ? -1f : 1f;
                 if (Grabber == null || !Grabber.gameObject.activeInHierarchy)
                 {
                     grabbedUntil = 0f;
@@ -119,7 +124,8 @@ namespace FamilyForce.Unity
                     TouchInputOverlay.SetTeamReady(false);
                     return;
                 }
-                transform.position = Grabber.transform.position + new Vector3(side * 0.88f, 0.03f, 0f);
+                transform.position = Grabber.transform.position
+                    + new Vector3(Grabber.FacingRight ? 0.88f : -0.88f, 0.03f, 0f);
                 animator.SetMoving(false);
                 return;
             }
@@ -131,24 +137,22 @@ namespace FamilyForce.Unity
             }
             if (Time.time < hurtLock)
                 return;
-
             Vector2 delta = target.transform.position - transform.position;
             spriteRenderer.flipX = delta.x < 0f;
             if (Mathf.Abs(delta.x) > 1.15f || Mathf.Abs(delta.y) > 0.55f)
             {
                 Vector2 direction = delta.normalized;
                 transform.position += new Vector3(direction.x, direction.y * 0.7f, 0f)
-                    * (MoveSpeed * Time.deltaTime);
+                    * (moveSpeed * Time.deltaTime);
                 animator.SetMoving(true);
                 return;
             }
-
             animator.SetMoving(false);
             if (Time.time < nextAttackTime)
                 return;
             nextAttackTime = Time.time + 1.35f;
             animator.PlayOnce(attackFrames);
-            director.DamagePlayer(target, 7);
+            director.DamagePlayer(target, attackDamage);
         }
     }
 }

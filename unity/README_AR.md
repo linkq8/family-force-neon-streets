@@ -23,12 +23,17 @@
 الناتج المحلي غير المتعقب:
 `unity/Builds/Android/FamilyForceUnityPrototype.apk`.
 
-## ما يعمل في النموذج الأول
+## ما يعمل في `0.5.0-stage-one-slice`
 
 - مشهد 2D عند 60 FPS.
-- عرض strip من 12 صورة بسرعة 12 FPS مع Point filtering ومن دون ضغط Android.
+- حركة Sprite Atlas بسرعة 12 FPS مع Point filtering ومن دون ضغط Android.
 - قائمة واضحة بإطار اختيار تعمل عبر D-pad/العصا/ريموت لوحة المفاتيح.
-- حركة P1 ودعم ضربة اختبارية.
+- 1P أو 2P اختياريان، وشاشة اختيار Essa/Adam لا تبدأ 2P قبل تأكيد اللاعبين.
+- لمس كامل للحركة وPunch/Kick/Heavy/Special/Grab/Team/Jump/Weapon/Throw.
+- ثلاث موجات Grunt ثم Mini Boss من نوع Market Enforcer.
+- مضرب قابل للالتقاط والضرب والرمي وإعادة الالتقاط في 1P/2P.
+- hurtbox ثابت، input buffer، combo من ثلاث ضربات، hit-stop وknockback.
+- مقدمة Stage 1 وStage Clear وScore ووقت وHigh Score محفوظ.
 - حزمة مستقلة تسمح بتثبيته بجانب APK الحالي.
 
 ## أطالس الشخصيات المعتمدة
@@ -48,4 +53,5 @@ Atlas مستقل داخل `Assets/FamilyForce/Resources/Atlases` حتى يستط
 python3 unity/tools/test_sprite_atlas_contract.py
 ```
 
-هذا النموذج ليس Release ولا يحتوي بعد على القتال الكامل أو المراحل أو P2.
+هذا Vertical Slice قابل للاختبار، لكنه لا يستبدل بعد لعبة Android Canvas المنشورة؛
+ما زالت المراحل الخمس والقصة والصوت والتكافؤ الكامل واختبارات العتاد الحقيقي مطلوبة.

@@ -95,23 +95,24 @@ namespace FamilyForce.Unity
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.ConfirmPressedThisFrame)
                 || (assignedGamepad != null && assignedGamepad.buttonSouth.wasPressedThisFrame)
-                || Pressed(Keyboard.current?.enterKey)
-                || Pressed(Keyboard.current?.numpadEnterKey)
-                || Pressed(Keyboard.current?.spaceKey)
-                || UnityEngine.Input.GetKeyDown(KeyCode.Return)
-                || UnityEngine.Input.GetKeyDown(KeyCode.KeypadEnter)
-                || UnityEngine.Input.GetKeyDown(KeyCode.JoystickButton0);
+                || (playerIndex == 0
+                    ? Pressed(Keyboard.current?.enterKey)
+                        || Pressed(Keyboard.current?.numpadEnterKey)
+                        || Pressed(Keyboard.current?.spaceKey)
+                        || UnityEngine.Input.GetKeyDown(KeyCode.Return)
+                        || UnityEngine.Input.GetKeyDown(KeyCode.KeypadEnter)
+                    : Pressed(Keyboard.current?.leftShiftKey));
         }
 
         public bool CancelPressed()
         {
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.CancelPressedThisFrame)
-                || (assignedGamepad != null && assignedGamepad.buttonEast.wasPressedThisFrame)
+                || (assignedGamepad != null && assignedGamepad.startButton.wasPressedThisFrame)
                 || Pressed(Keyboard.current?.escapeKey)
                 || Pressed(Keyboard.current?.backspaceKey)
                 || UnityEngine.Input.GetKeyDown(KeyCode.Escape)
-                || UnityEngine.Input.GetKeyDown(KeyCode.JoystickButton1);
+                || (playerIndex == 0 && UnityEngine.Input.GetKeyDown(KeyCode.Escape));
         }
 
         public bool PunchPressed()
@@ -169,6 +170,22 @@ namespace FamilyForce.Unity
             return (allowTouch && TouchInputOverlay.TeamPressedThisFrame)
                 || (assignedGamepad != null && assignedGamepad.leftShoulder.wasPressedThisFrame)
                 || Pressed(playerIndex == 0 ? Keyboard.current?.tKey : Keyboard.current?.vKey);
+        }
+
+        public bool WeaponPressed()
+        {
+            ClaimAssignedGamepad();
+            return (allowTouch && TouchInputOverlay.WeaponPressedThisFrame)
+                || (assignedGamepad != null && assignedGamepad.buttonEast.wasPressedThisFrame)
+                || Pressed(playerIndex == 0 ? Keyboard.current?.oKey : Keyboard.current?.bKey);
+        }
+
+        public bool ThrowPressed()
+        {
+            ClaimAssignedGamepad();
+            return (allowTouch && TouchInputOverlay.ThrowPressedThisFrame)
+                || (assignedGamepad != null && assignedGamepad.rightStickButton.wasPressedThisFrame)
+                || Pressed(playerIndex == 0 ? Keyboard.current?.pKey : Keyboard.current?.nKey);
         }
 
         private static float ReadAxis(KeyControl negative, KeyControl positive)

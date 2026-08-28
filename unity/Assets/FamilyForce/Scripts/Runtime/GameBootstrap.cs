@@ -25,8 +25,9 @@ namespace FamilyForce.Unity
                 new Vector3(-5.1f, -2.65f, 0f), 2.65f, 21);
             CombatDirector combat = gameObject.AddComponent<CombatDirector>();
             EnemyCombatant enemy = BuildEnemy(combat);
+            WeaponPickup weapon = BuildWeapon();
             combat.Initialize(playerOne.GetComponent<PlayerMotor>(),
-                playerTwo.GetComponent<PlayerMotor>(), enemy);
+                playerTwo.GetComponent<PlayerMotor>(), enemy, weapon);
             PrototypeFlow flow = gameObject.AddComponent<PrototypeFlow>();
             flow.BindPlayers(playerOne.GetComponent<PlayerMotor>(),
                 playerTwo.GetComponent<PlayerMotor>(), combat);
@@ -74,6 +75,7 @@ namespace FamilyForce.Unity
             Sprite[] walk = CharacterAtlasCatalog.LoadClip(actor, "walk");
             animator.Initialize(idle, walk);
             player.AddComponent<PlayerMotor>();
+            player.AddComponent<CombatHurtbox>();
             player.transform.localScale = Vector3.one * scale;
             Debug.Log($"FF_UNITY: hero={actor} created idle={idle.Length} walk={walk.Length} " +
                 $"sprite={(renderer.sprite != null)}");
@@ -86,10 +88,21 @@ namespace FamilyForce.Unity
             SpriteRenderer renderer = enemyObject.AddComponent<SpriteRenderer>();
             renderer.sortingOrder = 19;
             enemyObject.AddComponent<SpriteStripAnimator>();
+            enemyObject.AddComponent<CombatHurtbox>();
             EnemyCombatant enemy = enemyObject.AddComponent<EnemyCombatant>();
             enemyObject.transform.localScale = Vector3.one * 3.05f;
-            enemy.Initialize(CharacterAtlasCatalog.Grunt, combat);
+            enemy.Initialize(combat);
             return enemy;
+        }
+
+        private static WeaponPickup BuildWeapon()
+        {
+            var weaponObject = new GameObject("Stage1_Bat");
+            weaponObject.transform.localScale = Vector3.one * 0.72f;
+            weaponObject.AddComponent<SpriteRenderer>();
+            WeaponPickup weapon = weaponObject.AddComponent<WeaponPickup>();
+            weaponObject.SetActive(false);
+            return weapon;
         }
 
         private static void CreatePanel(string name, Vector3 position, Vector2 size, Color color)

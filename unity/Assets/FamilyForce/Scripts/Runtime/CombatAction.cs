@@ -7,6 +7,8 @@ namespace FamilyForce.Unity
         Heavy,
         Special,
         Grab,
-        Team
+        Team,
+        Weapon,
+        Throw
     }
 }

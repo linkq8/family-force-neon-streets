@@ -29,20 +29,28 @@ def main() -> None:
     enemy = (runtime / "EnemyCombatant.cs").read_text()
     assert "Input.touchSupported" in touch
     assert "Input.multiTouchEnabled = true" in touch
-    for action in ("PUNCH", "KICK", "HEAVY", "SPECIAL", "GRAB", "TEAM", "JUMP"):
+    for action in ("PUNCH", "KICK", "HEAVY", "SPECIAL", "GRAB", "TEAM", "JUMP", "WEAPON", "THROW"):
         assert action in touch, action
     assert "TouchInputOverlay.Move" in unified
     assert "TouchInputOverlay.PunchPressedThisFrame" in unified
     assert "TouchInputOverlay.BeganInside(OptionRect(index))" in flow
+    assert "BOTH PLAYERS MUST CONFIRM" in flow
+    assert "FF_STAGE1_HIGH_SCORE" in flow and "STAGE CLEAR!" in flow
     assert "TryPlayerAction(PlayerMotor actor, CombatAction action)" in combat
     assert "TeamCombo(PlayerMotor partner)" in combat and "ApplyTeamCombo()" in enemy
     assert "CharacterAtlasCatalog.Adam" in combat
-    assert "CharacterAtlasCatalog.Grunt" in (runtime / "GameBootstrap.cs").read_text()
+    assert "CharacterAtlasCatalog.Grunt" in combat
     assert "Gamepad.all.Count > playerIndex" in unified
     assert "START — 2 PLAYERS" in flow
-    assert "SetCombatActive(true, selected == 1)" in flow
+    assert "SetCombatActive(true, twoPlayersRequested)" in flow
     assert "ClosestActivePlayer" in combat
     assert "enemy.Grabber != actor" in combat
+    assert "MarketEnforcer" in combat and "MINI-BOSS" in combat
+    assert "HitStop" in combat and "comboUntil" in combat
+    assert "WeaponPickup" in combat and "OverlapsAttack" in combat
+    assert "bufferedUntil" in (runtime / "PlayerMotor.cs").read_text()
+    assert (runtime / "CombatHurtbox.cs").is_file()
+    assert (runtime / "WeaponPickup.cs").is_file()
 
     atlas_root = UNITY / "Assets/FamilyForce/Resources/Atlases"
     for actor in ("Essa", "Adam", "Grunt", "Skater", "LanternCourier",
@@ -52,13 +60,17 @@ def main() -> None:
         assert "enableTightPacking: 0" in atlas, actor
         assert "generateMipMaps: 0" in atlas, actor
         assert "filterMode: 0" in atlas, actor
+    props_atlas = (atlas_root / "FF_Stage1Props.spriteatlas").read_text()
+    assert "enableRotation: 0" in props_atlas
+    assert "filterMode: 0" in props_atlas
+    assert (UNITY / "Assets/FamilyForce/Art/Stage1Props/bat.png").is_file()
 
     apk = PRODUCTION_APK if PRODUCTION_APK.is_file() else DEVELOPMENT_APK
     assert apk.is_file(), "Build the Unity Android prototype first"
     aapt = sorted((SDK / "build-tools").glob("*/aapt2"))[-1]
     badging = subprocess.check_output([str(aapt), "dump", "badging", str(apk)], text=True)
     assert "com.familyforce.neonstreets.unityprototype" in badging
-    assert "versionName='0.4.0-two-player'" in badging
+    assert "versionName='0.5.0-stage-one-slice'" in badging
     assert "leanback-launchable-activity" in badging
     assert "android.hardware.touchscreen" in badging and "not-required" in badging
     assert "arm64-v8a" in badging and "armeabi-v7a" in badging

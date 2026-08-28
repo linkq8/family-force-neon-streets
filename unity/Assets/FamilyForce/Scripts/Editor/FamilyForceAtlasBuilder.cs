@@ -13,6 +13,7 @@ namespace FamilyForce.Unity.Editor
     {
         private const string ArtRoot = "Assets/FamilyForce/Art/Characters";
         private const string AtlasRoot = "Assets/FamilyForce/Resources/Atlases";
+        private const string PropRoot = "Assets/FamilyForce/Art/Stage1Props";
         private const int CellHeight = 192;
         private const float PixelsPerUnit = 192f;
 
@@ -57,9 +58,10 @@ namespace FamilyForce.Unity.Editor
                 List<Texture2D> textures = ImportAndSlice(actor);
                 CreateAtlas(actor, textures);
             }
+            CreateStageOnePropsAtlas();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
-            Debug.Log("FF_ATLAS: rebuilt 7 official character Sprite Atlases");
+            Debug.Log("FF_ATLAS: rebuilt 7 character atlases and Stage 1 props atlas");
         }
 
         public static void ValidateAll()
@@ -74,7 +76,16 @@ namespace FamilyForce.Unity.Editor
                 atlases.Add(atlas);
             }
 
-            SpriteAtlasUtility.PackAtlases(atlases.ToArray(), BuildTarget.Android);
+            SpriteAtlas props = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(AtlasPath("Stage1Props"));
+            if (props == null)
+                throw new InvalidOperationException("Missing Stage 1 props Sprite Atlas");
+            atlases.Add(props);
+
+            // Packing every UHD character atlas in one editor call can exceed the
+            // native packer's transient memory on Apple Silicon. Pack one at a
+            // time; the emitted atlases are identical and the build is stable.
+            foreach (SpriteAtlas atlas in atlases)
+                SpriteAtlasUtility.PackAtlases(new[] { atlas }, BuildTarget.Android);
             foreach (ActorSpec actor in Actors)
             {
                 SpriteAtlas atlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(AtlasPath(actor.Name));
@@ -86,6 +97,32 @@ namespace FamilyForce.Unity.Editor
                     throw new InvalidOperationException($"{actor.Name} atlas has no idle frame");
                 Debug.Log($"FF_ATLAS: {actor.Name} sprites={atlas.spriteCount}");
             }
+            if (props.spriteCount != 1 || props.GetSprite("bat") == null)
+                throw new InvalidOperationException("Stage 1 props atlas must contain bat");
+            Debug.Log("FF_ATLAS: Stage1Props sprites=1");
+        }
+
+        private static void CreateStageOnePropsAtlas()
+        {
+            string batPath = $"{PropRoot}/bat.png";
+            AssetDatabase.ImportAsset(batPath, ImportAssetOptions.ForceSynchronousImport);
+            var importer = AssetImporter.GetAtPath(batPath) as TextureImporter;
+            if (importer == null)
+                throw new InvalidOperationException("Missing bat TextureImporter");
+            importer.textureType = TextureImporterType.Sprite;
+            importer.spriteImportMode = SpriteImportMode.Single;
+            importer.spritePixelsPerUnit = 128f;
+            importer.spritePivot = new Vector2(0.5f, 0.5f);
+            importer.alphaIsTransparency = true;
+            importer.mipmapEnabled = false;
+            importer.filterMode = FilterMode.Point;
+            importer.wrapMode = TextureWrapMode.Clamp;
+            importer.npotScale = TextureImporterNPOTScale.None;
+            importer.isReadable = false;
+            importer.textureCompression = TextureImporterCompression.Uncompressed;
+            importer.SaveAndReimport();
+            Texture2D bat = AssetDatabase.LoadAssetAtPath<Texture2D>(batPath);
+            CreateAtlas("Stage1Props", new UnityEngine.Object[] { bat });
         }
 
         private static List<Texture2D> ImportAndSlice(ActorSpec actor)
@@ -183,7 +220,12 @@ namespace FamilyForce.Unity.Editor
 
         private static void CreateAtlas(ActorSpec actor, List<Texture2D> textures)
         {
-            string path = AtlasPath(actor.Name);
+            CreateAtlas(actor.Name, textures.Cast<UnityEngine.Object>().ToArray());
+        }
+
+        private static void CreateAtlas(string atlasName, UnityEngine.Object[] packables)
+        {
+            string path = AtlasPath(atlasName);
             SpriteAtlas atlas = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(path);
             bool isNew = atlas == null;
             if (isNew)
@@ -217,7 +259,7 @@ namespace FamilyForce.Unity.Editor
                 textureCompression = TextureImporterCompression.Uncompressed,
                 compressionQuality = 100
             });
-            SpriteAtlasExtensions.Add(atlas, textures.Cast<UnityEngine.Object>().ToArray());
+            SpriteAtlasExtensions.Add(atlas, packables);
             if (isNew)
                 AssetDatabase.CreateAsset(atlas, path);
             else

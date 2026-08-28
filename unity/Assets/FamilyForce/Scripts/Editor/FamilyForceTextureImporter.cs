@@ -8,16 +8,23 @@ namespace FamilyForce.Unity.Editor
         private void OnPreprocessTexture()
         {
             bool characterSource = assetPath.Contains("/FamilyForce/Art/Characters/");
-            if (!assetPath.Contains("/FamilyForce/Resources/") && !characterSource)
+            bool propSource = assetPath.Contains("/FamilyForce/Art/Stage1Props/");
+            if (!assetPath.Contains("/FamilyForce/Resources/") && !characterSource && !propSource)
                 return;
             var importer = (TextureImporter)assetImporter;
-            importer.textureType = characterSource
+            importer.textureType = characterSource || propSource
                 ? TextureImporterType.Sprite
                 : TextureImporterType.Default;
             if (characterSource)
             {
                 importer.spriteImportMode = SpriteImportMode.Multiple;
                 importer.spritePixelsPerUnit = 192f;
+            }
+            else if (propSource)
+            {
+                importer.spriteImportMode = SpriteImportMode.Single;
+                importer.spritePixelsPerUnit = 128f;
+                importer.spritePivot = new Vector2(0.5f, 0.5f);
             }
             importer.alphaIsTransparency = true;
             importer.mipmapEnabled = false;

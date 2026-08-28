@@ -18,11 +18,15 @@ namespace FamilyForce.Unity
         private Sprite[] specialFrames;
         private Sprite[] linkFrames;
         private Sprite[] hurtFrames;
+        private CombatAction? bufferedAction;
+        private float bufferedUntil;
+        private bool controlEnabled;
 
         public int PlayerIndex { get; private set; }
         public string ActorName { get; private set; } = CharacterAtlasCatalog.Essa;
         public string InputLabel => input.DeviceLabel;
         public bool HasGamepad => input.HasAssignedGamepad;
+        public bool FacingRight => !spriteRenderer.flipX;
 
         private void Awake()
         {
@@ -34,15 +38,32 @@ namespace FamilyForce.Unity
         public void Configure(CombatDirector director, string actor, int index, bool allowTouch)
         {
             combat = director;
-            ActorName = actor;
             PlayerIndex = index;
             input = new UnifiedInput(index, allowTouch);
+            SelectActor(actor);
+            controlEnabled = true;
+        }
+
+        public void SelectActor(string actor)
+        {
+            ActorName = actor;
+            Sprite[] idleFrames = CharacterAtlasCatalog.LoadClip(actor, "idle");
+            Sprite[] walkFrames = CharacterAtlasCatalog.LoadClip(actor, "walk");
+            animator.Initialize(idleFrames, walkFrames);
             punchFrames = CharacterAtlasCatalog.LoadClip(actor, "punch");
             kickFrames = CharacterAtlasCatalog.LoadClip(actor, "kick");
             heavyFrames = CharacterAtlasCatalog.LoadClip(actor, "heavy_punch");
             specialFrames = CharacterAtlasCatalog.LoadClip(actor, "special");
             linkFrames = CharacterAtlasCatalog.LoadClip(actor, "link");
             hurtFrames = CharacterAtlasCatalog.LoadClip(actor, "hurt");
+            transform.localScale = Vector3.one * (actor == CharacterAtlasCatalog.Adam ? 2.65f : 3.45f);
+        }
+
+        public void SetControlEnabled(bool enabled)
+        {
+            controlEnabled = enabled;
+            if (!enabled)
+                animator.SetMoving(false);
         }
 
         public void PlayHurt() => animator.PlayOnce(hurtFrames);
@@ -57,6 +78,8 @@ namespace FamilyForce.Unity
 
         private void Update()
         {
+            if (!controlEnabled)
+                return;
             Vector2 move = input.ReadMove();
             if (animator.IsPlayingAction)
                 move *= 0.28f;
@@ -83,24 +106,56 @@ namespace FamilyForce.Unity
 
             if (combat == null)
                 return;
-            if (input.TeamPressed())
-                TryAction(CombatAction.Team, linkFrames);
+            if (input.ThrowPressed())
+                BufferAction(CombatAction.Throw);
+            else if (input.WeaponPressed())
+                BufferAction(CombatAction.Weapon);
+            else if (input.TeamPressed())
+                BufferAction(CombatAction.Team);
             else if (input.GrabPressed())
-                TryAction(CombatAction.Grab, heavyFrames);
+                BufferAction(CombatAction.Grab);
             else if (input.SpecialPressed())
-                TryAction(CombatAction.Special, specialFrames);
+                BufferAction(CombatAction.Special);
             else if (input.HeavyPressed())
-                TryAction(CombatAction.Heavy, heavyFrames);
+                BufferAction(CombatAction.Heavy);
             else if (input.KickPressed())
-                TryAction(CombatAction.Kick, kickFrames);
+                BufferAction(CombatAction.Kick);
             else if (input.PunchPressed())
-                TryAction(CombatAction.Punch, punchFrames);
+                BufferAction(CombatAction.Punch);
+
+            if (bufferedAction.HasValue && Time.unscaledTime <= bufferedUntil
+                && TryAction(bufferedAction.Value))
+                bufferedAction = null;
+            else if (Time.unscaledTime > bufferedUntil)
+                bufferedAction = null;
         }
 
-        private void TryAction(CombatAction action, Sprite[] frames)
+        private void BufferAction(CombatAction action)
+        {
+            bufferedAction = action;
+            bufferedUntil = Time.unscaledTime + 0.14f;
+        }
+
+        private bool TryAction(CombatAction action)
         {
             if (combat.TryPlayerAction(this, action))
+            {
+                Sprite[] frames = action switch
+                {
+                    CombatAction.Punch => punchFrames,
+                    CombatAction.Kick => kickFrames,
+                    CombatAction.Heavy => heavyFrames,
+                    CombatAction.Special => specialFrames,
+                    CombatAction.Grab => heavyFrames,
+                    CombatAction.Team => linkFrames,
+                    CombatAction.Weapon => heavyFrames,
+                    CombatAction.Throw => kickFrames,
+                    _ => punchFrames
+                };
                 animator.PlayOnce(frames);
+                return true;
+            }
+            return false;
         }
     }
 }

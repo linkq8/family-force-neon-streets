@@ -22,6 +22,7 @@ namespace FamilyForce.Unity
         private static readonly Vector2 JumpCenter = new Vector2(1250f, 930f);
         private static readonly Vector2 KickCenter = new Vector2(1430f, 930f);
         private static readonly Vector2 PunchCenter = new Vector2(1610f, 930f);
+        private static readonly Vector2 WeaponCenter = new Vector2(1790f, 930f);
         private static readonly Vector2 MenuCenter = new Vector2(1805f, 130f);
         private static readonly Vector2[] beganPositions = new Vector2[10];
 
@@ -33,12 +34,15 @@ namespace FamilyForce.Unity
         private static int specialFrame = -1;
         private static int grabFrame = -1;
         private static int teamFrame = -1;
+        private static int weaponFrame = -1;
+        private static int throwFrame = -1;
         private static int cancelFrame = -1;
         private static int confirmFrame = -1;
         private static bool gameplayActive;
         private static bool touchAvailable;
         private static Vector2 move;
         private static bool teamReady;
+        private static bool weaponHeld;
 
         public static Vector2 Move => gameplayActive && touchAvailable ? move : Vector2.zero;
         public static bool PunchPressedThisFrame => punchFrame == Time.frameCount;
@@ -48,11 +52,14 @@ namespace FamilyForce.Unity
         public static bool SpecialPressedThisFrame => specialFrame == Time.frameCount;
         public static bool GrabPressedThisFrame => grabFrame == Time.frameCount;
         public static bool TeamPressedThisFrame => teamFrame == Time.frameCount;
+        public static bool WeaponPressedThisFrame => weaponFrame == Time.frameCount;
+        public static bool ThrowPressedThisFrame => throwFrame == Time.frameCount;
         public static bool CancelPressedThisFrame => cancelFrame == Time.frameCount;
         public static bool ConfirmPressedThisFrame => confirmFrame == Time.frameCount;
         public static bool IsAvailable => touchAvailable;
 
         public static void SetTeamReady(bool ready) => teamReady = ready;
+        public static void SetWeaponHeld(bool held) => weaponHeld = held;
 
         public static void SetGameplayActive(bool active)
         {
@@ -119,7 +126,14 @@ namespace FamilyForce.Unity
                 else if (Vector2.Distance(point, GrabCenter) <= ActionRadius)
                     grabFrame = Time.frameCount;
                 else if (Vector2.Distance(point, TeamCenter) <= ActionRadius)
-                    teamFrame = Time.frameCount;
+                {
+                    if (weaponHeld && !teamReady)
+                        throwFrame = Time.frameCount;
+                    else
+                        teamFrame = Time.frameCount;
+                }
+                else if (Vector2.Distance(point, WeaponCenter) <= ActionRadius)
+                    weaponFrame = Time.frameCount;
                 else if (Vector2.Distance(point, MenuCenter) <= 92f)
                     cancelFrame = Time.frameCount;
             }
@@ -161,11 +175,15 @@ namespace FamilyForce.Unity
             DrawAction(GrabCenter, "GRAB", new Color(0.95f, 0.58f, 0.2f, 0.74f), circle);
             DrawAction(HeavyCenter, "HEAVY", new Color(0.78f, 0.38f, 0.92f, 0.74f), circle);
             DrawAction(SpecialCenter, "SPECIAL", new Color(0.12f, 0.78f, 0.9f, 0.74f), circle);
-            DrawAction(TeamCenter, teamReady ? "TEAM!" : "TEAM",
-                teamReady ? new Color(0.72f, 1f, 0.12f, 0.95f) : new Color(0.35f, 0.45f, 0.25f, 0.62f), circle);
+            DrawAction(TeamCenter, teamReady ? "TEAM!" : weaponHeld ? "THROW" : "TEAM",
+                teamReady ? new Color(0.72f, 1f, 0.12f, 0.95f)
+                    : weaponHeld ? new Color(1f, 0.36f, 0.14f, 0.9f)
+                    : new Color(0.35f, 0.45f, 0.25f, 0.62f), circle);
             DrawAction(JumpCenter, "JUMP", new Color(0.4f, 0.72f, 1f, 0.7f), circle);
             DrawAction(KickCenter, "KICK", new Color(1f, 0.72f, 0.18f, 0.74f), circle);
             DrawAction(PunchCenter, "PUNCH", new Color(1f, 0.34f, 0.4f, 0.74f), circle);
+            DrawAction(WeaponCenter, weaponHeld ? "SWING" : "WEAPON",
+                new Color(0.25f, 0.72f, 0.92f, 0.82f), circle);
             GUI.color = new Color(0.12f, 0.16f, 0.28f, 0.82f);
             GUI.Box(CenteredRect(MenuCenter, 150f), "II", circle);
             GUI.color = previous;

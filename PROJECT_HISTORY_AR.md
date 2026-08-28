@@ -70,6 +70,10 @@
 - تحقق المستخدم من تشغيل وضع لاعبين وظهور الشخصيتين معًا على الشاشة في
   `0.4.0-two-player`. لم يذكر بعد نتيجة اختبار يدين فعليتين مستقلتين، لذلك تبقى
   بوابة controller ownership الميدانية مفتوحة.
+- مقطع Unity `0.5.0-stage-one-slice`: اختيار Essa/Adam بمعاينة Atlas وتأكيد مستقل
+  للاعبين، سلاح bat pickup/swing/throw، ثلاث موجات Grunt ثم Market Enforcer
+  كـMini Boss، hurtboxes/input buffer/3-hit combo/hit-stop، ومقدمة ونتائج ووقت
+  وHigh Score. بُني IL2CPP واختبر 1P/2P والريموت على Android 14 Emulator بلا crash.
 - أداة الإنتاج: `asset-vault/` تفهرس 101 سجل و181 ملفًا (تغطية Manifest كاملة)،
   وتشغّل الأطالس الـ26 بقيم المحرك الفعلية، مع عقود QA لكل العائلات، حجر وفك
   ترميز حقيقي، اعتماد مرتبط بالبصمة والحقوق، وتجهيز آمن يبدأ بمعاينة Dry-run.
@@ -219,6 +223,62 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-28-106 — تنفيذ جميع مراحل التطوير التالية بالتتابع
+
+- المنفذ: Codex
+- طلب المستخدم: تنفيذ جميع الخطوات التالية بالتتالي دون توقف.
+- الحالة: مكتمل برمجيًا وعلى Android 14 Emulator؛ اختبار عتاد TV حقيقي متبقٍ.
+- نقطة البداية: commit `f3913fc` / Unity `0.4.0-two-player`.
+- النطاق:
+  - سلاح Stage 1 يعمل pickup/use/throw في 1P/2P.
+  - موجة أعداء ثم Mini Boss ودورة Stage 1 كاملة.
+  - hurtboxes وinput buffer وcombo وhit-stop/knockback.
+  - شاشة اختيار شخصيات تؤكد اللاعبين المشاركين فقط.
+  - مقدمة ونتائج وScore/Time/High Score وانتقالات واضحة.
+  - بناء واختبار الهاتف وAndroid TV/الريموت ومساري 1P/2P.
+- ما تم:
+  - إضافة Atlas أدوات Stage 1 بمضرب شفاف موجود، مع منع rotation/tight packing
+    وPoint/no-mipmaps، وتعبئة الأطالس واحدًا تلو الآخر لتجنب انهيار ذاكرة Unity Editor.
+  - تنفيذ pickup/swing/throw/re-pickup للمضرب لـP1/P2 واللمس واليد، وفصل SWING
+    عن THROW في واجهة اللمس.
+  - تنفيذ ثلاث موجات Grunt متدرجة ثم Mini Boss `Market Enforcer` بـHP/سرعة/ضرر مستقل.
+  - اعتماد hurtbox منطقي غير مرتبط بالشفافية، input buffer قدره 140ms، combo من
+    ثلاث لكمات، hit-stop وknockback.
+  - إعادة بناء flow إلى Menu ثم Character Select ثم Playing ثم Results؛ 2P ينتظر
+    تأكيد اللاعبين، و1P يقبل Essa أو Adam مع معاينة فعلية من Sprite Atlas.
+  - إضافة مقدمة Stage 1 وWave/Mini Boss/Stage Clear، وScore/Time/High Score محفوظ.
+  - بناء APK IL2CPP مستقل بالإصدار `0.5.0-stage-one-slice`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `unity/README_AR.md`
+  - `unity/Assets/FamilyForce/Art/Stage1Props/`
+  - `unity/Assets/FamilyForce/Resources/Atlases/FF_Stage1Props.spriteatlas`
+  - `unity/Assets/FamilyForce/Scripts/Editor/BuildFamilyForce.cs`
+  - `unity/Assets/FamilyForce/Scripts/Editor/FamilyForceAtlasBuilder.cs`
+  - `unity/Assets/FamilyForce/Scripts/Editor/FamilyForceTextureImporter.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/CombatAction.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/CombatDirector.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/CombatHurtbox.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/EnemyCombatant.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/GameBootstrap.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/PlayerMotor.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/PrototypeFlow.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/TouchInputOverlay.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/UnifiedInput.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/WeaponPickup.cs`
+  - `unity/tools/test_unity_migration.py`
+- الاختبارات:
+  - Unity production IL2CPP Android build — PASS؛ `Build Finished, Result: Success`.
+  - `python3 unity/tools/test_unity_migration.py` — PASS؛ TV/ABIs/input/atlases/features.
+  - Android 14 Emulator cold launch و1P و2P — PASS؛ بلا FATAL أو Missing Sprite.
+  - 2P confirmation gate — PASS؛ بقي بعد P1 وينتقل فقط بعد تأكيد P2.
+  - معاينة Essa/Adam من Atlas وبداية Stage 1 وظهور المضرب/Grunt — PASS بصريًا.
+- Release: تجهيز `unity-v0.5.0-stage-one-slice`؛ يحدّث الرابط وSHA بعد الرفع.
+- ملاحظات/مخاطر: لم يختبر بعد على Xiaomi Stick/Shield أو بيدين فعليتين، ولم تنفذ
+  جلسة 20 دقيقة/P95 أو الوصول اليدوي إلى النتائج على عتاد حقيقي. هذا Vertical Slice
+  ولا يستبدل APK Android Canvas المنشور.
+- التالي: اختبار نسخته على Xiaomi/Shield بيدين ثم قياس P95 والذاكرة قبل نقل Stage 2.
 
 ### 2026-08-28-105 — نتيجة تجربة لاعبين وترتيب الخطوات التالية
 
@@ -4200,9 +4260,9 @@
 - الحالة: `v0.53.0-alpha` ما زال الإصدار المنشور المستقر نسبيًا بمحرك Android
   Canvas. مشروع Unity داخل `unity/` أنهى الأساس وطبقة Sprite Atlas الأولى؛ لا
   يزال نموذجًا تقنيًا محليًا ولا يحل محل اللعبة المنشورة.
-- آخر عمل: Unity `0.4.0-two-player` أضاف 1P/2P اختياريين، P1 Essa وP2 Adam
-  بإدخال وHP وإحياء مستقل، استهداف أقرب لاعب، وTeam Combo حقيقي بين اللاعبين؛
-  نجح مسار 2P ثم الرجوع إلى 1P والبدء بالريموت دون crash على Android 14.
+- آخر عمل: Unity `0.5.0-stage-one-slice` أضاف اختيار Essa/Adam، سلاح bat كامل،
+  ثلاث موجات ثم Market Enforcer Mini Boss، hurtboxes/input buffer/combo/hit-stop،
+  ومقدمة/نتائج/Score/Time/High Score. نجح Build و1P/2P والريموت على Android 14.
 - آخر قرار: الهجرة تدريجية؛ لا يحذف `android/` ولا يعلن Unity بديلًا حتى يجتاز
   نموذج القتال، تكافؤ المحتوى، وأداء Xiaomi Stick/Shield.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
@@ -4216,5 +4276,5 @@
   8. `unity/Assets/FamilyForce/Scripts/Runtime/PlayerMotor.cs`
   9. `unity/Assets/FamilyForce/Scripts/Runtime/PrototypeFlow.cs`
   10. `unity/tools/test_unity_migration.py`
-- الإجراء التالي المقترح: إضافة سلاح واحد قابل للالتقاط/الاستخدام/الرمي في 1P/2P،
-  ثم Mini Boss واختبار يدين وP95 على Xiaomi/Shield، دون نقل المراحل دفعة واحدة.
+- الإجراء التالي المقترح: اختبار APK Unity بيدين فعليتين على Xiaomi/Shield وقياس
+  P95/الذاكرة لجلسة 20 دقيقة، ثم نقل Stage 2 فقط بعد اجتياز البوابة.
