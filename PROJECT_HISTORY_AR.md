@@ -16,7 +16,7 @@
 - النسخة المنشورة: `v0.53.0-alpha`، `versionCode 68`.
 - الفرع المشترك: `main`.
 - آخر commit وظيفي منشور: `d6c317d05eb35a8135a3952a0a18b4d1a96ebbf4`.
-- آخر commit وظيفي لـUnity غير منشور: `b5c2500`؛ تأسيس المحرك بدأ في `03b286a`.
+- آخر commit وظيفي لـUnity غير منشور: `ad5f0c2`؛ تأسيس المحرك بدأ في `03b286a`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
 - Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.53.0-alpha
 - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.53.0-alpha/family-force-family-current.apk
@@ -267,6 +267,7 @@
 - APK: `unity/Builds/Android/FamilyForceUnityAtlasPrototype.apk`، الإصدار
   `0.3.0-combat-slice`، الحجم 52,314,872 بايت، SHA-256
   `5a65b07f3674e8710e0dccba4097f929876fdc81ed5e1c77860b2e5bfd41b4b8`.
+- commit الوظيفي: `ad5f0c2`.
 - ملاحظات/مخاطر: Adam في هذه الدفعة مرافق AI للـTeam Combo وليس P2 مستقلًا.
   hit range حسابي ثابت ولم تنفذ بعد hitbox components أو input buffer أو سلاح.
   يلزم قياس P95 وذاكرة حقيقية على Xiaomi Stick قبل توسيع عدد الأعداء.
