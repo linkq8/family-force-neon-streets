@@ -34,10 +34,15 @@ def main() -> None:
     assert "TouchInputOverlay.Move" in unified
     assert "TouchInputOverlay.PunchPressedThisFrame" in unified
     assert "TouchInputOverlay.BeganInside(OptionRect(index))" in flow
-    assert "TryPlayerAction(CombatAction action)" in combat
-    assert "TeamCombo()" in combat and "ApplyTeamCombo()" in enemy
+    assert "TryPlayerAction(PlayerMotor actor, CombatAction action)" in combat
+    assert "TeamCombo(PlayerMotor partner)" in combat and "ApplyTeamCombo()" in enemy
     assert "CharacterAtlasCatalog.Adam" in combat
     assert "CharacterAtlasCatalog.Grunt" in (runtime / "GameBootstrap.cs").read_text()
+    assert "Gamepad.all.Count > playerIndex" in unified
+    assert "START — 2 PLAYERS" in flow
+    assert "SetCombatActive(true, selected == 1)" in flow
+    assert "ClosestActivePlayer" in combat
+    assert "enemy.Grabber != actor" in combat
 
     atlas_root = UNITY / "Assets/FamilyForce/Resources/Atlases"
     for actor in ("Essa", "Adam", "Grunt", "Skater", "LanternCourier",
@@ -53,7 +58,7 @@ def main() -> None:
     aapt = sorted((SDK / "build-tools").glob("*/aapt2"))[-1]
     badging = subprocess.check_output([str(aapt), "dump", "badging", str(apk)], text=True)
     assert "com.familyforce.neonstreets.unityprototype" in badging
-    assert "versionName='0.3.0-combat-slice'" in badging
+    assert "versionName='0.4.0-two-player'" in badging
     assert "leanback-launchable-activity" in badging
     assert "android.hardware.touchscreen" in badging and "not-required" in badging
     assert "arm64-v8a" in badging and "armeabi-v7a" in badging

@@ -5,19 +5,26 @@ namespace FamilyForce.Unity
     public sealed class PrototypeFlow : MonoBehaviour
     {
         private readonly UnifiedInput input = new UnifiedInput();
-        private readonly string[] options = { "START UNITY PROTOTYPE", "INPUT TEST", "EXIT" };
+        private readonly string[] options =
+        {
+            "START — 1 PLAYER",
+            "START — 2 PLAYERS",
+            "INPUT TEST",
+            "EXIT"
+        };
         private int selected;
         private float verticalLatch;
         private bool playing;
-        private GameObject player;
+        private PlayerMotor playerOne;
+        private PlayerMotor playerTwo;
         private CombatDirector combat;
 
-        public void BindPlayer(GameObject target, CombatDirector combatDirector)
+        public void BindPlayers(PlayerMotor p1, PlayerMotor p2, CombatDirector combatDirector)
         {
-            player = target;
+            playerOne = p1;
+            playerTwo = p2;
             combat = combatDirector;
-            player.SetActive(false);
-            combat.SetCombatActive(false);
+            combat.SetCombatActive(false, false);
             TouchInputOverlay.SetGameplayActive(false);
         }
 
@@ -28,8 +35,7 @@ namespace FamilyForce.Unity
                 if (input.CancelPressed())
                 {
                     playing = false;
-                    player.SetActive(false);
-                    combat.SetCombatActive(false);
+                    combat.SetCombatActive(false, false);
                     TouchInputOverlay.SetGameplayActive(false);
                 }
                 return;
@@ -60,19 +66,18 @@ namespace FamilyForce.Unity
 
         private void ActivateSelection()
         {
-            if (selected == 2)
+            if (selected == 3)
                 Application.Quit();
-            else if (selected == 0)
+            else if (selected == 0 || selected == 1)
             {
                 playing = true;
-                player.SetActive(true);
-                combat.SetCombatActive(true);
+                combat.SetCombatActive(true, selected == 1);
                 TouchInputOverlay.SetGameplayActive(true);
             }
         }
 
         private static Rect OptionRect(int index) =>
-            new Rect(610, 380 + index * 112, 700, 78);
+            new Rect(610, 350 + index * 96, 700, 72);
 
         private void OnGUI()
         {
@@ -93,7 +98,9 @@ namespace FamilyForce.Unity
 
             if (playing)
             {
-                GUI.Box(new Rect(38, 32, 340, 68), $"P1  {input.DeviceLabel}", item);
+                GUI.Box(new Rect(38, 32, 340, 68), $"P1  {playerOne.InputLabel}", item);
+                if (combat.TwoPlayers)
+                    GUI.Box(new Rect(1542, 32, 340, 68), $"P2  {playerTwo.InputLabel}", item);
                 return;
             }
 

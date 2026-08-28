@@ -52,9 +52,9 @@
 - الاختبارات المتبقية: قبول بصري بشري لحركة Essa الحديدي وMarket على
   Xiaomi Stick وShield. كشف تدقيق الرموز `Lantern Courier` و`Palace Sentinel`
   و`Tidebreaker` ووضعت في قائمة إعادة الرسم، ولم يعتمدها السجل بصريًا.
-- العمل التالي الموصى به: إكمال المرحلة الثانية من ترحيل Unity بإضافة P2 اختياري
-  وملكية يد مستقلة وسلاح وMini Boss فوق نموذج القتال الحالي، ثم قياس الأداء على
-  Xiaomi Stick وShield قبل نقل المراحل الخمس.
+- العمل التالي الموصى به: إكمال المرحلة الثانية من ترحيل Unity بسلاح واحد قابل
+  للالتقاط والرمي ثم Mini Boss، وبعدهما قياس الأداء على Xiaomi Stick وShield قبل
+  نقل المراحل الخمس.
 - حالة أطالس Unity: اعتمدت الدفعة الأولى سبعة `Sprite Atlas` رسمية منفصلة لـEssa
   وAdam وأعداء Stage 1 الخمسة، تضم 406 Sprites من أصول `d6c317d` المنشورة.
   Runtime لم يعد يقصّ شرائط Essa يدويًا؛ يحمل Atlas الشخصية المطلوبة بالاسم.
@@ -64,6 +64,9 @@
 - نموذج قتال Unity `0.3.0-combat-slice`: Essa ضد Grunt مع AI وHP/ضرر ومدى
   وضربات وحركات Sprite Atlas وScore/Wave Clear، وAction Deck للمس يضم Punch/Kick/
   Heavy/Special/Grab/Team/Jump. المسك يفتح Team Combo مع Adam كمرافق AI.
+- اللعب الثنائي Unity `0.4.0-two-player`: خيار 1P/2P من القائمة، Essa P1 وAdam
+  P2 مع Gamepad index مستقل وHP/حركة/قتال/إحياء مستقل، واستهداف العدو لأقرب لاعب.
+  في 2P يمسك لاعب ويهاجم الآخر لتنفيذ Team Combo؛ في 1P يبقى Adam مساعدًا آليًا.
 - أداة الإنتاج: `asset-vault/` تفهرس 101 سجل و181 ملفًا (تغطية Manifest كاملة)،
   وتشغّل الأطالس الـ26 بقيم المحرك الفعلية، مع عقود QA لكل العائلات، حجر وفك
   ترميز حقيقي، اعتماد مرتبط بالبصمة والحقوق، وتجهيز آمن يبدأ بمعاينة Dry-run.
@@ -213,6 +216,64 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-28-104 — إضافة P2 اختياري مستقل إلى نموذج Unity
+
+- المنفذ: Codex
+- طلب المستخدم: بعد نجاح أزرار الضرب والقفز، تنفيذ الخطوة التالية.
+- الحالة: مكتمل برمجيًا وعلى محاكي الهاتف؛ اختبار يدين حقيقيتين على TV متبقٍ.
+- نقطة البداية: commit `6b37cd9` / Unity `0.3.0-combat-slice`.
+- النطاق:
+  - خيار واضح للاعب واحد أو لاعبين من القائمة.
+  - Essa هو P1 وAdam هو P2، مع Gamepad index مستقل وعدم مشاركة يد واحدة.
+  - حركة وقفز وقتال وHP وإحياء مستقلان، واستهداف العدو لأقرب لاعب.
+  - Team Combo في وضع لاعبين ينفذه اللاعب الآخر بعد مسك الأول؛ وضع اللاعب
+    الواحد يحتفظ باستدعاء Adam كمرافق AI.
+- ما تم:
+  - أعيدت صياغة `UnifiedInput` ليملك كل لاعب index ثابتًا: P1 يستخدم Gamepad 0
+    واللمس/الريموت، وP2 يستخدم Gamepad 1 دون أن يسرق أو يكرر إدخال P1.
+  - أضيف fallback اختباري مستقل: أسهم لوحة المفاتيح لـP1 وWASD لـP2، مع مفاتيح
+    قتال منفصلة، ما سمح بإثبات فصل الحركة والضرب في المحاكي.
+  - أضيفت قائمتا `START — 1 PLAYER` و`START — 2 PLAYERS` وتعملان باللمس والريموت.
+  - تحول Adam من GameObject مؤقت إلى PlayerMotor كامل في 2P، مع Atlas الحركات
+    الثماني لكل فعل، وموضع وحجم وHP 110 وإحياء مستقلين عن Essa.
+  - صار لكل لاعب cooldown وإدخال وحركة وقفز وضرب مستقل، بينما Score مشترك.
+  - صار Grunt يختار أقرب لاعب حي كل frame ويوجه الضرر إليه، وينتقل للآخر عند
+    سقوط الأول بدل الاستمرار في ضرب جسم غير فعال.
+  - صار Grab يحفظ هوية اللاعب الماسك. في 2P لا يستطيع الماسك تنفيذ Team بنفسه؛
+    يجب أن يقترب اللاعب الآخر ويضغط Team أو Punch. في 1P يستدعى Adam آليًا كما سبق.
+  - الخروج إلى القائمة يوقف coroutines ويخفي كلا اللاعبين والعدو بأمان، والعودة
+    إلى 1P بعد 2P لا تترك Adam لاعبًا شبحًا.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/UnifiedInput.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/PlayerMotor.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/CombatDirector.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/EnemyCombatant.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/PrototypeFlow.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/GameBootstrap.cs`
+  - `unity/Assets/FamilyForce/Scripts/Editor/BuildFamilyForce.cs`
+  - `unity/tools/test_unity_migration.py`
+- الاختبارات:
+  - Unity IL2CPP Production Android build — PASS؛ ARM64 + ARMv7.
+  - `python3 unity/tools/test_sprite_atlas_contract.py` — PASS؛ 406 Sprites.
+  - `python3 unity/tools/test_unity_migration.py` — PASS؛ P2 ownership/قائمة/قتال/TV.
+  - Android 14 emulator، وضع 2P — PASS: ظهور Essa/Adam وHP منفصلين، تحريك Adam
+    بـWASD دون تحريك Essa، وسجل Logcat ضربتين `p2` خفضتا Grunt من 100 إلى 80.
+  - 2P Team Combo — PASS: P1 Grab ثم P2 Punch، وسجل `team combo accepted by p2`.
+  - الرجوع إلى 1P — PASS: P1 Grab/Team استدعى Adam AI ثم أخفاه بعد الضربة.
+  - بدء 2P بالريموت عبر DPAD_DOWN/DPAD_CENTER — PASS.
+  - Logcat — PASS؛ لا FATAL/ANR/OOM، والعملية بقيت حية. PSS بعد مساري 2P/1P
+    نحو 170,210 KiB وRSS نحو 264,108 KiB على SwiftShader.
+- Release: لا يوجد؛ APK Unity تجريبي محلي وليس إصدار اللعبة الكاملة.
+- APK: `unity/Builds/Android/FamilyForceUnityAtlasPrototype.apk`، الإصدار
+  `0.4.0-two-player`، الحجم 56,589,033 بايت، SHA-256
+  `d5501653e1b920fa618e59b9002221c5cfa142a6dcc89b7eddf0f514ee292835`.
+- ملاحظات/مخاطر: Gamepad 0/1 وفصل الإدخال جرى تجميعهما والتحقق من عقدهما، لكن
+  المحاكي لا يوفر DualSense فعليتين؛ يلزم اختبار يدين على Shield/Xiaomi. شاشة
+  اختيار الشخصيات الكاملة ليست ضمن نموذج الهجرة بعد؛ الشخصيتان ثابتتان Essa/Adam.
+- التالي: إضافة سلاح Stage 1 واحد مع pickup/hold/attack/throw لكل من P1/P2، ثم
+  Mini Boss، وبعدها اختبار يدين حقيقيتين وقياس P95 على Xiaomi Stick وShield.
 
 ### 2026-08-28-103 — نموذج القتال الرأسي التالي في Unity
 
@@ -4112,9 +4173,9 @@
 - الحالة: `v0.53.0-alpha` ما زال الإصدار المنشور المستقر نسبيًا بمحرك Android
   Canvas. مشروع Unity داخل `unity/` أنهى الأساس وطبقة Sprite Atlas الأولى؛ لا
   يزال نموذجًا تقنيًا محليًا ولا يحل محل اللعبة المنشورة.
-- آخر عمل: بناء نموذج قتال Unity `0.3.0-combat-slice`: Essa ضد Grunt، Action
-  Deck كامل للمس، HP/Score/Wave Clear، Grab وTeam Combo يستدعي Adam، واختبار
-  القتل وإعادة المواجهة ومزج اللمس مع DPAD دون crash على Android 14.
+- آخر عمل: Unity `0.4.0-two-player` أضاف 1P/2P اختياريين، P1 Essa وP2 Adam
+  بإدخال وHP وإحياء مستقل، استهداف أقرب لاعب، وTeam Combo حقيقي بين اللاعبين؛
+  نجح مسار 2P ثم الرجوع إلى 1P والبدء بالريموت دون crash على Android 14.
 - آخر قرار: الهجرة تدريجية؛ لا يحذف `android/` ولا يعلن Unity بديلًا حتى يجتاز
   نموذج القتال، تكافؤ المحتوى، وأداء Xiaomi Stick/Shield.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
@@ -4125,8 +4186,8 @@
   5. `unity/Assets/FamilyForce/Scripts/Runtime/TouchInputOverlay.cs`
   6. `unity/Assets/FamilyForce/Scripts/Runtime/CombatDirector.cs`
   7. `unity/Assets/FamilyForce/Scripts/Runtime/EnemyCombatant.cs`
-  8. `unity/Assets/FamilyForce/Scripts/Runtime/CharacterAtlasCatalog.cs`
-  9. `unity/Assets/FamilyForce/Scripts/Runtime/SpriteStripAnimator.cs`
+  8. `unity/Assets/FamilyForce/Scripts/Runtime/PlayerMotor.cs`
+  9. `unity/Assets/FamilyForce/Scripts/Runtime/PrototypeFlow.cs`
   10. `unity/tools/test_unity_migration.py`
-- الإجراء التالي المقترح: إكمال نموذج القتال بـP2 اختياري وGamepad مستقل، ثم
-  سلاح واحد وMini Boss واختبار Xiaomi/Shield، من دون نقل المراحل الخمس دفعة واحدة.
+- الإجراء التالي المقترح: إضافة سلاح واحد قابل للالتقاط/الاستخدام/الرمي في 1P/2P،
+  ثم Mini Boss واختبار يدين وP95 على Xiaomi/Shield، دون نقل المراحل دفعة واحدة.

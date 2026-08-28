@@ -19,13 +19,17 @@ namespace FamilyForce.Unity
             BuildCamera();
             BuildStage();
             gameObject.AddComponent<TouchInputOverlay>();
-            GameObject player = BuildPlayer();
+            GameObject playerOne = BuildHero("P1_Essa", CharacterAtlasCatalog.Essa,
+                new Vector3(-4f, -2.15f, 0f), 3.45f, 20);
+            GameObject playerTwo = BuildHero("P2_Adam", CharacterAtlasCatalog.Adam,
+                new Vector3(-5.1f, -2.65f, 0f), 2.65f, 21);
             CombatDirector combat = gameObject.AddComponent<CombatDirector>();
-            EnemyCombatant enemy = BuildEnemy(player.transform, combat);
-            GameObject companion = BuildCompanion();
-            combat.Initialize(player.GetComponent<PlayerMotor>(), enemy, companion);
+            EnemyCombatant enemy = BuildEnemy(combat);
+            combat.Initialize(playerOne.GetComponent<PlayerMotor>(),
+                playerTwo.GetComponent<PlayerMotor>(), enemy);
             PrototypeFlow flow = gameObject.AddComponent<PrototypeFlow>();
-            flow.BindPlayer(player, combat);
+            flow.BindPlayers(playerOne.GetComponent<PlayerMotor>(),
+                playerTwo.GetComponent<PlayerMotor>(), combat);
         }
 
         private static void BuildCamera()
@@ -58,26 +62,25 @@ namespace FamilyForce.Unity
             }
         }
 
-        private static GameObject BuildPlayer()
+        private static GameObject BuildHero(string objectName, string actor, Vector3 position,
+            float scale, int sortingOrder)
         {
-            var player = new GameObject("P1_Essa_Prototype");
-            player.transform.position = new Vector3(-4f, -2.2f, 0f);
+            var player = new GameObject(objectName);
+            player.transform.position = position;
             SpriteRenderer renderer = player.AddComponent<SpriteRenderer>();
-            renderer.sortingOrder = 20;
+            renderer.sortingOrder = sortingOrder;
             var animator = player.AddComponent<SpriteStripAnimator>();
-            Sprite[] idle = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "idle");
-            Sprite[] walk = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "walk");
+            Sprite[] idle = CharacterAtlasCatalog.LoadClip(actor, "idle");
+            Sprite[] walk = CharacterAtlasCatalog.LoadClip(actor, "walk");
             animator.Initialize(idle, walk);
             player.AddComponent<PlayerMotor>();
-            // The atlas contract uses 192 PPU; 3.45 preserves the prototype's
-            // previous on-screen height without resizing any animation frame.
-            player.transform.localScale = Vector3.one * 3.45f;
-            Debug.Log($"FF_UNITY: player created idle={idle.Length} walk={walk.Length} " +
+            player.transform.localScale = Vector3.one * scale;
+            Debug.Log($"FF_UNITY: hero={actor} created idle={idle.Length} walk={walk.Length} " +
                 $"sprite={(renderer.sprite != null)}");
             return player;
         }
 
-        private static EnemyCombatant BuildEnemy(Transform player, CombatDirector combat)
+        private static EnemyCombatant BuildEnemy(CombatDirector combat)
         {
             var enemyObject = new GameObject("Stage1_Grunt");
             SpriteRenderer renderer = enemyObject.AddComponent<SpriteRenderer>();
@@ -85,21 +88,8 @@ namespace FamilyForce.Unity
             enemyObject.AddComponent<SpriteStripAnimator>();
             EnemyCombatant enemy = enemyObject.AddComponent<EnemyCombatant>();
             enemyObject.transform.localScale = Vector3.one * 3.05f;
-            enemy.Initialize(CharacterAtlasCatalog.Grunt, player, combat);
+            enemy.Initialize(CharacterAtlasCatalog.Grunt, combat);
             return enemy;
-        }
-
-        private static GameObject BuildCompanion()
-        {
-            var companion = new GameObject("Adam_Team_Companion");
-            SpriteRenderer renderer = companion.AddComponent<SpriteRenderer>();
-            renderer.sortingOrder = 21;
-            var animator = companion.AddComponent<SpriteStripAnimator>();
-            animator.Initialize(CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Adam, "idle"),
-                CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Adam, "walk"));
-            companion.transform.localScale = Vector3.one * 2.65f;
-            companion.SetActive(false);
-            return companion;
         }
 
         private static void CreatePanel(string name, Vector3 position, Vector2 size, Color color)

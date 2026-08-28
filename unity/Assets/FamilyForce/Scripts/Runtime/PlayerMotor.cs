@@ -6,7 +6,7 @@ namespace FamilyForce.Unity
     public sealed class PlayerMotor : MonoBehaviour
     {
         private const float Speed = 4.2f;
-        private readonly UnifiedInput input = new UnifiedInput();
+        private UnifiedInput input = new UnifiedInput();
         private SpriteRenderer spriteRenderer;
         private SpriteStripAnimator animator;
         private CombatDirector combat;
@@ -19,6 +19,11 @@ namespace FamilyForce.Unity
         private Sprite[] linkFrames;
         private Sprite[] hurtFrames;
 
+        public int PlayerIndex { get; private set; }
+        public string ActorName { get; private set; } = CharacterAtlasCatalog.Essa;
+        public string InputLabel => input.DeviceLabel;
+        public bool HasGamepad => input.HasAssignedGamepad;
+
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -26,18 +31,29 @@ namespace FamilyForce.Unity
             groundPosition = transform.position;
         }
 
-        public void Configure(CombatDirector director)
+        public void Configure(CombatDirector director, string actor, int index, bool allowTouch)
         {
             combat = director;
-            punchFrames = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "punch");
-            kickFrames = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "kick");
-            heavyFrames = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "heavy_punch");
-            specialFrames = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "special");
-            linkFrames = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "link");
-            hurtFrames = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "hurt");
+            ActorName = actor;
+            PlayerIndex = index;
+            input = new UnifiedInput(index, allowTouch);
+            punchFrames = CharacterAtlasCatalog.LoadClip(actor, "punch");
+            kickFrames = CharacterAtlasCatalog.LoadClip(actor, "kick");
+            heavyFrames = CharacterAtlasCatalog.LoadClip(actor, "heavy_punch");
+            specialFrames = CharacterAtlasCatalog.LoadClip(actor, "special");
+            linkFrames = CharacterAtlasCatalog.LoadClip(actor, "link");
+            hurtFrames = CharacterAtlasCatalog.LoadClip(actor, "hurt");
         }
 
         public void PlayHurt() => animator.PlayOnce(hurtFrames);
+        public void PlayTeamAction() => animator.PlayOnce(linkFrames);
+
+        public void ResetPosition(Vector3 position)
+        {
+            groundPosition = position;
+            jumpTime = 0f;
+            transform.position = position;
+        }
 
         private void Update()
         {
@@ -83,7 +99,7 @@ namespace FamilyForce.Unity
 
         private void TryAction(CombatAction action, Sprite[] frames)
         {
-            if (combat.TryPlayerAction(action))
+            if (combat.TryPlayerAction(this, action))
                 animator.PlayOnce(frames);
         }
     }

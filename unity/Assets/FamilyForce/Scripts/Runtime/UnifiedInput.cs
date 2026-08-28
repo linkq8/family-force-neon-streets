@@ -12,22 +12,43 @@ namespace FamilyForce.Unity
     public sealed class UnifiedInput
     {
         private const float DeadZone = 0.22f;
+        private readonly int playerIndex;
+        private readonly bool allowTouch;
         private Gamepad assignedGamepad;
+
+        public UnifiedInput(int index = 0, bool touch = true)
+        {
+            playerIndex = Mathf.Max(0, index);
+            allowTouch = touch && playerIndex == 0;
+        }
 
         public string DeviceLabel => assignedGamepad != null
             ? assignedGamepad.displayName
-            : TouchInputOverlay.IsAvailable ? "TOUCH" : "REMOTE / KEYBOARD";
+            : allowTouch && TouchInputOverlay.IsAvailable
+                ? "TOUCH"
+                : playerIndex == 0 ? "REMOTE / KEYBOARD" : "GAMEPAD 2 / WASD";
 
-        public void ClaimFirstAvailableGamepad()
+        public bool HasAssignedGamepad
         {
-            if (assignedGamepad == null && Gamepad.all.Count > 0)
-                assignedGamepad = Gamepad.all[0];
+            get
+            {
+                ClaimAssignedGamepad();
+                return assignedGamepad != null;
+            }
+        }
+
+        public void ClaimAssignedGamepad()
+        {
+            if (assignedGamepad != null && !assignedGamepad.added)
+                assignedGamepad = null;
+            if (assignedGamepad == null && Gamepad.all.Count > playerIndex)
+                assignedGamepad = Gamepad.all[playerIndex];
         }
 
         public Vector2 ReadMove()
         {
-            ClaimFirstAvailableGamepad();
-            Vector2 move = TouchInputOverlay.Move;
+            ClaimAssignedGamepad();
+            Vector2 move = allowTouch ? TouchInputOverlay.Move : Vector2.zero;
             if (assignedGamepad != null)
             {
                 Vector2 gamepadMove = assignedGamepad.leftStick.ReadValue();
@@ -41,10 +62,12 @@ namespace FamilyForce.Unity
             Keyboard keyboard = Keyboard.current;
             if (keyboard != null)
             {
-                float x = ReadAxis(keyboard.leftArrowKey, keyboard.rightArrowKey,
-                    keyboard.aKey, keyboard.dKey);
-                float y = ReadAxis(keyboard.downArrowKey, keyboard.upArrowKey,
-                    keyboard.sKey, keyboard.wKey);
+                float x = playerIndex == 0
+                    ? ReadAxis(keyboard.leftArrowKey, keyboard.rightArrowKey)
+                    : ReadAxis(keyboard.aKey, keyboard.dKey);
+                float y = playerIndex == 0
+                    ? ReadAxis(keyboard.downArrowKey, keyboard.upArrowKey)
+                    : ReadAxis(keyboard.sKey, keyboard.wKey);
                 Vector2 keyboardMove = new Vector2(x, y);
                 if (keyboardMove.sqrMagnitude > move.sqrMagnitude)
                     move = keyboardMove;
@@ -53,8 +76,12 @@ namespace FamilyForce.Unity
             // Several Android TV remotes are exposed only through the legacy
             // KeyEvent bridge even when the Input System package is enabled.
             Vector2 legacy = new Vector2(
-                LegacyAxis(KeyCode.LeftArrow, KeyCode.RightArrow, KeyCode.A, KeyCode.D),
-                LegacyAxis(KeyCode.DownArrow, KeyCode.UpArrow, KeyCode.S, KeyCode.W));
+                playerIndex == 0
+                    ? LegacyAxis(KeyCode.LeftArrow, KeyCode.RightArrow)
+                    : LegacyAxis(KeyCode.A, KeyCode.D),
+                playerIndex == 0
+                    ? LegacyAxis(KeyCode.DownArrow, KeyCode.UpArrow)
+                    : LegacyAxis(KeyCode.S, KeyCode.W));
             if (legacy.sqrMagnitude > move.sqrMagnitude)
                 move = legacy;
 
@@ -65,8 +92,8 @@ namespace FamilyForce.Unity
 
         public bool ConfirmPressed()
         {
-            ClaimFirstAvailableGamepad();
-            return TouchInputOverlay.ConfirmPressedThisFrame
+            ClaimAssignedGamepad();
+            return (allowTouch && TouchInputOverlay.ConfirmPressedThisFrame)
                 || (assignedGamepad != null && assignedGamepad.buttonSouth.wasPressedThisFrame)
                 || Pressed(Keyboard.current?.enterKey)
                 || Pressed(Keyboard.current?.numpadEnterKey)
@@ -78,8 +105,8 @@ namespace FamilyForce.Unity
 
         public bool CancelPressed()
         {
-            ClaimFirstAvailableGamepad();
-            return TouchInputOverlay.CancelPressedThisFrame
+            ClaimAssignedGamepad();
+            return (allowTouch && TouchInputOverlay.CancelPressedThisFrame)
                 || (assignedGamepad != null && assignedGamepad.buttonEast.wasPressedThisFrame)
                 || Pressed(Keyboard.current?.escapeKey)
                 || Pressed(Keyboard.current?.backspaceKey)
@@ -89,75 +116,73 @@ namespace FamilyForce.Unity
 
         public bool PunchPressed()
         {
-            ClaimFirstAvailableGamepad();
-            return TouchInputOverlay.PunchPressedThisFrame
+            ClaimAssignedGamepad();
+            return (allowTouch && TouchInputOverlay.PunchPressedThisFrame)
                 || (assignedGamepad != null && assignedGamepad.buttonWest.wasPressedThisFrame)
-                || Pressed(Keyboard.current?.jKey);
+                || Pressed(playerIndex == 0 ? Keyboard.current?.jKey : Keyboard.current?.fKey);
 
         }
 
         public bool JumpPressed()
         {
-            ClaimFirstAvailableGamepad();
-            return TouchInputOverlay.JumpPressedThisFrame
+            ClaimAssignedGamepad();
+            return (allowTouch && TouchInputOverlay.JumpPressedThisFrame)
                 || (assignedGamepad != null && assignedGamepad.buttonSouth.wasPressedThisFrame)
-                || Pressed(Keyboard.current?.kKey);
+                || Pressed(playerIndex == 0 ? Keyboard.current?.kKey : Keyboard.current?.spaceKey);
         }
 
         public bool KickPressed()
         {
-            ClaimFirstAvailableGamepad();
-            return TouchInputOverlay.KickPressedThisFrame
+            ClaimAssignedGamepad();
+            return (allowTouch && TouchInputOverlay.KickPressedThisFrame)
                 || (assignedGamepad != null && assignedGamepad.buttonNorth.wasPressedThisFrame)
-                || Pressed(Keyboard.current?.lKey);
+                || Pressed(playerIndex == 0 ? Keyboard.current?.lKey : Keyboard.current?.rKey);
         }
 
         public bool HeavyPressed()
         {
-            ClaimFirstAvailableGamepad();
-            return TouchInputOverlay.HeavyPressedThisFrame
+            ClaimAssignedGamepad();
+            return (allowTouch && TouchInputOverlay.HeavyPressedThisFrame)
                 || (assignedGamepad != null && assignedGamepad.leftTrigger.wasPressedThisFrame)
-                || Pressed(Keyboard.current?.uKey);
+                || Pressed(playerIndex == 0 ? Keyboard.current?.uKey : Keyboard.current?.qKey);
         }
 
         public bool SpecialPressed()
         {
-            ClaimFirstAvailableGamepad();
-            return TouchInputOverlay.SpecialPressedThisFrame
+            ClaimAssignedGamepad();
+            return (allowTouch && TouchInputOverlay.SpecialPressedThisFrame)
                 || (assignedGamepad != null && assignedGamepad.rightShoulder.wasPressedThisFrame)
-                || Pressed(Keyboard.current?.iKey);
+                || Pressed(playerIndex == 0 ? Keyboard.current?.iKey : Keyboard.current?.eKey);
         }
 
         public bool GrabPressed()
         {
-            ClaimFirstAvailableGamepad();
-            return TouchInputOverlay.GrabPressedThisFrame
+            ClaimAssignedGamepad();
+            return (allowTouch && TouchInputOverlay.GrabPressedThisFrame)
                 || (assignedGamepad != null && assignedGamepad.rightTrigger.wasPressedThisFrame)
-                || Pressed(Keyboard.current?.gKey);
+                || Pressed(playerIndex == 0 ? Keyboard.current?.gKey : Keyboard.current?.cKey);
         }
 
         public bool TeamPressed()
         {
-            ClaimFirstAvailableGamepad();
-            return TouchInputOverlay.TeamPressedThisFrame
+            ClaimAssignedGamepad();
+            return (allowTouch && TouchInputOverlay.TeamPressedThisFrame)
                 || (assignedGamepad != null && assignedGamepad.leftShoulder.wasPressedThisFrame)
-                || Pressed(Keyboard.current?.tKey);
+                || Pressed(playerIndex == 0 ? Keyboard.current?.tKey : Keyboard.current?.vKey);
         }
 
-        private static float ReadAxis(KeyControl negative1, KeyControl positive1,
-            KeyControl negative2, KeyControl positive2)
+        private static float ReadAxis(KeyControl negative, KeyControl positive)
         {
-            bool negative = negative1.isPressed || negative2.isPressed;
-            bool positive = positive1.isPressed || positive2.isPressed;
-            return negative == positive ? 0f : positive ? 1f : -1f;
+            bool negativePressed = negative.isPressed;
+            bool positivePressed = positive.isPressed;
+            return negativePressed == positivePressed ? 0f : positivePressed ? 1f : -1f;
         }
 
-        private static float LegacyAxis(KeyCode negative1, KeyCode positive1,
-            KeyCode negative2, KeyCode positive2)
+        private static float LegacyAxis(KeyCode negative, KeyCode positive)
         {
-            bool negative = UnityEngine.Input.GetKey(negative1) || UnityEngine.Input.GetKey(negative2);
-            bool positive = UnityEngine.Input.GetKey(positive1) || UnityEngine.Input.GetKey(positive2);
-            return negative == positive ? 0f : positive ? 1f : -1f;
+            bool negativePressed = UnityEngine.Input.GetKey(negative);
+            bool positivePressed = UnityEngine.Input.GetKey(positive);
+            return negativePressed == positivePressed ? 0f : positivePressed ? 1f : -1f;
         }
 
         private static bool Pressed(ButtonControl control) =>

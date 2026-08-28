@@ -50,7 +50,7 @@ namespace FamilyForce.Unity.Editor
             FamilyForceAtlasBuilder.ValidateAll();
             PlayerSettings.companyName = "Family Force";
             PlayerSettings.productName = "Family Force Unity Prototype";
-            PlayerSettings.bundleVersion = "0.3.0-combat-slice";
+            PlayerSettings.bundleVersion = "0.4.0-two-player";
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android,
                 "com.familyforce.neonstreets.unityprototype");
             PlayerSettings.defaultInterfaceOrientation = UIOrientation.LandscapeLeft;
