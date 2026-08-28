@@ -279,6 +279,8 @@
 - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/unity-v0.5.0-stage-one-slice/FamilyForceUnityAtlasPrototype.apk
 - SHA-256: `b1f77cd72f6bcb0b2d2e24c2ebe753662d9eaf2d133b1155708cf57bac8324a0`.
 - commit: `bfc05f1a41a595e708878b945f3bcc3162ce390d`.
+- تصحيح مؤرخ 2026-08-28: السطر السابق سجل امتداد SHA غير صحيح بالخطأ؛ المرجع
+  الفعلي الذي يشير إليه tag هو `bfc05f1e82745691e979d2557c33d15192178e80`.
 - ملاحظات/مخاطر: لم يختبر بعد على Xiaomi Stick/Shield أو بيدين فعليتين، ولم تنفذ
   جلسة 20 دقيقة/P95 أو الوصول اليدوي إلى النتائج على عتاد حقيقي. هذا Vertical Slice
   ولا يستبدل APK Android Canvas المنشور.
