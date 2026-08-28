@@ -10,11 +10,14 @@ namespace FamilyForce.Unity
         private float verticalLatch;
         private bool playing;
         private GameObject player;
+        private CombatDirector combat;
 
-        public void BindPlayer(GameObject target)
+        public void BindPlayer(GameObject target, CombatDirector combatDirector)
         {
             player = target;
+            combat = combatDirector;
             player.SetActive(false);
+            combat.SetCombatActive(false);
             TouchInputOverlay.SetGameplayActive(false);
         }
 
@@ -26,6 +29,7 @@ namespace FamilyForce.Unity
                 {
                     playing = false;
                     player.SetActive(false);
+                    combat.SetCombatActive(false);
                     TouchInputOverlay.SetGameplayActive(false);
                 }
                 return;
@@ -62,6 +66,7 @@ namespace FamilyForce.Unity
             {
                 playing = true;
                 player.SetActive(true);
+                combat.SetCombatActive(true);
                 TouchInputOverlay.SetGameplayActive(true);
             }
         }
@@ -88,8 +93,7 @@ namespace FamilyForce.Unity
 
             if (playing)
             {
-                GUI.Box(new Rect(38, 32, 630, 84), $"P1  {input.DeviceLabel}", item);
-                GUI.Label(new Rect(38, 118, 900, 64), "D-PAD / STICK: MOVE     WEST: PUNCH     EAST: MENU", item);
+                GUI.Box(new Rect(38, 32, 340, 68), $"P1  {input.DeviceLabel}", item);
                 return;
             }
 

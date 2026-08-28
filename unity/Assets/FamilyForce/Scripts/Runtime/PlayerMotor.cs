@@ -9,8 +9,15 @@ namespace FamilyForce.Unity
         private readonly UnifiedInput input = new UnifiedInput();
         private SpriteRenderer spriteRenderer;
         private SpriteStripAnimator animator;
+        private CombatDirector combat;
         private float jumpTime;
         private Vector3 groundPosition;
+        private Sprite[] punchFrames;
+        private Sprite[] kickFrames;
+        private Sprite[] heavyFrames;
+        private Sprite[] specialFrames;
+        private Sprite[] linkFrames;
+        private Sprite[] hurtFrames;
 
         private void Awake()
         {
@@ -19,9 +26,24 @@ namespace FamilyForce.Unity
             groundPosition = transform.position;
         }
 
+        public void Configure(CombatDirector director)
+        {
+            combat = director;
+            punchFrames = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "punch");
+            kickFrames = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "kick");
+            heavyFrames = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "heavy_punch");
+            specialFrames = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "special");
+            linkFrames = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "link");
+            hurtFrames = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "hurt");
+        }
+
+        public void PlayHurt() => animator.PlayOnce(hurtFrames);
+
         private void Update()
         {
             Vector2 move = input.ReadMove();
+            if (animator.IsPlayingAction)
+                move *= 0.28f;
             if (input.JumpPressed() && jumpTime <= 0f)
                 jumpTime = 0.52f;
             Vector3 next = groundPosition + new Vector3(move.x, move.y * 0.62f, 0f)
@@ -43,15 +65,26 @@ namespace FamilyForce.Unity
                 spriteRenderer.flipX = move.x < 0f;
             animator.SetMoving(move.sqrMagnitude > 0.01f);
 
-            if (input.PunchPressed())
-                StartCoroutine(HitFlash());
+            if (combat == null)
+                return;
+            if (input.TeamPressed())
+                TryAction(CombatAction.Team, linkFrames);
+            else if (input.GrabPressed())
+                TryAction(CombatAction.Grab, heavyFrames);
+            else if (input.SpecialPressed())
+                TryAction(CombatAction.Special, specialFrames);
+            else if (input.HeavyPressed())
+                TryAction(CombatAction.Heavy, heavyFrames);
+            else if (input.KickPressed())
+                TryAction(CombatAction.Kick, kickFrames);
+            else if (input.PunchPressed())
+                TryAction(CombatAction.Punch, punchFrames);
         }
 
-        private System.Collections.IEnumerator HitFlash()
+        private void TryAction(CombatAction action, Sprite[] frames)
         {
-            spriteRenderer.color = new Color(1f, 0.72f, 0.34f, 1f);
-            yield return new WaitForSecondsRealtime(0.08f);
-            spriteRenderer.color = Color.white;
+            if (combat.TryPlayerAction(action))
+                animator.PlayOnce(frames);
         }
     }
 }

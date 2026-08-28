@@ -11,9 +11,13 @@ namespace FamilyForce.Unity
         private SpriteRenderer target;
         private Sprite[] idleFrames;
         private Sprite[] walkFrames;
+        private Sprite[] actionFrames;
         private float accumulator;
         private int frame;
         private bool moving;
+        private bool actionPlaying;
+
+        public bool IsPlayingAction => actionPlaying;
 
         public void Initialize(Sprite[] idle, Sprite[] walk)
         {
@@ -37,9 +41,23 @@ namespace FamilyForce.Unity
             if (moving == value)
                 return;
             moving = value;
+            if (actionPlaying)
+                return;
             frame = 0;
             accumulator = 0f;
             ApplyFrame();
+        }
+
+        public bool PlayOnce(Sprite[] frames)
+        {
+            if (frames == null || frames.Length == 0)
+                return false;
+            actionFrames = frames;
+            actionPlaying = true;
+            frame = 0;
+            accumulator = 0f;
+            ApplyFrame();
+            return true;
         }
 
         private void Update()
@@ -48,19 +66,30 @@ namespace FamilyForce.Unity
             while (accumulator >= 1f)
             {
                 accumulator -= 1f;
-                Sprite[] frames = moving ? walkFrames : idleFrames;
+                Sprite[] frames = CurrentFrames();
                 if (frames == null || frames.Length == 0)
                     continue;
-                frame = (frame + 1) % frames.Length;
+                if (actionPlaying && frame + 1 >= frames.Length)
+                {
+                    actionPlaying = false;
+                    actionFrames = null;
+                    frame = 0;
+                }
+                else
+                    frame = (frame + 1) % frames.Length;
                 ApplyFrame();
             }
         }
 
         private void ApplyFrame()
         {
-            Sprite[] frames = moving ? walkFrames : idleFrames;
+            Sprite[] frames = CurrentFrames();
             if (target != null && frames != null && frames.Length > 0)
                 target.sprite = frames[Mathf.Clamp(frame, 0, frames.Length - 1)];
         }
+
+        private Sprite[] CurrentFrames() => actionPlaying && actionFrames != null
+            ? actionFrames
+            : moving ? walkFrames : idleFrames;
     }
 }

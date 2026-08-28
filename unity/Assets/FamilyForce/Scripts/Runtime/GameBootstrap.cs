@@ -20,8 +20,12 @@ namespace FamilyForce.Unity
             BuildStage();
             gameObject.AddComponent<TouchInputOverlay>();
             GameObject player = BuildPlayer();
+            CombatDirector combat = gameObject.AddComponent<CombatDirector>();
+            EnemyCombatant enemy = BuildEnemy(player.transform, combat);
+            GameObject companion = BuildCompanion();
+            combat.Initialize(player.GetComponent<PlayerMotor>(), enemy, companion);
             PrototypeFlow flow = gameObject.AddComponent<PrototypeFlow>();
-            flow.BindPlayer(player);
+            flow.BindPlayer(player, combat);
         }
 
         private static void BuildCamera()
@@ -71,6 +75,31 @@ namespace FamilyForce.Unity
             Debug.Log($"FF_UNITY: player created idle={idle.Length} walk={walk.Length} " +
                 $"sprite={(renderer.sprite != null)}");
             return player;
+        }
+
+        private static EnemyCombatant BuildEnemy(Transform player, CombatDirector combat)
+        {
+            var enemyObject = new GameObject("Stage1_Grunt");
+            SpriteRenderer renderer = enemyObject.AddComponent<SpriteRenderer>();
+            renderer.sortingOrder = 19;
+            enemyObject.AddComponent<SpriteStripAnimator>();
+            EnemyCombatant enemy = enemyObject.AddComponent<EnemyCombatant>();
+            enemyObject.transform.localScale = Vector3.one * 3.05f;
+            enemy.Initialize(CharacterAtlasCatalog.Grunt, player, combat);
+            return enemy;
+        }
+
+        private static GameObject BuildCompanion()
+        {
+            var companion = new GameObject("Adam_Team_Companion");
+            SpriteRenderer renderer = companion.AddComponent<SpriteRenderer>();
+            renderer.sortingOrder = 21;
+            var animator = companion.AddComponent<SpriteStripAnimator>();
+            animator.Initialize(CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Adam, "idle"),
+                CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Adam, "walk"));
+            companion.transform.localScale = Vector3.one * 2.65f;
+            companion.SetActive(false);
+            return companion;
         }
 
         private static void CreatePanel(string name, Vector3 position, Vector2 size, Color color)

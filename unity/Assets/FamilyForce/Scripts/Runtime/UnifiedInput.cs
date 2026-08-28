@@ -16,7 +16,7 @@ namespace FamilyForce.Unity
 
         public string DeviceLabel => assignedGamepad != null
             ? assignedGamepad.displayName
-            : "REMOTE / KEYBOARD";
+            : TouchInputOverlay.IsAvailable ? "TOUCH" : "REMOTE / KEYBOARD";
 
         public void ClaimFirstAvailableGamepad()
         {
@@ -102,6 +102,46 @@ namespace FamilyForce.Unity
             return TouchInputOverlay.JumpPressedThisFrame
                 || (assignedGamepad != null && assignedGamepad.buttonSouth.wasPressedThisFrame)
                 || Pressed(Keyboard.current?.kKey);
+        }
+
+        public bool KickPressed()
+        {
+            ClaimFirstAvailableGamepad();
+            return TouchInputOverlay.KickPressedThisFrame
+                || (assignedGamepad != null && assignedGamepad.buttonNorth.wasPressedThisFrame)
+                || Pressed(Keyboard.current?.lKey);
+        }
+
+        public bool HeavyPressed()
+        {
+            ClaimFirstAvailableGamepad();
+            return TouchInputOverlay.HeavyPressedThisFrame
+                || (assignedGamepad != null && assignedGamepad.leftTrigger.wasPressedThisFrame)
+                || Pressed(Keyboard.current?.uKey);
+        }
+
+        public bool SpecialPressed()
+        {
+            ClaimFirstAvailableGamepad();
+            return TouchInputOverlay.SpecialPressedThisFrame
+                || (assignedGamepad != null && assignedGamepad.rightShoulder.wasPressedThisFrame)
+                || Pressed(Keyboard.current?.iKey);
+        }
+
+        public bool GrabPressed()
+        {
+            ClaimFirstAvailableGamepad();
+            return TouchInputOverlay.GrabPressedThisFrame
+                || (assignedGamepad != null && assignedGamepad.rightTrigger.wasPressedThisFrame)
+                || Pressed(Keyboard.current?.gKey);
+        }
+
+        public bool TeamPressed()
+        {
+            ClaimFirstAvailableGamepad();
+            return TouchInputOverlay.TeamPressedThisFrame
+                || (assignedGamepad != null && assignedGamepad.leftShoulder.wasPressedThisFrame)
+                || Pressed(Keyboard.current?.tKey);
         }
 
         private static float ReadAxis(KeyControl negative1, KeyControl positive1,

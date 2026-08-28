@@ -25,12 +25,19 @@ def main() -> None:
     touch = (runtime / "TouchInputOverlay.cs").read_text()
     unified = (runtime / "UnifiedInput.cs").read_text()
     flow = (runtime / "PrototypeFlow.cs").read_text()
+    combat = (runtime / "CombatDirector.cs").read_text()
+    enemy = (runtime / "EnemyCombatant.cs").read_text()
     assert "Input.touchSupported" in touch
     assert "Input.multiTouchEnabled = true" in touch
-    assert "PUNCH" in touch and "JUMP" in touch and "II" in touch
+    for action in ("PUNCH", "KICK", "HEAVY", "SPECIAL", "GRAB", "TEAM", "JUMP"):
+        assert action in touch, action
     assert "TouchInputOverlay.Move" in unified
     assert "TouchInputOverlay.PunchPressedThisFrame" in unified
     assert "TouchInputOverlay.BeganInside(OptionRect(index))" in flow
+    assert "TryPlayerAction(CombatAction action)" in combat
+    assert "TeamCombo()" in combat and "ApplyTeamCombo()" in enemy
+    assert "CharacterAtlasCatalog.Adam" in combat
+    assert "CharacterAtlasCatalog.Grunt" in (runtime / "GameBootstrap.cs").read_text()
 
     atlas_root = UNITY / "Assets/FamilyForce/Resources/Atlases"
     for actor in ("Essa", "Adam", "Grunt", "Skater", "LanternCourier",
@@ -46,7 +53,7 @@ def main() -> None:
     aapt = sorted((SDK / "build-tools").glob("*/aapt2"))[-1]
     badging = subprocess.check_output([str(aapt), "dump", "badging", str(apk)], text=True)
     assert "com.familyforce.neonstreets.unityprototype" in badging
-    assert "versionName='0.2.1-touch-controls'" in badging
+    assert "versionName='0.3.0-combat-slice'" in badging
     assert "leanback-launchable-activity" in badging
     assert "android.hardware.touchscreen" in badging and "not-required" in badging
     assert "arm64-v8a" in badging and "armeabi-v7a" in badging
