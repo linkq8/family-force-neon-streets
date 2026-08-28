@@ -16,7 +16,7 @@
 - النسخة المنشورة: `v0.53.0-alpha`، `versionCode 68`.
 - الفرع المشترك: `main`.
 - آخر commit وظيفي منشور: `d6c317d05eb35a8135a3952a0a18b4d1a96ebbf4`.
-- آخر commit وظيفي لـUnity غير منشور: `b78e4c7`؛ تأسيس المحرك بدأ في `03b286a`.
+- آخر commit وظيفي لـUnity غير منشور: `b5c2500`؛ تأسيس المحرك بدأ في `03b286a`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
 - Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.53.0-alpha
 - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.53.0-alpha/family-force-family-current.apk
@@ -248,6 +248,7 @@
 - APK: `unity/Builds/Android/FamilyForceUnityAtlasPrototype.apk`، الحجم
   52,229,604 بايت، SHA-256
   `503085aaf65c731eac3f36ae09c7c1617c55d7d49446bec1a49f5de3163e54d8`.
+- commit الوظيفي: `b5c2500`.
 - ملاحظات/مخاطر: واجهة اللمس الحالية وظيفية ومناسبة للنموذج التقني، لكنها ليست
   بعد Action Deck النهائي للعبة الكاملة. يلزم قبول بصري ولمسي على هاتف حقيقي.
 - التالي: نقل طبقة اللمس نفسها إلى نموذج القتال الرأسي ثم إضافة بقية أزرار القتال
