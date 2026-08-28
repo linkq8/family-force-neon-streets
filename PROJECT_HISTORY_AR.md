@@ -16,7 +16,7 @@
 - النسخة المنشورة: `v0.53.0-alpha`، `versionCode 68`.
 - الفرع المشترك: `main`.
 - آخر commit وظيفي منشور: `d6c317d05eb35a8135a3952a0a18b4d1a96ebbf4`.
-- آخر commit وظيفي لـUnity غير منشور: `a8661ec`؛ تأسيس المحرك بدأ في `03b286a`.
+- آخر commit وظيفي منشور لـUnity: `bfc05f1`؛ تأسيس المحرك بدأ في `03b286a`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
 - Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.53.0-alpha
 - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.53.0-alpha/family-force-family-current.apk
@@ -274,7 +274,11 @@
   - Android 14 Emulator cold launch و1P و2P — PASS؛ بلا FATAL أو Missing Sprite.
   - 2P confirmation gate — PASS؛ بقي بعد P1 وينتقل فقط بعد تأكيد P2.
   - معاينة Essa/Adam من Atlas وبداية Stage 1 وظهور المضرب/Grunt — PASS بصريًا.
-- Release: تجهيز `unity-v0.5.0-stage-one-slice`؛ يحدّث الرابط وSHA بعد الرفع.
+- Release: `unity-v0.5.0-stage-one-slice` —
+  https://github.com/linkq8/family-force-neon-streets/releases/tag/unity-v0.5.0-stage-one-slice
+- APK: https://github.com/linkq8/family-force-neon-streets/releases/download/unity-v0.5.0-stage-one-slice/FamilyForceUnityAtlasPrototype.apk
+- SHA-256: `b1f77cd72f6bcb0b2d2e24c2ebe753662d9eaf2d133b1155708cf57bac8324a0`.
+- commit: `bfc05f1a41a595e708878b945f3bcc3162ce390d`.
 - ملاحظات/مخاطر: لم يختبر بعد على Xiaomi Stick/Shield أو بيدين فعليتين، ولم تنفذ
   جلسة 20 دقيقة/P95 أو الوصول اليدوي إلى النتائج على عتاد حقيقي. هذا Vertical Slice
   ولا يستبدل APK Android Canvas المنشور.
@@ -4263,6 +4267,9 @@
 - آخر عمل: Unity `0.5.0-stage-one-slice` أضاف اختيار Essa/Adam، سلاح bat كامل،
   ثلاث موجات ثم Market Enforcer Mini Boss، hurtboxes/input buffer/combo/hit-stop،
   ومقدمة/نتائج/Score/Time/High Score. نجح Build و1P/2P والريموت على Android 14.
+- آخر Release لـUnity: `unity-v0.5.0-stage-one-slice`، APK SHA-256
+  `b1f77cd72f6bcb0b2d2e24c2ebe753662d9eaf2d133b1155708cf57bac8324a0`،
+  مبني من commit `bfc05f1` على فرع `codex/adopt-spec-kit`.
 - آخر قرار: الهجرة تدريجية؛ لا يحذف `android/` ولا يعلن Unity بديلًا حتى يجتاز
   نموذج القتال، تكافؤ المحتوى، وأداء Xiaomi Stick/Shield.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
