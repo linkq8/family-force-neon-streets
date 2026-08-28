@@ -1,0 +1,8 @@
+{
+  "name": "FamilyForce.Runtime",
+  "rootNamespace": "FamilyForce.Unity",
+  "references": [
+    "Unity.InputSystem"
+  ],
+  "autoReferenced": true
+}

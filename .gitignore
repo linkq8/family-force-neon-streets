@@ -50,3 +50,14 @@ build/
 *.srm
 *.sav
 customers/*/.generated/
+
+# Unity project caches and reproducible player builds.
+unity/[Ll]ibrary/
+unity/[Tt]emp/
+unity/[Oo]bj/
+unity/[Ll]ogs/
+unity/[Uu]ser[Ss]ettings/
+unity/[Bb]uilds/
+unity/MemoryCaptures/
+unity/Recordings/
+unity/.utmp/

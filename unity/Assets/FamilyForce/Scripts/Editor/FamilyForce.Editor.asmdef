@@ -1,0 +1,10 @@
+{
+  "name": "FamilyForce.Editor",
+  "rootNamespace": "FamilyForce.Unity.Editor",
+  "references": [
+    "FamilyForce.Runtime"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ]
+}

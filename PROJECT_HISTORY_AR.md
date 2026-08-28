@@ -4,11 +4,14 @@
 > يجب على كل وكيل قراءته قبل تعديل المشروع، وتحديثه بعد كل طلب أو تعديل أو
 > اختبار أو Release. سجل الأحداث أدناه تراكمي؛ لا تُحذف الإدخالات القديمة.
 
-آخر تحديث: 26 أغسطس 2026 — Codex
+آخر تحديث: 28 أغسطس 2026 — Codex
 
 ## حالة العمل الحالية
 
-- المنتج الأساسي: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
+- المنتج المنشور حاليًا: لعبة Android أصلية بنمط beat-'em-up ريترو حديث، وليست Emulator.
+- اتجاه التطوير الجديد: بدأ نقل المحرك تدريجيًا إلى Unity 6.3 LTS داخل `unity/`؛
+  مشروع Android Canvas داخل `android/` باقٍ كمرجع قابل للعب حتى تحقق نسخة Unity
+  تكافؤ الميزات والاستقرار، ولا تعد نسخة Unity الحالية بديلًا مكتملًا بعد.
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
 - النسخة المنشورة: `v0.53.0-alpha`، `versionCode 68`.
 - الفرع المشترك: `main`.
@@ -48,8 +51,9 @@
 - الاختبارات المتبقية: قبول بصري بشري لحركة Essa الحديدي وMarket على
   Xiaomi Stick وShield. كشف تدقيق الرموز `Lantern Courier` و`Palace Sentinel`
   و`Tidebreaker` ووضعت في قائمة إعادة الرسم، ولم يعتمدها السجل بصريًا.
-- العمل التالي الموصى به: اختبار `v0.53.0-alpha` في Stage 1 على TV حقيقي، ثم
-  تطبيق عقد 12 رسمة على Adam أو إعادة Keeper-7 حسب نتيجة القبول البصري.
+- العمل التالي الموصى به: المرحلة الثانية من ترحيل Unity: نموذج قتال رأسي فيه
+  P1/P2 اختياريان، ملكية يد مستقلة، حركات القتال، hitboxes، عدو واحد وسلاح، ثم
+  قياس الأداء على Xiaomi Stick وShield قبل نقل المراحل الخمس.
 - أداة الإنتاج: `asset-vault/` تفهرس 101 سجل و181 ملفًا (تغطية Manifest كاملة)،
   وتشغّل الأطالس الـ26 بقيم المحرك الفعلية، مع عقود QA لكل العائلات، حجر وفك
   ترميز حقيقي، اعتماد مرتبط بالبصمة والحقوق، وتجهيز آمن يبدأ بمعاينة Dry-run.
@@ -199,6 +203,79 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-27-97 — نقل اللعبة من محرك Android Canvas إلى Unity
+
+- المنفذ: Codex
+- طلب المستخدم: تغيير محرك اللعبة الحالي إلى Unity بعد عدم الوصول إلى جودة
+  رسومات Essa المطلوبة في مسار Canvas الحالي.
+- الحالة: قيد التنفيذ — اكتملت مرحلة الأساس والنموذج التقني، ولم يكتمل نقل
+  اللعبة أو المحتوى بعد.
+- نقطة البداية: `v0.53.0-alpha` / commit `d6c317d`، مع تغييرات Essa v7 غير
+  منشورة محفوظة في شجرة العمل وعدم استبدال النسخة الحالية.
+- القرار: إنشاء مشروع Unity مستقل داخل المستودع بالتوازي مع تطبيق Android
+  الحالي، واعتماد Unity 6.3 LTS `6000.3.22f1` المثبت محليًا مع Android Build
+  Support، ثم نقل الأنظمة تدريجيًا عبر نموذج لعب رأسي قبل إعلان استبدال المحرك.
+- الأولويات: Android TV والهاتف، DualSense/Xbox/Joy-Con/الريموت، P1/P2 اختياري،
+  60 FPS للمحرك و12 رسمة على الأقل لكل حركة، وضوح sprites بلا blur أو تغير حجم.
+- القيود: الحفاظ على اللعبة والميزات الحالية وعدم حذف مشروع Android القديم أو
+  إصدار APK Unity قبل اجتياز بوابات المقارنة والاستقرار.
+- ما تم:
+  - إنشاء مشروع Unity 6.3 LTS مستقل داخل `unity/` بحزمة تجريبية منفصلة قابلة
+    للتثبيت بجانب النسخة المنشورة.
+  - إعداد Android TV/Leanback وGameActivity وOpenGL ES 3 وIL2CPP وARMv7/ARM64
+    وAPI 25–36، مع 60 FPS للمحرك.
+  - إنشاء طبقة إدخال أولية تجمع Input System 1.17 مع fallback للريموت، وقائمة
+    ذات مؤشر واضح، ومشهد حركة P1.
+  - إنشاء مشغّل strip حتمي من 12 رسمة بسرعة 12 FPS، وتثبيت Point filtering
+    وNPOT None ومنع mipmaps والضغط حتى لا يغيّر Unity أبعاد الأطالس.
+  - إضافة خطة هجرة مرحلية وبوابة تحقق آلية لعقود Unity وAPK.
+- الملفات المعدلة:
+  - `.gitignore`
+  - `unity/Packages/manifest.json`
+  - `unity/ProjectSettings/`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/`
+  - `unity/Assets/FamilyForce/Scripts/Editor/`
+  - `unity/Assets/FamilyForce/Resources/Heroes/parent_idle.png`
+  - `unity/Assets/FamilyForce/Resources/Heroes/parent_walk.png`
+  - `unity/README_AR.md`
+  - `unity/MIGRATION_PLAN_AR.md`
+  - `unity/tools/test_unity_migration.py`
+- الاختبارات:
+  - Unity batch Android build — PASS؛ APK محلي بحجم `62,538,151` بايت.
+  - `python3 unity/tools/test_unity_migration.py` — PASS.
+  - `aapt dump badging` — PASS؛ Leanback launcher، touchscreen غير مطلوب،
+    ARM64+ARMv7، GLES3، minSdk 25 وtargetSdk 36.
+  - Android TV Emulator cold launch — PASS وظيفيًا؛ Displayed بعد `9.7s`
+    وFully drawn بعد `14.4s` على محاكي SwiftShader مثقل.
+  - ريموت المحاكي: DPAD_DOWN غيّر الاختيار، DPAD_CENTER بدأ المشهد، وDPAD_RIGHT
+    حرّك اللاعب — PASS، والعملية بقيت حية بلا FATAL/ANR/OOM.
+- APK المحلي: `unity/Builds/Android/FamilyForceUnityPrototype.apk`، SHA-256
+  `fbe409cce37e13740384b7fa0ffae1f5edb14bf2c2739371fcfaa3dff38c69df`.
+- Release: لا يوجد؛ هذا نموذج Development محلي وغير مكافئ للعبة، لذلك لم يرفع
+  إلى GitHub Releases ولم يستبدل `v0.53.0-alpha`.
+- ملاحظات/مخاطر: رسمة Essa داخل النموذج مرجع مؤقت مرفوض بصريًا وليست أصلًا
+  معتمدًا. زمن أول تشغيل Development مرتفع بسبب استخراج IL2CPP والمحاكي ويجب
+  إعادة قياسه ببناء Production وعلى TV حقيقي. P2 والقتال والأعداء والمراحل
+  والقصة والصوت والحفظ والتحديث لم تنقل بعد.
+- التالي: بناء نموذج القتال الرأسي للمرحلة الثانية، ثم بوابة 20 دقيقة على
+  DualSense/Xbox/Joy-Con/remote وXiaomi Stick/Shield قبل نقل المحتوى.
+
+### 2026-08-26-96 — إعادة إنشاء Essa من مصادر شفافة حقيقية
+
+- المنفذ: Codex
+- طلب المستخدم: البدء بإعادة إنشاء شخصية Essa بالمواصفات الجديدة؛ cyborg حديدي
+  قوي بالهوية الحالية، مع إزالة الأطراف والأجزاء البيضاء عبر توليد الصور أصلًا
+  بخلفية شفافة.
+- الحالة: متوقف بطلب المستخدم؛ النتائج البصرية غير مقبولة ولم تُنشر كـRelease.
+- نقطة البداية: `v0.53.0-alpha` / commit `d6c317d`.
+- الخطة: إعادة إنتاج Essa فقط بمصادر RGBA شفافة و12 رسمة مستقلة لكل حركة، ثم
+  فحص alpha والحواف والحجم وثبات القدم، واختبارها مركبة فوق الأسود والأبيض
+  والفوشي قبل دمجها وبناء APK جديد.
+- القيود: لا Higgsfield، لا فيديو، لا تغيير لوجه Essa أو هويته أو نظام اللعب.
+- النتيجة قبل الإيقاف: ولدت مصادر v7 خضراء وأطالس Alpha تجريبية واجتازت فحوص
+  Alpha/12-frame محليًا، لكن المستخدم رفض جودة Essa؛ التغييرات باقية غير منشورة
+  فقط للحفظ ولا تعد نسخة معتمدة.
 
 ### 2026-08-26-95 — طريقة إضافة Spec Kit إلى المشروع
 
@@ -3782,24 +3859,24 @@
 ## تسليم العمل الحالي
 
 - المالك الأخير: Codex.
-- الحالة: `v0.53.0-alpha` منشور؛ خمس مراحل و14 منطقة و22 نوع عدو، مع Mini Boss
-  وBoss لكل مرحلة ومرحلة ختامية تعتمد موجات ورؤساء مراقبين ثم Shadow Prime.
-- آخر عمل: أعيد Essa كـcyborg حديدي ثقيل في Model Sheet و132 رسمة حركة وصورتي
-  اختيار وfallback جديد، مع أكتاف وقفازات ومفاصل ميكانيكية أكبر ومنع هيئة رائد
-  الفضاء. حسنت أداة الفصل للشبكات الرمادية والأجسام العابرة لحدود الخلايا.
-- آخر قرار: هوية Essa المعتمدة cyborg معدني ثقيل برأس مكشوف؛ معيار الرسم 12
-  صورة فريدة لكل حركة و12 FPS على الأقل، وتنفذ الشخصيات واحدة تلو الأخرى.
+- الحالة: `v0.53.0-alpha` ما زال الإصدار المنشور المستقر نسبيًا بمحرك Android
+  Canvas. بدأ مشروع Unity داخل `unity/` وأنهى مرحلة الأساس فقط؛ لا يزال نموذجًا
+  تقنيًا محليًا ولا يحل محل اللعبة المنشورة.
+- آخر عمل: إعداد Unity 6.3 LTS وAndroid TV/Input System وIL2CPP و12-frame
+  animation، وبناء APK مستقل نجح في تشغيل القائمة والحركة بالريموت على المحاكي.
+- آخر قرار: الهجرة تدريجية؛ لا يحذف `android/` ولا يعلن Unity بديلًا حتى يجتاز
+  نموذج القتال، تكافؤ المحتوى، وأداء Xiaomi Stick/Shield.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
   1. `PROJECT_HISTORY_AR.md`
-  2. `android/README.md`
-  3. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
-  4. `android/app/src/main/java/com/familyforce/neonstreets/SpriteAnimator.java`
-  5. `android/docs/SEPARATE_ANIMATION_CLIP_STANDARD_AR.md`
-  6. `android/tools/test_separate_animation_clips.py`
-  7. `android/app/src/main/java/com/familyforce/neonstreets/EnemyArchetype.java`
-  8. `android/app/src/main/java/com/familyforce/neonstreets/StageRoster.java`
-  9. `android/docs/PIXEL_DENSITY_STANDARD_AR.md`
-  10. `android/tools/test_enemy_pixel_density_contract.py`
-- الإجراء التالي المقترح: تثبيت APK `v0.53.0-alpha` وتجربة Essa في Stage 1 على
-  Shield/Xiaomi، خصوصًا المشي والضربات والقفز والسقوط واتصال الإطار 12 بالأول.
-  بعدها فقط يعاد Adam أو Keeper-7 منفردًا وفق نتيجة الاختبار.
+  2. `unity/MIGRATION_PLAN_AR.md`
+  3. `unity/README_AR.md`
+  4. `unity/Assets/FamilyForce/Scripts/Runtime/UnifiedInput.cs`
+  5. `unity/Assets/FamilyForce/Scripts/Runtime/SpriteStripAnimator.cs`
+  6. `unity/Assets/FamilyForce/Scripts/Runtime/PrototypeFlow.cs`
+  7. `unity/Assets/FamilyForce/Scripts/Editor/BuildFamilyForce.cs`
+  8. `unity/tools/test_unity_migration.py`
+  9. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
+  10. `android/docs/SEPARATE_ANIMATION_CLIP_STANDARD_AR.md`
+- الإجراء التالي المقترح: تنفيذ المرحلة الثانية في Unity كنموذج قتال رأسي صغير
+  مع P1/P2 اختياريين ويد مستقلة وحركات كاملة وعدو وسلاح، من دون نقل المراحل
+  الخمس دفعة واحدة أو اعتماد رسمة Essa المؤقتة.
