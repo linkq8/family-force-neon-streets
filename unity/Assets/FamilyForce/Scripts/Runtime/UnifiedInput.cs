@@ -27,13 +27,15 @@ namespace FamilyForce.Unity
         public Vector2 ReadMove()
         {
             ClaimFirstAvailableGamepad();
-            Vector2 move = Vector2.zero;
+            Vector2 move = TouchInputOverlay.Move;
             if (assignedGamepad != null)
             {
-                move = assignedGamepad.leftStick.ReadValue();
+                Vector2 gamepadMove = assignedGamepad.leftStick.ReadValue();
                 Vector2 dpad = assignedGamepad.dpad.ReadValue();
-                if (dpad.sqrMagnitude > move.sqrMagnitude)
-                    move = dpad;
+                if (dpad.sqrMagnitude > gamepadMove.sqrMagnitude)
+                    gamepadMove = dpad;
+                if (gamepadMove.sqrMagnitude > move.sqrMagnitude)
+                    move = gamepadMove;
             }
 
             Keyboard keyboard = Keyboard.current;
@@ -64,7 +66,8 @@ namespace FamilyForce.Unity
         public bool ConfirmPressed()
         {
             ClaimFirstAvailableGamepad();
-            return (assignedGamepad != null && assignedGamepad.buttonSouth.wasPressedThisFrame)
+            return TouchInputOverlay.ConfirmPressedThisFrame
+                || (assignedGamepad != null && assignedGamepad.buttonSouth.wasPressedThisFrame)
                 || Pressed(Keyboard.current?.enterKey)
                 || Pressed(Keyboard.current?.numpadEnterKey)
                 || Pressed(Keyboard.current?.spaceKey)
@@ -76,7 +79,8 @@ namespace FamilyForce.Unity
         public bool CancelPressed()
         {
             ClaimFirstAvailableGamepad();
-            return (assignedGamepad != null && assignedGamepad.buttonEast.wasPressedThisFrame)
+            return TouchInputOverlay.CancelPressedThisFrame
+                || (assignedGamepad != null && assignedGamepad.buttonEast.wasPressedThisFrame)
                 || Pressed(Keyboard.current?.escapeKey)
                 || Pressed(Keyboard.current?.backspaceKey)
                 || UnityEngine.Input.GetKeyDown(KeyCode.Escape)
@@ -86,7 +90,8 @@ namespace FamilyForce.Unity
         public bool PunchPressed()
         {
             ClaimFirstAvailableGamepad();
-            return (assignedGamepad != null && assignedGamepad.buttonWest.wasPressedThisFrame)
+            return TouchInputOverlay.PunchPressedThisFrame
+                || (assignedGamepad != null && assignedGamepad.buttonWest.wasPressedThisFrame)
                 || Pressed(Keyboard.current?.jKey);
 
         }
@@ -94,7 +99,8 @@ namespace FamilyForce.Unity
         public bool JumpPressed()
         {
             ClaimFirstAvailableGamepad();
-            return (assignedGamepad != null && assignedGamepad.buttonSouth.wasPressedThisFrame)
+            return TouchInputOverlay.JumpPressedThisFrame
+                || (assignedGamepad != null && assignedGamepad.buttonSouth.wasPressedThisFrame)
                 || Pressed(Keyboard.current?.kKey);
         }
 

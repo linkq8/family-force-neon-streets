@@ -59,6 +59,9 @@
 - حالة أطالس Unity: اعتمدت الدفعة الأولى سبعة `Sprite Atlas` رسمية منفصلة لـEssa
   وAdam وأعداء Stage 1 الخمسة، تضم 406 Sprites من أصول `d6c317d` المنشورة.
   Runtime لم يعد يقصّ شرائط Essa يدويًا؛ يحمل Atlas الشخصية المطلوبة بالاسم.
+- تحكم Unity على الهاتف: أضيف مصدر لمس موحد للقائمة واللعب في النموذج
+  `0.2.1-touch-controls`؛ يدعم لمس خيارات القائمة، عصا حركة متعددة اللمس، Punch،
+  Jump وMenu، ويبقي الريموت ويد التحكم ولوحة المفاتيح فعالة في الوقت نفسه.
 - أداة الإنتاج: `asset-vault/` تفهرس 101 سجل و181 ملفًا (تغطية Manifest كاملة)،
   وتشغّل الأطالس الـ26 بقيم المحرك الفعلية، مع عقود QA لكل العائلات، حجر وفك
   ترميز حقيقي، اعتماد مرتبط بالبصمة والحقوق، وتجهيز آمن يبدأ بمعاينة Dry-run.
@@ -208,6 +211,47 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-28-102 — إضافة تحكم لمس لنسخة Unity على الهاتف
+
+- المنفذ: Codex
+- طلب المستخدم: نسخة Unity لا تعمل دون يد تحكم على الهاتف؛ إضافة تحكم باللمس.
+- الحالة: مكتمل في نموذج Unity، مع اختبار فعلي على محاكي هاتف Android 14.
+- نقطة البداية: commit `2cc0f4c` / نموذج Unity `0.2.0-atlas-migration`.
+- ما تم:
+  - ثبت أن النموذج كان يقرأ Gamepad/Keyboard/legacy KeyEvent فقط ولم يحتوِ أي
+    طبقة لمس؛ أضيف `TouchInputOverlay` كمصدر منخفض التخصيص داخل `UnifiedInput`.
+  - أضيف لمس مباشر لاختيارات القائمة، وعصا متعددة اللمس، وأزرار Punch وJump
+    وMenu. أضيف قفز قصير مع فصل موضع الأرض عن إزاحة القفز حتى لا تنجرف الشخصية.
+  - أبقيت يد التحكم والريموت ولوحة المفاتيح مفعلة بالتوازي؛ المصدر ذو الإدخال
+    الأقوى يفوز، ولا يطغى Gamepad ساكن على عصا اللمس.
+  - تظهر واجهة اللمس فقط عندما يبلغ الجهاز عن شاشة لمس، وتظل مخفية على Android TV.
+  - بني APK إنتاج IL2CPP جديد باسم النسخة `0.2.1-touch-controls`.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/TouchInputOverlay.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/TouchInputOverlay.cs.meta`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/UnifiedInput.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/PrototypeFlow.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/PlayerMotor.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/GameBootstrap.cs`
+  - `unity/Assets/FamilyForce/Scripts/Editor/BuildFamilyForce.cs`
+  - `unity/tools/test_unity_migration.py`
+- الاختبارات:
+  - Unity IL2CPP Production Android build — PASS.
+  - `python3 unity/tools/test_sprite_atlas_contract.py` — PASS؛ 406 Sprites.
+  - `python3 unity/tools/test_unity_migration.py` — PASS؛ شمل عقد اللمس وAPK وTV/ABI.
+  - Android 14 phone emulator ARM64 — PASS: لمس START، سحب العصا وتحرك Essa،
+    Punch، Jump، الرجوع بلمس Menu، ثم بدء اللعب مجددًا بزر DPAD_CENTER.
+  - فحص Logcat بعد المسار المختلط — PASS؛ لا FATAL/ANR/OOM والعملية بقيت حية.
+- Release: لا يوجد؛ APK Unity محلي تجريبي وليس إصدار اللعبة الكاملة.
+- APK: `unity/Builds/Android/FamilyForceUnityAtlasPrototype.apk`، الحجم
+  52,229,604 بايت، SHA-256
+  `503085aaf65c731eac3f36ae09c7c1617c55d7d49446bec1a49f5de3163e54d8`.
+- ملاحظات/مخاطر: واجهة اللمس الحالية وظيفية ومناسبة للنموذج التقني، لكنها ليست
+  بعد Action Deck النهائي للعبة الكاملة. يلزم قبول بصري ولمسي على هاتف حقيقي.
+- التالي: نقل طبقة اللمس نفسها إلى نموذج القتال الرأسي ثم إضافة بقية أزرار القتال
+  عند تنفيذ Combo/Grab/Team Combo، دون إنشاء مسار تحكم موازٍ.
 
 ### 2026-08-28-101 — اعتماد Sprite Atlas لبطلي الاختبار وأعداء Stage 1
 
@@ -4005,9 +4049,9 @@
 - الحالة: `v0.53.0-alpha` ما زال الإصدار المنشور المستقر نسبيًا بمحرك Android
   Canvas. مشروع Unity داخل `unity/` أنهى الأساس وطبقة Sprite Atlas الأولى؛ لا
   يزال نموذجًا تقنيًا محليًا ولا يحل محل اللعبة المنشورة.
-- آخر عمل: اعتماد 7 Sprite Atlases رسمية منفصلة لـEssa وAdam وأعداء Stage 1
-  الخمسة بإجمالي 406 Sprites، واستبدال القص اليدوي في Runtime، وبناء Production
-  APK نجح في التشغيل والحركة بالريموت على المحاكي.
+- آخر عمل: إضافة تحكم لمس كامل للنموذج الحالي عبر UnifiedInput: لمس القوائم،
+  عصا الحركة، Punch/Jump/Menu، مع نجاح الحركة والعودة للقائمة ومزج اللمس مع
+  DPAD على محاكي هاتف Android 14 من دون crash.
 - آخر قرار: الهجرة تدريجية؛ لا يحذف `android/` ولا يعلن Unity بديلًا حتى يجتاز
   نموذج القتال، تكافؤ المحتوى، وأداء Xiaomi Stick/Shield.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
@@ -4015,12 +4059,12 @@
   2. `unity/MIGRATION_PLAN_AR.md`
   3. `unity/README_AR.md`
   4. `unity/Assets/FamilyForce/Scripts/Runtime/UnifiedInput.cs`
-  5. `unity/Assets/FamilyForce/Scripts/Runtime/CharacterAtlasCatalog.cs`
-  6. `unity/Assets/FamilyForce/Scripts/Runtime/SpriteStripAnimator.cs`
-  7. `unity/Assets/FamilyForce/Scripts/Editor/FamilyForceAtlasBuilder.cs`
-  8. `unity/tools/test_sprite_atlas_contract.py`
-  9. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
-  10. `android/docs/SEPARATE_ANIMATION_CLIP_STANDARD_AR.md`
+  5. `unity/Assets/FamilyForce/Scripts/Runtime/TouchInputOverlay.cs`
+  6. `unity/Assets/FamilyForce/Scripts/Runtime/CharacterAtlasCatalog.cs`
+  7. `unity/Assets/FamilyForce/Scripts/Runtime/SpriteStripAnimator.cs`
+  8. `unity/Assets/FamilyForce/Scripts/Editor/FamilyForceAtlasBuilder.cs`
+  9. `unity/tools/test_sprite_atlas_contract.py`
+  10. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
 - الإجراء التالي المقترح: تنفيذ المرحلة الثانية في Unity كنموذج قتال رأسي صغير
   مع P1/P2 اختياريين ويد مستقلة وحركات كاملة وعدو وسلاح، من دون نقل المراحل
   الخمس دفعة واحدة أو اعتماد رسمة Essa المؤقتة.

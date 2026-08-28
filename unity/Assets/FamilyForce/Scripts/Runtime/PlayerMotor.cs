@@ -9,21 +9,35 @@ namespace FamilyForce.Unity
         private readonly UnifiedInput input = new UnifiedInput();
         private SpriteRenderer spriteRenderer;
         private SpriteStripAnimator animator;
+        private float jumpTime;
+        private Vector3 groundPosition;
 
         private void Awake()
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
             animator = GetComponent<SpriteStripAnimator>();
+            groundPosition = transform.position;
         }
 
         private void Update()
         {
             Vector2 move = input.ReadMove();
-            Vector3 next = transform.position + new Vector3(move.x, move.y * 0.62f, 0f)
+            if (input.JumpPressed() && jumpTime <= 0f)
+                jumpTime = 0.52f;
+            Vector3 next = groundPosition + new Vector3(move.x, move.y * 0.62f, 0f)
                 * (Speed * Time.deltaTime);
             next.x = Mathf.Clamp(next.x, -8.2f, 8.2f);
             next.y = Mathf.Clamp(next.y, -3.6f, 0.5f);
-            transform.position = next;
+            groundPosition = next;
+
+            float lift = 0f;
+            if (jumpTime > 0f)
+            {
+                jumpTime = Mathf.Max(0f, jumpTime - Time.deltaTime);
+                float progress = 1f - jumpTime / 0.52f;
+                lift = Mathf.Sin(progress * Mathf.PI) * 0.72f;
+            }
+            transform.position = groundPosition + Vector3.up * lift;
 
             if (Mathf.Abs(move.x) > 0.01f)
                 spriteRenderer.flipX = move.x < 0f;

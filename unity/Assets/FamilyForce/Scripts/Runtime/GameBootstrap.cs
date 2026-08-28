@@ -18,6 +18,7 @@ namespace FamilyForce.Unity
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             BuildCamera();
             BuildStage();
+            gameObject.AddComponent<TouchInputOverlay>();
             GameObject player = BuildPlayer();
             PrototypeFlow flow = gameObject.AddComponent<PrototypeFlow>();
             flow.BindPlayer(player);

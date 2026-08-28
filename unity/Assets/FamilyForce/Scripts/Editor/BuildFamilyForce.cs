@@ -50,7 +50,7 @@ namespace FamilyForce.Unity.Editor
             FamilyForceAtlasBuilder.ValidateAll();
             PlayerSettings.companyName = "Family Force";
             PlayerSettings.productName = "Family Force Unity Prototype";
-            PlayerSettings.bundleVersion = "0.2.0-atlas-migration";
+            PlayerSettings.bundleVersion = "0.2.1-touch-controls";
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android,
                 "com.familyforce.neonstreets.unityprototype");
             PlayerSettings.defaultInterfaceOrientation = UIOrientation.LandscapeLeft;

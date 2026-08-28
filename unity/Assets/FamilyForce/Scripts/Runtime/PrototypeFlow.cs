@@ -15,6 +15,7 @@ namespace FamilyForce.Unity
         {
             player = target;
             player.SetActive(false);
+            TouchInputOverlay.SetGameplayActive(false);
         }
 
         private void Update()
@@ -25,7 +26,17 @@ namespace FamilyForce.Unity
                 {
                     playing = false;
                     player.SetActive(false);
+                    TouchInputOverlay.SetGameplayActive(false);
                 }
+                return;
+            }
+
+            for (int index = 0; index < options.Length; index++)
+            {
+                if (!TouchInputOverlay.BeganInside(OptionRect(index)))
+                    continue;
+                selected = index;
+                ActivateSelection();
                 return;
             }
 
@@ -40,14 +51,23 @@ namespace FamilyForce.Unity
 
             if (!input.ConfirmPressed())
                 return;
+            ActivateSelection();
+        }
+
+        private void ActivateSelection()
+        {
             if (selected == 2)
                 Application.Quit();
             else if (selected == 0)
             {
                 playing = true;
                 player.SetActive(true);
+                TouchInputOverlay.SetGameplayActive(true);
             }
         }
+
+        private static Rect OptionRect(int index) =>
+            new Rect(610, 380 + index * 112, 700, 78);
 
         private void OnGUI()
         {
@@ -80,11 +100,13 @@ namespace FamilyForce.Unity
             {
                 Color previous = GUI.color;
                 GUI.color = index == selected ? new Color(1f, 0.78f, 0.18f) : Color.white;
-                GUI.Box(new Rect(610, 380 + index * 112, 700, 78),
+                GUI.Box(OptionRect(index),
                     index == selected ? $">  {options[index]}  <" : options[index], item);
                 GUI.color = previous;
             }
-            GUI.Label(new Rect(510, 760, 900, 55), "D-PAD TO MOVE  •  SOUTH / ENTER TO SELECT", item);
+            GUI.Label(new Rect(510, 760, 900, 55), TouchInputOverlay.IsAvailable
+                ? "TAP AN OPTION  •  CONTROLLER AND REMOTE ALSO SUPPORTED"
+                : "D-PAD TO MOVE  •  SOUTH / ENTER TO SELECT", item);
         }
     }
 }
