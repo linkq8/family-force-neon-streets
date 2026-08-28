@@ -206,6 +206,35 @@
 
 ## سجل الطلبات والتعديلات المشترك
 
+### 2026-08-28-100 — تقييم نظام الأطالس الرسمي في Unity
+
+- المنفذ: Codex
+- طلب المستخدم: هل لدى Unity نظام أطالس معتمد؟
+- الحالة: مكتمل — دراسة وقرار معماري فقط، من دون تغيير Runtime.
+- نقطة البداية: commit `7a0d048` ومشروع Unity 6.3 LTS.
+- النتيجة:
+  - Unity يوفر `Sprite Atlas` رسميًا لجمع عدة Sprites في Texture واحدة وتقليل
+    تبديل الخامات وdraw calls، ويدعم Master/Variant وplatform overrides.
+  - النموذج الحالي لا يستخدمه بعد؛ يقسم شريطي `parent_idle/walk` يدويًا عبر
+    `Sprite.Create`، وهو حل مؤقت لا يعتمد للمحتوى الكامل.
+  - الاتجاه الموصى به: مصادر Frames مستقلة أو sliced sprites، ثم Animation Clips
+    ومنظومة Sprite Atlas رسمية مقسمة حسب مدة الإقامة: بطل/أعداء مرحلة/UI/Props،
+    لا Atlas عملاق واحد لكل اللعبة.
+  - إعدادات فن اللعبة المبدئية: Rotation off، Tight Packing off للشخصيات،
+    Point filtering، mipmaps off، padding/extrusion واضح، pivots وPPU ثابتان،
+    مع اختيار ضغط Android وVariant منخفض الذاكرة بعد قياس الجودة والذاكرة.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+- الاختبارات:
+  - مراجعة `unity/Packages/manifest.json` ونسخة المحرك — PASS.
+  - مراجعة توثيق Unity 6 الرسمي لـSprite Atlas — PASS.
+  - Runtime/Build — SKIPPED؛ لم يطلب التنفيذ.
+- Release: لا يوجد؛ توثيق فقط.
+- ملاحظات/مخاطر: Atlas RGBA32 بحجم 4096² يستهلك قرابة 64 MiB قبل بقية موارد
+  المشهد؛ لذلك رفع الدقة أو منع الضغط بصورة مطلقة غير مناسب لـXiaomi Stick.
+- التالي: في Vertical Slice، استبدال التقسيم اليدوي بأول Atlas رسمي صغير لـEssa
+  والعدو التجريبي وقياس draw calls والذاكرة والوضوح قبل تعميمه.
+
 ### 2026-08-28-99 — إضافة Grab وTeam Combo إلى خطة Unity
 
 - المنفذ: Codex
