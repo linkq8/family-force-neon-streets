@@ -2,11 +2,10 @@ using UnityEngine;
 
 namespace FamilyForce.Unity
 {
-    /// <summary>Deterministic 12-image strip player, independent of render FPS.</summary>
+    /// <summary>Deterministic Sprite Atlas clip player, independent of render FPS.</summary>
     [RequireComponent(typeof(SpriteRenderer))]
     public sealed class SpriteStripAnimator : MonoBehaviour
     {
-        private const int FrameCount = 12;
         private const float AnimationFps = 12f;
 
         private SpriteRenderer target;
@@ -16,21 +15,21 @@ namespace FamilyForce.Unity
         private int frame;
         private bool moving;
 
-        public void Initialize(Texture2D idle, Texture2D walk)
+        public void Initialize(Sprite[] idle, Sprite[] walk)
         {
             target = GetComponent<SpriteRenderer>();
-            if (idle == null)
+            if (idle == null || idle.Length == 0)
             {
-                Debug.LogError("FF_UNITY: missing parent_idle Resources texture");
+                Debug.LogError("FF_UNITY: missing idle clip in Sprite Atlas");
                 return;
             }
-            idleFrames = Slice(idle);
-            walkFrames = Slice(walk != null ? walk : idle);
+            idleFrames = idle;
+            walkFrames = walk != null && walk.Length > 0 ? walk : idle;
             frame = 0;
             accumulator = 0f;
             ApplyFrame();
-            Debug.Log($"FF_UNITY: sprite initialized texture={idle.width}x{idle.height} " +
-                $"frames={idleFrames?.Length ?? 0} sprite={(target.sprite != null)}");
+            Debug.Log($"FF_UNITY: atlas sprite initialized idle={idleFrames.Length} " +
+                $"walk={walkFrames.Length} sprite={(target.sprite != null)}");
         }
 
         public void SetMoving(bool value)
@@ -49,7 +48,10 @@ namespace FamilyForce.Unity
             while (accumulator >= 1f)
             {
                 accumulator -= 1f;
-                frame = (frame + 1) % FrameCount;
+                Sprite[] frames = moving ? walkFrames : idleFrames;
+                if (frames == null || frames.Length == 0)
+                    continue;
+                frame = (frame + 1) % frames.Length;
                 ApplyFrame();
             }
         }
@@ -57,24 +59,8 @@ namespace FamilyForce.Unity
         private void ApplyFrame()
         {
             Sprite[] frames = moving ? walkFrames : idleFrames;
-            if (target != null && frames != null && frames.Length == FrameCount)
-                target.sprite = frames[frame];
-        }
-
-        private static Sprite[] Slice(Texture2D texture)
-        {
-            if (texture == null || texture.width % FrameCount != 0)
-                return null;
-            int width = texture.width / FrameCount;
-            var sprites = new Sprite[FrameCount];
-            for (int index = 0; index < FrameCount; index++)
-            {
-                var rect = new Rect(index * width, 0, width, texture.height);
-                sprites[index] = Sprite.Create(texture, rect, new Vector2(0.5f, 0.04f),
-                    100f, 0, SpriteMeshType.FullRect);
-                sprites[index].name = $"frame_{index:00}";
-            }
-            return sprites;
+            if (target != null && frames != null && frames.Length > 0)
+                target.sprite = frames[Mathf.Clamp(frame, 0, frames.Length - 1)];
         }
     }
 }

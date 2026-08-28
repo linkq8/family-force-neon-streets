@@ -1,0 +1,958 @@
+fileFormatVersion: 2
+guid: e764d9bc86124484eada9a5d7a0dffb6
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 192
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: 4
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 1
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Keeper7_idle_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 960
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0162228783de1f210800000000000000
+      internalID: 1365132988859426320
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_idle_01
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 960
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2797b62b0a9bcee40800000000000000
+      internalID: 5687124529301387634
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_idle_02
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 960
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b71548345ec6a7a20800000000000000
+      internalID: 3060878628687729019
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_idle_03
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 960
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f8bbb8423ec06720800000000000000
+      internalID: 2837494480607361270
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_idle_04
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 960
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9f97521f011ee3b0800000000000000
+      internalID: -5481424940033400931
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_idle_05
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 960
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d3c149b5ed8d9df0800000000000000
+      internalID: -171825192975088682
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_walk_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 111d77a04bd0417c0800000000000000
+      internalID: -4101638293706780399
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_walk_01
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 768
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c129416178cd3aa0800000000000000
+      internalID: -6179562724393410103
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_walk_02
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 768
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6922bd5fe73cd2f50800000000000000
+      internalID: 6858352757613208214
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_walk_03
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 768
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f0fdf677253177b0800000000000000
+      internalID: -5228339248784084746
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_walk_04
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 768
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69608cb49bfc627e0800000000000000
+      internalID: -1790515407085893994
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_walk_05
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 768
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f2bef92151745e60800000000000000
+      internalID: 7950103835626615536
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_attack_1_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 576
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d83b6837d7229340800000000000000
+      internalID: 4868997952458930384
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_attack_1_01
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 576
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3b8c201683ff27f0800000000000000
+      internalID: -635021265313428676
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_attack_1_02
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 576
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e8d18a65330f7d30800000000000000
+      internalID: 4431264086310901984
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_attack_1_03
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 576
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2eb06037d20ec150800000000000000
+      internalID: 5894652085527428651
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_attack_1_04
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 576
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e026d6147178e87b0800000000000000
+      internalID: -5220086384124141042
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_attack_1_05
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 576
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 473ca6271bd0614f0800000000000000
+      internalID: -858483623187528844
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_attack_2_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 384
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ad2b6f8febfdbe70800000000000000
+      internalID: 9132732625699155367
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_attack_2_01
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 384
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e46bb5f64aba5d510800000000000000
+      internalID: 1573352367567124046
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_attack_2_02
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 384
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39acb4c9d7c6d13d0800000000000000
+      internalID: -3234309670633223533
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_attack_2_03
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 384
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9aaae4953e2818e00800000000000000
+      internalID: 1045260501494180521
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_attack_2_04
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 384
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61ae6004caf9f1e60800000000000000
+      internalID: 7935236630607489558
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_attack_2_05
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 384
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 321561e0f901d2390800000000000000
+      internalID: -7841593100859977437
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_hurt_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 192
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 027c42c1995fbe3c0800000000000000
+      internalID: -4329096578835626208
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_hurt_01
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 192
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34be18ceefd5bd0a0800000000000000
+      internalID: -6855782658270434493
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_hurt_02
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 192
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb52f8ce80ff3c350800000000000000
+      internalID: 6035948339400222143
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_hurt_03
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 192
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f15a049c5085b170800000000000000
+      internalID: 8193596232179536372
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_hurt_04
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 192
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd1f935f51fae0860800000000000000
+      internalID: 7498122938461843933
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_hurt_05
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 192
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9fd7676904155810800000000000000
+      internalID: 1753329660552798109
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_knockdown_00
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98d6e074515502e50800000000000000
+      internalID: 6782514588694769033
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_knockdown_01
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b13795110d533ab60800000000000000
+      internalID: 7756102151022670619
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_knockdown_02
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 0
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c64c9c516048986d0800000000000000
+      internalID: -2987711716113398676
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_knockdown_03
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 0
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10680320858a9ec70800000000000000
+      internalID: 9000910426223969793
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_knockdown_04
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 0
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1a387ef08e88f730800000000000000
+      internalID: 4033130150986529308
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Keeper7_knockdown_05
+      rect:
+        serializedVersion: 2
+        x: 1120
+        y: 0
+        width: 224
+        height: 192
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData:
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a30ddec792012d000800000000000000
+      internalID: 59127515484901434
+      vertices: []
+      indices:
+      edges: []
+      weights: []
+    outline: []
+    customData:
+    physicsShape: []
+    bones: []
+    spriteID:
+    internalID: 0
+    vertices: []
+    indices:
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Keeper7_attack_1_00: 4868997952458930384
+      Keeper7_attack_1_01: -635021265313428676
+      Keeper7_attack_1_02: 4431264086310901984
+      Keeper7_attack_1_03: 5894652085527428651
+      Keeper7_attack_1_04: -5220086384124141042
+      Keeper7_attack_1_05: -858483623187528844
+      Keeper7_attack_2_00: 9132732625699155367
+      Keeper7_attack_2_01: 1573352367567124046
+      Keeper7_attack_2_02: -3234309670633223533
+      Keeper7_attack_2_03: 1045260501494180521
+      Keeper7_attack_2_04: 7935236630607489558
+      Keeper7_attack_2_05: -7841593100859977437
+      Keeper7_hurt_00: -4329096578835626208
+      Keeper7_hurt_01: -6855782658270434493
+      Keeper7_hurt_02: 6035948339400222143
+      Keeper7_hurt_03: 8193596232179536372
+      Keeper7_hurt_04: 7498122938461843933
+      Keeper7_hurt_05: 1753329660552798109
+      Keeper7_idle_00: 1365132988859426320
+      Keeper7_idle_01: 5687124529301387634
+      Keeper7_idle_02: 3060878628687729019
+      Keeper7_idle_03: 2837494480607361270
+      Keeper7_idle_04: -5481424940033400931
+      Keeper7_idle_05: -171825192975088682
+      Keeper7_knockdown_00: 6782514588694769033
+      Keeper7_knockdown_01: 7756102151022670619
+      Keeper7_knockdown_02: -2987711716113398676
+      Keeper7_knockdown_03: 9000910426223969793
+      Keeper7_knockdown_04: 4033130150986529308
+      Keeper7_knockdown_05: 59127515484901434
+      Keeper7_walk_00: -4101638293706780399
+      Keeper7_walk_01: -6179562724393410103
+      Keeper7_walk_02: 6858352757613208214
+      Keeper7_walk_03: -5228339248784084746
+      Keeper7_walk_04: -1790515407085893994
+      Keeper7_walk_05: 7950103835626615536
+  mipmapLimitGroupName:
+  pSDRemoveMatte: 0
+  userData:
+  assetBundleName:
+  assetBundleVariant:

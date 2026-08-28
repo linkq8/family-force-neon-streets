@@ -15,15 +15,28 @@ namespace FamilyForce.Unity.Editor
         [MenuItem("Family Force/Build Android TV Prototype")]
         public static void BuildAndroidPrototype()
         {
+            BuildAndroid("Builds/Android/FamilyForceUnityPrototype.apk",
+                BuildOptions.Development);
+        }
+
+        [MenuItem("Family Force/Build Android TV Atlas Prototype (Production)")]
+        public static void BuildAndroidAtlasPrototype()
+        {
+            BuildAndroid("Builds/Android/FamilyForceUnityAtlasPrototype.apk",
+                BuildOptions.None);
+        }
+
+        private static void BuildAndroid(string outputPath, BuildOptions buildOptions)
+        {
             ConfigureProject();
             EnsureScene();
             Directory.CreateDirectory("Builds/Android");
             var options = new BuildPlayerOptions
             {
                 scenes = new[] { ScenePath },
-                locationPathName = "Builds/Android/FamilyForceUnityPrototype.apk",
+                locationPathName = outputPath,
                 target = BuildTarget.Android,
-                options = BuildOptions.Development
+                options = buildOptions
             };
             BuildReport report = BuildPipeline.BuildPlayer(options);
             if (report.summary.result != BuildResult.Succeeded)
@@ -33,9 +46,11 @@ namespace FamilyForce.Unity.Editor
 
         private static void ConfigureProject()
         {
+            FamilyForceAtlasBuilder.RebuildAll();
+            FamilyForceAtlasBuilder.ValidateAll();
             PlayerSettings.companyName = "Family Force";
             PlayerSettings.productName = "Family Force Unity Prototype";
-            PlayerSettings.bundleVersion = "0.1.0-migration";
+            PlayerSettings.bundleVersion = "0.2.0-atlas-migration";
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android,
                 "com.familyforce.neonstreets.unityprototype");
             PlayerSettings.defaultInterfaceOrientation = UIOrientation.LandscapeLeft;
@@ -50,10 +65,6 @@ namespace FamilyForce.Unity.Editor
             PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android,
                 ScriptingImplementation.IL2CPP);
             SetActiveInputHandlingToBoth();
-            AssetDatabase.ImportAsset("Assets/FamilyForce/Resources/Heroes/parent_idle.png",
-                ImportAssetOptions.ForceUpdate);
-            AssetDatabase.ImportAsset("Assets/FamilyForce/Resources/Heroes/parent_walk.png",
-                ImportAssetOptions.ForceUpdate);
             EditorUserBuildSettings.buildAppBundle = false;
             EditorUserBuildSettings.androidBuildSystem = AndroidBuildSystem.Gradle;
             AssetDatabase.SaveAssets();
@@ -75,9 +86,12 @@ namespace FamilyForce.Unity.Editor
         private static void EnsureScene()
         {
             Directory.CreateDirectory(Path.GetDirectoryName(ScenePath));
-            var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
-            new GameObject("GameBootstrap").AddComponent<GameBootstrap>();
-            EditorSceneManager.SaveScene(scene, ScenePath);
+            if (!File.Exists(ScenePath))
+            {
+                var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
+                new GameObject("GameBootstrap").AddComponent<GameBootstrap>();
+                EditorSceneManager.SaveScene(scene, ScenePath);
+            }
             EditorBuildSettings.scenes = new[] { new EditorBuildSettingsScene(ScenePath, true) };
         }
     }

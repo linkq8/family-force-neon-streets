@@ -56,6 +56,9 @@
   P1/P2 اختياريان، ملكية يد مستقلة، حركات القتال، Grab وTeam Grab Combo،
   hitboxes، عدو واحد وسلاح، ثم قياس الأداء على Xiaomi Stick وShield قبل نقل
   المراحل الخمس.
+- حالة أطالس Unity: اعتمدت الدفعة الأولى سبعة `Sprite Atlas` رسمية منفصلة لـEssa
+  وAdam وأعداء Stage 1 الخمسة، تضم 406 Sprites من أصول `d6c317d` المنشورة.
+  Runtime لم يعد يقصّ شرائط Essa يدويًا؛ يحمل Atlas الشخصية المطلوبة بالاسم.
 - أداة الإنتاج: `asset-vault/` تفهرس 101 سجل و181 ملفًا (تغطية Manifest كاملة)،
   وتشغّل الأطالس الـ26 بقيم المحرك الفعلية، مع عقود QA لكل العائلات، حجر وفك
   ترميز حقيقي، اعتماد مرتبط بالبصمة والحقوق، وتجهيز آمن يبدأ بمعاينة Dry-run.
@@ -205,6 +208,69 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-28-101 — اعتماد Sprite Atlas لبطلي الاختبار وأعداء Stage 1
+
+- المنفذ: Codex
+- طلب المستخدم: اعتماد `Sprite Atlas` والبدء بـAdam وEssa وأشرار المرحلة الأولى فقط.
+- الحالة: مكتمل لطبقة الأطالس والاستيراد؛ لم تنقل منظومة القتال بعد.
+- نقطة البداية: commit `5a74f16`؛ نموذج Unity يقص شريطي Essa يدويًا.
+- النطاق المعتمد:
+  - البطلان: `Essa (parent)` و`Adam`.
+  - Stage 1 عبر المنطقتين 0 و1: `Grunt` و`Skater` و`Lantern Courier` و
+    `Market Enforcer` و`Keeper-7`.
+  - استخدام أصول `d6c317d` المنشورة فقط، وعدم إدخال Essa v7 المرفوض غير المنشور.
+  - إنشاء Sprite Atlas رسمي مستقل لكل شخصية، مع Rotation وTight Packing وMipmaps
+    معطلة، وPoint filtering وPPU/Pivot موحدين.
+- ما تم:
+  - استخرجت أصول الشخصيات السبع من commit المنشور `d6c317d` مباشرة، لذلك لم
+    تدخل تغييرات Essa v7 المرفوضة الموجودة في شجرة Android.
+  - أضيف slicing حتمي للشرائط المنفصلة ولشبكتي Skater/Keeper-7 القديمتين، مع
+    أسماء `actor_action_frame` وPPU 192 وPivot سفلي مركزي.
+  - أنشئت سبعة Sprite Atlases رسمية مستقلة: Essa 132، Adam 88، Grunt 36،
+    Skater 36، Lantern Courier 36، Market Enforcer 42، Keeper-7 36؛ المجموع 406.
+  - ثُبت padding 8 وPoint وmipmaps/rotation/tight packing off وAndroid RGBA32
+    وصفحة قصوى 2048. الفصل لكل شخصية يسمح بتحميل المقيمين فقط.
+  - استبدل Runtime القص اليدوي و`Sprite.Create` بـ`Resources.Load<SpriteAtlas>`
+    و`GetSprite`، مع دعم اختلاف عدد إطارات Adam وMarket walk.
+  - أزيل شريطا Essa التجريبيان القديمان من Unity Resources لأنهما لم يعودا
+    مستخدمين؛ يمكن استرجاعهما من commit `03b286a` إذا لزم.
+  - أضيف بناء Production منفصل `0.2.0-atlas-migration` من دون Development overlay.
+- الملفات المعدلة:
+  - `unity/Assets/FamilyForce/Art/Characters/`
+  - `unity/Assets/FamilyForce/Resources/Atlases/`
+  - `unity/Assets/FamilyForce/Scripts/Editor/FamilyForceAtlasBuilder.cs`
+  - `unity/Assets/FamilyForce/Scripts/Editor/FamilyForceTextureImporter.cs`
+  - `unity/Assets/FamilyForce/Scripts/Editor/BuildFamilyForce.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/CharacterAtlasCatalog.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/SpriteStripAnimator.cs`
+  - `unity/Assets/FamilyForce/Scripts/Runtime/GameBootstrap.cs`
+  - `unity/tools/test_sprite_atlas_contract.py`
+  - `unity/tools/test_unity_migration.py`
+  - `unity/README_AR.md`
+  - `unity/MIGRATION_PLAN_AR.md`
+- الاختبارات:
+  - Unity `RebuildAll` — PASS؛ أنشأ 7 Atlases.
+  - Unity `ValidateAll` مع Android packing — PASS؛ 406/406 Sprites.
+  - `python3 unity/tools/test_sprite_atlas_contract.py` — PASS، ويتحقق من بصمات
+    أصول `d6c317d` وإعدادات import/atlas وعدم وجود القص اليدوي.
+  - `python3 unity/tools/test_unity_migration.py` — PASS.
+  - Unity IL2CPP Production Android build — PASS؛ APK حجمه `52,219,872` بايت.
+  - `aapt dump badging` — PASS؛ Leanback وGLES3 وARM64/ARMv7 وAPI 25–36
+    واللمس غير مطلوب.
+  - Android TV Emulator: Runtime حمّل Essa idle/walk من Atlas بـ12+12 Sprite،
+    ونجح الريموت في القائمة وبدء اللعب والحركة؛ لا FATAL/ANR/OOM والعملية حية.
+  - ذاكرة المحاكي أثناء اللعب: TOTAL PSS `158,141 KiB` وRSS `252,356 KiB`.
+- APK المحلي: `unity/Builds/Android/FamilyForceUnityAtlasPrototype.apk`، SHA-256
+  `39a1e78883fc2cc88e5318035daf6905990cec4ec44a0ef150b4edbfff2ccaa7`.
+- Release: لا يوجد؛ هذا Prototype لطبقة الأطالس وليس لعبة Unity مكتملة، لذلك لم
+  يرفع إلى GitHub Releases ولم يستبدل `v0.53.0-alpha`.
+- ملاحظات/مخاطر: أول تشغيل Production على محاكي SwiftShader بقي بطيئًا
+  (`Displayed 8.3s` و`Fully drawn 29.1s` في أول تثبيت؛ `9.6s/15.8s` في إعادة
+  التشغيل). لا يوجد ANR لكن يجب قياس startup وPSS على Xiaomi Stick قبل اعتماد
+  الميزانية. رسومات Adam والأعداء موجودة في APK ومتحققة، لكن النموذج يعرض Essa فقط.
+- التالي: استخدام هذه الأطالس في Vertical Slice القتالي ثم إضافة P1/P2 وGrab
+  وTeam Combo، مع تحميل/إخلاء Atlas حسب اختيار اللاعب والمواجهة.
 
 ### 2026-08-28-100 — تقييم نظام الأطالس الرسمي في Unity
 
@@ -3936,10 +4002,11 @@
 
 - المالك الأخير: Codex.
 - الحالة: `v0.53.0-alpha` ما زال الإصدار المنشور المستقر نسبيًا بمحرك Android
-  Canvas. بدأ مشروع Unity داخل `unity/` وأنهى مرحلة الأساس فقط؛ لا يزال نموذجًا
-  تقنيًا محليًا ولا يحل محل اللعبة المنشورة.
-- آخر عمل: إعداد Unity 6.3 LTS وAndroid TV/Input System وIL2CPP و12-frame
-  animation، وبناء APK مستقل نجح في تشغيل القائمة والحركة بالريموت على المحاكي.
+  Canvas. مشروع Unity داخل `unity/` أنهى الأساس وطبقة Sprite Atlas الأولى؛ لا
+  يزال نموذجًا تقنيًا محليًا ولا يحل محل اللعبة المنشورة.
+- آخر عمل: اعتماد 7 Sprite Atlases رسمية منفصلة لـEssa وAdam وأعداء Stage 1
+  الخمسة بإجمالي 406 Sprites، واستبدال القص اليدوي في Runtime، وبناء Production
+  APK نجح في التشغيل والحركة بالريموت على المحاكي.
 - آخر قرار: الهجرة تدريجية؛ لا يحذف `android/` ولا يعلن Unity بديلًا حتى يجتاز
   نموذج القتال، تكافؤ المحتوى، وأداء Xiaomi Stick/Shield.
 - الملفات المتوقع أن يقرأها الوكيل التالي أولًا:
@@ -3947,10 +4014,10 @@
   2. `unity/MIGRATION_PLAN_AR.md`
   3. `unity/README_AR.md`
   4. `unity/Assets/FamilyForce/Scripts/Runtime/UnifiedInput.cs`
-  5. `unity/Assets/FamilyForce/Scripts/Runtime/SpriteStripAnimator.cs`
-  6. `unity/Assets/FamilyForce/Scripts/Runtime/PrototypeFlow.cs`
-  7. `unity/Assets/FamilyForce/Scripts/Editor/BuildFamilyForce.cs`
-  8. `unity/tools/test_unity_migration.py`
+  5. `unity/Assets/FamilyForce/Scripts/Runtime/CharacterAtlasCatalog.cs`
+  6. `unity/Assets/FamilyForce/Scripts/Runtime/SpriteStripAnimator.cs`
+  7. `unity/Assets/FamilyForce/Scripts/Editor/FamilyForceAtlasBuilder.cs`
+  8. `unity/tools/test_sprite_atlas_contract.py`
   9. `android/app/src/main/java/com/familyforce/neonstreets/GameView.java`
   10. `android/docs/SEPARATE_ANIMATION_CLIP_STANDARD_AR.md`
 - الإجراء التالي المقترح: تنفيذ المرحلة الثانية في Unity كنموذج قتال رأسي صغير

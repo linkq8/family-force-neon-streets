@@ -31,4 +31,21 @@
 - حركة P1 ودعم ضربة اختبارية.
 - حزمة مستقلة تسمح بتثبيته بجانب APK الحالي.
 
+## أطالس الشخصيات المعتمدة
+
+يعتمد المشروع الآن `Sprite Atlas` الرسمي بدل إنشاء Sprites من الشرائط وقت
+التشغيل. الدفعة الأولى محصورة في Essa وAdam وأعداء Stage 1 الخمسة. لكل شخصية
+Atlas مستقل داخل `Assets/FamilyForce/Resources/Atlases` حتى يستطيع المحرك تحميل
+الشخصيات المقيمة في المواجهة فقط.
+
+- 406 Sprites من أصول النسخة المنشورة `d6c317d`.
+- PPU ثابت 192 وPivot سفلي مركزي.
+- Point filtering، mipmaps off، rotation off، tight packing off، padding 8.
+- Android RGBA32 وmax page 2048 في بوابة الجودة الأولى؛ يعاد تقييم الضغط بعد
+  قياس الذاكرة بصريًا على Xiaomi Stick حتى لا نستبدل الوضوح بتوفير نظري.
+
+```sh
+python3 unity/tools/test_sprite_atlas_contract.py
+```
+
 هذا النموذج ليس Release ولا يحتوي بعد على القتال الكامل أو المراحل أو P2.

@@ -18,6 +18,8 @@
 
 ## المرحلة 2 — نموذج القتال الرأسي
 
+- تم اعتماد Sprite Atlas الرسمي للدفعة الأولى: Essa وAdam وGrunt وSkater و
+  Lantern Courier وMarket Enforcer وKeeper-7، بAtlas مستقل لكل شخصية.
 - P1 وP2 اختياريان مع ملكية يد مستقلة.
 - اختيار البطل والمرافق لكل لاعب.
 - locomotion، jump، punch/kick/heavy/special/link/hurt/knockdown.

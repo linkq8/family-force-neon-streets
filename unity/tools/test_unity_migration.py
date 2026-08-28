@@ -6,12 +6,10 @@ from __future__ import annotations
 import subprocess
 from pathlib import Path
 
-from PIL import Image
-
-
 ROOT = Path(__file__).resolve().parents[2]
 UNITY = ROOT / "unity"
-APK = UNITY / "Builds/Android/FamilyForceUnityPrototype.apk"
+PRODUCTION_APK = UNITY / "Builds/Android/FamilyForceUnityAtlasPrototype.apk"
+DEVELOPMENT_APK = UNITY / "Builds/Android/FamilyForceUnityPrototype.apk"
 SDK = Path("/Applications/Unity/Hub/Editor/6000.3.22f1/PlaybackEngines/AndroidPlayer/SDK")
 
 
@@ -23,18 +21,19 @@ def main() -> None:
     settings = (UNITY / "ProjectSettings/ProjectSettings.asset").read_text()
     assert "activeInputHandler: 2" in settings
 
-    for name in ("parent_idle.png", "parent_walk.png"):
-        path = UNITY / "Assets/FamilyForce/Resources/Heroes" / name
-        with Image.open(path) as image:
-            assert image.width % 12 == 0, (path, image.size)
-            assert image.height > 0
-        meta = path.with_suffix(path.suffix + ".meta").read_text()
-        assert "nPOTScale: 0" in meta, path
-        assert "enableMipMap: 0" in meta, path
+    atlas_root = UNITY / "Assets/FamilyForce/Resources/Atlases"
+    for actor in ("Essa", "Adam", "Grunt", "Skater", "LanternCourier",
+                  "MarketEnforcer", "Keeper7"):
+        atlas = (atlas_root / f"FF_{actor}.spriteatlas").read_text()
+        assert "enableRotation: 0" in atlas, actor
+        assert "enableTightPacking: 0" in atlas, actor
+        assert "generateMipMaps: 0" in atlas, actor
+        assert "filterMode: 0" in atlas, actor
 
-    assert APK.is_file(), "Build the Unity Android prototype first"
+    apk = PRODUCTION_APK if PRODUCTION_APK.is_file() else DEVELOPMENT_APK
+    assert apk.is_file(), "Build the Unity Android prototype first"
     aapt = sorted((SDK / "build-tools").glob("*/aapt2"))[-1]
-    badging = subprocess.check_output([str(aapt), "dump", "badging", str(APK)], text=True)
+    badging = subprocess.check_output([str(aapt), "dump", "badging", str(apk)], text=True)
     assert "com.familyforce.neonstreets.unityprototype" in badging
     assert "leanback-launchable-activity" in badging
     assert "android.hardware.touchscreen" in badging and "not-required" in badging

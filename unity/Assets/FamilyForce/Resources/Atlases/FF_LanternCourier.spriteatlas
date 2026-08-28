@@ -1,0 +1,171 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!687078895 &4343727234628468602
+SpriteAtlas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: FF_LanternCourier
+  m_EditorData:
+    serializedVersion: 2
+    textureSettings:
+      serializedVersion: 2
+      anisoLevel: 0
+      compressionQuality: 0
+      maxTextureSize: 0
+      textureCompression: 0
+      filterMode: 0
+      generateMipMaps: 0
+      readable: 0
+      crunchedCompression: 0
+      sRGB: 1
+    platformSettings:
+    - serializedVersion: 4
+      m_BuildTarget: Android
+      m_MaxTextureSize: 2048
+      m_ResizeAlgorithm: 0
+      m_TextureFormat: 4
+      m_TextureCompression: 0
+      m_CompressionQuality: 100
+      m_CrunchedCompression: 0
+      m_AllowsAlphaSplitting: 0
+      m_Overridden: 1
+      m_IgnorePlatformSupport: 0
+      m_AndroidETC2FallbackOverride: 0
+      m_ForceMaximumCompressionQuality_BC6H_BC7: 0
+    packingSettings:
+      serializedVersion: 2
+      padding: 8
+      blockOffset: 1
+      allowAlphaSplitting: 0
+      enableRotation: 0
+      enableTightPacking: 0
+      enableAlphaDilation: 0
+    secondaryTextureSettings: {}
+    variantMultiplier: 1
+    packables:
+    - {fileID: 2800000, guid: 0540eecaf96974771b4b5678c5f91384, type: 3}
+    - {fileID: 2800000, guid: be6a87595d3aa4343bc10f6483b06448, type: 3}
+    - {fileID: 2800000, guid: 9c0ba6ae91fa146be828ea17be92d613, type: 3}
+    - {fileID: 2800000, guid: ba89999d8ee0840558cf93d9d7515bed, type: 3}
+    - {fileID: 2800000, guid: 6134489b63273450396bceeccac72668, type: 3}
+    - {fileID: 2800000, guid: dec56656bb3bd4ebfb258da3285198d3, type: 3}
+    bindAsDefault: 1
+    isAtlasV2: 0
+    cachedData: {fileID: 0}
+    packedSpriteRenderDataKeys:
+    - dec56656bb3bd4ebfb258da3285198d3: -5164120093659742413
+    - dec56656bb3bd4ebfb258da3285198d3: 4821639828061892524
+    - dec56656bb3bd4ebfb258da3285198d3: -380280041554254854
+    - dec56656bb3bd4ebfb258da3285198d3: -6295659344518037458
+    - dec56656bb3bd4ebfb258da3285198d3: 7825919983453794046
+    - dec56656bb3bd4ebfb258da3285198d3: 7883200340313392334
+    - be6a87595d3aa4343bc10f6483b06448: -5707138919603138683
+    - be6a87595d3aa4343bc10f6483b06448: -1499931033086010421
+    - be6a87595d3aa4343bc10f6483b06448: 6996132343312350401
+    - be6a87595d3aa4343bc10f6483b06448: 240023712427515253
+    - be6a87595d3aa4343bc10f6483b06448: 7217826870459789162
+    - be6a87595d3aa4343bc10f6483b06448: -4744982481157693511
+    - 0540eecaf96974771b4b5678c5f91384: 5900587260337789035
+    - 0540eecaf96974771b4b5678c5f91384: 5296628144888644845
+    - 0540eecaf96974771b4b5678c5f91384: -206084147752329774
+    - 0540eecaf96974771b4b5678c5f91384: 559440769675310134
+    - 0540eecaf96974771b4b5678c5f91384: 3238170061576410784
+    - 0540eecaf96974771b4b5678c5f91384: -5242717837053804320
+    - 6134489b63273450396bceeccac72668: 2410041464921276257
+    - 6134489b63273450396bceeccac72668: 5031772315754113707
+    - 6134489b63273450396bceeccac72668: -7941490654341931510
+    - 6134489b63273450396bceeccac72668: 3749329039893474523
+    - 6134489b63273450396bceeccac72668: -1615036844297461765
+    - 6134489b63273450396bceeccac72668: 6032608370367175510
+    - ba89999d8ee0840558cf93d9d7515bed: -2678603707567078312
+    - ba89999d8ee0840558cf93d9d7515bed: 5013238744934269280
+    - ba89999d8ee0840558cf93d9d7515bed: 1729975786673483530
+    - ba89999d8ee0840558cf93d9d7515bed: 1689436107892027666
+    - ba89999d8ee0840558cf93d9d7515bed: 3123247044218565588
+    - ba89999d8ee0840558cf93d9d7515bed: 2505622304310273525
+    - 9c0ba6ae91fa146be828ea17be92d613: -846601804102697210
+    - 9c0ba6ae91fa146be828ea17be92d613: 1784586093641707011
+    - 9c0ba6ae91fa146be828ea17be92d613: -4062772859766246640
+    - 9c0ba6ae91fa146be828ea17be92d613: 2176720713840659570
+    - 9c0ba6ae91fa146be828ea17be92d613: 8846587326020686434
+    - 9c0ba6ae91fa146be828ea17be92d613: 6362424573291123959
+  m_MasterAtlas: {fileID: 0}
+  m_PackedSprites:
+  - {fileID: -5164120093659742413, guid: dec56656bb3bd4ebfb258da3285198d3, type: 3}
+  - {fileID: 4821639828061892524, guid: dec56656bb3bd4ebfb258da3285198d3, type: 3}
+  - {fileID: -380280041554254854, guid: dec56656bb3bd4ebfb258da3285198d3, type: 3}
+  - {fileID: -6295659344518037458, guid: dec56656bb3bd4ebfb258da3285198d3, type: 3}
+  - {fileID: 7825919983453794046, guid: dec56656bb3bd4ebfb258da3285198d3, type: 3}
+  - {fileID: 7883200340313392334, guid: dec56656bb3bd4ebfb258da3285198d3, type: 3}
+  - {fileID: -5707138919603138683, guid: be6a87595d3aa4343bc10f6483b06448, type: 3}
+  - {fileID: -1499931033086010421, guid: be6a87595d3aa4343bc10f6483b06448, type: 3}
+  - {fileID: 6996132343312350401, guid: be6a87595d3aa4343bc10f6483b06448, type: 3}
+  - {fileID: 240023712427515253, guid: be6a87595d3aa4343bc10f6483b06448, type: 3}
+  - {fileID: 7217826870459789162, guid: be6a87595d3aa4343bc10f6483b06448, type: 3}
+  - {fileID: -4744982481157693511, guid: be6a87595d3aa4343bc10f6483b06448, type: 3}
+  - {fileID: 5900587260337789035, guid: 0540eecaf96974771b4b5678c5f91384, type: 3}
+  - {fileID: 5296628144888644845, guid: 0540eecaf96974771b4b5678c5f91384, type: 3}
+  - {fileID: -206084147752329774, guid: 0540eecaf96974771b4b5678c5f91384, type: 3}
+  - {fileID: 559440769675310134, guid: 0540eecaf96974771b4b5678c5f91384, type: 3}
+  - {fileID: 3238170061576410784, guid: 0540eecaf96974771b4b5678c5f91384, type: 3}
+  - {fileID: -5242717837053804320, guid: 0540eecaf96974771b4b5678c5f91384, type: 3}
+  - {fileID: 2410041464921276257, guid: 6134489b63273450396bceeccac72668, type: 3}
+  - {fileID: 5031772315754113707, guid: 6134489b63273450396bceeccac72668, type: 3}
+  - {fileID: -7941490654341931510, guid: 6134489b63273450396bceeccac72668, type: 3}
+  - {fileID: 3749329039893474523, guid: 6134489b63273450396bceeccac72668, type: 3}
+  - {fileID: -1615036844297461765, guid: 6134489b63273450396bceeccac72668, type: 3}
+  - {fileID: 6032608370367175510, guid: 6134489b63273450396bceeccac72668, type: 3}
+  - {fileID: -2678603707567078312, guid: ba89999d8ee0840558cf93d9d7515bed, type: 3}
+  - {fileID: 5013238744934269280, guid: ba89999d8ee0840558cf93d9d7515bed, type: 3}
+  - {fileID: 1729975786673483530, guid: ba89999d8ee0840558cf93d9d7515bed, type: 3}
+  - {fileID: 1689436107892027666, guid: ba89999d8ee0840558cf93d9d7515bed, type: 3}
+  - {fileID: 3123247044218565588, guid: ba89999d8ee0840558cf93d9d7515bed, type: 3}
+  - {fileID: 2505622304310273525, guid: ba89999d8ee0840558cf93d9d7515bed, type: 3}
+  - {fileID: -846601804102697210, guid: 9c0ba6ae91fa146be828ea17be92d613, type: 3}
+  - {fileID: 1784586093641707011, guid: 9c0ba6ae91fa146be828ea17be92d613, type: 3}
+  - {fileID: -4062772859766246640, guid: 9c0ba6ae91fa146be828ea17be92d613, type: 3}
+  - {fileID: 2176720713840659570, guid: 9c0ba6ae91fa146be828ea17be92d613, type: 3}
+  - {fileID: 8846587326020686434, guid: 9c0ba6ae91fa146be828ea17be92d613, type: 3}
+  - {fileID: 6362424573291123959, guid: 9c0ba6ae91fa146be828ea17be92d613, type: 3}
+  m_PackedSpriteNamesToIndex:
+  - LanternCourier_walk_05
+  - LanternCourier_walk_04
+  - LanternCourier_walk_01
+  - LanternCourier_walk_00
+  - LanternCourier_walk_03
+  - LanternCourier_walk_02
+  - LanternCourier_attack_2_01
+  - LanternCourier_attack_2_00
+  - LanternCourier_attack_2_03
+  - LanternCourier_attack_2_02
+  - LanternCourier_attack_2_05
+  - LanternCourier_attack_2_04
+  - LanternCourier_attack_1_04
+  - LanternCourier_attack_1_05
+  - LanternCourier_attack_1_00
+  - LanternCourier_attack_1_01
+  - LanternCourier_attack_1_02
+  - LanternCourier_attack_1_03
+  - LanternCourier_knockdown_04
+  - LanternCourier_knockdown_05
+  - LanternCourier_knockdown_02
+  - LanternCourier_knockdown_03
+  - LanternCourier_knockdown_00
+  - LanternCourier_knockdown_01
+  - LanternCourier_idle_02
+  - LanternCourier_idle_03
+  - LanternCourier_idle_00
+  - LanternCourier_idle_01
+  - LanternCourier_idle_04
+  - LanternCourier_idle_05
+  - LanternCourier_hurt_01
+  - LanternCourier_hurt_00
+  - LanternCourier_hurt_03
+  - LanternCourier_hurt_02
+  - LanternCourier_hurt_05
+  - LanternCourier_hurt_04
+  m_RenderDataMap: {}
+  m_Tag: FF_LanternCourier
+  m_IsVariant: 0

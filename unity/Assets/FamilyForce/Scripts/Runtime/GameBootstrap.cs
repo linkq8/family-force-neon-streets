@@ -60,12 +60,14 @@ namespace FamilyForce.Unity
             SpriteRenderer renderer = player.AddComponent<SpriteRenderer>();
             renderer.sortingOrder = 20;
             var animator = player.AddComponent<SpriteStripAnimator>();
-            Texture2D idle = Resources.Load<Texture2D>("Heroes/parent_idle");
-            Texture2D walk = Resources.Load<Texture2D>("Heroes/parent_walk");
+            Sprite[] idle = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "idle");
+            Sprite[] walk = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "walk");
             animator.Initialize(idle, walk);
             player.AddComponent<PlayerMotor>();
-            player.transform.localScale = Vector3.one * 1.8f;
-            Debug.Log($"FF_UNITY: player created idle={(idle != null)} walk={(walk != null)} " +
+            // The atlas contract uses 192 PPU; 3.45 preserves the prototype's
+            // previous on-screen height without resizing any animation frame.
+            player.transform.localScale = Vector3.one * 3.45f;
+            Debug.Log($"FF_UNITY: player created idle={idle.Length} walk={walk.Length} " +
                 $"sprite={(renderer.sprite != null)}");
             return player;
         }
