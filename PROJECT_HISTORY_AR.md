@@ -16,7 +16,7 @@
 - النسخة المنشورة: `v0.53.0-alpha`، `versionCode 68`.
 - الفرع المشترك: `main`.
 - آخر commit وظيفي منشور: `d6c317d05eb35a8135a3952a0a18b4d1a96ebbf4`.
-- commit تأسيس Unity غير المنشور: `03b286a15935ff079ab6e1457446397d1b637cc4`.
+- آخر commit وظيفي لـUnity غير منشور: `b78e4c7`؛ تأسيس المحرك بدأ في `03b286a`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
 - Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.53.0-alpha
 - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.53.0-alpha/family-force-family-current.apk
@@ -265,6 +265,7 @@
   `39a1e78883fc2cc88e5318035daf6905990cec4ec44a0ef150b4edbfff2ccaa7`.
 - Release: لا يوجد؛ هذا Prototype لطبقة الأطالس وليس لعبة Unity مكتملة، لذلك لم
   يرفع إلى GitHub Releases ولم يستبدل `v0.53.0-alpha`.
+- commit: `b78e4c7` على فرع `codex/adopt-spec-kit`.
 - ملاحظات/مخاطر: أول تشغيل Production على محاكي SwiftShader بقي بطيئًا
   (`Displayed 8.3s` و`Fully drawn 29.1s` في أول تثبيت؛ `9.6s/15.8s` في إعادة
   التشغيل). لا يوجد ANR لكن يجب قياس startup وPSS على Xiaomi Stick قبل اعتماد
