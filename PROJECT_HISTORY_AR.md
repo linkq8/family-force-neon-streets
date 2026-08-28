@@ -15,7 +15,8 @@
 - المنصة: الهاتف، Fold، Android TV، والريموت/يد التحكم.
 - النسخة المنشورة: `v0.53.0-alpha`، `versionCode 68`.
 - الفرع المشترك: `main`.
-- آخر commit وظيفي: `d6c317d05eb35a8135a3952a0a18b4d1a96ebbf4`.
+- آخر commit وظيفي منشور: `d6c317d05eb35a8135a3952a0a18b4d1a96ebbf4`.
+- commit تأسيس Unity غير المنشور: `03b286a15935ff079ab6e1457446397d1b637cc4`.
 - الحزمة الحالية: `com.familyforce.neonstreets.event.familycurrent`.
 - Release: https://github.com/linkq8/family-force-neon-streets/releases/tag/v0.53.0-alpha
 - APK: https://github.com/linkq8/family-force-neon-streets/releases/download/v0.53.0-alpha/family-force-family-current.apk
@@ -254,6 +255,8 @@
   `fbe409cce37e13740384b7fa0ffae1f5edb14bf2c2739371fcfaa3dff38c69df`.
 - Release: لا يوجد؛ هذا نموذج Development محلي وغير مكافئ للعبة، لذلك لم يرفع
   إلى GitHub Releases ولم يستبدل `v0.53.0-alpha`.
+- commit: `03b286a15935ff079ab6e1457446397d1b637cc4` على فرع
+  `codex/adopt-spec-kit`.
 - ملاحظات/مخاطر: رسمة Essa داخل النموذج مرجع مؤقت مرفوض بصريًا وليست أصلًا
   معتمدًا. زمن أول تشغيل Development مرتفع بسبب استخراج IL2CPP والمحاكي ويجب
   إعادة قياسه ببناء Production وعلى TV حقيقي. P2 والقتال والأعداء والمراحل
