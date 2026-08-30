@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://familyforce.local/schemas/art-approval-1.0.json",
+  "title": "Family Force Visual Approval Record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "approvalId",
+    "status",
+    "contractVersion",
+    "packageSha256",
+    "validationReportSha256",
+    "reviewer",
+    "reviewedAt",
+    "resolutions",
+    "backgrounds",
+    "deviceEvidence"
+  ],
+  "properties": {
+    "approvalId": { "type": "string", "minLength": 1 },
+    "status": { "enum": ["pending", "approved", "rejected", "invalidated"] },
+    "contractVersion": { "type": "string", "minLength": 1 },
+    "packageSha256": { "$ref": "#/$defs/sha256" },
+    "validationReportSha256": { "$ref": "#/$defs/sha256" },
+    "reviewer": { "type": "string", "minLength": 1 },
+    "reviewedAt": { "type": "string", "format": "date-time" },
+    "resolutions": {
+      "type": "array",
+      "minItems": 2,
+      "contains": { "const": "1920x1080" },
+      "items": { "enum": ["1280x720", "1920x1080"] }
+    },
+    "backgrounds": {
+      "type": "array",
+      "minItems": 4,
+      "uniqueItems": true,
+      "items": { "enum": ["black", "white", "magenta", "stage1"] }
+    },
+    "deviceEvidence": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["device", "mode", "result"],
+        "properties": {
+          "device": { "type": "string", "minLength": 1 },
+          "mode": { "enum": ["1P", "2P"] },
+          "result": { "enum": ["pass", "fail", "not-run"] },
+          "evidenceSha256": { "$ref": "#/$defs/sha256" }
+        }
+      }
+    },
+    "notes": { "type": "string" }
+  },
+  "$defs": {
+    "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" }
+  }
+}

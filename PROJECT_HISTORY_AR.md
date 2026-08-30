@@ -4,7 +4,7 @@
 > يجب على كل وكيل قراءته قبل تعديل المشروع، وتحديثه بعد كل طلب أو تعديل أو
 > اختبار أو Release. سجل الأحداث أدناه تراكمي؛ لا تُحذف الإدخالات القديمة.
 
-آخر تحديث: 28 أغسطس 2026 — Codex
+آخر تحديث: 30 أغسطس 2026 — Codex
 
 ## حالة العمل الحالية
 
@@ -57,6 +57,10 @@
 - العمل التالي الموصى به: `0.6.0-art-foundation` لعقد رسومات Unity وAnimator
   pipeline وPilot Essa + Grunt، ثم قبول بصري وأداء على Xiaomi/Shield قبل إعادة
   بقية الشخصيات أو نقل Stage 2.
+- اكتملت خطة `001-unity-art-foundation` ومواصفاتها وعقودها دون تغيير Runtime أو
+  أصول اللعبة. الخطة تمنع قفل دقة Runtime نظريًا؛ تقارن 320/384/512 أو Atlas
+  Variants، ثم تعتمد الأخف الذي ينجح بصريًا وعلى Xiaomi. التنفيذ لم يبدأ بعد،
+  والخطوة التالية بعد موافقة المستخدم هي توليد `tasks.md` ثم baseline للأجهزة.
 - حالة أطالس Unity: اعتمدت الدفعة الأولى سبعة `Sprite Atlas` رسمية منفصلة لـEssa
   وAdam وأعداء Stage 1 الخمسة، تضم 406 Sprites من أصول `d6c317d` المنشورة.
   Runtime لم يعد يقصّ شرائط Essa يدويًا؛ يحمل Atlas الشخصية المطلوبة بالاسم.
@@ -225,6 +229,59 @@
 - APK SHA-256: `3151c4916946588e6278a812870160bf1259fc02ed8dbd9f90e56ec0cf06879f`.
 
 ## سجل الطلبات والتعديلات المشترك
+
+### 2026-08-30-108 — مواصفة وخطة المرحلة الأولى لفن Unity
+
+- المنفذ: Codex
+- طلب المستخدم: بدء المرحلة الأولى بأعلى إتقان، ووضع قوانين وشروط صارمة
+  ومدروسة بعد البحث في الإنترنت عن أفضل الممارسات، ثم تسليم خطة المرحلة الأولى.
+- الحالة: مكتمل — بحث ومواصفات وتصميم فقط؛ لم تتغير الرسومات أو Runtime.
+- نقطة البداية: commit `fa744fd` / Unity `0.5.0-stage-one-slice`.
+- ما تم:
+  - بحث مصادر Unity 6 الرسمية لـSprite Atlas/Variants وTexture Import/Compression
+    وAnimator Override/Pixel Perfect/Memory Profiler، ومصادر Android الرسمية
+    لذاكرة TV وتقليل texture size وFrame Pacing.
+  - إنشاء Feature Spec وخطة كاملة لـ`0.6.0-art-foundation`، ونموذج بيانات
+    وQuickstart وعقدين JSON للاعتماد والـmanifest.
+  - تثبيت قواعد المصادر المستقلة الشفافة، 12 Frame فريدة على الأقل، 60 FPS
+    للعرض، PPU/Scale موحد، safe margins، alpha/edge tests، حظر الرموز، بصمة
+    شاملة، human gate وfallback كامل للشخصية.
+  - عدم اعتماد 512 نظريًا: الخطة تفرض baseline ثم A/B بين 320/384/512 أو Atlas
+    Variants عند 720p/1080p، ويقفل أصغر مشتق ينجح في الوضوح والذاكرة والأداء.
+  - قفل ترتيب Pilot: Animator بالأصول القديمة أولًا، ثم أربع وضعيات Essa، ثم
+    idle/walk/punch (12 لكل حركة)، ثم Grunt idle/walk/attack، وبعد القبول فقط
+    تستكمل Action Matrix دون إنتاج بقية الشخصيات دفعة واحدة.
+  - إدخال بوابات regression للتحكم والقتال والسلاح والمسك وTeam Combo والنتائج،
+    مع قياس Xiaomi/Shield لمدة 30 دقيقة لكل من 1P و2P.
+- الملفات المعدلة:
+  - `PROJECT_HISTORY_AR.md`
+  - `specs/001-unity-art-foundation/spec.md`
+  - `specs/001-unity-art-foundation/plan.md`
+  - `specs/001-unity-art-foundation/research.md`
+  - `specs/001-unity-art-foundation/data-model.md`
+  - `specs/001-unity-art-foundation/quickstart.md`
+  - `specs/001-unity-art-foundation/checklists/requirements.md`
+  - `specs/001-unity-art-foundation/contracts/qa-rules.md`
+  - `specs/001-unity-art-foundation/contracts/visual-review.md`
+  - `specs/001-unity-art-foundation/contracts/art-manifest.schema.json`
+  - `specs/001-unity-art-foundation/contracts/approval-record.schema.json`
+- الاختبارات:
+  - `jq empty` لكل ملفات JSON — PASS.
+  - `git diff --check` — PASS.
+  - فحص placeholders غير المحسومة في feature artifacts — PASS؛ الظهور الوحيد
+    لعبارة `NEEDS CLARIFICATION` داخل checklist يقرر عدم وجودها.
+  - JSON Schema meta-validation عبر Python — SKIPPED؛ مكتبة `jsonschema` غير
+    مثبتة محليًا، مع نجاح parsing الصارم عبر `jq`.
+- Release: لا يوجد؛ تخطيط فقط.
+- ملاحظات/مخاطر:
+  - قيمة Runtime tier هي القرار الوحيد المؤجل عمدًا إلى قياس 320/384/512؛ لا
+    يجوز إنتاج الحركة كاملة قبل قفلها.
+  - Constitution في Spec Kit ما زالت قالبًا غير مصادق؛ استعملت الخطة حوكمة
+    `AGENTS.md` وذاكرة المشروع بدل ادعاء وجود مبادئ مصادق عليها.
+  - `tasks.md` غير منشأ لأن الطلب تخطيط فقط؛ يلزم `speckit-tasks` قبل التنفيذ.
+  - ملفات Android/Essa غير المرتبطة في شجرة العمل ملك المستخدم ولم تدخل التغيير.
+- التالي: بعد اعتماد المستخدم للخطة، توليد `tasks.md`، ثم تنفيذ baseline وAnimator
+  regression والمعايرة قبل إنشاء أي دفعة صور كاملة.
 
 ### 2026-08-28-107 — خطة ما بعد تجربة Stage 1 وإعادة فن Unity
 
@@ -4308,9 +4365,11 @@
 - الحالة: `v0.53.0-alpha` ما زال الإصدار المنشور المستقر نسبيًا بمحرك Android
   Canvas. مشروع Unity داخل `unity/` أنهى الأساس وطبقة Sprite Atlas الأولى؛ لا
   يزال نموذجًا تقنيًا محليًا ولا يحل محل اللعبة المنشورة.
-- آخر عمل: Unity `0.5.0-stage-one-slice` أضاف اختيار Essa/Adam، سلاح bat كامل،
-  ثلاث موجات ثم Market Enforcer Mini Boss، hurtboxes/input buffer/combo/hit-stop،
-  ومقدمة/نتائج/Score/Time/High Score. نجح Build و1P/2P والريموت على Android 14.
+- آخر عمل وظيفي: Unity `0.5.0-stage-one-slice` أضاف اختيار Essa/Adam، سلاح bat
+  كاملًا، ثلاث موجات ثم Market Enforcer Mini Boss، hurtboxes/input buffer/combo/
+  hit-stop، ومقدمة/نتائج/Score/Time/High Score. نجح Build و1P/2P والريموت.
+- آخر عمل توثيقي: إعداد مواصفة وخطة وعقود `001-unity-art-foundation` لـEssa
+  وGrunt فقط؛ لا كود أو صورة أو APK جديد في هذا الطلب.
 - آخر Release لـUnity: `unity-v0.5.0-stage-one-slice`، APK SHA-256
   `b1f77cd72f6bcb0b2d2e24c2ebe753662d9eaf2d133b1155708cf57bac8324a0`،
   مبني من commit `bfc05f1` على فرع `codex/adopt-spec-kit`.
@@ -4329,6 +4388,6 @@
   8. `unity/Assets/FamilyForce/Scripts/Runtime/PlayerMotor.cs`
   9. `unity/Assets/FamilyForce/Scripts/Runtime/PrototypeFlow.cs`
   10. `unity/tools/test_unity_migration.py`
-- الإجراء التالي المقترح: تنفيذ `0.6.0-art-foundation`: QA contract + importer
-  للـFrames المنفصلة + Animator/Clips، ثم Pilot Essa وGrunt فقط ومقارنته على
-  720p/1080p وXiaomi/Shield قبل أي إعادة رسم جماعية.
+- الإجراء التالي المقترح: اعتماد الخطة، ثم إنشاء `tasks.md`؛ يبدأ التنفيذ بقياس
+  baseline وAnimator regression بالأصول القديمة، ثم معايرة 320/384/512، وبعدها
+  فقط Pilot Essa وGrunt ومقارنته على 720p/1080p وXiaomi/Shield.
