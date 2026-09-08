@@ -12,6 +12,13 @@ namespace FamilyForce.Unity.Editor
     {
         private const string ScenePath = "Assets/FamilyForce/Scenes/Prototype.unity";
 
+        [MenuItem("Family Force/Build Essa Retro Android v0.5.1")]
+        public static void BuildEssaRetroRelease()
+        {
+            BuildAndroid("Builds/Android/FamilyForceUnity-EssaRetro-0.5.1.apk",
+                BuildOptions.None, "0.5.1-essa-retro", 2);
+        }
+
         [MenuItem("Family Force/Build Android TV Prototype")]
         public static void BuildAndroidPrototype()
         {
@@ -26,9 +33,13 @@ namespace FamilyForce.Unity.Editor
                 BuildOptions.None);
         }
 
-        private static void BuildAndroid(string outputPath, BuildOptions buildOptions)
+        private static void BuildAndroid(string outputPath, BuildOptions buildOptions,
+            string version = "0.5.0-stage-one-slice", int versionCode = 1)
         {
             ConfigureProject();
+            PlayerSettings.bundleVersion = version;
+            PlayerSettings.Android.bundleVersionCode = versionCode;
+            AssetDatabase.SaveAssets();
             EnsureScene();
             Directory.CreateDirectory("Builds/Android");
             var options = new BuildPlayerOptions

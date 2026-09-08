@@ -16,6 +16,7 @@ namespace FamilyForce.Unity
             Application.targetFrameRate = 60;
             QualitySettings.vSyncCount = 0;
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
+            gameObject.AddComponent<StageOneArtPreloader>();
             BuildCamera();
             BuildStage();
             gameObject.AddComponent<TouchInputOverlay>();

@@ -29,6 +29,10 @@ namespace FamilyForce.Unity
 
         public static Sprite[] LoadClip(string actor, string action)
         {
+            if (PracticalEssaClips.TryLoad(actor, action, out Sprite[] practical))
+                return practical;
+            if (CharacterArtPackageResolver.TryLoadClip(actor, action, out Sprite[] candidate))
+                return candidate;
             SpriteAtlas atlas = Load(actor);
             if (atlas == null)
             {

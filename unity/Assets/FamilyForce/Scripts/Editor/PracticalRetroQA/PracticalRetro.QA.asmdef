@@ -1,0 +1,5 @@
+{
+  "name": "FamilyForce.PracticalRetro.QA",
+  "references": ["FamilyForce.Runtime", "Unity.InputSystem"],
+  "includePlatforms": ["Editor"]
+}
