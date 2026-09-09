@@ -27,6 +27,8 @@ namespace FamilyForce.Unity
         public string InputLabel => input.DeviceLabel;
         public bool HasGamepad => input.HasAssignedGamepad;
         public bool FacingRight => !spriteRenderer.flipX;
+        public Vector3 GroundPosition => groundPosition;
+        public bool IsAirborne => jumpTime > 0f;
 
         private void Awake()
         {
@@ -85,6 +87,7 @@ namespace FamilyForce.Unity
                 move *= 0.28f;
             if (input.JumpPressed() && jumpTime <= 0f)
                 jumpTime = 0.52f;
+            Vector3 oldGround = groundPosition;
             Vector3 next = groundPosition + new Vector3(move.x, move.y * 0.62f, 0f)
                 * (Speed * Time.deltaTime);
             next.x = Mathf.Clamp(next.x, -8.2f, 8.2f);
@@ -102,7 +105,10 @@ namespace FamilyForce.Unity
 
             if (Mathf.Abs(move.x) > 0.01f)
                 spriteRenderer.flipX = move.x < 0f;
-            animator.SetMoving(move.sqrMagnitude > 0.01f);
+            bool displaced = (groundPosition-oldGround).sqrMagnitude > .00000001f;
+            animator.SetMoving(displaced && move.sqrMagnitude > 0.01f);
+            if (ActorName == CharacterAtlasCatalog.Essa && Time.deltaTime > 0f)
+                animator.SetWalkRate(Vector3.Distance(groundPosition,oldGround)/Time.deltaTime/3.2f);
 
             if (combat == null)
                 return;
@@ -152,7 +158,13 @@ namespace FamilyForce.Unity
                     CombatAction.Throw => kickFrames,
                     _ => punchFrames
                 };
-                animator.PlayOnce(frames);
+                float[] timing = null;
+                if (ActorName == CharacterAtlasCatalog.Essa)
+                {
+                    if (action == CombatAction.Punch) timing = new[]{.055f,.055f,.065f,.09f};
+                    if (action == CombatAction.Kick) timing = new[]{.065f,.07f,.085f,.1f};
+                }
+                animator.PlayOnce(frames, timing);
                 return true;
             }
             return false;
