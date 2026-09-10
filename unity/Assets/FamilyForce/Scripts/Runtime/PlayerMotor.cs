@@ -101,7 +101,7 @@ namespace FamilyForce.Unity
                 jumpTime = 0.52f;
             Vector3 oldGround = groundPosition;
             Vector3 next = groundPosition + new Vector3(move.x, move.y * 0.62f, 0f)
-                * (Speed * Time.deltaTime);
+                * ((ActorName == CharacterAtlasCatalog.Essa ? 4.8f : Speed) * Time.deltaTime);
             next.x = Mathf.Clamp(next.x, -8.2f, 8.2f);
             next.y = Mathf.Clamp(next.y, -3.6f, 0.5f);
             groundPosition = next;

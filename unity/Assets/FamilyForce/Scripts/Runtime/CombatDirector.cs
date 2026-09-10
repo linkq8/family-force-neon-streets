@@ -206,7 +206,9 @@ namespace FamilyForce.Unity
         private IEnumerator VideoStrike(PlayerMotor actor, CombatAction action, int damage, float range, int revision)
         {
             // Contact frames in the selected source footage: punch5/8, kick6.
-            yield return new WaitForSeconds(action==CombatAction.Punch ? 5f/12f : 6f/12f);
+            string clip=action==CombatAction.Punch ? "punch" : "kick";
+            float firstContact=VideoEssaClips.FrameStart(actor.ActorName,clip,action==CombatAction.Punch ? 5 : 6);
+            yield return new WaitForSeconds(firstContact);
             int count=action==CombatAction.Punch ? 2 : 1;
             for(int i=0;i<count;i++)
             {
@@ -217,7 +219,7 @@ namespace FamilyForce.Unity
                     enemy.TakeHit(hit,hit*.012f,actor.transform);Score+=hit*10;
                     StartCoroutine(HitStop(.045f));
                 }
-                if(i+1<count) yield return new WaitForSeconds(3f/12f);
+                if(i+1<count) yield return new WaitForSeconds(VideoEssaClips.FrameStart(actor.ActorName,clip,8)-firstContact);
             }
         }
 

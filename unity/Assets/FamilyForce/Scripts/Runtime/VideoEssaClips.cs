@@ -26,21 +26,25 @@ namespace FamilyForce.Unity
             if(!loaded)
             {
                 loaded=true;
-                var json=Resources.Load<TextAsset>("PracticalRetro/Essa220/clips");
+                var json=Resources.Load<TextAsset>("PracticalRetro/Essa222/clips");
                 if(json==null) return false;
                 var manifest=JsonUtility.FromJson<Manifest>(json.text);
                 foreach(var clip in manifest.clips)
                 {
                     var pages=new Texture2D[clip.pages.Length];
-                    for(int j=0;j<pages.Length;j++) pages[j]=Resources.Load<Texture2D>("PracticalRetro/Essa220/"+clip.pages[j]);
+                    for(int j=0;j<pages.Length;j++)
+                    {
+                        pages[j]=Resources.Load<Texture2D>("PracticalRetro/Essa222/"+clip.pages[j]);
+                        if(pages[j]!=null) pages[j].filterMode=FilterMode.Bilinear;
+                    }
                     var result=new Sprite[clip.frames.Length]; var times=new float[result.Length];
                     for(int j=0;j<result.Length;j++)
                     {
                         var f=clip.frames[j]; var r=f.rect;
-                        if(pages[f.page]==null) throw new InvalidOperationException("Missing Essa220 atlas");
+                        if(pages[f.page]==null) throw new InvalidOperationException("Missing Essa222 atlas");
                         result[j]=Sprite.Create(pages[f.page],new Rect(r[0],r[1],r[2],r[3]),
                             new Vector2(manifest.pivot[0],manifest.pivot[1]),manifest.pixelsPerUnit,0,SpriteMeshType.FullRect);
-                        result[j].name=$"Essa220_{clip.action}_{j:00}"; times[j]=f.seconds;
+                        result[j].name=$"Essa222_{clip.action}_{j:00}"; times[j]=f.seconds;
                     }
                     Sprites.Add(clip.action,result);Durations.Add(clip.action,times);
                 }
@@ -50,6 +54,13 @@ namespace FamilyForce.Unity
         public static float[] Timing(string actor,string action)
         {
             return TryLoad(actor,action,out _) && Durations.TryGetValue(action,out var timing) ? timing : null;
+        }
+        public static float FrameStart(string actor,string action,int frame)
+        {
+            var times=Timing(actor,action);float result=0;
+            if(times==null) return frame/12f;
+            for(int i=0;i<Mathf.Min(frame,times.Length);i++) result+=times[i];
+            return result;
         }
     }
 }

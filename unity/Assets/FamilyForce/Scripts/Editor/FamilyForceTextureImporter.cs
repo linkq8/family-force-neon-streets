@@ -28,7 +28,10 @@ namespace FamilyForce.Unity.Editor
             }
             importer.alphaIsTransparency = true;
             importer.mipmapEnabled = false;
-            importer.filterMode = FilterMode.Point;
+            // Video-derived sprites are illustrations, not nearest-neighbour pixel art.
+            bool videoArt = assetPath.Contains("/PracticalRetro/Essa222/")
+                || assetPath.Contains("/PracticalRetro/Essa220/");
+            importer.filterMode = videoArt ? FilterMode.Bilinear : FilterMode.Point;
             importer.wrapMode = TextureWrapMode.Clamp;
             importer.npotScale = TextureImporterNPOTScale.None;
             importer.textureCompression = TextureImporterCompression.Uncompressed;
