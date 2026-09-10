@@ -188,6 +188,11 @@ namespace FamilyForce.Unity
                     _ => 0
                 };
             float range = action == CombatAction.Special ? 2.25f : 1.75f;
+            if (actor.ActorName == CharacterAtlasCatalog.Essa && (action == CombatAction.Punch || action == CombatAction.Kick))
+            {
+                StartCoroutine(VideoStrike(actor, action, damage, range, actor.ActionRevision+1));
+                return true;
+            }
             if (enemy.IsAlive && enemy.Hurtbox.OverlapsAttack(actor.transform.position,
                 actor.FacingRight, range))
             {
@@ -196,6 +201,24 @@ namespace FamilyForce.Unity
                 StartCoroutine(HitStop(action == CombatAction.Heavy ? 0.075f : 0.045f));
             }
             return true;
+        }
+
+        private IEnumerator VideoStrike(PlayerMotor actor, CombatAction action, int damage, float range, int revision)
+        {
+            // Contact frames in the selected source footage: punch5/8, kick6.
+            yield return new WaitForSeconds(action==CombatAction.Punch ? 5f/12f : 6f/12f);
+            int count=action==CombatAction.Punch ? 2 : 1;
+            for(int i=0;i<count;i++)
+            {
+                if(!CombatActive || actor==null || !actor.gameObject.activeInHierarchy || actor.ActionRevision!=revision) yield break;
+                int hit=count==1 ? damage : i==0 ? damage/2 : damage-damage/2;
+                if(enemy.IsAlive && enemy.Hurtbox.OverlapsAttack(actor.transform.position,actor.FacingRight,range))
+                {
+                    enemy.TakeHit(hit,hit*.012f,actor.transform);Score+=hit*10;
+                    StartCoroutine(HitStop(.045f));
+                }
+                if(i+1<count) yield return new WaitForSeconds(3f/12f);
+            }
         }
 
         private bool SwingWeapon(PlayerMotor actor, int index)
@@ -306,14 +329,16 @@ namespace FamilyForce.Unity
         {
             int index = target.PlayerIndex;
             ShowBanner($"P{index + 1} DOWN — REVIVING", 1.5f);
-            target.gameObject.SetActive(false);
-            yield return new WaitForSecondsRealtime(1.5f);
+            target.SetControlEnabled(false);
+            float fallSeconds=target.PlayKnockdown();
+            yield return new WaitForSeconds(fallSeconds + .4f);
             if (!CombatActive || (index == 1 && !TwoPlayers))
                 yield break;
             playerHealth[index] = target.ActorName == CharacterAtlasCatalog.Adam ? 110 : 120;
             reviving[index] = false;
             target.ResetPosition(index == 0 ? new Vector3(-4f, -2.15f, 0f) : new Vector3(-5.1f, -2.65f, 0f));
             target.gameObject.SetActive(true);
+            target.SetControlEnabled(true);
             ShowBanner($"P{index + 1} BACK IN THE FIGHT", 1.2f);
         }
 

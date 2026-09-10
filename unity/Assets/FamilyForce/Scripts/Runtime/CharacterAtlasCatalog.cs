@@ -29,6 +29,8 @@ namespace FamilyForce.Unity
 
         public static Sprite[] LoadClip(string actor, string action)
         {
+            if (VideoEssaClips.TryLoad(actor, action, out Sprite[] video))
+                return video;
             if (PracticalEssaClips.TryLoad(actor, action, out Sprite[] practical))
                 return practical;
             if (CharacterArtPackageResolver.TryLoadClip(actor, action, out Sprite[] candidate))

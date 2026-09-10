@@ -29,6 +29,7 @@ namespace FamilyForce.Unity
         public bool FacingRight => !spriteRenderer.flipX;
         public Vector3 GroundPosition => groundPosition;
         public bool IsAirborne => jumpTime > 0f;
+        public int ActionRevision { get; private set; }
 
         private void Awake()
         {
@@ -48,10 +49,11 @@ namespace FamilyForce.Unity
 
         public void SelectActor(string actor)
         {
+            ActionRevision++;
             ActorName = actor;
             Sprite[] idleFrames = CharacterAtlasCatalog.LoadClip(actor, "idle");
             Sprite[] walkFrames = CharacterAtlasCatalog.LoadClip(actor, "walk");
-            animator.Initialize(idleFrames, walkFrames);
+            animator.Initialize(idleFrames, walkFrames, VideoEssaClips.Timing(actor,"idle"), VideoEssaClips.Timing(actor,"walk"));
             punchFrames = CharacterAtlasCatalog.LoadClip(actor, "punch");
             kickFrames = CharacterAtlasCatalog.LoadClip(actor, "kick");
             heavyFrames = CharacterAtlasCatalog.LoadClip(actor, "heavy_punch");
@@ -68,14 +70,24 @@ namespace FamilyForce.Unity
                 animator.SetMoving(false);
         }
 
-        public void PlayHurt() => animator.PlayOnce(hurtFrames);
-        public void PlayTeamAction() => animator.PlayOnce(linkFrames);
+        public void PlayHurt() { ActionRevision++; animator.PlayOnce(hurtFrames); }
+        public void PlayTeamAction() { ActionRevision++; animator.PlayOnce(linkFrames); }
+        public float PlayKnockdown()
+        {
+            ActionRevision++;
+            var frames=CharacterAtlasCatalog.LoadClip(ActorName,"knockdown");
+            var timing=VideoEssaClips.Timing(ActorName,"knockdown");
+            animator.PlayOnce(frames,timing,true);
+            float total=0; if(timing!=null) foreach(float t in timing) total+=t;
+            return timing!=null ? total : frames.Length/12f;
+        }
 
         public void ResetPosition(Vector3 position)
         {
             groundPosition = position;
             jumpTime = 0f;
             transform.position = position;
+            ActionRevision++; animator.StopAction();
         }
 
         private void Update()
@@ -144,8 +156,10 @@ namespace FamilyForce.Unity
 
         private bool TryAction(CombatAction action)
         {
+            if (ActorName == CharacterAtlasCatalog.Essa && animator.IsPlayingAction) return false;
             if (combat.TryPlayerAction(this, action))
             {
+                ActionRevision++;
                 Sprite[] frames = action switch
                 {
                     CombatAction.Punch => punchFrames,
@@ -161,8 +175,8 @@ namespace FamilyForce.Unity
                 float[] timing = null;
                 if (ActorName == CharacterAtlasCatalog.Essa)
                 {
-                    if (action == CombatAction.Punch) timing = new[]{.055f,.055f,.065f,.09f};
-                    if (action == CombatAction.Kick) timing = new[]{.065f,.07f,.085f,.1f};
+                    if (action == CombatAction.Punch) timing = VideoEssaClips.Timing(ActorName,"punch");
+                    if (action == CombatAction.Kick || action == CombatAction.Throw) timing = VideoEssaClips.Timing(ActorName,"kick");
                 }
                 animator.PlayOnce(frames, timing);
                 return true;

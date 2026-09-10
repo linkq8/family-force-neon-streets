@@ -12,6 +12,13 @@ namespace FamilyForce.Unity.Editor
     {
         private const string ScenePath = "Assets/FamilyForce/Scenes/Prototype.unity";
 
+        public static void BuildEssaVideoRelease()
+        {
+            Essa221Validation.Run();
+            BuildAndroid("Builds/Android/FamilyForceUnity-EssaVideo-0.5.3.apk",
+                BuildOptions.None, "0.5.3-essa-video", 4);
+        }
+
         [MenuItem("Family Force/Build Essa Motion Fix Android v0.5.2")]
         public static void BuildEssaMotionRelease()
         {

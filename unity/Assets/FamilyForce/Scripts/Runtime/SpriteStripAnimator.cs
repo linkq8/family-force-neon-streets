@@ -18,6 +18,8 @@ namespace FamilyForce.Unity
         private bool actionPlaying;
         private float walkRate = 1f;
         private float[] actionDurations;
+        private float[] idleDurations, walkDurations;
+        private bool holdActionEnd;
         private bool showMotionDebug;
         private int savedWalkFrame;
         private float savedWalkAccumulator;
@@ -31,7 +33,7 @@ namespace FamilyForce.Unity
 
         public void SetWalkRate(float value) => walkRate = Mathf.Clamp(value, 0.1f, 2.5f);
 
-        public void Initialize(Sprite[] idle, Sprite[] walk)
+        public void Initialize(Sprite[] idle, Sprite[] walk, float[] idleTiming = null, float[] walkTiming = null)
         {
             target = GetComponent<SpriteRenderer>();
             if (idle == null || idle.Length == 0)
@@ -41,6 +43,9 @@ namespace FamilyForce.Unity
             }
             idleFrames = idle;
             walkFrames = walk != null && walk.Length > 0 ? walk : idle;
+            idleDurations = idleTiming != null && idleTiming.Length == idleFrames.Length ? idleTiming : null;
+            walkDurations = walkTiming != null && walkTiming.Length == walkFrames.Length ? walkTiming : null;
+            holdActionEnd = false;
             moving = actionPlaying = false;
             actionFrames = null;
             actionDurations = null;
@@ -67,7 +72,7 @@ namespace FamilyForce.Unity
             ApplyFrame();
         }
 
-        public bool PlayOnce(Sprite[] frames, float[] durations = null)
+        public bool PlayOnce(Sprite[] frames, float[] durations = null, bool holdLast = false)
         {
             if (frames == null || frames.Length == 0)
                 return false;
@@ -75,6 +80,7 @@ namespace FamilyForce.Unity
             actionFrames = frames;
             actionDurations = durations != null && durations.Length == frames.Length ? durations : null;
             actionPlaying = true;
+            holdActionEnd = holdLast;
             frame = 0;
             accumulator = 0f;
             ApplyFrame();
@@ -110,6 +116,7 @@ namespace FamilyForce.Unity
                     continue;
                 if (actionPlaying && frame + 1 >= frames.Length)
                 {
+                    if (holdActionEnd) { accumulator = 0; break; }
                     actionPlaying = false;
                     actionFrames = null;
                     actionDurations = null;
@@ -124,9 +131,19 @@ namespace FamilyForce.Unity
             }
         }
 
-        private float FrameDuration() => actionPlaying && actionDurations != null
-            ? Mathf.Max(.016f, actionDurations[Mathf.Clamp(frame, 0, actionDurations.Length-1)])
-            : 1f / (AnimationFps * (!actionPlaying && moving ? walkRate : 1f));
+        public void StopAction()
+        {
+            actionPlaying = holdActionEnd = false; actionFrames = null; actionDurations = null;
+            frame = moving ? savedWalkFrame : 0; accumulator = moving ? savedWalkAccumulator : 0;
+            ApplyFrame();
+        }
+
+        private float FrameDuration()
+        {
+            var timing = actionPlaying ? actionDurations : moving ? walkDurations : idleDurations;
+            float seconds = timing != null ? timing[Mathf.Clamp(frame,0,timing.Length-1)] : 1f/AnimationFps;
+            return Mathf.Max(.016f,seconds/(!actionPlaying && moving ? walkRate : 1f));
+        }
 
         private void ApplyFrame()
         {
