@@ -2,7 +2,8 @@
   "name": "FamilyForce.Editor",
   "rootNamespace": "FamilyForce.Unity.Editor",
   "references": [
-    "FamilyForce.Runtime"
+    "FamilyForce.Runtime",
+    "Unity.InputSystem"
   ],
   "includePlatforms": [
     "Editor"

@@ -22,8 +22,8 @@ namespace FamilyForce.Unity
             allowTouch = touch && playerIndex == 0;
         }
 
-        public string DeviceLabel => assignedGamepad != null
-            ? assignedGamepad.displayName
+        public string DeviceLabel => ControllerRouter.Device(playerIndex) != null
+            ? ControllerRouter.Device(playerIndex).displayName
             : allowTouch && TouchInputOverlay.IsAvailable
                 ? "TOUCH"
                 : playerIndex == 0 ? "REMOTE / KEYBOARD" : "GAMEPAD 2 / WASD";
@@ -33,22 +33,21 @@ namespace FamilyForce.Unity
             get
             {
                 ClaimAssignedGamepad();
-                return assignedGamepad != null;
+                return ControllerRouter.Device(playerIndex)!=null || !string.IsNullOrEmpty(ControllerRouter.LegacyName(playerIndex));
             }
         }
 
         public void ClaimAssignedGamepad()
         {
-            if (assignedGamepad != null && !assignedGamepad.added)
-                assignedGamepad = null;
-            if (assignedGamepad == null && Gamepad.all.Count > playerIndex)
-                assignedGamepad = Gamepad.all[playerIndex];
+            assignedGamepad = ControllerRouter.Device(playerIndex) as Gamepad;
         }
 
         public Vector2 ReadMove()
         {
             ClaimAssignedGamepad();
             Vector2 move = allowTouch ? TouchInputOverlay.Move : Vector2.zero;
+            Vector2 extra=ControllerRouter.ExtraMove(playerIndex);
+            if(extra.sqrMagnitude>move.sqrMagnitude)move=extra;
             if (assignedGamepad != null)
             {
                 Vector2 gamepadMove = assignedGamepad.leftStick.ReadValue();
@@ -94,6 +93,7 @@ namespace FamilyForce.Unity
         {
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.ConfirmPressedThisFrame)
+                || ControllerRouter.ExtraButton(playerIndex,0)
                 || (assignedGamepad != null && assignedGamepad.buttonSouth.wasPressedThisFrame)
                 || (playerIndex == 0
                     ? Pressed(Keyboard.current?.enterKey)
@@ -108,6 +108,7 @@ namespace FamilyForce.Unity
         {
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.CancelPressedThisFrame)
+                || ControllerRouter.ExtraButton(playerIndex,9)
                 || (assignedGamepad != null && assignedGamepad.startButton.wasPressedThisFrame)
                 || Pressed(Keyboard.current?.escapeKey)
                 || Pressed(Keyboard.current?.backspaceKey)
@@ -119,6 +120,7 @@ namespace FamilyForce.Unity
         {
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.PunchPressedThisFrame)
+                || ControllerRouter.ExtraButton(playerIndex,2)
                 || (assignedGamepad != null && assignedGamepad.buttonWest.wasPressedThisFrame)
                 || Pressed(playerIndex == 0 ? Keyboard.current?.jKey : Keyboard.current?.fKey);
 
@@ -128,6 +130,7 @@ namespace FamilyForce.Unity
         {
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.JumpPressedThisFrame)
+                || ControllerRouter.ExtraButton(playerIndex,0)
                 || (assignedGamepad != null && assignedGamepad.buttonSouth.wasPressedThisFrame)
                 || Pressed(playerIndex == 0 ? Keyboard.current?.kKey : Keyboard.current?.spaceKey);
         }
@@ -136,6 +139,7 @@ namespace FamilyForce.Unity
         {
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.KickPressedThisFrame)
+                || ControllerRouter.ExtraButton(playerIndex,3)
                 || (assignedGamepad != null && assignedGamepad.buttonNorth.wasPressedThisFrame)
                 || Pressed(playerIndex == 0 ? Keyboard.current?.lKey : Keyboard.current?.rKey);
         }
@@ -144,6 +148,7 @@ namespace FamilyForce.Unity
         {
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.HeavyPressedThisFrame)
+                || ControllerRouter.ExtraButton(playerIndex,6)
                 || (assignedGamepad != null && assignedGamepad.leftTrigger.wasPressedThisFrame)
                 || Pressed(playerIndex == 0 ? Keyboard.current?.uKey : Keyboard.current?.qKey);
         }
@@ -152,6 +157,7 @@ namespace FamilyForce.Unity
         {
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.SpecialPressedThisFrame)
+                || ControllerRouter.ExtraButton(playerIndex,5)
                 || (assignedGamepad != null && assignedGamepad.rightShoulder.wasPressedThisFrame)
                 || Pressed(playerIndex == 0 ? Keyboard.current?.iKey : Keyboard.current?.eKey);
         }
@@ -160,6 +166,7 @@ namespace FamilyForce.Unity
         {
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.GrabPressedThisFrame)
+                || ControllerRouter.ExtraButton(playerIndex,7)
                 || (assignedGamepad != null && assignedGamepad.rightTrigger.wasPressedThisFrame)
                 || Pressed(playerIndex == 0 ? Keyboard.current?.gKey : Keyboard.current?.cKey);
         }
@@ -168,6 +175,7 @@ namespace FamilyForce.Unity
         {
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.TeamPressedThisFrame)
+                || ControllerRouter.ExtraButton(playerIndex,4)
                 || (assignedGamepad != null && assignedGamepad.leftShoulder.wasPressedThisFrame)
                 || Pressed(playerIndex == 0 ? Keyboard.current?.tKey : Keyboard.current?.vKey);
         }
@@ -176,6 +184,7 @@ namespace FamilyForce.Unity
         {
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.WeaponPressedThisFrame)
+                || ControllerRouter.ExtraButton(playerIndex,1)
                 || (assignedGamepad != null && assignedGamepad.buttonEast.wasPressedThisFrame)
                 || Pressed(playerIndex == 0 ? Keyboard.current?.oKey : Keyboard.current?.bKey);
         }
@@ -184,6 +193,7 @@ namespace FamilyForce.Unity
         {
             ClaimAssignedGamepad();
             return (allowTouch && TouchInputOverlay.ThrowPressedThisFrame)
+                || ControllerRouter.ExtraButton(playerIndex,11)
                 || (assignedGamepad != null && assignedGamepad.rightStickButton.wasPressedThisFrame)
                 || Pressed(playerIndex == 0 ? Keyboard.current?.pKey : Keyboard.current?.nKey);
         }

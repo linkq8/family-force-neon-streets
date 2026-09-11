@@ -4,7 +4,7 @@ namespace FamilyForce.Unity
 {
     public sealed class PrototypeFlow : MonoBehaviour
     {
-        private enum ScreenState { Menu, CharacterSelect, Playing, Results }
+        private enum ScreenState { Menu, CharacterSelect, Playing, Results, InputTest }
 
         private readonly UnifiedInput p1Input = new UnifiedInput(0, true);
         private readonly UnifiedInput p2Input = new UnifiedInput(1, false);
@@ -43,6 +43,9 @@ namespace FamilyForce.Unity
         {
             switch (state)
             {
+                case ScreenState.InputTest:
+                    if(p1Input.CancelPressed() || TouchInputOverlay.BeganInside(new Rect(610,785,700,72)))ReturnToMenu();
+                    break;
                 case ScreenState.Playing:
                     if (p1Input.CancelPressed())
                         ReturnToMenu();
@@ -86,6 +89,7 @@ namespace FamilyForce.Unity
 
         private void ActivateSelection()
         {
+            if(selected==2){state=ScreenState.InputTest;return;}
             if (selected == 4)
                 Application.Quit();
             else if (selected == 3)
@@ -210,6 +214,14 @@ namespace FamilyForce.Unity
                 return;
             }
             GUI.Box(new Rect(350, 120, 1220, 760), GUIContent.none);
+            if(state==ScreenState.InputTest)
+            {
+                GUI.Label(new Rect(430,155,1060,90),"CONTROLLER INPUT TEST",title);
+                var diagnostic=new GUIStyle(GUI.skin.label){fontSize=25,wordWrap=true};
+                GUI.Label(new Rect(410,270,1100,485),ControllerRouter.Diagnostics(),diagnostic);
+                GUI.Box(new Rect(610,785,700,72),"BACK — TAP / START",item);
+                return;
+            }
             if (state == ScreenState.CharacterSelect)
             {
                 GUI.Label(new Rect(430, 175, 1060, 90), "CHOOSE YOUR HERO", title);
