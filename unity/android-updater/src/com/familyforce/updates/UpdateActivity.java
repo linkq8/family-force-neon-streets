@@ -106,7 +106,11 @@ public final class UpdateActivity extends Activity {
             try {
                 if(!apk.getParentFile().isDirectory()&&!apk.getParentFile().mkdirs())throw new IOException("Cannot create download folder.");
                 if(apk.exists()&&!apk.delete())throw new IOException("Cannot replace old update.");
-                if(getCacheDir().getUsableSpace()<candidate.size+32L*1024*1024)throw new IOException("Not enough free space. Free storage and retry.");
+                // Download, installer staging, extracted code and optimization coexist
+                // during an update. This is a conservative budget, not an OS guarantee.
+                long free=getCacheDir().getUsableSpace();
+                long budget=candidate.size*3+128L*1024*1024;
+                if(free<budget)throw new IOException("Low internal storage: "+(free/1048576)+" MB free. Please free at least "+(budget/1048576)+" MB total for download and installation, then retry. Do not uninstall the game.");
                 HttpURLConnection c=open(candidate.url,true);MessageDigest hash=MessageDigest.getInstance("SHA-256");
                 long count=0;int last=-1;
                 try(InputStream in=c.getInputStream();FileOutputStream out=new FileOutputStream(part)){

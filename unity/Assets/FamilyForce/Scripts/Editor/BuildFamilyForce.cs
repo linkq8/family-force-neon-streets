@@ -12,6 +12,15 @@ namespace FamilyForce.Unity.Editor
     {
         private const string ScenePath = "Assets/FamilyForce/Scenes/Prototype.unity";
 
+        public static void BuildTvInstallRelease()
+        {
+            Controller226Build.ConfigureAxes();
+            Controller226Validation.Run();
+            Essa222Validation.Run(true);
+            BuildAndroid("Builds/Android/FamilyForceUnity-TVInstall-0.5.8.apk",
+                BuildOptions.None,"0.5.8-tv-install",9);
+        }
+
         public static void BuildControllerRelease()
         {
             Controller226Build.ConfigureAxes();
@@ -115,6 +124,7 @@ namespace FamilyForce.Unity.Editor
             PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevelAuto;
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARMv7 | AndroidArchitecture.ARM64;
             PlayerSettings.Android.androidTVCompatibility = true;
+            PlayerSettings.Android.preferredInstallLocation = AndroidPreferredInstallLocation.ForceInternal;
             PlayerSettings.Android.androidIsGame = true;
             PlayerSettings.SetGraphicsAPIs(BuildTarget.Android,
                 new[] { GraphicsDeviceType.OpenGLES3 });
