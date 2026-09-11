@@ -95,6 +95,9 @@ namespace FamilyForce.Unity
             if (!controlEnabled)
                 return;
             Vector2 move = input.ReadMove();
+            if (ActorName == CharacterAtlasCatalog.Essa) move = SmoothWalkInput(move);
+            // Intended speed before action slowdown and the scene's Y perspective.
+            float gaitRate = Mathf.Lerp(1.2f,1.5f,Mathf.InverseLerp(.8f,1f,move.magnitude));
             if (animator.IsPlayingAction)
                 move *= 0.28f;
             if (input.JumpPressed() && jumpTime <= 0f)
@@ -119,8 +122,8 @@ namespace FamilyForce.Unity
                 spriteRenderer.flipX = move.x < 0f;
             bool displaced = (groundPosition-oldGround).sqrMagnitude > .00000001f;
             animator.SetMoving(displaced && move.sqrMagnitude > 0.01f);
-            if (ActorName == CharacterAtlasCatalog.Essa && Time.deltaTime > 0f)
-                animator.SetWalkRate(Vector3.Distance(groundPosition,oldGround)/Time.deltaTime/3.2f);
+            if (ActorName == CharacterAtlasCatalog.Essa && displaced)
+                animator.SetWalkRate(gaitRate);
 
             if (combat == null)
                 return;
@@ -152,6 +155,14 @@ namespace FamilyForce.Unity
         {
             bufferedAction = action;
             bufferedUntil = Time.unscaledTime + 0.14f;
+        }
+
+        public static Vector2 SmoothWalkInput(Vector2 move)
+        {
+            float magnitude=move.magnitude;
+            if(magnitude<=.22f)return Vector2.zero;
+            // Remap displacement AND cadence, rather than speeding feet in place.
+            return move.normalized*Mathf.Lerp(.8f,1f,Mathf.InverseLerp(.22f,1f,magnitude));
         }
 
         private bool TryAction(CombatAction action)

@@ -31,20 +31,27 @@ namespace FamilyForce.Unity
                 var manifest=JsonUtility.FromJson<Manifest>(json.text);
                 foreach(var clip in manifest.clips)
                 {
-                    var pages=new Texture2D[clip.pages.Length];
+                    var active=clip;
+                    string root="PracticalRetro/Essa222/",name="Essa222";
+                    if(clip.action=="walk")
+                    {
+                        var smooth=Resources.Load<TextAsset>("PracticalRetro/Essa225/walk");
+                        if(smooth!=null){active=JsonUtility.FromJson<Manifest>(smooth.text).clips[0];root="PracticalRetro/Essa225/";name="Essa225";}
+                    }
+                    var pages=new Texture2D[active.pages.Length];
                     for(int j=0;j<pages.Length;j++)
                     {
-                        pages[j]=Resources.Load<Texture2D>("PracticalRetro/Essa222/"+clip.pages[j]);
+                        pages[j]=Resources.Load<Texture2D>(root+active.pages[j]);
                         if(pages[j]!=null) pages[j].filterMode=FilterMode.Bilinear;
                     }
-                    var result=new Sprite[clip.frames.Length]; var times=new float[result.Length];
+                    var result=new Sprite[active.frames.Length]; var times=new float[result.Length];
                     for(int j=0;j<result.Length;j++)
                     {
-                        var f=clip.frames[j]; var r=f.rect;
+                        var f=active.frames[j]; var r=f.rect;
                         if(pages[f.page]==null) throw new InvalidOperationException("Missing Essa222 atlas");
                         result[j]=Sprite.Create(pages[f.page],new Rect(r[0],r[1],r[2],r[3]),
                             new Vector2(manifest.pivot[0],manifest.pivot[1]),manifest.pixelsPerUnit,0,SpriteMeshType.FullRect);
-                        result[j].name=$"Essa222_{clip.action}_{j:00}"; times[j]=f.seconds;
+                        result[j].name=$"{name}_{clip.action}_{j:00}"; times[j]=f.seconds;
                     }
                     Sprites.Add(clip.action,result);Durations.Add(clip.action,times);
                 }

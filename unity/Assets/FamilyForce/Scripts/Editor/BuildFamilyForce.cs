@@ -12,6 +12,14 @@ namespace FamilyForce.Unity.Editor
     {
         private const string ScenePath = "Assets/FamilyForce/Scenes/Prototype.unity";
 
+        public static void BuildSmoothRelease()
+        {
+            Essa222Validation.Run(true);
+            Motion225Validation.Run();
+            BuildAndroid("Builds/Android/FamilyForceUnity-Smooth-0.5.6.apk",
+                BuildOptions.None, "0.5.6-smooth", 7);
+        }
+
         public static void BuildUpdaterRelease()
         {
             Essa222Validation.Run();

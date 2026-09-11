@@ -24,6 +24,9 @@ namespace FamilyForce.Unity
         private int savedWalkFrame;
         private float savedWalkAccumulator;
         private string lastLoggedSprite;
+        private int renderedUnityFrame=-1, submitted, changed;
+        private float sampleStarted;
+        private string previousSubmittedSprite="", renderSummary="Waiting for render sample";
 
         public bool IsPlayingAction => actionPlaying;
         public bool IsMoving => moving;
@@ -32,6 +35,8 @@ namespace FamilyForce.Unity
         public string CurrentSpriteName => target != null && target.sprite != null ? target.sprite.name : "";
 
         public void SetWalkRate(float value) => walkRate = Mathf.Clamp(value, 0.1f, 2.5f);
+
+        private void OnEnable(){sampleStarted=0;submitted=changed=0;renderedUnityFrame=-1;previousSubmittedSprite="";}
 
         public void Initialize(Sprite[] idle, Sprite[] walk, float[] idleTiming = null, float[] walkTiming = null)
         {
@@ -162,7 +167,25 @@ namespace FamilyForce.Unity
         private void OnGUI()
         {
             if (showMotionDebug)
-                GUI.Box(new Rect(12,142,280,48),$"{CurrentSpriteName}\nFRAME {frame+1}/{CurrentFrameCount}  |  F8 / 3 fingers: hide");
+                GUI.Box(new Rect(12,142,420,70),$"{CurrentSpriteName}  {frame+1}/{CurrentFrameCount}\n{renderSummary}\nF8 / 3 fingers: hide");
+        }
+
+        // Count camera submissions, not Advance's intermediate poses. Physical
+        // display presentation still requires video QA on the user's device.
+        private void OnWillRenderObject()
+        {
+            if(gameObject.name!="P1_Essa" || Camera.current!=Camera.main || renderedUnityFrame==Time.frameCount)return;
+            renderedUnityFrame=Time.frameCount;
+            float now=Time.unscaledTime;if(sampleStarted==0)sampleStarted=now;
+            submitted++;
+            if(previousSubmittedSprite!=CurrentSpriteName){changed++;previousSubmittedSprite=CurrentSpriteName;}
+            if(now-sampleStarted>=1f)
+            {
+                float seconds=now-sampleStarted;
+                renderSummary=$"Render {submitted/seconds:0} FPS | poses {changed/seconds:0}/s";
+                Debug.Log($"FF_RENDER {renderSummary} sprite={CurrentSpriteName} frame={frame+1}/{CurrentFrameCount} moving={moving}");
+                sampleStarted=now;submitted=changed=0;
+            }
         }
 
         private Sprite[] CurrentFrames() => actionPlaying && actionFrames != null
