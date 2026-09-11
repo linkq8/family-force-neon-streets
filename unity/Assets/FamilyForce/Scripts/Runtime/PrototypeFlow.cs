@@ -8,7 +8,7 @@ namespace FamilyForce.Unity
 
         private readonly UnifiedInput p1Input = new UnifiedInput(0, true);
         private readonly UnifiedInput p2Input = new UnifiedInput(1, false);
-        private readonly string[] options = { "START — 1 PLAYER", "START — 2 PLAYERS", "INPUT TEST", "EXIT" };
+        private readonly string[] options = { "START — 1 PLAYER", "START — 2 PLAYERS", "INPUT TEST", "Check New Updates", "EXIT" };
         private readonly string[] actors = { CharacterAtlasCatalog.Essa, CharacterAtlasCatalog.Adam };
         private readonly int[] actorSelection = { 0, 1 };
         private readonly bool[] confirmed = new bool[2];
@@ -86,8 +86,22 @@ namespace FamilyForce.Unity
 
         private void ActivateSelection()
         {
-            if (selected == 3)
+            if (selected == 4)
                 Application.Quit();
+            else if (selected == 3)
+            {
+#if UNITY_ANDROID && !UNITY_EDITOR
+                using (var unity = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+                using (var activity = unity.GetStatic<AndroidJavaObject>("currentActivity"))
+                using (var intent = new AndroidJavaObject("android.content.Intent"))
+                {
+                    intent.Call<AndroidJavaObject>("setClassName", activity, "com.familyforce.updates.UpdateActivity");
+                    activity.Call("startActivity", intent);
+                }
+#else
+                Debug.Log("Check New Updates is available in the Android APK.");
+#endif
+            }
             else if (selected < 2)
             {
                 twoPlayersRequested = selected == 1;
@@ -178,7 +192,7 @@ namespace FamilyForce.Unity
             state = ScreenState.Menu;
         }
 
-        private static Rect OptionRect(int index) => new Rect(610, 350 + index * 96, 700, 72);
+        private static Rect OptionRect(int index) => new Rect(610, 335 + index * 88, 700, 72);
 
         private void OnGUI()
         {
@@ -227,9 +241,7 @@ namespace FamilyForce.Unity
                 GUI.Box(OptionRect(index), index == selected ? $">  {options[index]}  <" : options[index], item);
                 GUI.color = previous;
             }
-            GUI.Label(new Rect(510, 760, 900, 55), TouchInputOverlay.IsAvailable
-                ? "TAP OR USE CONTROLLER / REMOTE"
-                : "D-PAD TO MOVE  •  SOUTH / ENTER TO SELECT", item);
+            GUI.Label(new Rect(450, 795, 1020, 55), $"v{Application.version}  •  TAP / CONTROLLER", item);
         }
 
         private void DrawCharacterPanel(int playerIndex, Rect rect, GUIStyle style)
