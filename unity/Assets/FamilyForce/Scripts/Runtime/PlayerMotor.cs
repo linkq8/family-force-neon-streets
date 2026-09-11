@@ -95,7 +95,7 @@ namespace FamilyForce.Unity
             if (!controlEnabled)
                 return;
             Vector2 move = input.ReadMove();
-            if (ActorName == CharacterAtlasCatalog.Essa) move = SmoothWalkInput(move);
+            move = SmoothWalkInput(move);
             // Intended speed before action slowdown and the scene's Y perspective.
             float gaitRate = Mathf.Lerp(1.2f,1.5f,Mathf.InverseLerp(.8f,1f,move.magnitude));
             if (animator.IsPlayingAction)
@@ -122,7 +122,7 @@ namespace FamilyForce.Unity
                 spriteRenderer.flipX = move.x < 0f;
             bool displaced = (groundPosition-oldGround).sqrMagnitude > .00000001f;
             animator.SetMoving(displaced && move.sqrMagnitude > 0.01f);
-            if (ActorName == CharacterAtlasCatalog.Essa && displaced)
+            if (displaced)
                 animator.SetWalkRate(gaitRate);
 
             if (combat == null)

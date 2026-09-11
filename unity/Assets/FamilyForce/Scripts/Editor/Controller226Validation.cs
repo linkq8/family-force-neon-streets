@@ -55,6 +55,7 @@ namespace FamilyForce.Unity.Editor
                 finally{if(pad!=null)InputSystem.RemoveDevice(pad);ControllerRouter.Reset();}
             }
             var first=InputSystem.AddDevice<Joystick>();var second=InputSystem.AddDevice<Gamepad>();
+            ControllerRouter.SetTwoPlayerMode(true);
             InputDevice replacement=null;
             try
             {

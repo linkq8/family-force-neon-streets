@@ -8,6 +8,7 @@ updates='--updates' in sys.argv
 smooth='--smooth' in sys.argv
 controllers='--controllers' in sys.argv
 tv_install='--tv-install' in sys.argv
+tv_input='--tv-input' in sys.argv
 filename='FamilyForceUnity-EssaClear-0.5.4.apk' if clear else 'FamilyForceUnity-EssaVideo-0.5.3.apk'
 version='0.5.4-essa-clear-fast' if clear else '0.5.3-essa-video'
 code=5 if clear else 4
@@ -23,6 +24,10 @@ BT=SDK/'SDK/build-tools/36.0.0'
 if tv_install:
     filename='FamilyForceUnity-TVInstall-0.5.8.apk';version='0.5.8-tv-install';code=9
     clear=updates=smooth=controllers=True
+    APK=ROOT/'unity/Builds/Android'/filename
+if tv_input:
+    filename='FamilyForceUnity-TVInput-0.5.9.apk';version='0.5.9-tv-input';code=10
+    clear=updates=smooth=controllers=tv_install=True
     APK=ROOT/'unity/Builds/Android'/filename
 badging=subprocess.check_output([str(BT/'aapt2'),'dump','badging',str(APK)],text=True)
 if tv_install: assert "install-location:'internalOnly'" in badging
@@ -47,5 +52,5 @@ with zipfile.ZipFile(APK) as z:
         if tv_install: assert b'Low internal storage:' in dex
         assert 'android.permission.REQUEST_INSTALL_PACKAGES' in badging
 result=dict(status='PASS',version=version,versionCode=code,sha256=hashlib.sha256(APK.read_bytes()).hexdigest(),sizeBytes=APK.stat().st_size,signatureMatchesPrevious=True,signing='Existing Android debug certificate; test release',abis=['arm64-v8a','armeabi-v7a'],newVideoLoaderAndCombatMethodsPresent=True)
-out=ROOT/'unity/Builds'/('TVInstall228' if tv_install else 'Controller226' if controllers else 'Motion225' if smooth else 'Updater223' if updates else 'EssaClear222' if clear else 'EssaVideo221')/'apk-validation.json';out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(result,indent=2)+'\n')
+out=ROOT/'unity/Builds'/('TVInput229' if tv_input else 'TVInstall228' if tv_install else 'Controller226' if controllers else 'Motion225' if smooth else 'Updater223' if updates else 'EssaClear222' if clear else 'EssaVideo221')/'apk-validation.json';out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(result,indent=2)+'\n')
 print(json.dumps(result,indent=2))

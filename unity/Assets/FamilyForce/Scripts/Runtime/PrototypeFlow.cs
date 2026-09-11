@@ -115,6 +115,7 @@ namespace FamilyForce.Unity
 
         private void BeginCharacterSelect()
         {
+            ControllerRouter.SetTwoPlayerMode(twoPlayersRequested);
             confirmed[0] = false;
             confirmed[1] = false;
             horizontalLatch[0] = horizontalLatch[1] = 0f;
@@ -134,7 +135,7 @@ namespace FamilyForce.Unity
                 if (confirmed[0])
                     confirmed[0] = false;
                 else
-                    state = ScreenState.Menu;
+                    ReturnToMenu();
                 return;
             }
             if (confirmed[0] && (!twoPlayersRequested || confirmed[1]))
@@ -191,6 +192,7 @@ namespace FamilyForce.Unity
 
         private void ReturnToMenu()
         {
+            ControllerRouter.SetTwoPlayerMode(false);
             combat.SetCombatActive(false, false);
             TouchInputOverlay.SetGameplayActive(false);
             state = ScreenState.Menu;
@@ -208,6 +210,7 @@ namespace FamilyForce.Unity
 
             if (state == ScreenState.Playing)
             {
+                GUI.Label(new Rect(730,985,460,55),$"{GameBootstrap.MeasuredFps:0} FPS | {Screen.width}x{Screen.height}",item);
                 GUI.Box(new Rect(38, 32, 340, 68), $"P1  {playerOne.InputLabel}", item);
                 if (combat.TwoPlayers)
                     GUI.Box(new Rect(1542, 32, 340, 68), $"P2  {playerTwo.InputLabel}", item);

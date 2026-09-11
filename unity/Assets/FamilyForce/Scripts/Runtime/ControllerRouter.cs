@@ -11,6 +11,16 @@ namespace FamilyForce.Unity
         private static readonly InputDevice[] slots=new InputDevice[2];
         private static string[] legacyNames=new string[0];
         private static float nextNames;
+        private static bool twoPlayers;
+        public static void SetTwoPlayerMode(bool enabled) => twoPlayers=enabled;
+        private static float StickMagnitude(InputDevice d) => d is Gamepad p ? p.leftStick.ReadValue().magnitude : d is Joystick j ? j.stick.ReadValue().magnitude : 0;
+        private static bool Actuated(InputDevice d)
+        {
+            if(d==null)return false;
+            if(StickMagnitude(d)>.4f)return true;
+            if(d is Gamepad p)return p.dpad.ReadValue().sqrMagnitude>.2f || p.buttonSouth.isPressed || p.buttonWest.isPressed || p.buttonNorth.isPressed || p.buttonEast.isPressed || p.startButton.isPressed;
+            return d is Joystick j && j.trigger.isPressed;
+        }
         // AndroidJoystick inherits a generic HID state layout; explicitly bind
         // the documented Android AGC axes/button offsets instead.
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -27,7 +37,7 @@ namespace FamilyForce.Unity
 #endif
         }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        public static void Reset(){slots[0]=slots[1]=null;nextNames=0;legacyNames=new string[0];}
+        public static void Reset(){slots[0]=slots[1]=null;nextNames=0;legacyNames=new string[0];twoPlayers=false;}
         public static InputDevice Device(int player)
         {
             for(int i=0;i<2;i++)if(slots[i]!=null&&(!slots[i].added||!slots[i].enabled))slots[i]=null;
@@ -37,6 +47,18 @@ namespace FamilyForce.Unity
                 int free=slots[0]==null?0:slots[1]==null?1:-1;
                 if(free>=0){slots[free]=d;Debug.Log($"FF_CONTROLLER P{free+1} {d.displayName} layout={d.layout}");}
             }
+            // Android TV remotes can occupy a Gamepad slot before the real pad.
+            // Single-player follows deliberate activity, not enumeration order.
+            if(!twoPlayers)
+                foreach(var d in InputSystem.devices)
+                {
+                    if(d==slots[0] || !d.enabled || !(d is Gamepad || d is Joystick))continue;
+                    if(Actuated(d) && (!Actuated(slots[0]) || (StickMagnitude(d)>.4f && StickMagnitude(slots[0])<=.4f)))
+                    {
+                        var old=slots[0];if(slots[1]==d)slots[1]=old;slots[0]=d;
+                        Debug.Log($"FF_CONTROLLER ACTIVE P1 {d.displayName}");break;
+                    }
+                }
             return slots[Mathf.Clamp(player,0,1)];
         }
         public static string LegacyName(int player)
@@ -74,6 +96,7 @@ namespace FamilyForce.Unity
         public static string Diagnostics()
         {
             var s=new StringBuilder();
+            s.AppendLine($"Mode: {(twoPlayers?"2 players / fixed slots":"1 player / active controller")} | Render: {Screen.width}x{Screen.height}");
             for(int i=0;i<2;i++)
             {
                 var d=Device(i);var move=d is Gamepad p?p.leftStick.ReadValue():ExtraMove(i);

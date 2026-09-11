@@ -11,6 +11,12 @@ namespace FamilyForce.Unity.Editor
     public static class BuildFamilyForce
     {
         private const string ScenePath = "Assets/FamilyForce/Scenes/Prototype.unity";
+        public static void BuildTvInputRelease()
+        {
+            Controller226Build.ConfigureAxes();Controller226Validation.Run();Controller229Validation.Run();
+            Essa222Validation.Run(true);Motion225Validation.Run();
+            BuildAndroid("Builds/Android/FamilyForceUnity-TVInput-0.5.9.apk",BuildOptions.None,"0.5.9-tv-input",10);
+        }
 
         public static void BuildTvInstallRelease()
         {

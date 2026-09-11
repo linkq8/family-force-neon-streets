@@ -4,6 +4,14 @@ namespace FamilyForce.Unity
 {
     public sealed class GameBootstrap : MonoBehaviour
     {
+        public static float MeasuredFps { get; private set; }
+        private float fpsTime;
+        private int fpsFrames;
+        private void Update()
+        {
+            fpsTime+=Time.unscaledDeltaTime;fpsFrames++;
+            if(fpsTime>=1f){MeasuredFps=fpsFrames/fpsTime;fpsTime=0;fpsFrames=0;}
+        }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void StartGame()
         {
@@ -15,6 +23,12 @@ namespace FamilyForce.Unity
         {
             Application.targetFrameRate = 60;
             QualitySettings.vSyncCount = 0;
+#if UNITY_ANDROID && !UNITY_EDITOR
+            // Bound GPU fill cost on 4K TV devices; keep the source atlases intact.
+            int width=Mathf.Max(Screen.width,Screen.height), height=Mathf.Min(Screen.width,Screen.height);
+            float scale=Mathf.Min(1f,Mathf.Min(1280f/width,720f/height));
+            if(scale<1f)Screen.SetResolution(Mathf.RoundToInt(width*scale),Mathf.RoundToInt(height*scale),true);
+#endif
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             gameObject.AddComponent<StageOneArtPreloader>();
             BuildCamera();
