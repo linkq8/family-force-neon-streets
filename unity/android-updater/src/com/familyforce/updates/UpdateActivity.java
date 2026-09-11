@@ -52,6 +52,7 @@ public final class UpdateActivity extends Activity {
         progress=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);progress.setMax(100);box.addView(progress,new LinearLayout.LayoutParams(-1,dp(8)));
         action=new Button(this);action.setText("Checking…");action.setEnabled(false);action.setMinHeight(dp(48));box.addView(action);
         back=new Button(this);back.setText("Back to game");back.setMinHeight(dp(48));back.setOnClickListener(v->finish());box.addView(back);
+        Button details=new Button(this);details.setText("Installation details");details.setOnClickListener(v->showDiagnostics());box.addView(details);
         getSharedPreferences("ff_install",0).registerOnSharedPreferenceChangeListener(installListener);
         if(!showInstallResult())check();
     }
@@ -114,7 +115,7 @@ public final class UpdateActivity extends Activity {
                 // Download, installer staging, extracted code and optimization coexist
                 // during an update. This is a conservative budget, not an OS guarantee.
                 long free=getCacheDir().getUsableSpace();
-                long budget=candidate.size*3+128L*1024*1024;
+                long budget=candidate.size*2+128L*1024*1024;
                 if(free<budget)throw new IOException("Low internal storage: "+(free/1048576)+" MB free. Please free at least "+(budget/1048576)+" MB total for download and installation, then retry. Do not uninstall the game.");
                 HttpURLConnection c=open(candidate.url,true);MessageDigest hash=MessageDigest.getInstance("SHA-256");
                 long count=0;int last=-1;
@@ -141,8 +142,8 @@ public final class UpdateActivity extends Activity {
         if(next==null||!getPackageName().equals(next.packageName))throw new IOException("This APK is not for this game.");
         long nv=Build.VERSION.SDK_INT>=28?next.getLongVersionCode():next.versionCode;
         long cv=Build.VERSION.SDK_INT>=28?current.getLongVersionCode():current.versionCode;
-        if(nv<=cv||ReleasePolicy.compare(next.versionName,installed)<=0||ReleasePolicy.compare(next.versionName,candidate.tag)!=0)throw new IOException("APK version is not a newer matching update.");
-        if(next.signatures==null||current.signatures==null||!new HashSet<>(Arrays.asList(next.signatures)).equals(new HashSet<>(Arrays.asList(current.signatures))))throw new IOException("APK signature does not match this game.");
+        if(nv<=cv||ReleasePolicy.compare(next.versionName,installed)<=0||ReleasePolicy.compare(next.versionName,candidate.tag)!=0)throw new IOException("Not a newer update: installed "+current.versionName+" ("+cv+"), downloaded "+next.versionName+" ("+nv+"). Keep the installed game and choose a newer release.");
+        if(next.signatures==null||current.signatures==null||!new HashSet<>(Arrays.asList(next.signatures)).equals(new HashSet<>(Arrays.asList(current.signatures))))throw new IOException("Signing conflict. Installed certificate: "+certificate(current)+"; downloaded: "+certificate(next)+". Do not uninstall: share this message so the original signing key can be used.");
     }
     private static String hex(byte[] b){StringBuilder s=new StringBuilder();for(byte v:b)s.append(String.format(Locale.US,"%02x",v&255));return s.toString();}
     private boolean needsPermission(){return Build.VERSION.SDK_INT>=26&&!getPackageManager().canRequestPackageInstalls();}
@@ -175,6 +176,11 @@ public final class UpdateActivity extends Activity {
                     try(InputStream in=new FileInputStream(apk);OutputStream out=session.openWrite("base.apk",0,apk.length())){
                         byte[] data=new byte[65536];int n;while((n=in.read(data))!=-1){if(cancelled)throw new IOException("Cancelled");out.write(data,0,n);}session.fsync(out);
                     }
+                    // Android now owns a complete durable copy. Release our redundant
+                    // download before optimization while preserving all game/save data.
+                    File owned=new File(getCacheDir(),"updates/update.apk");
+                    if(apk.getCanonicalPath().equals(owned.getCanonicalPath()) && !owned.delete())
+                        android.util.Log.w("FFUpdater","Could not release staged download cache");
                     Intent result=new Intent(this,InstallResultReceiver.class);
                     int flags=PendingIntent.FLAG_UPDATE_CURRENT|(Build.VERSION.SDK_INT>=31?PendingIntent.FLAG_MUTABLE:0);
                     PendingIntent callback=PendingIntent.getBroadcast(this,id,result,flags);
@@ -195,6 +201,25 @@ public final class UpdateActivity extends Activity {
         getSharedPreferences("ff_install",0).edit().remove("result").apply();
         status.setText(result);progress.setIndeterminate(false);action.setEnabled(true);action.setText("Check again");action.setOnClickListener(v->check());
         return true;
+    }
+    @SuppressWarnings("deprecation")
+    private String certificate(PackageInfo info) throws Exception {
+        if(info.signatures==null||info.signatures.length==0)return "unavailable";
+        return hex(MessageDigest.getInstance("SHA-256").digest(info.signatures[0].toByteArray()));
+    }
+    private void showDiagnostics(){
+        try{
+            PackageInfo current=getPackageManager().getPackageInfo(getPackageName(),PackageManager.GET_SIGNATURES);
+            String text="Package: "+getPackageName()+"\nInstalled: "+current.versionName+" / code "+current.versionCode
+                +"\nAndroid: "+Build.VERSION.RELEASE+" / API "+Build.VERSION.SDK_INT
+                +"\nDevice: "+Build.MANUFACTURER+" "+Build.MODEL
+                +"\nFree internal storage: "+getCacheDir().getUsableSpace()/1048576+" MB"
+                +"\nCertificate SHA-256: "+certificate(current)
+                +"\nLast installation: "+getSharedPreferences("ff_install",0).getString("last_result","No installer result recorded");
+            new AlertDialog.Builder(this).setTitle("Installation details — keep your game data").setMessage(text)
+                .setPositiveButton("Copy",(dialog,which)->((android.content.ClipboardManager)getSystemService(CLIPBOARD_SERVICE)).setPrimaryClip(ClipData.newPlainText("Family Force installation",text)))
+                .setNegativeButton("Close",null).show();
+        }catch(Exception e){error(e);}
     }
     private void error(Exception e){
         if(cancelled)return;

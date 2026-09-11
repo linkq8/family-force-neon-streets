@@ -203,7 +203,7 @@ namespace FamilyForce.Unity
                     CombatAction.Throw => kickFrames,
                     _ => punchFrames
                 };
-                string clip=action==CombatAction.Punch?"punch":action==CombatAction.Kick||action==CombatAction.Throw?"kick":"other";
+                string clip=ActionTiming.Clip(action);
                 float[] timing = ActionTiming.Durations(ActorName,clip,frames.Length);
                 animator.PlayOnce(frames, timing);
                 return true;

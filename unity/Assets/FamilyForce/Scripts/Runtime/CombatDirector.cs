@@ -145,7 +145,7 @@ namespace FamilyForce.Unity
                 && (action == CombatAction.Punch || action == CombatAction.Team))
                 action = CombatAction.Team;
             float cooldown = action == CombatAction.Heavy || action == CombatAction.Special
-                ? 0.52f : 0.28f;
+                ? 0.40f : 0.20f;
             nextPlayerAction[index] = Time.unscaledTime + cooldown;
 
             if (action == CombatAction.Grab)
@@ -204,7 +204,7 @@ namespace FamilyForce.Unity
             yield return new WaitForSeconds(delay);
             if(!CombatActive || actor==null || actor.ActionRevision!=revision || !actor.gameObject.activeInHierarchy)yield break;
             if(enemy.IsAlive && enemy.Hurtbox.OverlapsAttack(actor.GroundPosition,actor.FacingRight,range))
-            {enemy.TakeHit(damage,knockback>0?knockback:damage*.012f,actor.transform);Score+=points>0?points:damage*10;StartCoroutine(HitStop(.035f));}
+            {enemy.TakeHit(damage,knockback>0?knockback:damage*.012f,actor.transform);Score+=points>0?points:damage*10;StartCoroutine(HitStop(.012f));}
         }
 
         private IEnumerator VideoStrike(PlayerMotor actor, CombatAction action, int damage, float range, int revision)
@@ -222,7 +222,7 @@ namespace FamilyForce.Unity
                 if(enemy.IsAlive && enemy.Hurtbox.OverlapsAttack(actor.transform.position,actor.FacingRight,range))
                 {
                     enemy.TakeHit(hit,hit*.012f,actor.transform);Score+=hit*10;
-                    StartCoroutine(HitStop(.045f));
+                    StartCoroutine(HitStop(.012f));
                 }
                 if(i+1<count) yield return new WaitForSeconds(ActionTiming.Start(actor.ActorName,clip,frames,8)-firstContact);
             }
@@ -230,8 +230,9 @@ namespace FamilyForce.Unity
 
         private bool SwingWeapon(PlayerMotor actor, int index)
         {
-            nextPlayerAction[index] = Time.unscaledTime + 0.48f;
-            StartCoroutine(DelayedImpact(actor,26,2.05f,.16f,actor.ActionRevision+1,320,.55f));
+            nextPlayerAction[index] = Time.unscaledTime + 0.40f;
+            int frames=CharacterAtlasCatalog.LoadClip(actor.ActorName,"heavy_punch").Length;
+            StartCoroutine(DelayedImpact(actor,26,2.05f,ActionTiming.Start(actor.ActorName,"heavy_punch",frames,Mathf.Max(1,frames/3)),actor.ActionRevision+1,320,.55f));
             return true;
         }
 

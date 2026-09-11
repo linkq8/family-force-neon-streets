@@ -84,4 +84,4 @@ if __name__ == "__main__":
     if '--historical' in sys.argv:
         main()
     else:
-        subprocess.run([sys.executable,str(Path(__file__).with_name('test_essa_video_apk.py')),'--repairs'],check=True)
+        subprocess.run([sys.executable,str(Path(__file__).with_name('test_essa_video_apk.py')),'--arcade'],check=True)

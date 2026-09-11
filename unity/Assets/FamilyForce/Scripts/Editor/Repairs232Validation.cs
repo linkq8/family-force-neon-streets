@@ -10,7 +10,7 @@ namespace FamilyForce.Unity.Editor
         public static void Run()
         {
             var punch=ActionTiming.Durations("Essa","punch",14);float total=0;foreach(float t in punch)total+=t;
-            Check(Mathf.Abs(total-.4166667f)<.0001f,"punch duration");
+            Check(Mathf.Abs(total-.28f)<.0001f,"current arcade punch duration (retimed in234)");
             Check(ActionTiming.Start("Essa","punch",14,5)<.15f,"contact synchronized");
             Check(ActionTiming.BufferWindow(.4f)>.4f,"buffer survives recovery");
             var fall=ActionTiming.Durations("Essa","knockdown",28);total=0;foreach(float t in fall)total+=t;

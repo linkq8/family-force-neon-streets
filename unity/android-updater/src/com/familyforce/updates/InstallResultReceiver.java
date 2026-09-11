@@ -19,5 +19,5 @@ public final class InstallResultReceiver extends BroadcastReceiver {
             : "Installation failed.";
         save(context,reason+"\nStatus: "+code+(detail==null?"":"\n"+detail));
     }
-    private static void save(Context context,String text){context.getSharedPreferences("ff_install",0).edit().putString("result",text).apply();}
+    private static void save(Context context,String text){context.getSharedPreferences("ff_install",0).edit().putString("result",text).putString("last_result",text).apply();}
 }
