@@ -35,8 +35,9 @@ namespace FamilyForce.Unity
             TouchInputOverlay.SetGameplayActive(false);
             state = ScreenState.Menu;
             highScore = PlayerPrefs.GetInt("FF_STAGE1_HIGH_SCORE", 0);
-            portraits[0] = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa, "idle")[0];
-            portraits[1] = CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Adam, "idle")[0];
+            var first=CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Essa,"idle");
+            var second=CharacterAtlasCatalog.LoadClip(CharacterAtlasCatalog.Adam,"idle");
+            portraits[0]=first.Length>0?first[0]:null;portraits[1]=second.Length>0?second[0]:null;
         }
 
         private void Update()
@@ -116,6 +117,7 @@ namespace FamilyForce.Unity
         private void BeginCharacterSelect()
         {
             ControllerRouter.SetTwoPlayerMode(twoPlayersRequested);
+            if(twoPlayersRequested)ControllerRouter.BeginJoin();
             confirmed[0] = false;
             confirmed[1] = false;
             horizontalLatch[0] = horizontalLatch[1] = 0f;
@@ -166,12 +168,13 @@ namespace FamilyForce.Unity
                 actorSelection[index] = (actorSelection[index] + (x > 0f ? 1 : -1) + actors.Length) % actors.Length;
                 horizontalLatch[index] = Mathf.Sign(x);
             }
-            if (input.ConfirmPressed())
+            if (input.ConfirmPressed() && !(twoPlayersRequested && ControllerRouter.JoinedThisFrame(index)))
                 confirmed[index] = true;
         }
 
         private void StartStage()
         {
+            ControllerRouter.EndJoin();
             combat.SelectCharacters(actors[actorSelection[0]], actors[actorSelection[1]]);
             state = ScreenState.Playing;
             combat.SetCombatActive(true, twoPlayersRequested);
@@ -234,7 +237,7 @@ namespace FamilyForce.Unity
                 else
                     GUI.Box(new Rect(990, 315, 500, 330), "P2  OPTIONAL\n\nAI COMPANION ENABLED", item);
                 GUI.Label(new Rect(480, 700, 960, 70), twoPlayersRequested
-                    ? "BOTH PLAYERS MUST CONFIRM"
+                    ? "EACH PAD: SOUTH / A TO JOIN, THEN CHOOSE AND CONFIRM"
                     : "LEFT / RIGHT TO CHOOSE  •  CONFIRM TO START", item);
                 return;
             }

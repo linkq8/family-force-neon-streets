@@ -11,6 +11,7 @@ namespace FamilyForce.Unity
         private Vector2 velocity;
         private bool thrown;
         private bool hitDuringThrow;
+        private float groundY;
 
         public bool IsHeld => owner != null;
         public PlayerMotor Owner => owner;
@@ -41,6 +42,7 @@ namespace FamilyForce.Unity
                 || Vector2.Distance(transform.position, player.transform.position) > 1.65f)
                 return false;
             owner = player;
+            groundY=player.GroundPosition.y;
             TouchInputOverlay.SetWeaponHeld(player.PlayerIndex == 0);
             return true;
         }
@@ -53,6 +55,7 @@ namespace FamilyForce.Unity
             thrown = true;
             hitDuringThrow = false;
             velocity = new Vector2(player.FacingRight ? 8.2f : -8.2f, 2.6f);
+            groundY=player.GroundPosition.y;
             TouchInputOverlay.SetWeaponHeld(false);
         }
 
@@ -78,10 +81,11 @@ namespace FamilyForce.Unity
                 return;
             velocity += Vector2.down * (7.5f * Time.deltaTime);
             transform.position += (Vector3)(velocity * Time.deltaTime);
+            if(Mathf.Abs(transform.position.x)>8f){transform.position=new Vector3(Mathf.Clamp(transform.position.x,-8f,8f),transform.position.y,transform.position.z);velocity.x=0;}
             transform.Rotate(0f, 0f, velocity.x * -55f * Time.deltaTime);
-            if (transform.position.y <= -2.25f)
+            if (transform.position.y <= groundY)
             {
-                transform.position = new Vector3(transform.position.x, -2.25f, transform.position.z);
+                transform.position = new Vector3(transform.position.x, groundY, transform.position.z);
                 thrown = false;
                 velocity = Vector2.zero;
                 hitDuringThrow = false;

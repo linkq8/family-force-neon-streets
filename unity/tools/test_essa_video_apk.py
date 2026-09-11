@@ -9,6 +9,7 @@ smooth='--smooth' in sys.argv
 controllers='--controllers' in sys.argv
 tv_install='--tv-install' in sys.argv
 tv_input='--tv-input' in sys.argv
+repairs='--repairs' in sys.argv
 filename='FamilyForceUnity-EssaClear-0.5.4.apk' if clear else 'FamilyForceUnity-EssaVideo-0.5.3.apk'
 version='0.5.4-essa-clear-fast' if clear else '0.5.3-essa-video'
 code=5 if clear else 4
@@ -27,6 +28,10 @@ if tv_install:
     APK=ROOT/'unity/Builds/Android'/filename
 if tv_input:
     filename='FamilyForceUnity-TVInput-0.5.9.apk';version='0.5.9-tv-input';code=10
+    clear=updates=smooth=controllers=tv_install=True
+    APK=ROOT/'unity/Builds/Android'/filename
+if repairs:
+    filename='FamilyForceUnity-Repairs-0.5.10.apk';version='0.5.10-repairs';code=11
     clear=updates=smooth=controllers=tv_install=True
     APK=ROOT/'unity/Builds/Android'/filename
 badging=subprocess.check_output([str(BT/'aapt2'),'dump','badging',str(APK)],text=True)
@@ -50,7 +55,8 @@ with zipfile.ZipFile(APK) as z:
             assert value in dex,value
         assert b'PolicyTests' not in dex
         if tv_install: assert b'Low internal storage:' in dex
+        if repairs: assert b'com/familyforce/updates/InstallResultReceiver' in dex
         assert 'android.permission.REQUEST_INSTALL_PACKAGES' in badging
 result=dict(status='PASS',version=version,versionCode=code,sha256=hashlib.sha256(APK.read_bytes()).hexdigest(),sizeBytes=APK.stat().st_size,signatureMatchesPrevious=True,signing='Existing Android debug certificate; test release',abis=['arm64-v8a','armeabi-v7a'],newVideoLoaderAndCombatMethodsPresent=True)
-out=ROOT/'unity/Builds'/('TVInput229' if tv_input else 'TVInstall228' if tv_install else 'Controller226' if controllers else 'Motion225' if smooth else 'Updater223' if updates else 'EssaClear222' if clear else 'EssaVideo221')/'apk-validation.json';out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(result,indent=2)+'\n')
+out=ROOT/'unity/Builds'/('Repairs232' if repairs else 'TVInput229' if tv_input else 'TVInstall228' if tv_install else 'Controller226' if controllers else 'Motion225' if smooth else 'Updater223' if updates else 'EssaClear222' if clear else 'EssaVideo221')/'apk-validation.json';out.parent.mkdir(parents=True,exist_ok=True);out.write_text(json.dumps(result,indent=2)+'\n')
 print(json.dumps(result,indent=2))

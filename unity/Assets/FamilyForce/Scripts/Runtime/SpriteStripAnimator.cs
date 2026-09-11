@@ -30,6 +30,16 @@ namespace FamilyForce.Unity
 
         public bool IsPlayingAction => actionPlaying;
         public bool IsMoving => moving;
+        public float RemainingActionTime
+        {
+            get
+            {
+                if(!actionPlaying || holdActionEnd || actionFrames==null)return 0;
+                float result=-accumulator;
+                for(int i=frame;i<actionFrames.Length;i++)result+=Mathf.Max(.016f,actionDurations!=null?actionDurations[i]:1f/AnimationFps);
+                return Mathf.Max(0,result);
+            }
+        }
         public int CurrentFrame => frame;
         public int CurrentFrameCount => CurrentFrames()?.Length ?? 0;
         public string CurrentSpriteName => target != null && target.sprite != null ? target.sprite.name : "";
@@ -132,8 +142,8 @@ namespace FamilyForce.Unity
                 }
                 else
                     frame = (frame + 1) % frames.Length;
-                ApplyFrame();
             }
+            ApplyFrame();
         }
 
         public void StopAction()

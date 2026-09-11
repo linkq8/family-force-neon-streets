@@ -12,13 +12,35 @@ namespace FamilyForce.Unity
         private static string[] legacyNames=new string[0];
         private static float nextNames;
         private static bool twoPlayers;
-        public static void SetTwoPlayerMode(bool enabled) => twoPlayers=enabled;
+        private static bool joining;
+        private static bool explicitSlots;
+        private static readonly int[] joinedFrame={-1,-1};
+        public static bool JoinedThisFrame(int player)=>joinedFrame[Mathf.Clamp(player,0,1)]==Time.frameCount;
+        public static void SetTwoPlayerMode(bool enabled){twoPlayers=enabled;joining=false;explicitSlots=false;}
+        public static void BeginJoin(){twoPlayers=true;joining=explicitSlots=true;slots[0]=slots[1]=null;}
+        public static void EndJoin(){joining=false;}
+        public static bool JoinDevice(InputDevice device)
+        {
+            if(!twoPlayers || !explicitSlots || device==null || !(device is Gamepad || device is Joystick) || device==slots[0] || device==slots[1])return false;
+            int free=slots[0]==null?0:slots[1]==null?1:-1;if(free<0)return false;slots[free]=device;joinedFrame[free]=Time.frameCount;return true;
+        }
+        public static void PollJoin()
+        {
+            if(!twoPlayers || !explicitSlots)return;
+            foreach(var d in InputSystem.devices)
+            {
+                if(!d.enabled || d==slots[0] || d==slots[1])continue;
+                bool pressed=d is Gamepad p?p.buttonSouth.wasPressedThisFrame:d is Joystick j&&j.trigger.wasPressedThisFrame;
+                if(!pressed)continue;
+                JoinDevice(d);
+            }
+        }
         private static float StickMagnitude(InputDevice d) => d is Gamepad p ? p.leftStick.ReadValue().magnitude : d is Joystick j ? j.stick.ReadValue().magnitude : 0;
         private static bool Actuated(InputDevice d)
         {
             if(d==null)return false;
-            if(StickMagnitude(d)>.4f)return true;
-            if(d is Gamepad p)return p.dpad.ReadValue().sqrMagnitude>.2f || p.buttonSouth.isPressed || p.buttonWest.isPressed || p.buttonNorth.isPressed || p.buttonEast.isPressed || p.startButton.isPressed;
+            if(StickMagnitude(d)>.22f)return true;
+            if(d is Gamepad p)return p.dpad.ReadValue().sqrMagnitude>.2f || p.buttonSouth.isPressed || p.buttonWest.isPressed || p.buttonNorth.isPressed || p.buttonEast.isPressed || p.startButton.isPressed || p.leftShoulder.isPressed || p.rightShoulder.isPressed || p.leftTrigger.isPressed || p.rightTrigger.isPressed;
             return d is Joystick j && j.trigger.isPressed;
         }
         // AndroidJoystick inherits a generic HID state layout; explicitly bind
@@ -37,10 +59,11 @@ namespace FamilyForce.Unity
 #endif
         }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
-        public static void Reset(){slots[0]=slots[1]=null;nextNames=0;legacyNames=new string[0];twoPlayers=false;}
+        public static void Reset(){slots[0]=slots[1]=null;nextNames=0;legacyNames=new string[0];twoPlayers=joining=explicitSlots=false;}
         public static InputDevice Device(int player)
         {
             for(int i=0;i<2;i++)if(slots[i]!=null&&(!slots[i].added||!slots[i].enabled))slots[i]=null;
+            if(twoPlayers&&explicitSlots){PollJoin();return slots[Mathf.Clamp(player,0,1)];}
             foreach(var d in InputSystem.devices)
             {
                 if(!(d is Gamepad || d is Joystick)||!d.enabled||d==slots[0]||d==slots[1])continue;
@@ -53,7 +76,7 @@ namespace FamilyForce.Unity
                 foreach(var d in InputSystem.devices)
                 {
                     if(d==slots[0] || !d.enabled || !(d is Gamepad || d is Joystick))continue;
-                    if(Actuated(d) && (!Actuated(slots[0]) || (StickMagnitude(d)>.4f && StickMagnitude(slots[0])<=.4f)))
+                    if(Actuated(d) && (!Actuated(slots[0]) || (StickMagnitude(d)>.22f && StickMagnitude(slots[0])<=.22f)))
                     {
                         var old=slots[0];if(slots[1]==d)slots[1]=old;slots[0]=d;
                         Debug.Log($"FF_CONTROLLER ACTIVE P1 {d.displayName}");break;

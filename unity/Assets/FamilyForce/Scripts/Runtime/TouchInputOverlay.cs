@@ -185,7 +185,7 @@ namespace FamilyForce.Unity
             DrawAction(WeaponCenter, weaponHeld ? "SWING" : "WEAPON",
                 new Color(0.25f, 0.72f, 0.92f, 0.82f), circle);
             GUI.color = new Color(0.12f, 0.16f, 0.28f, 0.82f);
-            GUI.Box(CenteredRect(MenuCenter, 150f), "II", circle);
+            GUI.Box(CenteredRect(MenuCenter, 150f), "MENU", circle);
             GUI.color = previous;
             GUI.Label(new Rect(82f, 1005f, 340f, 48f), "DRAG TO MOVE", hint);
         }

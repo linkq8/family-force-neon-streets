@@ -193,21 +193,26 @@ namespace FamilyForce.Unity
                 StartCoroutine(VideoStrike(actor, action, damage, range, actor.ActionRevision+1));
                 return true;
             }
-            if (enemy.IsAlive && enemy.Hurtbox.OverlapsAttack(actor.transform.position,
-                actor.FacingRight, range))
-            {
-                enemy.TakeHit(damage, damage * 0.012f, actor.transform);
-                Score += damage * 10;
-                StartCoroutine(HitStop(action == CombatAction.Heavy ? 0.075f : 0.045f));
-            }
+            string clipName=action==CombatAction.Punch?"punch":action==CombatAction.Kick?"kick":action==CombatAction.Heavy?"heavy_punch":"special";
+            int frames=CharacterAtlasCatalog.LoadClip(actor.ActorName,clipName).Length;
+            float contact=ActionTiming.Start(actor.ActorName,clipName,frames,Mathf.Max(1,frames/3));
+            StartCoroutine(DelayedImpact(actor,damage,range,contact,actor.ActionRevision+1));
             return true;
+        }
+        private IEnumerator DelayedImpact(PlayerMotor actor,int damage,float range,float delay,int revision,int points=0,float knockback=0)
+        {
+            yield return new WaitForSeconds(delay);
+            if(!CombatActive || actor==null || actor.ActionRevision!=revision || !actor.gameObject.activeInHierarchy)yield break;
+            if(enemy.IsAlive && enemy.Hurtbox.OverlapsAttack(actor.GroundPosition,actor.FacingRight,range))
+            {enemy.TakeHit(damage,knockback>0?knockback:damage*.012f,actor.transform);Score+=points>0?points:damage*10;StartCoroutine(HitStop(.035f));}
         }
 
         private IEnumerator VideoStrike(PlayerMotor actor, CombatAction action, int damage, float range, int revision)
         {
             // Contact frames in the selected source footage: punch5/8, kick6.
             string clip=action==CombatAction.Punch ? "punch" : "kick";
-            float firstContact=VideoEssaClips.FrameStart(actor.ActorName,clip,action==CombatAction.Punch ? 5 : 6);
+            int frames=CharacterAtlasCatalog.LoadClip(actor.ActorName,clip).Length;
+            float firstContact=ActionTiming.Start(actor.ActorName,clip,frames,action==CombatAction.Punch ? 5 : 6);
             yield return new WaitForSeconds(firstContact);
             int count=action==CombatAction.Punch ? 2 : 1;
             for(int i=0;i<count;i++)
@@ -219,20 +224,14 @@ namespace FamilyForce.Unity
                     enemy.TakeHit(hit,hit*.012f,actor.transform);Score+=hit*10;
                     StartCoroutine(HitStop(.045f));
                 }
-                if(i+1<count) yield return new WaitForSeconds(VideoEssaClips.FrameStart(actor.ActorName,clip,8)-firstContact);
+                if(i+1<count) yield return new WaitForSeconds(ActionTiming.Start(actor.ActorName,clip,frames,8)-firstContact);
             }
         }
 
         private bool SwingWeapon(PlayerMotor actor, int index)
         {
             nextPlayerAction[index] = Time.unscaledTime + 0.48f;
-            if (enemy.IsAlive && enemy.Hurtbox.OverlapsAttack(actor.transform.position,
-                actor.FacingRight, 2.05f))
-            {
-                enemy.TakeHit(26, 0.55f, actor.transform);
-                Score += 320;
-                StartCoroutine(HitStop(0.075f));
-            }
+            StartCoroutine(DelayedImpact(actor,26,2.05f,.16f,actor.ActionRevision+1,320,.55f));
             return true;
         }
 
@@ -319,6 +318,8 @@ namespace FamilyForce.Unity
             }
             grabber?.PlayTeamAction();
             partner.PlayTeamAction();
+            yield return new WaitForSeconds(.2f);
+            if(!CombatActive || !enemy.IsGrabbed){if(usingAiCompanion)playerTwo.gameObject.SetActive(false);yield break;}
             enemy.ApplyTeamCombo();
             Score += 750;
             ShowBanner("FAMILY TEAM COMBO! +750", 1.5f);

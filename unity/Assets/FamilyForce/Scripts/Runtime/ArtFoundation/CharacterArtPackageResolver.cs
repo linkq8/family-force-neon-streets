@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.U2D;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace FamilyForce.Unity
 {
@@ -80,9 +82,17 @@ namespace FamilyForce.Unity
             }
 
             if (manifest?.actor == null || manifest.actor.id != actor
+                || manifest.actions==null
                 || manifest.contractVersion != "ff-art-1.0.0" || manifest.status != "ready"
                 || approval == null || approval.actor != actor || approval.status != "approved")
                 return Fail(actor, "candidate is not hash-approved and ready", out package);
+
+            using(var sha=SHA256.Create())
+            {
+                string actual=BitConverter.ToString(sha.ComputeHash(manifestAsset.bytes)).Replace("-","").ToLowerInvariant();
+                if(!string.Equals(actual,approval.manifestSha256,StringComparison.OrdinalIgnoreCase))
+                    return Fail(actor,"manifest approval hash mismatch",out package);
+            }
 
             string[] required = actor == CharacterAtlasCatalog.Essa || actor == CharacterAtlasCatalog.Adam
                 ? HeroActions : EnemyActions;

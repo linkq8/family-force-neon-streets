@@ -2,7 +2,7 @@
 import subprocess,time,json,sys
 from pathlib import Path
 ADB='/Applications/Unity/Hub/Editor/6000.3.22f1/PlaybackEngines/AndroidPlayer/SDK/platform-tools/adb'
-OUT=Path(__file__).resolve().parents[1]/('Builds/TVInput229' if '--remote-first' in sys.argv else 'Builds/Controller226')
+OUT=Path(__file__).resolve().parents[1]/('Builds/Repairs232' if '--repairs' in sys.argv else 'Builds/TVInput229' if '--remote-first' in sys.argv else 'Builds/Controller226')
 OUT.mkdir(parents=True,exist_ok=True)
 def adb(*args):return subprocess.check_output([ADB,*args],timeout=40)
 def shot(name):(OUT/name).write_bytes(adb('exec-out','screencap','-p'))

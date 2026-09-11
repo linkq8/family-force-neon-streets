@@ -13,22 +13,28 @@ namespace FamilyForce.Unity
         private static readonly Dictionary<string, Sprite[]> Sprites = new();
         private static readonly Dictionary<string, float[]> Durations = new();
         private static bool loaded;
+        private static bool failed;
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void Reset()
         {
             foreach(var frames in Sprites.Values) foreach(var s in frames) if(s!=null) UnityEngine.Object.Destroy(s);
-            Sprites.Clear(); Durations.Clear(); loaded=false;
+            Sprites.Clear(); Durations.Clear(); loaded=failed=false;
         }
         public static bool TryLoad(string actor,string action,out Sprite[] frames)
         {
             frames=null;
             if(actor!=CharacterAtlasCatalog.Essa) return false;
+            if(failed)return false;
             if(!loaded)
             {
-                loaded=true;
+                var pending=new Dictionary<string,Sprite[]>();var pendingTimes=new Dictionary<string,float[]>();
+                var created=new List<Sprite>();
+                try
+                {
                 var json=Resources.Load<TextAsset>("PracticalRetro/Essa222/clips");
                 if(json==null) return false;
                 var manifest=JsonUtility.FromJson<Manifest>(json.text);
+                if(manifest?.clips==null || manifest.pivot==null || manifest.pivot.Length!=2 || manifest.pixelsPerUnit<=0)throw new InvalidOperationException("Invalid video manifest");
                 foreach(var clip in manifest.clips)
                 {
                     var active=clip;
@@ -48,13 +54,20 @@ namespace FamilyForce.Unity
                     for(int j=0;j<result.Length;j++)
                     {
                         var f=active.frames[j]; var r=f.rect;
+                        if(r==null || r.Length!=4 || f.page<0 || f.page>=pages.Length || f.seconds<=0 || float.IsNaN(f.seconds))throw new InvalidOperationException("Invalid video frame");
                         if(pages[f.page]==null) throw new InvalidOperationException("Missing Essa222 atlas");
                         result[j]=Sprite.Create(pages[f.page],new Rect(r[0],r[1],r[2],r[3]),
                             new Vector2(manifest.pivot[0],manifest.pivot[1]),manifest.pixelsPerUnit,0,SpriteMeshType.FullRect);
                         result[j].name=$"{name}_{clip.action}_{j:00}"; times[j]=f.seconds;
+                        created.Add(result[j]);
                     }
-                    Sprites.Add(clip.action,result);Durations.Add(clip.action,times);
+                    pending.Add(clip.action,result);pendingTimes.Add(clip.action,times);
                 }
+                foreach(var item in pending)Sprites.Add(item.Key,item.Value);
+                foreach(var item in pendingTimes)Durations.Add(item.Key,item.Value);
+                loaded=true;
+                }
+                catch(Exception e){foreach(var sprite in created)UnityEngine.Object.Destroy(sprite);Sprites.Clear();Durations.Clear();failed=true;Debug.LogError("FF_VIDEO: safe fallback: "+e.Message);return false;}
             }
             return Sprites.TryGetValue(action,out frames);
         }

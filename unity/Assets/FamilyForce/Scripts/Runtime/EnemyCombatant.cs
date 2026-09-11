@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 namespace FamilyForce.Unity
 {
@@ -17,6 +18,8 @@ namespace FamilyForce.Unity
         private float moveSpeed;
         private int attackDamage;
         private bool defeated;
+        private int attackRevision;
+        private bool attacking;
 
         public string DisplayName { get; private set; } = "GRUNT";
         public int MaxHealth { get; private set; } = 100;
@@ -43,6 +46,7 @@ namespace FamilyForce.Unity
             int damage, Vector3 position, float scale)
         {
             DisplayName = displayName;
+            StopAllCoroutines();attackRevision++;attacking=false;
             MaxHealth = maxHealth;
             moveSpeed = speed;
             attackDamage = damage;
@@ -70,6 +74,7 @@ namespace FamilyForce.Unity
                 || Vector2.Distance(transform.position, player.transform.position) > 1.55f)
                 return false;
             Grabber = player;
+            attackRevision++;attacking=false;
             grabbedUntil = Time.time + 2.8f;
             hurtLock = grabbedUntil;
             animator.PlayOnce(hurtFrames);
@@ -82,13 +87,14 @@ namespace FamilyForce.Unity
             if (!IsAlive)
                 return;
             Health = Mathf.Max(0, Health - damage);
+            attackRevision++;attacking=false;
             grabbedUntil = 0f;
             Grabber = null;
             TouchInputOverlay.SetTeamReady(false);
             if (Health == 0)
             {
                 defeated = true;
-                animator.PlayOnce(knockdownFrames);
+                animator.SetMoving(false);animator.PlayOnce(knockdownFrames,null,true);
                 director.EnemyDefeated();
                 return;
             }
@@ -110,6 +116,7 @@ namespace FamilyForce.Unity
 
         private void Update()
         {
+            spriteRenderer.sortingOrder=100-Mathf.RoundToInt(transform.position.y*10);
             if (director == null || !director.CombatActive || defeated)
                 return;
             PlayerMotor target = director.ClosestActivePlayer(transform.position);
@@ -135,9 +142,9 @@ namespace FamilyForce.Unity
                 Grabber = null;
                 TouchInputOverlay.SetTeamReady(false);
             }
-            if (Time.time < hurtLock)
+            if (Time.time < hurtLock || attacking)
                 return;
-            Vector2 delta = target.transform.position - transform.position;
+            Vector2 delta = target.GroundPosition - transform.position;
             spriteRenderer.flipX = delta.x < 0f;
             if (Mathf.Abs(delta.x) > 1.15f || Mathf.Abs(delta.y) > 0.55f)
             {
@@ -152,7 +159,18 @@ namespace FamilyForce.Unity
                 return;
             nextAttackTime = Time.time + 1.35f;
             animator.PlayOnce(attackFrames);
-            director.DamagePlayer(target, attackDamage);
+            attacking=true;StartCoroutine(AttackContact(target,++attackRevision));
+        }
+        private IEnumerator AttackContact(PlayerMotor target,int revision)
+        {
+            float total=attackFrames.Length/12f;
+            yield return new WaitForSeconds(total*.4f);
+            if(revision!=attackRevision || defeated)yield break;
+            Vector2 delta=target.GroundPosition-transform.position;
+            if(director.CombatActive && target.gameObject.activeInHierarchy && !target.IsAirborne && Mathf.Abs(delta.x)<=1.15f && Mathf.Abs(delta.y)<=.55f)
+                director.DamagePlayer(target,attackDamage);
+            yield return new WaitForSeconds(total*.6f);
+            if(revision==attackRevision)attacking=false;
         }
     }
 }

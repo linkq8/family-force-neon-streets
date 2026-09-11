@@ -21,6 +21,8 @@ namespace FamilyForce.Unity
         private CombatAction? bufferedAction;
         private float bufferedUntil;
         private bool controlEnabled;
+        private bool jumping;
+        private Vector3 bodyScale;
 
         public int PlayerIndex { get; private set; }
         public string ActorName { get; private set; } = CharacterAtlasCatalog.Essa;
@@ -61,22 +63,27 @@ namespace FamilyForce.Unity
             linkFrames = CharacterAtlasCatalog.LoadClip(actor, "link");
             hurtFrames = CharacterAtlasCatalog.LoadClip(actor, "hurt");
             transform.localScale = Vector3.one * (actor == CharacterAtlasCatalog.Adam ? 2.65f : 3.45f);
+            bodyScale=transform.localScale;
         }
 
         public void SetControlEnabled(bool enabled)
         {
             controlEnabled = enabled;
             if (!enabled)
+            {
+                bufferedAction=null;
+                EndJump();
                 animator.SetMoving(false);
+            }
         }
 
-        public void PlayHurt() { ActionRevision++; animator.PlayOnce(hurtFrames); }
+        public void PlayHurt() { bufferedAction=null;EndJump();ActionRevision++; animator.PlayOnce(hurtFrames); }
         public void PlayTeamAction() { ActionRevision++; animator.PlayOnce(linkFrames); }
         public float PlayKnockdown()
         {
             ActionRevision++;
             var frames=CharacterAtlasCatalog.LoadClip(ActorName,"knockdown");
-            var timing=VideoEssaClips.Timing(ActorName,"knockdown");
+            var timing=ActionTiming.Durations(ActorName,"knockdown",frames.Length);
             animator.PlayOnce(frames,timing,true);
             float total=0; if(timing!=null) foreach(float t in timing) total+=t;
             return timing!=null ? total : frames.Length/12f;
@@ -85,6 +92,7 @@ namespace FamilyForce.Unity
         public void ResetPosition(Vector3 position)
         {
             groundPosition = position;
+            bufferedAction=null;EndJump();
             jumpTime = 0f;
             transform.position = position;
             ActionRevision++; animator.StopAction();
@@ -100,8 +108,12 @@ namespace FamilyForce.Unity
             float gaitRate = Mathf.Lerp(1.2f,1.5f,Mathf.InverseLerp(.8f,1f,move.magnitude));
             if (animator.IsPlayingAction)
                 move *= 0.28f;
-            if (input.JumpPressed() && jumpTime <= 0f)
-                jumpTime = 0.52f;
+            if (input.JumpPressed() && jumpTime <= 0f && !animator.IsPlayingAction)
+            {
+                jumpTime = 0.52f;jumping=true;ActionRevision++;
+                var poses=CharacterAtlasCatalog.LoadClip(ActorName,"jump");
+                if(poses.Length>0){var durations=new float[poses.Length];for(int i=0;i<durations.Length;i++)durations[i]=.52f/durations.Length;animator.PlayOnce(poses,durations);}
+            }
             Vector3 oldGround = groundPosition;
             Vector3 next = groundPosition + new Vector3(move.x, move.y * 0.62f, 0f)
                 * ((ActorName == CharacterAtlasCatalog.Essa ? 4.8f : Speed) * Time.deltaTime);
@@ -115,8 +127,14 @@ namespace FamilyForce.Unity
                 jumpTime = Mathf.Max(0f, jumpTime - Time.deltaTime);
                 float progress = 1f - jumpTime / 0.52f;
                 lift = Mathf.Sin(progress * Mathf.PI) * 0.72f;
+                // Procedural takeoff/air/landing, not newly authored art.
+                float stretch=Mathf.Sin(progress*Mathf.PI)*.07f;
+                transform.localScale=new Vector3(bodyScale.x*(1-stretch),bodyScale.y*(1+stretch),bodyScale.z);
+                transform.rotation=Quaternion.Euler(0,0,(FacingRight?-1:1)*6*Mathf.Sin(progress*Mathf.PI));
             }
+            else if(jumping)EndJump();
             transform.position = groundPosition + Vector3.up * lift;
+            spriteRenderer.sortingOrder=100-Mathf.RoundToInt(groundPosition.y*10);
 
             if (Mathf.Abs(move.x) > 0.01f)
                 spriteRenderer.flipX = move.x < 0f;
@@ -144,18 +162,20 @@ namespace FamilyForce.Unity
             else if (input.PunchPressed())
                 BufferAction(CombatAction.Punch);
 
-            if (bufferedAction.HasValue && Time.unscaledTime <= bufferedUntil
+            if (bufferedAction.HasValue && Time.time <= bufferedUntil
                 && TryAction(bufferedAction.Value))
                 bufferedAction = null;
-            else if (Time.unscaledTime > bufferedUntil)
+            else if (Time.time > bufferedUntil)
                 bufferedAction = null;
         }
 
         private void BufferAction(CombatAction action)
         {
             bufferedAction = action;
-            bufferedUntil = Time.unscaledTime + 0.14f;
+            bufferedUntil = Time.time + ActionTiming.BufferWindow(animator.RemainingActionTime);
         }
+        private void EndJump()
+        {jumpTime=0;jumping=false;transform.rotation=Quaternion.identity;if(bodyScale!=Vector3.zero)transform.localScale=bodyScale;transform.position=groundPosition;}
 
         public static Vector2 SmoothWalkInput(Vector2 move)
         {
@@ -167,7 +187,7 @@ namespace FamilyForce.Unity
 
         private bool TryAction(CombatAction action)
         {
-            if (ActorName == CharacterAtlasCatalog.Essa && animator.IsPlayingAction) return false;
+            if (animator.IsPlayingAction || IsAirborne) return false;
             if (combat.TryPlayerAction(this, action))
             {
                 ActionRevision++;
@@ -183,12 +203,8 @@ namespace FamilyForce.Unity
                     CombatAction.Throw => kickFrames,
                     _ => punchFrames
                 };
-                float[] timing = null;
-                if (ActorName == CharacterAtlasCatalog.Essa)
-                {
-                    if (action == CombatAction.Punch) timing = VideoEssaClips.Timing(ActorName,"punch");
-                    if (action == CombatAction.Kick || action == CombatAction.Throw) timing = VideoEssaClips.Timing(ActorName,"kick");
-                }
+                string clip=action==CombatAction.Punch?"punch":action==CombatAction.Kick||action==CombatAction.Throw?"kick":"other";
+                float[] timing = ActionTiming.Durations(ActorName,clip,frames.Length);
                 animator.PlayOnce(frames, timing);
                 return true;
             }

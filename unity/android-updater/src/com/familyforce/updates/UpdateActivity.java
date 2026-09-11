@@ -31,6 +31,10 @@ public final class UpdateActivity extends Activity {
     private ReleasePolicy.Candidate candidate;
     private String installed;
     private boolean ready;
+    private boolean installPending;
+    private final android.content.SharedPreferences.OnSharedPreferenceChangeListener installListener=(prefs,key)->{
+        if("result".equals(key))ui(()->showInstallResult());
+    };
     private File apk;
     private final int ink=Color.rgb(245,247,239), gold=Color.rgb(250,198,46);
 
@@ -48,7 +52,8 @@ public final class UpdateActivity extends Activity {
         progress=new ProgressBar(this,null,android.R.attr.progressBarStyleHorizontal);progress.setMax(100);box.addView(progress,new LinearLayout.LayoutParams(-1,dp(8)));
         action=new Button(this);action.setText("Checking…");action.setEnabled(false);action.setMinHeight(dp(48));box.addView(action);
         back=new Button(this);back.setText("Back to game");back.setMinHeight(dp(48));back.setOnClickListener(v->finish());box.addView(back);
-        check();
+        getSharedPreferences("ff_install",0).registerOnSharedPreferenceChangeListener(installListener);
+        if(!showInstallResult())check();
     }
     private int dp(int n){return Math.round(n*getResources().getDisplayMetrics().density);}
     private TextView label(String s,int size,int color){TextView t=new TextView(this);t.setText(s);t.setTextSize(size);t.setTextColor(color);return t;}
@@ -149,12 +154,48 @@ public final class UpdateActivity extends Activity {
         }else{status.setText("Update ready. File integrity, game identity and signature verified.\nTap Install update to open Android's confirmation.");action.setText("Install update");}
         action.setOnClickListener(v->{try{
             if(needsPermission()){startActivity(new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,Uri.parse("package:"+getPackageName())));return;}
-            Uri uri=Uri.parse("content://"+getPackageName()+".updates/update.apk");
-            Intent intent=new Intent(Intent.ACTION_VIEW).setDataAndType(uri,"application/vnd.android.package-archive");
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);intent.setClipData(ClipData.newRawUri("Game update",uri));startActivity(intent);
+            installSession();
         }catch(Exception e){status.setText("Android could not open the installer. Check device restrictions and try again.");}});
     }
-    @Override protected void onResume(){super.onResume();if(ready)showInstall();}
+    private void installSession(){
+        if(installPending)return;
+        installPending=true;
+        action.setEnabled(false);status.setText("Preparing verified installation…");
+        getSharedPreferences("ff_install",0).edit().remove("result").apply();
+        worker.execute(()->{
+            PackageInstaller installer=getPackageManager().getPackageInstaller();int id=-1;
+            try{
+                // Revalidate the private file before staging it for the OS.
+                validatePackage(apk);
+                PackageInstaller.SessionParams params=new PackageInstaller.SessionParams(PackageInstaller.SessionParams.MODE_FULL_INSTALL);
+                params.setAppPackageName(getPackageName());params.setSize(apk.length());
+                if(Build.VERSION.SDK_INT>=31)params.setRequireUserAction(PackageInstaller.SessionParams.USER_ACTION_REQUIRED);
+                id=installer.createSession(params);
+                try(PackageInstaller.Session session=installer.openSession(id)){
+                    try(InputStream in=new FileInputStream(apk);OutputStream out=session.openWrite("base.apk",0,apk.length())){
+                        byte[] data=new byte[65536];int n;while((n=in.read(data))!=-1){if(cancelled)throw new IOException("Cancelled");out.write(data,0,n);}session.fsync(out);
+                    }
+                    Intent result=new Intent(this,InstallResultReceiver.class);
+                    int flags=PendingIntent.FLAG_UPDATE_CURRENT|(Build.VERSION.SDK_INT>=31?PendingIntent.FLAG_MUTABLE:0);
+                    PendingIntent callback=PendingIntent.getBroadcast(this,id,result,flags);
+                    session.commit(callback.getIntentSender());
+                }
+                ui(()->{if(installPending)status.setText("Confirm installation in Android, then return here for the result.");});
+            }catch(Exception e){if(id>=0)try{installer.abandonSession(id);}catch(Exception ignored){}ui(()->installPending=false);error(e);}
+        });
+    }
+    @Override protected void onResume(){
+        super.onResume();
+        if(!showInstallResult() && ready && !installPending)showInstall();
+    }
+    private boolean showInstallResult(){
+        String result=getSharedPreferences("ff_install",0).getString("result",null);
+        if(result==null)return false;
+        installPending=false;ready=false;
+        getSharedPreferences("ff_install",0).edit().remove("result").apply();
+        status.setText(result);progress.setIndeterminate(false);action.setEnabled(true);action.setText("Check again");action.setOnClickListener(v->check());
+        return true;
+    }
     private void error(Exception e){
         if(cancelled)return;
         android.util.Log.w("FFUpdater","Update failed",e);
@@ -164,5 +205,5 @@ public final class UpdateActivity extends Activity {
             : e instanceof IOException ? e.getMessage() : "Could not read or verify the update. Please try again.";
         ui(()->{progress.setIndeterminate(false);progress.setProgress(0);status.setText("Update not completed.\n"+reason);back.setText("Back to game");action.setText("Try again");action.setEnabled(true);action.setOnClickListener(v->check());});
     }
-    @Override protected void onDestroy(){cancelled=true;HttpURLConnection c=connection;if(c!=null)c.disconnect();worker.shutdownNow();super.onDestroy();}
+    @Override protected void onDestroy(){getSharedPreferences("ff_install",0).unregisterOnSharedPreferenceChangeListener(installListener);cancelled=true;HttpURLConnection c=connection;if(c!=null)c.disconnect();worker.shutdownNow();super.onDestroy();}
 }

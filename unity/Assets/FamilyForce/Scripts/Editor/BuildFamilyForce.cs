@@ -11,6 +11,12 @@ namespace FamilyForce.Unity.Editor
     public static class BuildFamilyForce
     {
         private const string ScenePath = "Assets/FamilyForce/Scenes/Prototype.unity";
+        public static void BuildRepairsRelease()
+        {
+            Controller226Build.ConfigureAxes();Controller226Validation.Run();Controller229Validation.Run();
+            Essa222Validation.Run(true);Motion225Validation.Run();Repairs232Validation.Run();
+            BuildAndroid("Builds/Android/FamilyForceUnity-Repairs-0.5.10.apk",BuildOptions.None,"0.5.10-repairs",11);
+        }
         public static void BuildTvInputRelease()
         {
             Controller226Build.ConfigureAxes();Controller226Validation.Run();Controller229Validation.Run();

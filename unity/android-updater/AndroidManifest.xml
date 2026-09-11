@@ -2,6 +2,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <application>
+        <receiver android:name="com.familyforce.updates.InstallResultReceiver" android:exported="false" />
         <activity android:name="com.familyforce.updates.UpdateActivity" android:exported="false"
             android:theme="@android:style/Theme.Material.NoActionBar"
             android:configChanges="orientation|screenSize|keyboardHidden" />

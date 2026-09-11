@@ -79,4 +79,9 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    # Retain main() as a historical 0.5.0 contract, not the current release gate.
+    import sys
+    if '--historical' in sys.argv:
+        main()
+    else:
+        subprocess.run([sys.executable,str(Path(__file__).with_name('test_essa_video_apk.py')),'--repairs'],check=True)
